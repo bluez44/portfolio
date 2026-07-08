@@ -1,0 +1,1224 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<title>[Your Name] — [Job Title] | Portfolio</title>
+<meta name="description" content="Portfolio of [Your Name], [Job Title]. Projects, skills, experience and contact.">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&amp;family=Manrope:wght@400;500;600;700&amp;display=swap" rel="stylesheet">
+<script src="https://unpkg.com/three@0.128.0/build/three.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/ScrollTrigger.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/lenis@1.1.14/dist/lenis.min.js"></script>
+<style>
+:root{
+  --bg:#0B0D11; --bg2:#0E1218; --text:#E9EDF2; --muted:#96A0AC;
+  --accent:#3D8BFF; --accent-dim:rgba(61,139,255,.14); --glow:rgba(61,139,255,.35);
+  --line:rgba(255,255,255,.08); --panel:rgba(255,255,255,.04); --panel-strong:rgba(17,22,30,.72);
+  --panel-border:rgba(255,255,255,.09); --header-bg:rgba(11,13,17,.72); --chip:rgba(255,255,255,.06);
+}
+:root[data-theme="light"]{
+  --bg:#F3F5F8; --bg2:#EAEEF4; --text:#161B22; --muted:#5A6572;
+  --accent-dim:rgba(61,139,255,.12); --glow:rgba(61,139,255,.28);
+  --line:rgba(12,22,34,.10); --panel:rgba(255,255,255,.62); --panel-strong:rgba(255,255,255,.82);
+  --panel-border:rgba(12,22,34,.09); --header-bg:rgba(243,245,248,.78); --chip:rgba(12,22,34,.05);
+}
+body{margin:0;background:var(--bg);color:var(--text);font-family:Manrope,'Helvetica Neue',Helvetica,sans-serif;-webkit-font-smoothing:antialiased;transition:background .35s ease,color .35s ease}
+a{color:var(--text);text-decoration:none;transition:color .25s ease}
+a:hover{color:var(--accent)}
+button{font-family:inherit}
+input::placeholder,textarea::placeholder{color:var(--muted);opacity:.7}
+::selection{background:var(--accent-dim);color:var(--text)}
+input:focus-visible,textarea:focus-visible,button:focus-visible,a:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+@keyframes pulseDot{0%,100%{opacity:.5}50%{opacity:1}}
+@media (max-width:820px){[data-desktop-only]{display:none !important}[data-mobile-only]{display:flex !important}}
+@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
+</style>
+</helmet>
+
+<div data-screen-label="Portfolio" style="min-height:100vh">
+
+  <!-- ======================= HEADER ======================= -->
+  <header ref="{{ headerRef }}" style="position:fixed;top:0;left:0;right:0;z-index:60;transition:background .3s ease,border-color .3s ease,backdrop-filter .3s ease;border-bottom:1px solid transparent">
+    <div style="max-width:1120px;margin:0 auto;padding:14px 24px;display:flex;align-items:center;justify-content:space-between;gap:16px">
+      <a href="#top" aria-label="Home" style="display:flex;align-items:center;gap:10px;font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:17px;letter-spacing:.02em">
+        <span aria-hidden="true" style="width:9px;height:9px;border-radius:50%;background:var(--accent);box-shadow:0 0 12px var(--glow)"></span>
+        [Your Name]
+      </a>
+      <nav data-desktop-only="" aria-label="Primary" style="display:flex;align-items:center;gap:28px">
+        <sc-for list="{{ navLinks }}" as="l" hint-placeholder-count="5">
+          <a href="{{ l.href }}" style="font-size:14px;font-weight:500;color:var(--muted)" style-hover="color:var(--accent)">{{ l.label }}</a>
+        </sc-for>
+      </nav>
+      <div style="display:flex;align-items:center;gap:12px">
+        <button onClick="{{ toggleTheme }}" aria-label="{{ themeToggleLabel }}" title="{{ themeToggleLabel }}" style="width:52px;height:28px;border-radius:99px;border:1px solid var(--panel-border);background:var(--chip);cursor:pointer;position:relative;padding:0;transition:background .25s ease">
+          <span style="{{ themeKnobStyle }}"></span>
+        </button>
+        <a data-desktop-only="" href="#" download="" style="display:inline-flex;align-items:center;gap:8px;padding:9px 18px;border-radius:8px;border:1px solid var(--accent);color:var(--accent);font-size:13.5px;font-weight:600;transition:background .25s ease,box-shadow .25s ease" style-hover="background:var(--accent-dim);box-shadow:0 0 18px var(--glow);color:var(--accent)">Download CV</a>
+        <button data-mobile-only="" onClick="{{ toggleMenu }}" aria-label="Open menu" aria-expanded="{{ menuOpen }}" style="display:none;flex-direction:column;gap:5px;background:none;border:1px solid var(--panel-border);border-radius:8px;padding:10px;cursor:pointer">
+          <span style="width:18px;height:2px;background:var(--text);display:block"></span>
+          <span style="width:18px;height:2px;background:var(--text);display:block"></span>
+        </button>
+      </div>
+    </div>
+    <sc-if value="{{ menuOpen }}" hint-placeholder-val="{{ false }}">
+      <nav aria-label="Mobile" style="display:flex;flex-direction:column;gap:4px;padding:12px 24px 20px;background:var(--header-bg);backdrop-filter:blur(16px);border-bottom:1px solid var(--line)">
+        <sc-for list="{{ navLinks }}" as="l" hint-placeholder-count="5">
+          <a href="{{ l.href }}" onClick="{{ closeMenu }}" style="padding:12px 4px;font-size:16px;font-weight:600;border-bottom:1px solid var(--line)">{{ l.label }}</a>
+        </sc-for>
+        <a href="#" download="" style="margin-top:12px;text-align:center;padding:12px;border-radius:8px;border:1px solid var(--accent);color:var(--accent);font-weight:600">Download CV</a>
+      </nav>
+    </sc-if>
+  </header>
+
+  <!-- ======================= HERO ======================= -->
+  <section id="top" data-screen-label="Hero" style="position:relative;min-height:100vh;display:flex;align-items:center;overflow:hidden">
+    <canvas ref="{{ heroCanvas }}" aria-hidden="true" style="position:absolute;inset:0;width:100%;height:100%;display:block"></canvas>
+    <div style="position:absolute;inset:0;background:radial-gradient(ellipse 70% 55% at 50% 45%, transparent 30%, var(--bg) 100%);pointer-events:none"></div>
+    <div style="position:relative;z-index:1;max-width:1120px;margin:0 auto;padding:120px 24px 80px;width:100%">
+      <p data-hero="" style="margin:0 0 18px;font-family:ui-monospace,'SF Mono',Menlo,monospace;font-size:13px;letter-spacing:.18em;text-transform:uppercase;color:var(--accent)">
+        <span aria-hidden="true" style="display:inline-block;width:7px;height:7px;border-radius:50%;background:var(--accent);margin-right:10px;animation:pulseDot 2.4s ease-in-out infinite;box-shadow:0 0 10px var(--glow)"></span>
+        Available for work
+      </p>
+      <h1 data-hero="" style="margin:0;font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:clamp(2.7rem,7.5vw,5.4rem);line-height:1.04;letter-spacing:-.02em">[Your Name]</h1>
+      <p data-hero="" style="margin:18px 0 0;font-family:'Space Grotesk',sans-serif;font-size:clamp(1.25rem,2.6vw,1.8rem);font-weight:500;color:var(--accent)">[Job Title]</p>
+      <p data-hero="" style="margin:22px 0 0;max-width:560px;font-size:clamp(1rem,1.6vw,1.125rem);line-height:1.7;color:var(--muted)">[A short tagline — one or two sentences about what you build, the problems you solve, and what makes your work distinctive.]</p>
+      <div data-hero="" style="display:flex;flex-wrap:wrap;gap:14px;margin-top:38px">
+        <a href="#projects" style="padding:13px 26px;border-radius:8px;background:var(--accent);color:#fff;font-weight:600;font-size:15px;box-shadow:0 0 24px var(--glow);transition:transform .25s ease,box-shadow .25s ease" style-hover="transform:translateY(-2px);box-shadow:0 0 36px var(--glow);color:#fff">View Projects</a>
+        <a href="#contact" style="padding:13px 26px;border-radius:8px;border:1px solid var(--panel-border);background:var(--panel);backdrop-filter:blur(8px);font-weight:600;font-size:15px;transition:border-color .25s ease,transform .25s ease" style-hover="border-color:var(--accent);color:var(--accent);transform:translateY(-2px)">Contact Me</a>
+      </div>
+    </div>
+    <a href="#about" aria-label="Scroll to About" style="position:absolute;bottom:28px;left:50%;transform:translateX(-50%);color:var(--muted);font-size:12px;letter-spacing:.2em;text-transform:uppercase;display:flex;flex-direction:column;align-items:center;gap:8px">
+      scroll
+      <span aria-hidden="true" style="width:1px;height:34px;background:linear-gradient(var(--accent),transparent)"></span>
+    </a>
+  </section>
+
+  <!-- ======================= ABOUT ======================= -->
+  <section id="about" data-screen-label="About" data-reveal="" style="padding:clamp(72px,10vw,120px) 24px">
+    <div style="max-width:1120px;margin:0 auto">
+      <p style="margin:0 0 10px;font-family:ui-monospace,'SF Mono',Menlo,monospace;font-size:12.5px;letter-spacing:.18em;text-transform:uppercase;color:var(--accent)">01 / About</p>
+      <h2 style="margin:0 0 44px;font-family:'Space Grotesk',sans-serif;font-size:clamp(1.8rem,4vw,2.6rem);font-weight:700;letter-spacing:-.01em">A little about me</h2>
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(290px,1fr));gap:44px;align-items:start">
+        <div style="position:relative;max-width:380px">
+          <div role="img" aria-label="Portrait placeholder — replace with your photo" style="aspect-ratio:4/5;border-radius:14px;border:1px solid var(--panel-border);background:repeating-linear-gradient(-45deg,var(--panel) 0 12px,transparent 12px 24px),var(--bg2);display:flex;align-items:center;justify-content:center">
+            <span style="font-family:ui-monospace,'SF Mono',Menlo,monospace;font-size:12px;color:var(--muted);letter-spacing:.08em">[ portrait photo ]</span>
+          </div>
+          <div aria-hidden="true" style="position:absolute;inset:14px -14px -14px 14px;border:1px solid var(--accent-dim);border-radius:14px;z-index:-1"></div>
+        </div>
+        <div>
+          <p style="margin:0;font-size:16.5px;line-height:1.85;color:var(--muted)">[Short bio — a few sentences about your background, the kind of engineering you love, notable domains you've worked in, and what you're looking for next. Keep it human and specific.]</p>
+          <p style="margin:18px 0 0;font-size:16.5px;line-height:1.85;color:var(--muted)">[Optional second paragraph — interests outside of code, open-source work, writing, or community involvement.]</p>
+          <div data-stagger="" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:14px;margin-top:38px">
+            <sc-for list="{{ stats }}" as="s" hint-placeholder-count="3">
+              <div style="padding:20px 18px;border-radius:12px;border:1px solid var(--panel-border);background:var(--panel);backdrop-filter:blur(8px)">
+                <p style="margin:0;font-family:'Space Grotesk',sans-serif;font-size:30px;font-weight:700;color:var(--accent)">{{ s.value }}</p>
+                <p style="margin:6px 0 0;font-size:13px;color:var(--muted)">{{ s.label }}</p>
+              </div>
+            </sc-for>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ======================= SKILLS / TECH STACK 3D ======================= -->
+  <section id="skills" data-screen-label="Skills" style="padding:clamp(72px,10vw,120px) 24px;background:var(--bg2);border-top:1px solid var(--line);border-bottom:1px solid var(--line)">
+    <div style="max-width:1120px;margin:0 auto">
+      <div data-reveal="">
+        <p style="margin:0 0 10px;font-family:ui-monospace,'SF Mono',Menlo,monospace;font-size:12.5px;letter-spacing:.18em;text-transform:uppercase;color:var(--accent)">02 / Skills</p>
+        <h2 style="margin:0 0 12px;font-family:'Space Grotesk',sans-serif;font-size:clamp(1.8rem,4vw,2.6rem);font-weight:700;letter-spacing:-.01em">The knowledge path</h2>
+        <p style="margin:0 0 32px;max-width:600px;font-size:15.5px;line-height:1.7;color:var(--muted)">A living map of my stack — foundations at the root, specialized tools at the crown. Drag to orbit, click a node (or a chip below) to inspect it.</p>
+      </div>
+
+      <div style="position:relative;border-radius:16px;border:1px solid var(--panel-border);background:radial-gradient(ellipse 80% 70% at 50% 40%,var(--accent-dim) 0%,transparent 55%),var(--bg);overflow:hidden">
+        <sc-if value="{{ webglOk }}" hint-placeholder-val="{{ true }}">
+          <canvas ref="{{ techCanvas }}" aria-label="Interactive 3D visualization of the tech stack. Use the chips below the scene for keyboard access." role="application" style="display:block;width:100%;height:clamp(420px,62vh,640px);cursor:grab;touch-action:pan-y"></canvas>
+        </sc-if>
+        <sc-if value="{{ webglFailed }}" hint-placeholder-val="{{ false }}">
+          <div style="height:clamp(360px,50vh,520px);display:flex;align-items:center;justify-content:center;background:repeating-linear-gradient(-45deg,var(--panel) 0 12px,transparent 12px 24px)">
+            <p style="font-family:ui-monospace,'SF Mono',Menlo,monospace;font-size:13px;color:var(--muted)">[ 3D unavailable on this device — skills listed below ]</p>
+          </div>
+        </sc-if>
+
+        <!-- tier legend -->
+        <div aria-hidden="true" data-desktop-only="" style="position:absolute;left:20px;top:50%;transform:translateY(-50%);display:flex;flex-direction:column;gap:44px;pointer-events:none">
+          <sc-for list="{{ tierLegend }}" as="t" hint-placeholder-count="3">
+            <div style="display:flex;align-items:center;gap:10px">
+              <span style="width:22px;height:1px;background:var(--accent);opacity:.6"></span>
+              <div>
+                <p style="margin:0;font-family:ui-monospace,'SF Mono',Menlo,monospace;font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--accent)">{{ t.kicker }}</p>
+                <p style="margin:2px 0 0;font-size:12.5px;color:var(--muted)">{{ t.name }}</p>
+              </div>
+            </div>
+          </sc-for>
+        </div>
+
+        <!-- focus info panel -->
+        <sc-if value="{{ focused }}" hint-placeholder-val="{{ false }}">
+          <div role="dialog" aria-label="Technology details" style="position:absolute;right:16px;top:16px;bottom:16px;width:min(320px,calc(100% - 32px));display:flex;flex-direction:column;justify-content:center;pointer-events:none">
+            <div style="pointer-events:auto;padding:24px;border-radius:14px;border:1px solid var(--panel-border);background:var(--panel-strong);backdrop-filter:blur(18px);box-shadow:0 12px 44px rgba(0,0,0,.35)">
+              <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:12px">
+                <div>
+                  <p style="margin:0;font-family:ui-monospace,'SF Mono',Menlo,monospace;font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--accent)">{{ focusedTierName }}</p>
+                  <h3 style="margin:6px 0 0;font-family:'Space Grotesk',sans-serif;font-size:22px;font-weight:700">{{ focusedName }}</h3>
+                </div>
+                <button onClick="{{ closeFocus }}" aria-label="Close details and return to full view" style="flex:none;width:32px;height:32px;border-radius:8px;border:1px solid var(--panel-border);background:var(--chip);color:var(--text);cursor:pointer;font-size:15px;line-height:1" style-hover="border-color:var(--accent);color:var(--accent)">×</button>
+              </div>
+              <p style="margin:14px 0 0;font-size:14px;line-height:1.7;color:var(--muted)">{{ focusedDesc }}</p>
+              <div style="margin-top:18px">
+                <div style="display:flex;justify-content:space-between;font-size:12.5px;color:var(--muted);margin-bottom:6px">
+                  <span>Proficiency</span><span style="color:var(--text);font-weight:600">{{ focusedProfLabel }}</span>
+                </div>
+                <div style="height:5px;border-radius:99px;background:var(--chip);overflow:hidden">
+                  <div style="{{ focusedBarStyle }}"></div>
+                </div>
+              </div>
+              <p style="margin:14px 0 0;font-size:13px;color:var(--muted)">Experience — <span style="color:var(--text);font-weight:600">{{ focusedYears }}</span></p>
+            </div>
+          </div>
+        </sc-if>
+
+        <!-- hand tracking toggle -->
+        <div style="position:absolute;left:16px;bottom:14px;display:flex;align-items:center;gap:10px;flex-wrap:wrap">
+          <button onClick="{{ toggleHands }}" aria-pressed="{{ handOn }}" style="{{ handBtnStyle }}" style-hover="border-color:var(--accent);color:var(--accent)">{{ handBtnLabel }}</button>
+          <sc-if value="{{ handStatus }}" hint-placeholder-val="{{ false }}">
+            <p role="status" style="margin:0;font-size:12px;color:var(--muted);max-width:320px">{{ handStatus }}</p>
+          </sc-if>
+        </div>
+      </div>
+
+      <!-- keyboard / mobile accessible chips -->
+      <div data-stagger="" style="margin-top:28px;display:flex;flex-direction:column;gap:16px">
+        <sc-for list="{{ chipTiers }}" as="tier" hint-placeholder-count="3">
+          <div style="display:flex;flex-wrap:wrap;align-items:center;gap:10px">
+            <p style="margin:0;width:120px;flex:none;font-family:ui-monospace,'SF Mono',Menlo,monospace;font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted)">{{ tier.name }}</p>
+            <sc-for list="{{ tier.items }}" as="it" hint-placeholder-count="4">
+              <button onClick="{{ onTechChip }}" data-i="{{ it.i }}" style="padding:8px 15px;border-radius:99px;border:1px solid var(--panel-border);background:var(--chip);color:var(--text);font-size:13px;font-weight:500;cursor:pointer;transition:border-color .25s ease,box-shadow .25s ease" style-hover="border-color:var(--accent);box-shadow:0 0 14px var(--glow)">{{ it.label }}</button>
+            </sc-for>
+          </div>
+        </sc-for>
+      </div>
+    </div>
+  </section>
+
+  <!-- ======================= PROJECTS ======================= -->
+  <section id="projects" data-screen-label="Projects" style="position:relative;padding:clamp(72px,8vw,100px) 0;overflow:hidden">
+    <div style="max-width:1120px;margin:0 auto;padding:0 24px">
+      <p style="margin:0 0 10px;font-family:ui-monospace,'SF Mono',Menlo,monospace;font-size:12.5px;letter-spacing:.18em;text-transform:uppercase;color:var(--accent)">03 / Projects</p>
+      <h2 style="margin:0;font-family:'Space Grotesk',sans-serif;font-size:clamp(1.8rem,4vw,2.6rem);font-weight:700;letter-spacing:-.01em">Selected work</h2>
+      <p style="margin:10px 0 0;font-size:14px;color:var(--muted)">Keep scrolling — the gallery glides sideways.</p>
+    </div>
+    <div ref="{{ projectsViewportRef }}" style="overflow-x:auto;overscroll-behavior-x:contain;padding:32px 24px;scrollbar-width:none;-webkit-overflow-scrolling:touch">
+      <div ref="{{ projectsTrackRef }}" style="display:flex;gap:24px;width:max-content;align-items:stretch;will-change:transform">
+        <sc-for list="{{ projects }}" as="p" hint-placeholder-count="6">
+          <article data-card="" style="width:min(400px,80vw);flex:none;display:flex;flex-direction:column;border-radius:14px;border:1px solid var(--panel-border);background:var(--panel);backdrop-filter:blur(8px);overflow:hidden;will-change:transform">
+            <div role="img" aria-label="Project preview placeholder" style="aspect-ratio:16/9;position:relative;overflow:hidden;border-bottom:1px solid var(--line)">
+              <div data-proj-img="" style="position:absolute;top:0;bottom:0;left:-32px;right:-32px;background:repeating-linear-gradient(-45deg,var(--chip) 0 12px,transparent 12px 24px),var(--bg2);display:flex;align-items:center;justify-content:center;will-change:transform">
+                <span style="font-family:ui-monospace,'SF Mono',Menlo,monospace;font-size:11.5px;color:var(--muted);letter-spacing:.08em">[ project preview ]</span>
+              </div>
+            </div>
+            <div style="padding:22px;display:flex;flex-direction:column;flex:1">
+              <h3 style="margin:0;font-family:'Space Grotesk',sans-serif;font-size:19px;font-weight:600">{{ p.title }}</h3>
+              <p style="margin:10px 0 0;font-size:14px;line-height:1.65;color:var(--muted)">{{ p.desc }}</p>
+              <div style="display:flex;flex-wrap:wrap;gap:8px;margin-top:16px">
+                <sc-for list="{{ p.tags }}" as="tag" hint-placeholder-count="3">
+                  <span style="padding:4px 11px;border-radius:99px;background:var(--accent-dim);color:var(--accent);font-family:ui-monospace,'SF Mono',Menlo,monospace;font-size:11px;letter-spacing:.04em">{{ tag }}</span>
+                </sc-for>
+              </div>
+              <div style="display:flex;gap:18px;margin-top:auto;padding-top:18px;border-top:1px solid var(--line)">
+                <a href="#" style="font-size:13.5px;font-weight:600;color:var(--accent);display:inline-flex;align-items:center;gap:6px">Live Demo <span aria-hidden="true">↗</span></a>
+                <a href="#" style="font-size:13.5px;font-weight:600;color:var(--muted)" style-hover="color:var(--accent)">Source Code</a>
+              </div>
+            </div>
+          </article>
+        </sc-for>
+      </div>
+    </div>
+    <div style="max-width:1120px;margin:0 auto;padding:0 24px">
+      <div data-proj-progress="" style="height:2px;max-width:320px;background:var(--line);border-radius:99px;overflow:hidden">
+        <div ref="{{ projProgRef }}" style="height:100%;width:0%;background:var(--accent);box-shadow:0 0 8px var(--glow)"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ======================= EXPERIENCE ======================= -->
+  <section id="experience" data-screen-label="Experience" style="padding:clamp(72px,10vw,120px) 24px;background:var(--bg2);border-top:1px solid var(--line);border-bottom:1px solid var(--line)">
+    <div style="max-width:960px;margin:0 auto">
+      <div data-reveal="">
+        <p style="margin:0 0 10px;font-family:ui-monospace,'SF Mono',Menlo,monospace;font-size:12.5px;letter-spacing:.18em;text-transform:uppercase;color:var(--accent)">04 / Experience</p>
+        <h2 style="margin:0 0 56px;font-family:'Space Grotesk',sans-serif;font-size:clamp(1.8rem,4vw,2.6rem);font-weight:700;letter-spacing:-.01em">Where I've worked</h2>
+      </div>
+      <div ref="{{ timelineRef }}" style="position:relative">
+        <svg ref="{{ threadSvgRef }}" aria-hidden="true" style="position:absolute;inset:0;width:100%;height:100%;pointer-events:none;overflow:visible">
+          <path ref="{{ threadPathRef }}" d="" fill="none" stroke="var(--accent)" stroke-width="1.8" stroke-linecap="round" style="filter:drop-shadow(0 0 6px var(--glow))"></path>
+          <circle ref="{{ threadKnotRef }}" r="4.5" fill="var(--accent)" style="filter:drop-shadow(0 0 9px var(--glow));opacity:0;transition:opacity .3s ease"></circle>
+        </svg>
+        <div style="display:flex;flex-direction:column;gap:clamp(44px,7vw,80px)">
+          <sc-for list="{{ roles }}" as="r" hint-placeholder-count="4">
+            <article data-tl-entry="" style="{{ r.wrapStyle }}">
+              <span aria-hidden="true" style="position:absolute;top:-7px;left:50%;transform:translateX(-50%);width:13px;height:13px;border-radius:50%;background:var(--accent);box-shadow:0 0 10px var(--glow);border:2px solid var(--bg2)"></span>
+              <div role="img" aria-label="Photo placeholder for this role — replace with a memory from this chapter" style="aspect-ratio:3/2;border-radius:4px;background:repeating-linear-gradient(-45deg,var(--chip) 0 12px,transparent 12px 24px),var(--bg);display:flex;align-items:center;justify-content:center;border:1px solid var(--line);margin-bottom:16px">
+                <span style="font-family:ui-monospace,'SF Mono',Menlo,monospace;font-size:11.5px;color:var(--muted);letter-spacing:.08em">[ memory photo ]</span>
+              </div>
+              <div style="display:flex;flex-wrap:wrap;align-items:baseline;justify-content:space-between;gap:8px">
+                <h3 style="margin:0;font-family:'Space Grotesk',sans-serif;font-size:18px;font-weight:600">{{ r.position }}</h3>
+                <span style="font-family:ui-monospace,'SF Mono',Menlo,monospace;font-size:11.5px;color:var(--accent)">{{ r.dates }}</span>
+              </div>
+              <p style="margin:5px 0 0;font-size:14px;font-weight:600;color:var(--muted)">{{ r.company }}</p>
+              <ul style="margin:12px 0 0;padding-left:18px;display:flex;flex-direction:column;gap:7px">
+                <sc-for list="{{ r.points }}" as="pt" hint-placeholder-count="3">
+                  <li style="font-size:13.5px;line-height:1.6;color:var(--muted)">{{ pt }}</li>
+                </sc-for>
+              </ul>
+            </article>
+          </sc-for>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ======================= EDUCATION ======================= -->
+  <section id="education" data-screen-label="Education" data-reveal="" style="padding:clamp(72px,10vw,120px) 24px">
+    <div style="max-width:1120px;margin:0 auto">
+      <p style="margin:0 0 10px;font-family:ui-monospace,'SF Mono',Menlo,monospace;font-size:12.5px;letter-spacing:.18em;text-transform:uppercase;color:var(--accent)">05 / Education</p>
+      <h2 style="margin:0 0 44px;font-family:'Space Grotesk',sans-serif;font-size:clamp(1.8rem,4vw,2.6rem);font-weight:700;letter-spacing:-.01em">Education &amp; certifications</h2>
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:24px;align-items:start">
+        <div style="display:flex;flex-direction:column;gap:18px">
+          <sc-for list="{{ education }}" as="e" hint-placeholder-count="2">
+            <div style="padding:24px 26px;border-radius:14px;border:1px solid var(--panel-border);background:var(--panel);backdrop-filter:blur(8px)">
+              <div style="display:flex;flex-wrap:wrap;justify-content:space-between;gap:8px;align-items:baseline">
+                <h3 style="margin:0;font-family:'Space Grotesk',sans-serif;font-size:17px;font-weight:600">{{ e.degree }}</h3>
+                <span style="font-family:ui-monospace,'SF Mono',Menlo,monospace;font-size:12px;color:var(--accent)">{{ e.dates }}</span>
+              </div>
+              <p style="margin:6px 0 0;font-size:14px;color:var(--muted)">{{ e.school }}</p>
+              <p style="margin:10px 0 0;font-size:13.5px;line-height:1.6;color:var(--muted)">{{ e.note }}</p>
+            </div>
+          </sc-for>
+        </div>
+        <div style="padding:24px 26px;border-radius:14px;border:1px solid var(--panel-border);background:var(--panel);backdrop-filter:blur(8px)">
+          <p style="margin:0 0 14px;font-family:ui-monospace,'SF Mono',Menlo,monospace;font-size:11.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted)">Certifications</p>
+          <div style="display:flex;flex-direction:column">
+            <sc-for list="{{ certs }}" as="c" hint-placeholder-count="4">
+              <div style="display:flex;flex-wrap:wrap;justify-content:space-between;gap:6px;align-items:baseline;padding:13px 0;border-bottom:1px solid var(--line)">
+                <div>
+                  <p style="margin:0;font-size:14.5px;font-weight:600">{{ c.name }}</p>
+                  <p style="margin:3px 0 0;font-size:12.5px;color:var(--muted)">{{ c.issuer }}</p>
+                </div>
+                <span style="font-family:ui-monospace,'SF Mono',Menlo,monospace;font-size:12px;color:var(--accent)">{{ c.year }}</span>
+              </div>
+            </sc-for>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ======================= CONTACT ======================= -->
+  <section id="contact" data-screen-label="Contact" data-reveal="" style="padding:clamp(72px,10vw,120px) 24px;background:var(--bg2);border-top:1px solid var(--line)">
+    <div style="max-width:1120px;margin:0 auto">
+      <p style="margin:0 0 10px;font-family:ui-monospace,'SF Mono',Menlo,monospace;font-size:12.5px;letter-spacing:.18em;text-transform:uppercase;color:var(--accent)">06 / Contact</p>
+      <h2 style="margin:0 0 44px;font-family:'Space Grotesk',sans-serif;font-size:clamp(1.8rem,4vw,2.6rem);font-weight:700;letter-spacing:-.01em">Let's build something</h2>
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:44px;align-items:start">
+        <form onSubmit="{{ onSubmit }}" style="display:flex;flex-direction:column;gap:16px">
+          <label style="display:flex;flex-direction:column;gap:7px;font-size:13px;font-weight:600;color:var(--muted)">Name
+            <input name="name" type="text" required="" placeholder="[Sender name]" style="padding:13px 15px;border-radius:10px;border:1px solid var(--panel-border);background:var(--panel);color:var(--text);font-size:14.5px;transition:border-color .25s ease" />
+          </label>
+          <label style="display:flex;flex-direction:column;gap:7px;font-size:13px;font-weight:600;color:var(--muted)">Email
+            <input name="email" type="email" required="" placeholder="name@example.com" style="padding:13px 15px;border-radius:10px;border:1px solid var(--panel-border);background:var(--panel);color:var(--text);font-size:14.5px;transition:border-color .25s ease" />
+          </label>
+          <label style="display:flex;flex-direction:column;gap:7px;font-size:13px;font-weight:600;color:var(--muted)">Message
+            <textarea name="message" required="" rows="5" placeholder="Tell me about your project…" style="padding:13px 15px;border-radius:10px;border:1px solid var(--panel-border);background:var(--panel);color:var(--text);font-size:14.5px;resize:vertical;transition:border-color .25s ease"></textarea>
+          </label>
+          <button type="submit" style="margin-top:6px;padding:14px;border-radius:10px;border:none;background:var(--accent);color:#fff;font-size:15px;font-weight:600;cursor:pointer;box-shadow:0 0 20px var(--glow);transition:transform .25s ease" style-hover="transform:translateY(-2px)">Send Message</button>
+          <sc-if value="{{ sent }}" hint-placeholder-val="{{ false }}">
+            <p role="status" style="margin:0;font-size:13.5px;color:var(--accent)">Message captured (demo) — connect this form to your backend or a form service.</p>
+          </sc-if>
+        </form>
+        <div data-stagger="" style="display:flex;flex-direction:column;gap:14px">
+          <p style="margin:0 0 6px;font-size:15px;line-height:1.7;color:var(--muted)">Prefer email or socials? I usually reply within a day.</p>
+          <sc-for list="{{ socials }}" as="s" hint-placeholder-count="4">
+            <a href="{{ s.href }}" style="display:flex;align-items:center;justify-content:space-between;gap:12px;padding:17px 20px;border-radius:12px;border:1px solid var(--panel-border);background:var(--panel);backdrop-filter:blur(8px);transition:border-color .25s ease,transform .25s ease" style-hover="border-color:var(--accent);transform:translateX(4px);color:var(--text)">
+              <span style="display:flex;flex-direction:column;gap:2px">
+                <span style="font-size:14.5px;font-weight:600">{{ s.label }}</span>
+                <span style="font-size:12.5px;color:var(--muted)">{{ s.value }}</span>
+              </span>
+              <span aria-hidden="true" style="color:var(--accent)">↗</span>
+            </a>
+          </sc-for>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ======================= FOOTER ======================= -->
+  <footer style="padding:36px 24px;border-top:1px solid var(--line)">
+    <div style="max-width:1120px;margin:0 auto;display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:18px">
+      <p style="margin:0;font-size:13px;color:var(--muted)">© {{ year }} [Your Name]. All rights reserved.</p>
+      <nav aria-label="Footer" style="display:flex;flex-wrap:wrap;gap:20px">
+        <sc-for list="{{ navLinks }}" as="l" hint-placeholder-count="5">
+          <a href="{{ l.href }}" style="font-size:13px;color:var(--muted)" style-hover="color:var(--accent)">{{ l.label }}</a>
+        </sc-for>
+      </nav>
+      <div style="display:flex;gap:16px">
+        <a href="#" aria-label="GitHub" style="font-size:13px;color:var(--muted)" style-hover="color:var(--accent)">GitHub</a>
+        <a href="#" aria-label="LinkedIn" style="font-size:13px;color:var(--muted)" style-hover="color:var(--accent)">LinkedIn</a>
+        <a href="#" aria-label="X / Twitter" style="font-size:13px;color:var(--muted)" style-hover="color:var(--accent)">X</a>
+      </div>
+    </div>
+  </footer>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{
+  &quot;accent&quot;: { &quot;editor&quot;: &quot;color&quot;, &quot;default&quot;: &quot;#3D8BFF&quot;, &quot;options&quot;: [&quot;#3D8BFF&quot;, &quot;#22D3EE&quot;, &quot;#8B7BFF&quot;, &quot;#39E0A3&quot;], &quot;tsType&quot;: &quot;string&quot;, &quot;section&quot;: &quot;Theme&quot; },
+  &quot;heroParticles&quot;: { &quot;editor&quot;: &quot;boolean&quot;, &quot;default&quot;: true, &quot;tsType&quot;: &quot;boolean&quot;, &quot;section&quot;: &quot;Hero&quot; },
+  &quot;orbitSpeed&quot;: { &quot;editor&quot;: &quot;range&quot;, &quot;default&quot;: 1, &quot;min&quot;: 0, &quot;max&quot;: 3, &quot;step&quot;: 0.1, &quot;unit&quot;: &quot;×&quot;, &quot;tsType&quot;: &quot;number&quot;, &quot;section&quot;: &quot;Tech scene&quot; }
+}">
+class Component extends DCLogic {
+  state = {
+    theme: 'dark',
+    menuOpen: false,
+    focusedIdx: null,
+    handOn: false,
+    handStatus: '',
+    sent: false,
+    webglFailed: false,
+  };
+
+  heroCanvas = React.createRef();
+  techCanvas = React.createRef();
+  headerRef = React.createRef();
+  timelineRef = React.createRef();
+  threadSvgRef = React.createRef();
+  threadPathRef = React.createRef();
+  threadKnotRef = React.createRef();
+
+  // ---------- data ----------
+  techs = [
+    { tier: 0, label: '[Tech 1]', desc: '[One-line description of how you use this language and where it shines in your work.]', prof: 90, profLabel: '[Expert]', years: '[X] yrs' },
+    { tier: 0, label: '[Tech 2]', desc: '[One-line description of how you use this language.]', prof: 85, profLabel: '[Advanced]', years: '[X] yrs' },
+    { tier: 0, label: '[Tech 3]', desc: '[One-line description of how you use this language.]', prof: 75, profLabel: '[Advanced]', years: '[X] yrs' },
+    { tier: 0, label: '[Tech 4]', desc: '[One-line description of how you use this language.]', prof: 65, profLabel: '[Proficient]', years: '[X] yrs' },
+    { tier: 1, label: '[Tech 5]', desc: '[One-line description of how you use this framework and typical projects built with it.]', prof: 88, profLabel: '[Expert]', years: '[X] yrs' },
+    { tier: 1, label: '[Tech 6]', desc: '[One-line description of how you use this framework.]', prof: 80, profLabel: '[Advanced]', years: '[X] yrs' },
+    { tier: 1, label: '[Tech 7]', desc: '[One-line description of how you use this framework.]', prof: 72, profLabel: '[Proficient]', years: '[X] yrs' },
+    { tier: 1, label: '[Tech 8]', desc: '[One-line description of how you use this framework.]', prof: 68, profLabel: '[Proficient]', years: '[X] yrs' },
+    { tier: 2, label: '[Tech 9]', desc: '[One-line description of how you use this tool in your delivery pipeline.]', prof: 82, profLabel: '[Advanced]', years: '[X] yrs' },
+    { tier: 2, label: '[Tech 10]', desc: '[One-line description of how you use this tool.]', prof: 70, profLabel: '[Proficient]', years: '[X] yrs' },
+    { tier: 2, label: '[Tech 11]', desc: '[One-line description of how you use this tool.]', prof: 60, profLabel: '[Familiar]', years: '[X] yrs' },
+  ];
+  tierNames = ['Languages', 'Frameworks', 'Tools / DevOps'];
+
+  // ---------- lifecycle ----------
+  componentDidMount() {
+    this.rm = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    try {
+      const saved = localStorage.getItem('portfolio-theme');
+      if (saved === 'light' || saved === 'dark') this.state.theme = saved;
+    } catch (e) {}
+    this.applyTheme();
+    this.applyAccent();
+
+    this.onScroll = () => {
+      const h = this.headerRef.current;
+      if (h) {
+        const on = window.scrollY > 12;
+        h.style.background = on ? 'var(--header-bg)' : 'transparent';
+        h.style.backdropFilter = on ? 'blur(16px)' : 'none';
+        h.style.webkitBackdropFilter = on ? 'blur(16px)' : 'none';
+        h.style.borderBottomColor = on ? 'var(--line)' : 'transparent';
+      }
+      if (!this.motion) this.updateTimeline();
+    };
+    window.addEventListener('scroll', this.onScroll, { passive: true });
+    this.onScroll();
+
+    this.waitForLibs(
+      () => this.initMotion(),
+      () => { this.setupReveals(); this.setupTimeline(); }
+    );
+
+    this.onKey = (e) => { if (e.key === 'Escape' && this.state.focusedIdx !== null) this.closeFocus(); };
+    window.addEventListener('keydown', this.onKey);
+
+    this.waitForThree(() => {
+      try {
+        this.initHero();
+        this.initTech();
+      } catch (err) {
+        console.warn('WebGL init failed', err);
+        this.setState({ webglFailed: true });
+      }
+    });
+  }
+
+  componentWillUnmount() {
+    window.removeEventListener('scroll', this.onScroll);
+    window.removeEventListener('keydown', this.onKey);
+    if (this.onAnchorClick) document.removeEventListener('click', this.onAnchorClick);
+    if (this.onMotionResize) window.removeEventListener('resize', this.onMotionResize);
+    if (this.lenis) this.lenis.destroy();
+    if (this.gsapTick && window.gsap) window.gsap.ticker.remove(this.gsapTick);
+    if (window.ScrollTrigger) window.ScrollTrigger.getAll().forEach((t) => t.kill());
+    if (this.threadResize) window.removeEventListener('resize', this.threadResize);
+    if (this.revealObs) this.revealObs.disconnect();
+    if (this.tlObs) this.tlObs.disconnect();
+    if (this.heroRaf) cancelAnimationFrame(this.heroRaf);
+    if (this.techRaf) cancelAnimationFrame(this.techRaf);
+    if (this.heroVisObs) this.heroVisObs.disconnect();
+    if (this.techVisObs) this.techVisObs.disconnect();
+    this.disposeScene(this.hero);
+    this.disposeScene(this.tech);
+    this.stopHands();
+  }
+
+  waitForLibs(ok, fallback) {
+    if (this.rm) return fallback(); // reduced motion: native scroll, minimal reveals
+    let tries = 0;
+    const poll = () => {
+      if (window.gsap && window.ScrollTrigger && window.Lenis) return ok();
+      if (++tries > 50) return fallback();
+      setTimeout(poll, 100);
+    };
+    poll();
+  }
+
+  initMotion() {
+    const gsap = window.gsap, ST = window.ScrollTrigger;
+    gsap.registerPlugin(ST);
+    this.motion = true;
+    const accent = this.props.accent ?? '#3D8BFF';
+    const ar = parseInt(accent.slice(1, 3), 16), ag = parseInt(accent.slice(3, 5), 16), ab = parseInt(accent.slice(5, 7), 16);
+    const glow = 'rgba(' + ar + ',' + ag + ',' + ab + ',.30)';
+
+    // --- Lenis smooth scroll, driven by GSAP's ticker ---
+    const lenis = this.lenis = new window.Lenis({
+      duration: 1.05,
+      easing: (t) => 1 - Math.pow(1 - t, 3),
+      smoothWheel: true,
+    });
+    lenis.on('scroll', ST.update);
+    this.gsapTick = (t) => lenis.raf(t * 1000);
+    gsap.ticker.add(this.gsapTick);
+    gsap.ticker.lagSmoothing(0);
+
+    // anchor links glide via Lenis
+    this.onAnchorClick = (e) => {
+      const a = e.target.closest('a[href^="#"]');
+      if (!a) return;
+      const href = a.getAttribute('href');
+      if (!href || href.length < 2) return;
+      const el = document.querySelector(href);
+      if (!el) return;
+      e.preventDefault();
+      lenis.scrollTo(el, { offset: -64, duration: 1.15 });
+    };
+    document.addEventListener('click', this.onAnchorClick);
+
+    // --- hero entrance timeline ---
+    gsap.timeline({ delay: 0.1 })
+      .from('[data-hero]', { opacity: 0, y: 28, duration: 0.85, ease: 'power3.out', stagger: 0.11, clearProps: 'transform' });
+
+    // --- section reveals + staggered groups ---
+    document.querySelectorAll('[data-reveal]').forEach((el) => {
+      gsap.from(el, { opacity: 0, y: 26, duration: 0.8, ease: 'power2.out',
+        scrollTrigger: { trigger: el, start: 'top 85%' } });
+    });
+    document.querySelectorAll('[data-stagger]').forEach((el) => {
+      if (!el.children.length) return;
+      gsap.from(el.children, { opacity: 0, y: 22, duration: 0.7, ease: 'power2.out', stagger: 0.08,
+        scrollTrigger: { trigger: el, start: 'top 85%' } });
+    });
+
+    // --- experience thread: scrubbed organic draw + photo reveals ---
+    const tl = this.timelineRef.current, threadPath = this.threadPathRef.current;
+    if (tl && threadPath) {
+      const setupThread = () => {
+        this.buildThread();
+        if (this.threadTween) { if (this.threadTween.scrollTrigger) this.threadTween.scrollTrigger.kill(); this.threadTween.kill(); }
+        const stConf = { trigger: tl, start: 'top 68%', end: 'bottom 60%', scrub: 0.6, invalidateOnRefresh: true };
+        // Prefer DrawSVGPlugin when present; free dashoffset technique otherwise.
+        if (window.DrawSVGPlugin) {
+          gsap.registerPlugin(window.DrawSVGPlugin);
+          const tw = this.threadTween = gsap.fromTo(threadPath, { drawSVG: '0% 0%' }, {
+            drawSVG: '0% 100%', ease: 'none', scrollTrigger: stConf,
+            onUpdate: () => this.setThreadKnot(tw.progress()),
+          });
+        } else {
+          const proxy = { p: this.threadP || 0 };
+          this.threadTween = gsap.to(proxy, { p: 1, ease: 'none', scrollTrigger: stConf,
+            onUpdate: () => this.setThreadProgress(proxy.p) });
+        }
+      };
+      setTimeout(setupThread, 300);
+      ST.addEventListener('refreshInit', () => this.buildThread());
+      tl.querySelectorAll('[data-tl-entry]').forEach((en) => {
+        gsap.from(en, { opacity: 0, scale: 0.94, y: 30, duration: 0.7, ease: 'power2.out',
+          scrollTrigger: { trigger: en, start: 'top 82%' } });
+      });
+    }
+
+    // --- subtle hero parallax ---
+    const heroC = this.heroCanvas.current;
+    if (heroC) {
+      gsap.to(heroC, { y: 110, ease: 'none',
+        scrollTrigger: { trigger: '#top', start: 'top top', end: 'bottom top', scrub: true } });
+    }
+
+    // --- project card hover lift/glow via GSAP ---
+    document.querySelectorAll('[data-card]').forEach((card) => {
+      card.addEventListener('mouseenter', () => gsap.to(card, { y: -6, boxShadow: '0 14px 40px rgba(0,0,0,.28), 0 0 24px ' + glow, duration: 0.35, ease: 'power2.out' }));
+      card.addEventListener('mouseleave', () => gsap.to(card, { y: 0, boxShadow: '0 0 0 rgba(0,0,0,0)', duration: 0.45, ease: 'power2.out' }));
+    });
+
+    this.onMotionResize = () => { lenis.resize(); ST.refresh(); };
+    window.addEventListener('resize', this.onMotionResize);
+  }
+
+  waitForThree(cb) {
+    let tries = 0;
+    const poll = () => {
+      if (window.THREE) return cb();
+      if (++tries > 100) { this.setState({ webglFailed: true }); return; }
+      setTimeout(poll, 100);
+    };
+    poll();
+  }
+
+  disposeScene(ctx) {
+    if (!ctx) return;
+    ctx.scene.traverse((o) => {
+      if (o.geometry) o.geometry.dispose();
+      if (o.material) { (Array.isArray(o.material) ? o.material : [o.material]).forEach((m) => m.dispose()); }
+    });
+    ctx.renderer.dispose();
+  }
+
+  // ---------- theme ----------
+  applyTheme() {
+    document.documentElement.setAttribute('data-theme', this.state.theme);
+  }
+  applyAccent() {
+    const a = this.props.accent ?? '#3D8BFF';
+    const r = parseInt(a.slice(1, 3), 16), g = parseInt(a.slice(3, 5), 16), b = parseInt(a.slice(5, 7), 16);
+    const root = document.documentElement;
+    root.style.setProperty('--accent', a);
+    root.style.setProperty('--accent-dim', 'rgba(' + r + ',' + g + ',' + b + ',.13)');
+    root.style.setProperty('--glow', 'rgba(' + r + ',' + g + ',' + b + ',.32)');
+    if (this.hero) this.hero.setAccent(a);
+    if (this.tech) this.tech.setAccent(a);
+  }
+  componentDidUpdate(prevProps, prevState) {
+    if (prevState.theme !== this.state.theme) {
+      this.applyTheme();
+      try { localStorage.setItem('portfolio-theme', this.state.theme); } catch (e) {}
+    }
+    if (prevProps.accent !== this.props.accent) this.applyAccent();
+  }
+
+  // ---------- reveals & timeline ----------
+  setupReveals() {
+    const els = document.querySelectorAll('[data-reveal]');
+    if (this.rm) return;
+    els.forEach((el) => {
+      el.style.opacity = '0';
+      el.style.transform = 'translateY(22px)';
+      el.style.transition = 'opacity .7s ease, transform .7s ease';
+    });
+    this.revealObs = new IntersectionObserver((entries) => {
+      entries.forEach((en) => {
+        if (en.isIntersecting) {
+          en.target.style.opacity = '1';
+          en.target.style.transform = 'none';
+          this.revealObs.unobserve(en.target);
+        }
+      });
+    }, { threshold: 0.12 });
+    els.forEach((el) => this.revealObs.observe(el));
+  }
+
+  setupTimeline() {
+    // fallback path (GSAP unavailable or reduced motion): thread still draws
+    const entries = document.querySelectorAll('[data-tl-entry]');
+    if (!this.rm) {
+      entries.forEach((el) => { el.style.opacity = '0'; el.style.transition = 'opacity .7s ease'; });
+      this.tlObs = new IntersectionObserver((ens) => {
+        ens.forEach((en) => {
+          if (en.isIntersecting) { en.target.style.opacity = '1'; this.tlObs.unobserve(en.target); }
+        });
+      }, { threshold: 0.2 });
+      entries.forEach((el) => this.tlObs.observe(el));
+    }
+    setTimeout(() => {
+      this.buildThread();
+      if (this.rm) this.setThreadProgress(1); else this.updateTimeline();
+    }, 300);
+    this.threadResize = () => this.buildThread();
+    window.addEventListener('resize', this.threadResize);
+  }
+
+  updateTimeline() {
+    if (!this.threadLen || this.rm) return;
+    const tl = this.timelineRef.current;
+    if (!tl) return;
+    const rect = tl.getBoundingClientRect();
+    const anchor = window.innerHeight * 0.7;
+    const p = Math.max(0, Math.min(1, (anchor - rect.top) / rect.height));
+    this.setThreadProgress(p);
+  }
+
+  // Compute an organic curved path weaving through the photo pins.
+  buildThread() {
+    const tl = this.timelineRef.current, svg = this.threadSvgRef.current, path = this.threadPathRef.current;
+    if (!tl || !svg || !path) return;
+    const cards = tl.querySelectorAll('[data-tl-entry]');
+    if (!cards.length) return;
+    const cRect = tl.getBoundingClientRect();
+    if (!cRect.width || !cRect.height) return;
+    svg.setAttribute('viewBox', '0 0 ' + Math.round(cRect.width) + ' ' + Math.round(cRect.height));
+    const pts = [];
+    cards.forEach((c) => {
+      const r = c.getBoundingClientRect();
+      pts.push({ x: r.left - cRect.left + r.width / 2, y: r.top - cRect.top });
+    });
+    let d = 'M ' + pts[0].x.toFixed(1) + ' ' + pts[0].y.toFixed(1);
+    for (let i = 1; i < pts.length; i++) {
+      const a = pts[i - 1], b = pts[i];
+      const dy = b.y - a.y, dx = b.x - a.x;
+      d += ' C ' + (a.x - dx * 0.3).toFixed(1) + ' ' + (a.y + dy * 0.5).toFixed(1) +
+           ', ' + (b.x + dx * 0.3).toFixed(1) + ' ' + (b.y - dy * 0.5).toFixed(1) +
+           ', ' + b.x.toFixed(1) + ' ' + b.y.toFixed(1);
+    }
+    path.setAttribute('d', d);
+    this.threadLen = path.getTotalLength();
+    path.style.strokeDasharray = String(this.threadLen);
+    this.setThreadProgress(this.threadP || 0);
+  }
+
+  setThreadProgress(p) {
+    this.threadP = p;
+    const path = this.threadPathRef.current;
+    if (!path || !this.threadLen) return;
+    path.style.strokeDashoffset = String(this.threadLen * (1 - p));
+    this.setThreadKnot(p);
+  }
+
+  setThreadKnot(p) {
+    this.threadP = p;
+    const path = this.threadPathRef.current, knot = this.threadKnotRef.current;
+    if (!path || !knot || !this.threadLen) return;
+    knot.style.opacity = (p > 0.005 && p < 0.995) ? '1' : '0';
+    const pt = path.getPointAtLength(this.threadLen * Math.max(0, Math.min(1, p)));
+    knot.setAttribute('cx', pt.x.toFixed(1));
+    knot.setAttribute('cy', pt.y.toFixed(1));
+  }
+
+  // ---------- hero scene ----------
+  initHero() {
+    const canvas = this.heroCanvas.current;
+    if (!canvas || (this.props.heroParticles ?? true) === false) return;
+    const THREE = window.THREE;
+    const renderer = new THREE.WebGLRenderer({ canvas, alpha: true, antialias: true, powerPreference: 'low-power' });
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+    const scene = new THREE.Scene();
+    const camera = new THREE.PerspectiveCamera(58, 1, 0.1, 100);
+    camera.position.set(0, 0.4, 9);
+
+    const accent = new THREE.Color(this.props.accent ?? '#3D8BFF');
+    const isMobile = window.innerWidth < 700;
+    const count = this.rm ? 250 : (isMobile ? 350 : 700);
+    const pos = new Float32Array(count * 3);
+    for (let i = 0; i < count; i++) {
+      pos[i * 3] = (Math.random() - 0.5) * 26;
+      pos[i * 3 + 1] = (Math.random() - 0.5) * 13;
+      pos[i * 3 + 2] = (Math.random() - 0.5) * 12;
+    }
+    const geo = new THREE.BufferGeometry();
+    geo.setAttribute('position', new THREE.BufferAttribute(pos, 3));
+    const mat = new THREE.PointsMaterial({ color: accent, size: 0.045, transparent: true, opacity: 0.55, depthWrite: false, sizeAttenuation: true });
+    const points = new THREE.Points(geo, mat);
+    scene.add(points);
+
+    const grid = new THREE.GridHelper(40, 36, accent, accent);
+    grid.material.transparent = true;
+    grid.material.opacity = 0.07;
+    grid.position.y = -4.2;
+    scene.add(grid);
+
+    const ctx = this.hero = { renderer, scene, camera, points, visible: true, mx: 0, my: 0,
+      setAccent: (hex) => { mat.color.set(hex); grid.material.color.set(hex); } };
+
+    const resize = () => {
+      const w = canvas.clientWidth, h = canvas.clientHeight;
+      if (!w || !h) return;
+      renderer.setSize(w, h, false);
+      camera.aspect = w / h;
+      camera.updateProjectionMatrix();
+    };
+    resize();
+    this.heroResize = resize;
+    window.addEventListener('resize', resize);
+
+    if (!this.rm) {
+      this.heroMouse = (e) => {
+        ctx.mx = (e.clientX / window.innerWidth - 0.5);
+        ctx.my = (e.clientY / window.innerHeight - 0.5);
+      };
+      window.addEventListener('pointermove', this.heroMouse, { passive: true });
+    }
+
+    this.heroVisObs = new IntersectionObserver((ens) => { ctx.visible = ens[0].isIntersecting; }, { threshold: 0.02 });
+    this.heroVisObs.observe(canvas);
+
+    if (this.rm) { renderer.render(scene, camera); return; }
+    const loop = () => {
+      this.heroRaf = requestAnimationFrame(loop);
+      if (!ctx.visible || document.hidden) return;
+      points.rotation.y += 0.00045;
+      camera.position.x += (ctx.mx * 0.9 - camera.position.x) * 0.03;
+      camera.position.y += (0.4 - ctx.my * 0.6 - camera.position.y) * 0.03;
+      camera.lookAt(0, 0, 0);
+      renderer.render(scene, camera);
+    };
+    loop();
+  }
+
+  // ---------- tech scene ----------
+  initTech() {
+    const canvas = this.techCanvas.current;
+    if (!canvas) return;
+    const THREE = window.THREE;
+    const renderer = new THREE.WebGLRenderer({ canvas, alpha: true, antialias: true });
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+    const scene = new THREE.Scene();
+    const camera = new THREE.PerspectiveCamera(50, 1, 0.1, 100);
+    const camHome = new THREE.Vector3(0, 0.7, 8.4);
+    camera.position.copy(camHome);
+
+    const accent = new THREE.Color(this.props.accent ?? '#3D8BFF');
+    scene.add(new THREE.AmbientLight(0xffffff, 0.55));
+    const key = new THREE.PointLight(accent, 1.1, 40);
+    key.position.set(3, 5, 5);
+    scene.add(key);
+    const fill = new THREE.PointLight(0xffffff, 0.35, 40);
+    fill.position.set(-4, -2, 4);
+    scene.add(fill);
+
+    const world = new THREE.Group();
+    scene.add(world);
+
+    // trunk (origin at bottom so it can grow upward)
+    const trunkGroup = new THREE.Group();
+    trunkGroup.position.y = -2.9;
+    world.add(trunkGroup);
+    const trunkMat = new THREE.MeshStandardMaterial({ color: 0x2a3442, emissive: accent, emissiveIntensity: 0.35, roughness: 0.4, metalness: 0.3 });
+    const trunkGeo = new THREE.CylinderGeometry(0.035, 0.11, 5.8, 10);
+    trunkGeo.translate(0, 2.9, 0);
+    trunkGroup.add(new THREE.Mesh(trunkGeo, trunkMat));
+    // roots at the base
+    for (let i = 0; i < 5; i++) {
+      const rg = new THREE.CylinderGeometry(0.012, 0.05, 1.1, 6);
+      rg.translate(0, -0.55, 0);
+      const root = new THREE.Mesh(rg, trunkMat);
+      const a = (i / 5) * Math.PI * 2;
+      root.rotation.z = Math.cos(a) * 0.85;
+      root.rotation.x = Math.sin(a) * 0.85;
+      trunkGroup.add(root);
+    }
+    // glowing crown tip
+    const tip = new THREE.Mesh(new THREE.SphereGeometry(0.09, 12, 12), new THREE.MeshBasicMaterial({ color: accent }));
+    tip.position.y = 5.85;
+    trunkGroup.add(tip);
+
+    // tier config: y (world), radius
+    const tiers = [
+      { y: -1.7, r: 2.5, dir: 1 },
+      { y: 0.25, r: 2.0, dir: -1 },
+      { y: 2.05, r: 1.5, dir: 1 },
+    ];
+    // orbit guide rings
+    tiers.forEach((t) => {
+      const ring = new THREE.Mesh(
+        new THREE.TorusGeometry(t.r, 0.005, 8, 90),
+        new THREE.MeshBasicMaterial({ color: accent, transparent: true, opacity: 0.16 })
+      );
+      ring.rotation.x = Math.PI / 2;
+      ring.position.y = t.y;
+      world.add(ring);
+    });
+
+    const shapes = [
+      () => new THREE.IcosahedronGeometry(0.3, 0),
+      () => new THREE.OctahedronGeometry(0.32, 0),
+      () => new THREE.DodecahedronGeometry(0.28, 0),
+    ];
+    const meshes = [];
+    const perTier = [0, 0, 0];
+    this.techs.forEach((t) => perTier[t.tier]++);
+    const counters = [0, 0, 0];
+    this.techs.forEach((t, i) => {
+      const tier = tiers[t.tier];
+      const mat = new THREE.MeshStandardMaterial({ color: 0x232c3a, emissive: accent, emissiveIntensity: 0.3, roughness: 0.35, metalness: 0.45, transparent: true, opacity: 1 });
+      const m = new THREE.Mesh(shapes[t.tier](), mat);
+      const angle0 = (counters[t.tier]++ / perTier[t.tier]) * Math.PI * 2;
+      m.userData = { i, tier: t.tier, angle0, y: tier.y, r: tier.r, dir: tier.dir, targetScale: 1, targetOpacity: 1 };
+      // wireframe overlay for the geometric look
+      const wire = new THREE.LineSegments(
+        new THREE.EdgesGeometry(m.geometry),
+        new THREE.LineBasicMaterial({ color: accent, transparent: true, opacity: 0.5 })
+      );
+      m.add(wire);
+      m.userData.wire = wire;
+      world.add(m);
+      meshes.push(m);
+    });
+
+    const ctx = this.tech = {
+      renderer, scene, camera, world, trunkGroup, tip, key, meshes,
+      visible: true, grow: 0, t: 0, rotY: 0, rotYTarget: 0, tilt: 0, tiltTarget: 0,
+      hovered: null, focused: null,
+      camTarget: camHome.clone(), lookTarget: new THREE.Vector3(0, 0, 0), look: new THREE.Vector3(0, 0, 0),
+      camHome,
+      setAccent: (hex) => {
+        const c = new THREE.Color(hex);
+        key.color.set(c); tip.material.color.set(c); trunkMat.emissive.set(c);
+        meshes.forEach((m) => { m.material.emissive.set(c); m.userData.wire.material.color.set(c); });
+        world.children.forEach((ch) => { if (ch.geometry && ch.geometry.type === 'TorusGeometry') ch.material.color.set(c); });
+      },
+    };
+
+    const resize = () => {
+      const w = canvas.clientWidth, h = canvas.clientHeight;
+      if (!w || !h) return;
+      renderer.setSize(w, h, false);
+      camera.aspect = w / h;
+      camera.updateProjectionMatrix();
+    };
+    resize();
+    this.techResize = resize;
+    window.addEventListener('resize', resize);
+
+    // pointer interaction
+    const ray = new THREE.Raycaster();
+    const ndc = new THREE.Vector2();
+    let dragging = false, downX = 0, downY = 0, lastX = 0, lastY = 0, moved = 0;
+    const toNdc = (e) => {
+      const r = canvas.getBoundingClientRect();
+      ndc.x = ((e.clientX - r.left) / r.width) * 2 - 1;
+      ndc.y = -((e.clientY - r.top) / r.height) * 2 + 1;
+    };
+    canvas.addEventListener('pointerdown', (e) => {
+      dragging = true; moved = 0;
+      downX = lastX = e.clientX; downY = lastY = e.clientY;
+      canvas.style.cursor = 'grabbing';
+      canvas.setPointerCapture(e.pointerId);
+    });
+    canvas.addEventListener('pointermove', (e) => {
+      if (dragging) {
+        const dx = e.clientX - lastX, dy = e.clientY - lastY;
+        lastX = e.clientX; lastY = e.clientY;
+        moved += Math.abs(dx) + Math.abs(dy);
+        ctx.rotYTarget += dx * 0.006;
+        ctx.tiltTarget = Math.max(-0.5, Math.min(0.5, ctx.tiltTarget + dy * 0.003));
+      } else {
+        toNdc(e);
+        ray.setFromCamera(ndc, camera);
+        const hits = ray.intersectObjects(meshes, false);
+        const h = hits.length ? hits[0].object : null;
+        if (h !== ctx.hovered) {
+          ctx.hovered = h;
+          canvas.style.cursor = h ? 'pointer' : 'grab';
+        }
+      }
+    });
+    const endDrag = (e) => {
+      if (!dragging) return;
+      dragging = false;
+      canvas.style.cursor = 'grab';
+      const dist = Math.abs(e.clientX - downX) + Math.abs(e.clientY - downY);
+      if (dist < 6 && moved < 12) {
+        toNdc(e);
+        ray.setFromCamera(ndc, camera);
+        const hits = ray.intersectObjects(meshes, false);
+        if (hits.length) this.focusTech(hits[0].object.userData.i);
+        else if (this.state.focusedIdx !== null) this.closeFocus();
+      }
+    };
+    canvas.addEventListener('pointerup', endDrag);
+    canvas.addEventListener('pointercancel', () => { dragging = false; canvas.style.cursor = 'grab'; });
+
+    this.techVisObs = new IntersectionObserver((ens) => {
+      ctx.visible = ens[0].isIntersecting;
+      if (ctx.visible && !ctx.growStarted) ctx.growStarted = true;
+    }, { threshold: 0.15 });
+    this.techVisObs.observe(canvas);
+
+    const clock = new (window.THREE.Clock)();
+    const loop = () => {
+      this.techRaf = requestAnimationFrame(loop);
+      if (!ctx.visible || document.hidden) { clock.getDelta(); return; }
+      const dt = Math.min(clock.getDelta(), 0.05);
+      const speed = this.props.orbitSpeed ?? 1;
+      if (ctx.growStarted && ctx.grow < 1) ctx.grow = Math.min(1, ctx.grow + dt * 0.7);
+      const g = ctx.grow;
+      const ease = g < 1 ? 1 - Math.pow(1 - g, 3) : 1;
+      trunkGroup.scale.y = Math.max(0.001, ease);
+      tip.material.opacity = ease;
+
+      if (!this.rm && ctx.focused === null) ctx.t += dt * 0.18 * speed;
+      ctx.rotY += (ctx.rotYTarget - ctx.rotY) * 0.07;
+      ctx.tilt += (ctx.tiltTarget - ctx.tilt) * 0.07;
+      world.rotation.y = ctx.rotY;
+      world.rotation.x = ctx.tilt * 0.4;
+
+      meshes.forEach((m) => {
+        const u = m.userData;
+        const tierReveal = Math.max(0, Math.min(1, (ease - (0.25 + u.tier * 0.22)) / 0.25));
+        const a = u.angle0 + ctx.t * u.dir * (1 + u.tier * 0.18);
+        m.position.set(Math.cos(a) * u.r, u.y + Math.sin(ctx.t * 1.3 + u.i) * 0.07, Math.sin(a) * u.r);
+        let sTarget = u.targetScale * tierReveal;
+        if (ctx.hovered === m && ctx.focused === null) sTarget *= 1.25;
+        const s = m.scale.x + (sTarget - m.scale.x) * 0.12;
+        m.scale.setScalar(Math.max(0.001, s));
+        if (!this.rm) { m.rotation.y += dt * 0.4; m.rotation.x += dt * 0.15; }
+        const oTarget = u.targetOpacity;
+        m.material.opacity += (oTarget - m.material.opacity) * 0.1;
+        u.wire.material.opacity = m.material.opacity * ((ctx.focused === m || ctx.hovered === m) ? 0.95 : 0.5);
+        m.material.emissiveIntensity = (ctx.focused === m || (ctx.hovered === m && ctx.focused === null)) ? 0.9 : 0.3;
+      });
+
+      // camera
+      if (ctx.focused !== null) {
+        const fm = ctx.focused;
+        const wp = new THREE.Vector3();
+        fm.getWorldPosition(wp);
+        const dir = wp.clone().sub(new THREE.Vector3(0, wp.y, 0)).normalize();
+        ctx.camTarget.copy(wp).add(dir.multiplyScalar(2.1)).add(new THREE.Vector3(0, 0.35, 0));
+        ctx.lookTarget.copy(wp);
+      }
+      camera.position.lerp(ctx.camTarget, 0.06);
+      ctx.look.lerp(ctx.lookTarget, 0.08);
+      camera.lookAt(ctx.look);
+      renderer.render(scene, camera);
+    };
+    loop();
+    if (this.rm) { ctx.grow = 1; }
+  }
+
+  focusTech(i) {
+    const ctx = this.tech;
+    if (!ctx) { this.setState({ focusedIdx: i }); return; }
+    ctx.focused = ctx.meshes[i];
+    ctx.meshes.forEach((m) => {
+      m.userData.targetOpacity = m === ctx.focused ? 1 : 0.13;
+      m.userData.targetScale = m === ctx.focused ? 1.5 : 1;
+    });
+    this.setState({ focusedIdx: i });
+  }
+
+  closeFocus = () => {
+    const ctx = this.tech;
+    if (ctx) {
+      ctx.focused = null;
+      ctx.meshes.forEach((m) => { m.userData.targetOpacity = 1; m.userData.targetScale = 1; });
+      ctx.camTarget.copy(ctx.camHome);
+      ctx.lookTarget.set(0, 0, 0);
+    }
+    this.setState({ focusedIdx: null });
+  };
+
+  // ---------- hand tracking ----------
+  toggleHands = () => {
+    if (this.state.handOn) { this.stopHands(); this.setState({ handOn: false, handStatus: 'Hand control off — mouse/touch active.' }); return; }
+    this.setState({ handOn: true, handStatus: 'Loading hand-tracking…' });
+    this.startHands().catch((err) => {
+      console.warn(err);
+      this.stopHands();
+      this.setState({ handOn: false, handStatus: 'Hand-tracking unavailable (camera denied or unsupported) — mouse control still works great.' });
+    });
+  };
+
+  loadScript(src) {
+    return new Promise((res, rej) => {
+      const s = document.createElement('script');
+      s.src = src; s.onload = res; s.onerror = () => rej(new Error('load failed ' + src));
+      document.head.appendChild(s);
+    });
+  }
+
+  async startHands() {
+    if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) throw new Error('no camera API');
+    if (!window.Hands) await this.loadScript('https://cdn.jsdelivr.net/npm/@mediapipe/hands/hands.js');
+    const stream = await navigator.mediaDevices.getUserMedia({ video: { width: 320, height: 240 } });
+    const video = document.createElement('video');
+    video.srcObject = stream; video.muted = true; video.playsInline = true;
+    await video.play();
+    this.handVideo = video;
+    this.handStream = stream;
+    const hands = new window.Hands({ locateFile: (f) => 'https://cdn.jsdelivr.net/npm/@mediapipe/hands/' + f });
+    hands.setOptions({ maxNumHands: 1, modelComplexity: 0, minDetectionConfidence: 0.6, minTrackingConfidence: 0.5 });
+    let lastPinch = 0;
+    hands.onResults((res) => {
+      const ctx = this.tech;
+      if (!ctx || !res.multiHandLandmarks || !res.multiHandLandmarks.length) return;
+      const lm = res.multiHandLandmarks[0];
+      ctx.rotYTarget = (0.5 - lm[0].x) * 5;
+      ctx.tiltTarget = (lm[0].y - 0.5) * 0.8;
+      const d = Math.hypot(lm[4].x - lm[8].x, lm[4].y - lm[8].y);
+      const now = performance.now();
+      if (d < 0.05 && now - lastPinch > 1200) {
+        lastPinch = now;
+        if (this.state.focusedIdx === null) {
+          this.focusTech(this._handCycle = ((this._handCycle ?? -1) + 1) % this.techs.length);
+        } else this.closeFocus();
+      }
+    });
+    this.hands = hands;
+    this.handAlive = true;
+    const pump = async () => {
+      if (!this.handAlive) return;
+      try { await hands.send({ image: video }); } catch (e) {}
+      this.handTimer = setTimeout(pump, 90);
+    };
+    pump();
+    this.setState({ handStatus: 'Hand control active — move your hand to rotate, pinch to focus/close.' });
+  }
+
+  stopHands() {
+    this.handAlive = false;
+    if (this.handTimer) clearTimeout(this.handTimer);
+    if (this.handStream) { this.handStream.getTracks().forEach((t) => t.stop()); this.handStream = null; }
+    if (this.hands && this.hands.close) { try { this.hands.close(); } catch (e) {} }
+    this.hands = null;
+  }
+
+  // scattered "memory photograph" placement: alternate sides, slight rotation
+  decorateRoles(arr) {
+    const rots = [-2.2, 1.9, -1.7, 2.4];
+    return arr.map((r, i) => ({
+      ...r,
+      wrapStyle: 'position:relative;width:min(440px,100%);align-self:' + (i % 2 ? 'flex-end' : 'flex-start') +
+        ';transform:rotate(' + rots[i % 4] + 'deg);background:var(--panel-strong);backdrop-filter:blur(14px);border:1px solid var(--panel-border);border-radius:8px;padding:14px 14px 20px;box-shadow:0 18px 44px rgba(0,0,0,.28)',
+    }));
+  }
+
+  // ---------- render vals ----------
+  renderVals() {
+    const f = this.state.focusedIdx !== null ? this.techs[this.state.focusedIdx] : null;
+    const isLight = this.state.theme === 'light';
+    return {
+      heroCanvas: this.heroCanvas,
+      techCanvas: this.techCanvas,
+      headerRef: this.headerRef,
+      timelineRef: this.timelineRef,
+      threadSvgRef: this.threadSvgRef,
+      threadPathRef: this.threadPathRef,
+      threadKnotRef: this.threadKnotRef,
+
+      year: new Date().getFullYear(),
+      menuOpen: this.state.menuOpen,
+      toggleMenu: () => this.setState((s) => ({ menuOpen: !s.menuOpen })),
+      closeMenu: () => this.setState({ menuOpen: false }),
+
+      toggleTheme: () => {
+        const next = this.state.theme === 'dark' ? 'light' : 'dark';
+        this.setState({ theme: next });
+        document.documentElement.setAttribute('data-theme', next);
+        try { localStorage.setItem('portfolio-theme', next); } catch (e) {}
+      },
+      themeToggleLabel: isLight ? 'Switch to dark mode' : 'Switch to light mode',
+      themeKnobStyle: 'position:absolute;top:3px;left:' + (isLight ? '27px' : '3px') + ';width:20px;height:20px;border-radius:50%;background:var(--accent);box-shadow:0 0 10px var(--glow);transition:left .3s ease',
+
+      navLinks: [
+        { label: 'About', href: '#about' },
+        { label: 'Skills', href: '#skills' },
+        { label: 'Projects', href: '#projects' },
+        { label: 'Experience', href: '#experience' },
+        { label: 'Contact', href: '#contact' },
+      ],
+      stats: [
+        { value: '[X]+', label: 'Years of experience' },
+        { value: '[XX]+', label: 'Projects completed' },
+        { value: '[XX]', label: 'Happy clients / teams' },
+      ],
+
+      webglOk: !this.state.webglFailed,
+      webglFailed: this.state.webglFailed,
+      tierLegend: [
+        { kicker: 'Tier 03', name: 'Tools / DevOps' },
+        { kicker: 'Tier 02', name: 'Frameworks' },
+        { kicker: 'Tier 01', name: 'Languages · foundations' },
+      ],
+      chipTiers: this.tierNames.map((name, ti) => ({
+        name,
+        items: this.techs.map((t, i) => ({ ...t, i })).filter((t) => t.tier === ti).map((t) => ({ label: t.label, i: t.i })),
+      })),
+      onTechChip: (e) => {
+        this.focusTech(parseInt(e.currentTarget.dataset.i, 10));
+        const c = this.techCanvas.current;
+        if (c) { const r = c.getBoundingClientRect(); if (r.bottom < 0 || r.top > window.innerHeight) window.scrollTo({ top: window.scrollY + r.top - 100, behavior: this.rm ? 'auto' : 'smooth' }); }
+      },
+      focused: !!f,
+      focusedName: f ? f.label : '',
+      focusedDesc: f ? f.desc : '',
+      focusedProfLabel: f ? f.profLabel : '',
+      focusedYears: f ? f.years : '',
+      focusedTierName: f ? this.tierNames[f.tier] : '',
+      focusedBarStyle: 'height:100%;width:' + (f ? f.prof : 0) + '%;border-radius:99px;background:var(--accent);box-shadow:0 0 10px var(--glow);transition:width .6s ease',
+      closeFocus: this.closeFocus,
+
+      handOn: this.state.handOn,
+      handStatus: this.state.handStatus,
+      toggleHands: this.toggleHands,
+      handBtnLabel: this.state.handOn ? '✕ Disable hand control' : 'Enable hand control (webcam)',
+      handBtnStyle: 'padding:8px 14px;border-radius:99px;border:1px solid ' + (this.state.handOn ? 'var(--accent)' : 'var(--panel-border)') + ';background:' + (this.state.handOn ? 'var(--accent-dim)' : 'var(--panel-strong)') + ';color:' + (this.state.handOn ? 'var(--accent)' : 'var(--muted)') + ';font-size:12px;font-weight:600;cursor:pointer;backdrop-filter:blur(10px);transition:all .25s ease',
+
+      projects: [
+        { title: '[Project Title 1]', desc: '[Short description — what the project does, who it serves, and one impressive technical detail.]', tags: ['[Tag]', '[Tag]', '[Tag]'] },
+        { title: '[Project Title 2]', desc: '[Short description — what the project does and the problem it solves.]', tags: ['[Tag]', '[Tag]'] },
+        { title: '[Project Title 3]', desc: '[Short description — highlight measurable impact if possible.]', tags: ['[Tag]', '[Tag]', '[Tag]'] },
+        { title: '[Project Title 4]', desc: '[Short description — what the project does and your specific role.]', tags: ['[Tag]', '[Tag]'] },
+        { title: '[Project Title 5]', desc: '[Short description — a side project or open-source contribution.]', tags: ['[Tag]', '[Tag]', '[Tag]'] },
+        { title: '[Project Title 6]', desc: '[Short description — an experiment, tool, or library you built.]', tags: ['[Tag]', '[Tag]'] },
+      ],
+
+      roles: this.decorateRoles([
+        { position: '[Position — e.g. Senior Engineer]', company: '[Company 1]', dates: '[2024 — Present]', points: ['[Key achievement with a measurable outcome.]', '[Second achievement — scope, team size, or technology led.]', '[Third achievement — shipped feature, system, or improvement.]'] },
+        { position: '[Position]', company: '[Company 2]', dates: '[2022 — 2024]', points: ['[Key achievement with a measurable outcome.]', '[Second achievement.]'] },
+        { position: '[Position]', company: '[Company 3]', dates: '[2020 — 2022]', points: ['[Key achievement.]', '[Second achievement.]'] },
+        { position: '[Position — e.g. Junior Developer]', company: '[Company 4]', dates: '[2018 — 2020]', points: ['[Where it all started — first role, core skills built.]'] },
+      ]),
+
+      education: [
+        { degree: '[Degree — e.g. B.Sc. Computer Science]', school: '[University Name]', dates: '[2014 — 2018]', note: '[Optional note — honors, thesis topic, relevant coursework.]' },
+        { degree: '[Degree or Program]', school: '[Institution Name]', dates: '[Year]', note: '[Optional note.]' },
+      ],
+      certs: [
+        { name: '[Certification 1]', issuer: '[Issuing organization]', year: '[Year]' },
+        { name: '[Certification 2]', issuer: '[Issuing organization]', year: '[Year]' },
+        { name: '[Certification 3]', issuer: '[Issuing organization]', year: '[Year]' },
+        { name: '[Course / Nanodegree]', issuer: '[Platform]', year: '[Year]' },
+      ],
+
+      onSubmit: (e) => { e.preventDefault(); this.setState({ sent: true }); },
+      sent: this.state.sent,
+      socials: [
+        { label: 'Email', value: '[you@example.com]', href: 'mailto:you@example.com' },
+        { label: 'GitHub', value: '[github.com/yourhandle]', href: '#' },
+        { label: 'LinkedIn', value: '[linkedin.com/in/yourhandle]', href: '#' },
+        { label: 'X / Twitter', value: '[@yourhandle]', href: '#' },
+      ],
+    };
+  }
+}
+</script>
+</body>
+</html>
