@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { SpeedInsights } from "@vercel/speed-insights/next";
 import { Space_Grotesk, Manrope } from "next/font/google";
 import { ThemeProvider } from "@/components/providers/theme-provider";
+import { SmoothScrollProvider } from "@/components/providers/smooth-scroll-provider";
 import "./globals.css";
 
 const spaceGrotesk = Space_Grotesk({
@@ -40,7 +41,7 @@ export default function RootLayout({
           enableSystem={false}
           storageKey="portfolio-theme"
         >
-          {children}
+          <SmoothScrollProvider>{children}</SmoothScrollProvider>
         </ThemeProvider>
         <SpeedInsights />
       </body>
