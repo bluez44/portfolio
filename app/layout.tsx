@@ -18,9 +18,9 @@ const manrope = Manrope({
 });
 
 export const metadata: Metadata = {
-  title: "[Your Name] — [Job Title] | Portfolio",
+  title: "Quang Vinh | Portfolio",
   description:
-    "Portfolio of [Your Name], [Job Title]. Projects, skills, experience and contact.",
+    "Portfolio of Võ Lê Quang Vinh. Projects, skills, experience and contact.",
 };
 
 export default function RootLayout({
