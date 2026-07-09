@@ -12,6 +12,9 @@ const eslintConfig = defineConfig([
     "out/**",
     "build/**",
     "next-env.d.ts",
+    // Harness-managed git worktree checkouts (each is its own separate repo
+    // copy with its own build output) — never part of this app's source.
+    ".claude/worktrees/**",
     // Reference-only vendored source, not part of the Next.js app.
     "Developer Portfolio Template/**",
   ]),
