@@ -11,7 +11,8 @@
 ## Global Constraints
 
 - Package manager is pnpm. All install/run commands use `pnpm`.
-- This repo has no test framework (no Jest/Vitest) and the approved spec (`docs/superpowers/specs/2026-07-09-portfolio-nextjs-migration-design.md`) explicitly excludes adding one, and explicitly excludes manual browser verification during implementation. Each task's verification step is therefore `pnpm exec tsc --noEmit` (typecheck) and `pnpm lint` (ESLint) instead of the usual red/green test cycle. The final task additionally runs `pnpm build` as the only end-to-end gate.
+- This repo has no test framework (no Jest/Vitest) and the approved spec (`docs/superpowers/specs/2026-07-09-portfolio-nextjs-migration-design.md`) explicitly excludes adding one, and explicitly excludes manual browser verification during implementation. Each task's verification step is therefore `pnpm exec tsc --noEmit` (typecheck) and `./node_modules/.bin/eslint .` (ESLint) instead of the usual red/green test cycle. The final task additionally runs `pnpm build` as the only end-to-end gate.
+- Use `./node_modules/.bin/eslint .` (not `pnpm lint` / `pnpm exec eslint`) to run ESLint. On this machine, `pnpm run`/`pnpm exec` trigger a pnpm pre-run dependency check that fails with `ERR_PNPM_IGNORED_BUILDS` for this repo's `sharp`/`unrs-resolver` optional deps, even though a plain `pnpm install` succeeds and the packages are correctly ignored. Calling the eslint binary directly bypasses that check and is confirmed to work.
 - All content stays as the original placeholder text (`[Your Name]`, `[Tech 1]`, etc.) — do not invent real personal content.
 - Accent color is a fixed constant `#3D8BFF` (`ACCENT_COLOR` in `lib/portfolio-data.ts`) — the original builder's runtime-configurable `props.accent` mechanism does not apply here.
 - `tsconfig.json` defines path alias `@/*` → project root. Use `@/...` imports, not relative `../../` chains, for anything outside the same folder.
@@ -188,7 +189,7 @@ export default function RootLayout({
 Run: `pnpm exec tsc --noEmit`
 Expected: no errors.
 
-Run: `pnpm lint`
+Run: `./node_modules/.bin/eslint .`
 Expected: no errors.
 
 - [ ] **Step 5: Commit**
@@ -359,7 +360,7 @@ export const socials: SocialLink[] = [
 Run: `pnpm exec tsc --noEmit`
 Expected: no errors.
 
-Run: `pnpm lint`
+Run: `./node_modules/.bin/eslint .`
 Expected: no errors.
 
 - [ ] **Step 3: Commit**
@@ -401,7 +402,7 @@ export type ContactFormValues = z.infer<typeof contactSchema>;
 Run: `pnpm exec tsc --noEmit`
 Expected: no errors.
 
-Run: `pnpm lint`
+Run: `./node_modules/.bin/eslint .`
 Expected: no errors.
 
 - [ ] **Step 3: Commit**
@@ -468,7 +469,7 @@ import { ThemeProvider } from "@/components/providers/theme-provider";
 Run: `pnpm exec tsc --noEmit`
 Expected: no errors.
 
-Run: `pnpm lint`
+Run: `./node_modules/.bin/eslint .`
 Expected: no errors.
 
 - [ ] **Step 4: Commit**
@@ -624,7 +625,7 @@ Wrap `{children}` inside `<ThemeProvider>` with it:
 Run: `pnpm exec tsc --noEmit`
 Expected: no errors.
 
-Run: `pnpm lint`
+Run: `./node_modules/.bin/eslint .`
 Expected: no errors.
 
 - [ ] **Step 5: Commit**
@@ -769,7 +770,7 @@ export function Header() {
 Run: `pnpm exec tsc --noEmit`
 Expected: no errors.
 
-Run: `pnpm lint`
+Run: `./node_modules/.bin/eslint .`
 Expected: no errors.
 
 - [ ] **Step 3: Commit**
@@ -1055,7 +1056,7 @@ export function Hero() {
 Run: `pnpm exec tsc --noEmit`
 Expected: no errors.
 
-Run: `pnpm lint`
+Run: `./node_modules/.bin/eslint .`
 Expected: no errors.
 
 - [ ] **Step 5: Commit**
@@ -1163,7 +1164,7 @@ export function About() {
 Run: `pnpm exec tsc --noEmit`
 Expected: no errors.
 
-Run: `pnpm lint`
+Run: `./node_modules/.bin/eslint .`
 Expected: no errors.
 
 - [ ] **Step 3: Commit**
@@ -1701,7 +1702,7 @@ export const TechScene = forwardRef<TechSceneHandle, TechSceneProps>(
 Run: `pnpm exec tsc --noEmit`
 Expected: no errors.
 
-Run: `pnpm lint`
+Run: `./node_modules/.bin/eslint .`
 Expected: no errors.
 
 - [ ] **Step 3: Commit**
@@ -1862,7 +1863,7 @@ export function useHandTracking({
 Run: `pnpm exec tsc --noEmit`
 Expected: no errors.
 
-Run: `pnpm lint`
+Run: `./node_modules/.bin/eslint .`
 Expected: no errors.
 
 - [ ] **Step 3: Commit**
@@ -2136,7 +2137,7 @@ export function Skills() {
 Run: `pnpm exec tsc --noEmit`
 Expected: no errors.
 
-Run: `pnpm lint`
+Run: `./node_modules/.bin/eslint .`
 Expected: no errors.
 
 - [ ] **Step 4: Commit**
@@ -2310,7 +2311,7 @@ function ProjectCard({ project }: { project: Project }) {
 Run: `pnpm exec tsc --noEmit`
 Expected: no errors.
 
-Run: `pnpm lint`
+Run: `./node_modules/.bin/eslint .`
 Expected: no errors.
 
 - [ ] **Step 3: Commit**
@@ -2445,7 +2446,7 @@ export function useTimelineThread(
 Run: `pnpm exec tsc --noEmit`
 Expected: no errors.
 
-Run: `pnpm lint`
+Run: `./node_modules/.bin/eslint .`
 Expected: no errors.
 
 - [ ] **Step 3: Commit**
@@ -2588,7 +2589,7 @@ export function Experience() {
 Run: `pnpm exec tsc --noEmit`
 Expected: no errors.
 
-Run: `pnpm lint`
+Run: `./node_modules/.bin/eslint .`
 Expected: no errors.
 
 - [ ] **Step 3: Commit**
@@ -2733,7 +2734,7 @@ export function Footer() {
 Run: `pnpm exec tsc --noEmit`
 Expected: no errors.
 
-Run: `pnpm lint`
+Run: `./node_modules/.bin/eslint .`
 Expected: no errors.
 
 - [ ] **Step 4: Commit**
@@ -2822,7 +2823,7 @@ CONTACT_TO_EMAIL=
 Run: `pnpm exec tsc --noEmit`
 Expected: no errors.
 
-Run: `pnpm lint`
+Run: `./node_modules/.bin/eslint .`
 Expected: no errors.
 
 - [ ] **Step 4: Commit**
@@ -2995,7 +2996,7 @@ export function Contact() {
 Run: `pnpm exec tsc --noEmit`
 Expected: no errors.
 
-Run: `pnpm lint`
+Run: `./node_modules/.bin/eslint .`
 Expected: no errors.
 
 - [ ] **Step 3: Commit**
@@ -3059,13 +3060,13 @@ git rm public/file.svg public/globe.svg public/next.svg public/vercel.svg public
 Run: `pnpm exec tsc --noEmit`
 Expected: no errors.
 
-Run: `pnpm lint`
+Run: `./node_modules/.bin/eslint .`
 Expected: no errors.
 
 - [ ] **Step 4: Production build (final end-to-end gate)**
 
-Run: `pnpm build`
-Expected: build completes successfully with no errors (warnings about the Resend/contact route needing `RESEND_API_KEY`/`CONTACT_TO_EMAIL` at *runtime* are fine — those are read at request time, not build time, so the build itself must still succeed without them set).
+Run: `./node_modules/.bin/next build`
+Expected: build completes successfully with no errors (warnings about the Resend/contact route needing `RESEND_API_KEY`/`CONTACT_TO_EMAIL` at *runtime* are fine — those are read at request time, not build time, so the build itself must still succeed without them set). Use the direct binary, not `pnpm build` — see the Global Constraints note on `ERR_PNPM_IGNORED_BUILDS`.
 
 - [ ] **Step 5: Commit**
 
