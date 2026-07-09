@@ -10,6 +10,10 @@ export function Header() {
   const [mounted, setMounted] = useState(false);
   const { theme, setTheme } = useTheme();
 
+  // Hydration guard: the theme preference from next-themes is only available
+  // after mount, so we set mounted=true in this effect to avoid rendering the
+  // wrong theme initially. This intentional state update in effect is necessary
+  // to prevent a dark/light flash. See react-hooks/set-state-in-effect rule docs.
   // eslint-disable-next-line react-hooks/set-state-in-effect
   useEffect(() => setMounted(true), []);
 
