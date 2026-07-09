@@ -52,8 +52,12 @@ export function useTimelineThread(
         "viewBox",
         `0 0 ${Math.round(containerRect.width)} ${Math.round(containerRect.height)}`,
       );
-      const points = Array.from([startPoint, ...cardPoints]).map((card) => {
-        const rect = card.getBoundingClientRect();
+      const pointElements = [startPoint, ...cardPoints].filter(
+        Boolean,
+      ) as HTMLElement[];
+
+      const points = pointElements.map((point) => {
+        const rect = point.getBoundingClientRect();
         return {
           x: rect.left - containerRect.left + rect.width / 2,
           y: rect.top - containerRect.top + rect.height / 2,
