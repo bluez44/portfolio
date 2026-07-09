@@ -41,18 +41,22 @@ export function useTimelineThread(
 
     const build = () => {
       const cards = container.querySelectorAll<HTMLElement>(entrySelector);
-      if (cards.length === 0) return;
+      const startPoint = document.getElementById("timeline-knot-start");
+      const cardPoints = Array.from(cards)
+        .map((card) => card.querySelector<HTMLElement>("[data-tl-point]"))
+        .filter(Boolean) as HTMLElement[];
+      if (cards.length === 0 || cardPoints.length === 0) return;
       const containerRect = container.getBoundingClientRect();
       if (!containerRect.width || !containerRect.height) return;
       svg.setAttribute(
         "viewBox",
         `0 0 ${Math.round(containerRect.width)} ${Math.round(containerRect.height)}`,
       );
-      const points = Array.from(cards).map((card) => {
+      const points = Array.from([startPoint, ...cardPoints]).map((card) => {
         const rect = card.getBoundingClientRect();
         return {
           x: rect.left - containerRect.left + rect.width / 2,
-          y: rect.top - containerRect.top,
+          y: rect.top - containerRect.top + rect.height / 2,
         };
       });
       let d = `M ${points[0].x.toFixed(1)} ${points[0].y.toFixed(1)}`;

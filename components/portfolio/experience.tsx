@@ -16,12 +16,18 @@ export function Experience() {
   return (
     <section
       id="experience"
-      className="border-y border-line px-6 py-[clamp(72px,10vw,120px)]"
+      className="relative border-y border-line px-6 py-[clamp(72px,10vw,120px)]"
       style={{ background: "var(--bg2)" }}
     >
-      <div className="mx-auto max-w-[960px]">
+      <span
+        id="timeline-knot-start"
+        aria-hidden
+        className="opacity-0 absolute top-0 left-1/2 h-3.25 w-3.25 -translate-x-1/2 -translate-y-1/2 rounded-full border-2 bg-accent shadow-[0_0_10px_var(--glow)]"
+        style={{ borderColor: "var(--bg2)" }}
+      />
+      <div className="mx-auto max-w-240">
         <div ref={headingRef}>
-          <p className="mb-[10px] font-mono text-[12.5px] tracking-[0.18em] text-accent uppercase">
+          <p className="mb-2.5 font-mono text-[12.5px] tracking-[0.18em] text-accent uppercase">
             04 / Experience
           </p>
           <h2 className="mb-14 font-heading text-[clamp(1.8rem,4vw,2.6rem)] font-bold tracking-[-0.01em]">
@@ -67,14 +73,15 @@ export function Experience() {
                 }}
               >
                 <span
+                  data-tl-point
                   aria-hidden
-                  className="absolute -top-[7px] left-1/2 h-[13px] w-[13px] -translate-x-1/2 rounded-full border-2 bg-accent shadow-[0_0_10px_var(--glow)]"
+                  className="absolute -top-1.75 left-1/2 h-3.25 w-3.25 -translate-x-1/2 rounded-full border-2 bg-accent shadow-[0_0_10px_var(--glow)]"
                   style={{ borderColor: "var(--bg2)" }}
                 />
                 <div
                   role="img"
                   aria-label="Photo placeholder for this role — replace with a memory from this chapter"
-                  className="mb-4 flex aspect-[3/2] items-center justify-center rounded border border-line bg-bg"
+                  className="mb-4 flex aspect-3/2 items-center justify-center rounded border border-line bg-bg"
                   style={{
                     backgroundImage:
                       "repeating-linear-gradient(-45deg, var(--chip) 0 12px, transparent 12px 24px)",
@@ -92,12 +99,15 @@ export function Experience() {
                     {role.dates}
                   </span>
                 </div>
-                <p className="mt-[5px] text-sm font-semibold text-muted">
+                <p className="mt-1.25 text-sm font-semibold text-muted">
                   {role.company}
                 </p>
-                <ul className="mt-3 flex flex-col gap-[7px] pl-[18px]">
+                <ul className="mt-3 flex flex-col gap-1.75 pl-4.5">
                   {role.points.map((point) => (
-                    <li key={point} className="text-[13.5px] leading-[1.6] text-muted">
+                    <li
+                      key={point}
+                      className="text-[13.5px] leading-[1.6] text-muted"
+                    >
                       {point}
                     </li>
                   ))}

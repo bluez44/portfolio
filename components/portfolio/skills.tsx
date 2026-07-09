@@ -75,15 +75,15 @@ export function Skills() {
       className="border-y border-line px-6 py-[clamp(72px,10vw,120px)]"
       style={{ background: "var(--bg2)" }}
     >
-      <div className="mx-auto max-w-[1120px]">
+      <div className="mx-auto max-w-280">
         <div ref={revealRef}>
-          <p className="mb-[10px] font-mono text-[12.5px] tracking-[0.18em] text-accent uppercase">
+          <p className="mb-2.5 font-mono text-[12.5px] tracking-[0.18em] text-accent uppercase">
             02 / Skills
           </p>
           <h2 className="mb-3 font-heading text-[clamp(1.8rem,4vw,2.6rem)] font-bold tracking-[-0.01em]">
             The knowledge path
           </h2>
-          <p className="mb-8 max-w-[600px] text-[15.5px] leading-[1.7] text-muted">
+          <p className="mb-8 max-w-150 text-[15.5px] leading-[1.7] text-muted">
             A living map of my stack — foundations at the root, specialized
             tools at the crown. Drag to orbit, click a node (or a chip below)
             to inspect it.
@@ -117,13 +117,13 @@ export function Skills() {
             className="pointer-events-none absolute top-1/2 left-5 hidden -translate-y-1/2 flex-col gap-11 md:flex"
           >
             {tierLegend.map((tier) => (
-              <div key={tier.kicker} className="flex items-center gap-[10px]">
-                <span className="h-px w-[22px] bg-accent opacity-60" />
+              <div key={tier.kicker} className="flex items-center gap-2.5">
+                <span className="h-px w-5.5 bg-accent opacity-60" />
                 <div>
                   <p className="font-mono text-[11px] tracking-[0.14em] text-accent uppercase">
                     {tier.kicker}
                   </p>
-                  <p className="mt-[2px] text-[12.5px] text-muted">{tier.name}</p>
+                  <p className="mt-0.5 text-[12.5px] text-muted">{tier.name}</p>
                 </div>
               </div>
             ))}
@@ -136,11 +136,11 @@ export function Skills() {
             />
           )}
 
-          <div className="absolute bottom-[14px] left-4 flex flex-wrap items-center gap-[10px]">
+          <div className="absolute bottom-3.5 left-4 flex flex-wrap items-center gap-2.5">
             <button
               onClick={toggleHands}
               aria-pressed={handOn}
-              className="rounded-full border px-[14px] py-2 text-xs font-semibold backdrop-blur-md transition hover:border-accent hover:text-accent"
+              className="rounded-full border px-3.5 py-2 text-xs font-semibold backdrop-blur-md transition hover:border-accent hover:text-accent"
               style={{
                 borderColor: handOn ? "var(--accent)" : "var(--panel-border)",
                 background: handOn ? "var(--accent-dim)" : "var(--panel-strong)",
@@ -159,15 +159,15 @@ export function Skills() {
 
         <div ref={chipsRef} className="mt-7 flex flex-col gap-4">
           {chipTiers.map((tier) => (
-            <div key={tier.name} className="flex flex-wrap items-center gap-[10px]">
-              <p className="w-[120px] flex-none font-mono text-[11px] tracking-[0.12em] text-muted uppercase">
+            <div key={tier.name} className="flex flex-wrap items-center gap-2.5">
+              <p className="w-30 flex-none font-mono text-[11px] tracking-[0.12em] text-muted uppercase">
                 {tier.name}
               </p>
               {tier.items.map((item) => (
                 <button
                   key={item.index}
                   onClick={() => sceneRef.current?.focusTech(item.index)}
-                  className="rounded-full border border-panel-border bg-chip px-[15px] py-2 text-[13px] font-medium transition hover:border-accent hover:shadow-[0_0_14px_var(--glow)]"
+                  className="rounded-full border border-panel-border bg-chip px-3.75 py-2 text-[13px] font-medium transition hover:border-accent hover:shadow-[0_0_14px_var(--glow)]"
                 >
                   {item.label}
                 </button>

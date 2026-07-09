@@ -30,20 +30,20 @@ export function Projects() {
       id="projects"
       className="relative overflow-hidden py-[clamp(72px,8vw,100px)]"
     >
-      <div className="mx-auto max-w-[1120px] px-6">
-        <p className="mb-[10px] font-mono text-[12.5px] tracking-[0.18em] text-accent uppercase">
+      <div className="mx-auto max-w-280 px-6">
+        <p className="mb-2.5 font-mono text-[12.5px] tracking-[0.18em] text-accent uppercase">
           03 / Projects
         </p>
         <h2 className="font-heading text-[clamp(1.8rem,4vw,2.6rem)] font-bold tracking-[-0.01em]">
           Selected work
         </h2>
-        <p className="mt-[10px] text-sm text-muted">
+        <p className="mt-2.5 text-sm text-muted">
           Keep scrolling — the gallery glides sideways.
         </p>
       </div>
       <div
         ref={viewportRef}
-        className="overflow-x-auto px-6 py-8 [-webkit-overflow-scrolling:touch] [overscroll-behavior-x:contain] [scrollbar-width:none]"
+        className="overflow-x-auto px-6 py-8 [-webkit-overflow-scrolling:touch] overscroll-x-contain scrollbar-none"
       >
         <div className="flex w-max items-stretch gap-6">
           {projects.map((project) => (
@@ -51,7 +51,7 @@ export function Projects() {
           ))}
         </div>
       </div>
-      <div className="mx-auto max-w-[1120px] px-6">
+      <div className="mx-auto max-w-280 px-6">
         <div className="h-0.5 max-w-[320px] overflow-hidden rounded-full bg-line">
           <div
             ref={progressRef}
@@ -110,23 +110,23 @@ function ProjectCard({ project }: { project: Project }) {
           </span>
         </div>
       </div>
-      <div className="flex flex-1 flex-col p-[22px]">
+      <div className="flex flex-1 flex-col p-5.5">
         <h3 className="font-heading text-[19px] font-semibold">{project.title}</h3>
-        <p className="mt-[10px] text-sm leading-[1.65] text-muted">{project.desc}</p>
+        <p className="mt-2.5 text-sm leading-[1.65] text-muted">{project.desc}</p>
         <div className="mt-4 flex flex-wrap gap-2">
           {project.tags.map((tag) => (
             <span
               key={tag}
-              className="rounded-full bg-accent-dim px-[11px] py-1 font-mono text-[11px] tracking-[0.04em] text-accent"
+              className="rounded-full bg-accent-dim px-2.75 py-1 font-mono text-[11px] tracking-[0.04em] text-accent"
             >
               {tag}
             </span>
           ))}
         </div>
-        <div className="mt-auto flex gap-[18px] border-t border-line pt-[18px]">
+        <div className="mt-auto flex gap-4.5 border-t border-line pt-4.5">
           <a
             href="#"
-            className="inline-flex items-center gap-[6px] text-[13.5px] font-semibold text-accent"
+            className="inline-flex items-center gap-1.5 text-[13.5px] font-semibold text-accent"
           >
             Live Demo <span aria-hidden>↗</span>
           </a>
