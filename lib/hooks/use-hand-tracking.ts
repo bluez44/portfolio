@@ -59,8 +59,10 @@ export function useHandTracking({
     streamRef.current = stream;
 
     const { Hands } = await import("@mediapipe/hands");
+    // Pinned to the exact @mediapipe/hands version in package.json — keep in sync.
     const hands = new Hands({
-      locateFile: (file) => `https://cdn.jsdelivr.net/npm/@mediapipe/hands/${file}`,
+      locateFile: (file) =>
+        `https://cdn.jsdelivr.net/npm/@mediapipe/hands@0.4.1675469240/${file}`,
     });
     hands.setOptions({
       maxNumHands: 1,

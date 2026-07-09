@@ -53,7 +53,7 @@ function ParticleField({
 
 function HeroGrid({ accent }: { accent: string }) {
   const grid = useMemo(
-    () => new THREE.GridHelper(40, 36, accent as unknown as THREE.Color, accent as unknown as THREE.Color),
+    () => new THREE.GridHelper(40, 36, accent, accent),
     [accent],
   );
 

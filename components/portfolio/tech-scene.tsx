@@ -421,7 +421,9 @@ const TechWorld = forwardRef<TechSceneHandle, TechWorldProps>(
 
     useFrame((_, delta) => {
       if (growStarted && growRef.current < 1) {
-        growRef.current = Math.min(1, growRef.current + delta * 0.7);
+        growRef.current = reducedMotion
+          ? 1
+          : Math.min(1, growRef.current + delta * 0.7);
       }
       if (focusedIndex === null && !reducedMotion) {
         orbitTimeRef.current += delta * 0.18;

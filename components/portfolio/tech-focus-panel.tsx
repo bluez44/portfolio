@@ -1,8 +1,6 @@
 "use client";
 
-import type { TechItem } from "@/lib/portfolio-data";
-
-const TIER_NAMES = ["Languages", "Frameworks", "Tools / DevOps"];
+import { tierNames, type TechItem } from "@/lib/portfolio-data";
 
 export function TechFocusPanel({
   tech,
@@ -24,7 +22,7 @@ export function TechFocusPanel({
         <div className="flex items-start justify-between gap-3">
           <div>
             <p className="font-mono text-[11px] tracking-[0.14em] text-accent uppercase">
-              {TIER_NAMES[tech.tier]}
+              {tierNames[tech.tier]}
             </p>
             <h3 className="mt-[6px] font-heading text-[22px] font-bold">
               {tech.label}
