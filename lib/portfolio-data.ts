@@ -60,9 +60,9 @@ export const navLinks: NavLink[] = [
 ];
 
 export const stats: Stat[] = [
-  { value: "[X]+", label: "Years of experience" },
-  { value: "[XX]+", label: "Projects completed" },
-  { value: "[XX]", label: "Happy clients / teams" },
+  { value: "1+", label: "Years of experience" },
+  // { value: "[XX]+", label: "Projects completed" },
+  // { value: "[XX]", label: "Happy clients / teams" },
 ];
 
 export const tierNames = ["Languages", "Frameworks", "Tools / DevOps"] as const;
