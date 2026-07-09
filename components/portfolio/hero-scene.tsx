@@ -41,7 +41,7 @@ function ParticleField({
       </bufferGeometry>
       <pointsMaterial
         color={accent}
-        size={0.045}
+        size={0.075}
         transparent
         opacity={0.55}
         depthWrite={false}
