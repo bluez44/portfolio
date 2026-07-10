@@ -52,20 +52,14 @@ function ParticleField({
 }
 
 function HeroGrid({ accent }: { accent: string }) {
-  const grid = useMemo(
-    () => new THREE.GridHelper(40, 36, accent, accent),
-    [accent],
-  );
-
-  useEffect(() => {
-    /* eslint-disable react-hooks/immutability -- grid is a plain THREE.Object3D created
-       once via useMemo, not React-managed state; configuring its material imperatively
-       here is the idiomatic R3F pattern for three.js objects. */
-    const material = grid.material as THREE.Material;
-    material.transparent = true;
-    material.opacity = 0.07;
-    /* eslint-enable react-hooks/immutability */
-  }, [grid]);
+  const grid = useMemo(() => {
+    const g = new THREE.GridHelper(80, 50, accent, accent);
+    // Set material state synchronously at construction (not in a later effect)
+    // so the very first R3F frame already renders the dim, transparent grid.
+    g.material.transparent = true;
+    g.material.opacity = 0.07;
+    return g;
+  }, [accent]);
 
   return <primitive object={grid} position={[0, -4.2, 0]} />;
 }
