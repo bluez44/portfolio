@@ -2,6 +2,7 @@
 
 import dynamic from "next/dynamic";
 import { useEffect, useRef, useState } from "react";
+import { TypeAnimation } from "react-type-animation";
 import { CanvasErrorBoundary } from "./canvas-error-boundary";
 import { ACCENT_COLOR } from "@/lib/portfolio-data";
 
@@ -9,6 +10,16 @@ const HeroScene = dynamic(
   () => import("./hero-scene").then((mod) => mod.HeroScene),
   { ssr: false },
 );
+
+const NAME_SEQUENCE = ["Hi, I'm Quang Vinh", 1800, "Hello, my name's Tom", 1800];
+const ROLE_SEQUENCE = [
+  "Fullstack Developer",
+  1500,
+  "Frontend Developer",
+  1500,
+  "Fulltime Dreamer",
+  1500,
+];
 
 export function Hero() {
   const sectionRef = useRef<HTMLElement>(null);
@@ -65,12 +76,44 @@ export function Hero() {
           />
           Available for work
         </p>
-        <h1 className="font-heading text-[clamp(2.7rem,7.5vw,5.4rem)] leading-[1.04] font-bold tracking-[-0.02em]">
-          Vo Le Quang Vinh
-        </h1>
-        <p className="mt-4.5 font-heading text-[clamp(1.25rem,2.6vw,1.8rem)] font-medium text-accent">
-          Fullstack Developer
-        </p>
+        {reducedMotion ? (
+          <h1
+            aria-label={NAME_SEQUENCE[0] as string}
+            className="font-heading text-[clamp(2.7rem,7.5vw,5.4rem)] leading-[1.04] font-bold tracking-[-0.02em]"
+          >
+            {NAME_SEQUENCE[0]}
+          </h1>
+        ) : (
+          <TypeAnimation
+            wrapper="h1"
+            aria-label={NAME_SEQUENCE[0] as string}
+            sequence={NAME_SEQUENCE}
+            repeat={Infinity}
+            speed={20}
+            deletionSpeed={40}
+            preRenderFirstString
+            className="font-heading text-[clamp(2.7rem,7.5vw,5.4rem)] leading-[1.04] font-bold tracking-[-0.02em]"
+          />
+        )}
+        {reducedMotion ? (
+          <p
+            aria-label={ROLE_SEQUENCE[0] as string}
+            className="mt-4.5 font-heading text-[clamp(1.25rem,2.6vw,1.8rem)] font-medium text-accent"
+          >
+            {ROLE_SEQUENCE[0]}
+          </p>
+        ) : (
+          <TypeAnimation
+            wrapper="p"
+            aria-label={ROLE_SEQUENCE[0] as string}
+            sequence={ROLE_SEQUENCE}
+            repeat={Infinity}
+            speed={44}
+            deletionSpeed={66}
+            preRenderFirstString
+            className="mt-4.5 font-heading text-[clamp(1.25rem,2.6vw,1.8rem)] font-medium text-accent"
+          />
+        )}
         <p className="mt-5.5 max-w-140 text-[clamp(1rem,1.6vw,1.125rem)] leading-[1.7] text-muted">
           Fullstack Software Engineer crafting fast, scalable web and mobile
           applications with a focus on clean architecture and intuitive user
