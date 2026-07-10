@@ -4,6 +4,7 @@ import dynamic from "next/dynamic";
 import { useEffect, useRef, useState } from "react";
 import { TypeAnimation } from "react-type-animation";
 import { CanvasErrorBoundary } from "./canvas-error-boundary";
+import { useTypewriterPairs } from "@/lib/hooks/use-typewriter-pairs";
 import { ACCENT_COLOR } from "@/lib/portfolio-data";
 
 const HeroScene = dynamic(
@@ -11,7 +12,10 @@ const HeroScene = dynamic(
   { ssr: false },
 );
 
-const NAME_SEQUENCE = ["Hi, I'm Quang Vinh", 1800, "Hello, my name's Tom", 1800];
+const GREETINGS = [
+  { prefix: "Hi, I'm ", highlight: "Quang Vinh" },
+  { prefix: "Hello, my name's ", highlight: "Tom" },
+] as const;
 const ROLE_SEQUENCE = [
   "Fullstack Developer",
   1500,
@@ -47,6 +51,10 @@ export function Hero() {
     return () => observer.disconnect();
   }, []);
 
+  const { prefix, highlight } = useTypewriterPairs(GREETINGS, {
+    reducedMotion,
+  });
+
   return (
     <section
       id="top"
@@ -76,25 +84,22 @@ export function Hero() {
           />
           Available for work
         </p>
-        {reducedMotion ? (
-          <h1
-            aria-label={NAME_SEQUENCE[0] as string}
-            className="font-heading text-[clamp(2.7rem,7.5vw,5.4rem)] leading-[1.04] font-bold tracking-[-0.02em]"
-          >
-            {NAME_SEQUENCE[0]}
-          </h1>
-        ) : (
-          <TypeAnimation
-            wrapper="h1"
-            aria-label={NAME_SEQUENCE[0] as string}
-            sequence={NAME_SEQUENCE}
-            repeat={Infinity}
-            speed={20}
-            deletionSpeed={40}
-            preRenderFirstString
-            className="font-heading text-[clamp(2.7rem,7.5vw,5.4rem)] leading-[1.04] font-bold tracking-[-0.02em]"
-          />
-        )}
+        <h1
+          aria-label={`${GREETINGS[0].prefix}${GREETINGS[0].highlight}`}
+          className="font-heading text-[clamp(2.7rem,7.5vw,5.4rem)] leading-[1.04] font-bold tracking-[-0.02em]"
+        >
+          <span aria-hidden="true">
+            {prefix}
+            <span className="text-accent">{highlight}</span>
+            {!reducedMotion && (
+              <span
+                aria-hidden
+                className="ml-1 inline-block h-[0.85em] w-0.75 translate-y-[0.1em] bg-current align-middle"
+                style={{ animation: "caret-blink 1s step-end infinite" }}
+              />
+            )}
+          </span>
+        </h1>
         {reducedMotion ? (
           <p
             aria-label={ROLE_SEQUENCE[0] as string}
