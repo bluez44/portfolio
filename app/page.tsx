@@ -7,6 +7,7 @@ import { Experience } from "@/components/portfolio/experience";
 import { Education } from "@/components/portfolio/education";
 import { Contact } from "@/components/portfolio/contact";
 import { Footer } from "@/components/portfolio/footer";
+import { SceneLoadingGate } from "@/components/portfolio/scene-loading-gate";
 
 export default function Home() {
   return (
@@ -22,6 +23,7 @@ export default function Home() {
         <Contact />
       </main>
       <Footer />
+      <SceneLoadingGate />
     </>
   );
 }
