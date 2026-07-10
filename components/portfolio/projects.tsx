@@ -2,31 +2,90 @@
 
 import { useEffect, useRef } from "react";
 import gsap from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { projects, type Project } from "@/lib/portfolio-data";
 
 const ACCENT_GLOW = "rgba(61, 139, 255, 0.30)";
 
 export function Projects() {
+  const sectionRef = useRef<HTMLElement>(null);
   const viewportRef = useRef<HTMLDivElement>(null);
+  const trackRef = useRef<HTMLDivElement>(null);
   const progressRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
+    const section = sectionRef.current;
     const viewport = viewportRef.current;
+    const track = trackRef.current;
     const progress = progressRef.current;
-    if (!viewport || !progress) return;
+    if (!section || !viewport || !track || !progress) return;
 
-    const onScroll = () => {
-      const max = viewport.scrollWidth - viewport.clientWidth;
-      const pct = max > 0 ? (viewport.scrollLeft / max) * 100 : 0;
-      progress.style.width = `${pct}%`;
+    const reduceMotion = window.matchMedia(
+      "(prefers-reduced-motion: reduce)",
+    ).matches;
+
+    // Reduced motion: skip the scroll-jacked scrub and rely on the browser's
+    // native horizontal scroll (touch swipe / shift+wheel), driving the
+    // progress bar off the real scrollLeft instead.
+    if (reduceMotion) {
+      const onScroll = () => {
+        const max = viewport.scrollWidth - viewport.clientWidth;
+        const pct = max > 0 ? (viewport.scrollLeft / max) * 100 : 0;
+        progress.style.width = `${pct}%`;
+      };
+      viewport.addEventListener("scroll", onScroll, { passive: true });
+      onScroll();
+      return () => viewport.removeEventListener("scroll", onScroll);
+    }
+
+    gsap.registerPlugin(ScrollTrigger);
+
+    // Native overflow-x-auto only ever moves via an explicit horizontal
+    // gesture (shift+wheel, trackpad swipe) — a plain vertical mouse wheel
+    // never scrolls it. Pin the section and drive the track's x-transform
+    // from the page's vertical scroll instead, so a normal desktop wheel
+    // makes the gallery glide sideways.
+    viewport.style.overflow = "hidden";
+
+    const getDistance = () => {
+      // The scroll distance must match the viewport's actual visible content
+      // width, not its full clientWidth — clientWidth includes the
+      // viewport's own px-6 padding (Tailwind class, not inline style), so
+      // subtracting it unadjusted under-scrolls the track by 2x that padding
+      // and clips the rightmost card.
+      const styles = window.getComputedStyle(viewport);
+      const paddingLeft = parseFloat(styles.paddingLeft) || 0;
+      const paddingRight = parseFloat(styles.paddingRight) || 0;
+      const visibleWidth = viewport.clientWidth - paddingLeft - paddingRight;
+      return Math.max(0, track.scrollWidth - visibleWidth);
     };
-    viewport.addEventListener("scroll", onScroll, { passive: true });
-    onScroll();
-    return () => viewport.removeEventListener("scroll", onScroll);
+
+    const tween = gsap.to(track, {
+      x: () => -getDistance(),
+      ease: "none",
+      scrollTrigger: {
+        trigger: section,
+        start: "top top",
+        end: () => `+=${getDistance()}`,
+        pin: true,
+        scrub: 0.6,
+        invalidateOnRefresh: true,
+        onUpdate: (self) => {
+          progress.style.width = `${self.progress * 100}%`;
+        },
+      },
+    });
+
+    return () => {
+      tween.scrollTrigger?.kill();
+      tween.kill();
+      viewport.style.overflow = "";
+    };
   }, []);
 
   return (
     <section
+      ref={sectionRef}
       id="projects"
       className="relative overflow-hidden py-[clamp(72px,8vw,100px)]"
     >
@@ -45,7 +104,10 @@ export function Projects() {
         ref={viewportRef}
         className="overflow-x-auto px-6 py-8 [-webkit-overflow-scrolling:touch] overscroll-x-contain scrollbar-none"
       >
-        <div className="flex w-max items-stretch gap-6">
+        <div
+          ref={trackRef}
+          className="flex w-max items-stretch gap-6 will-change-transform"
+        >
           {projects.map((project) => (
             <ProjectCard key={project.title} project={project} />
           ))}
@@ -111,8 +173,12 @@ function ProjectCard({ project }: { project: Project }) {
         </div>
       </div>
       <div className="flex flex-1 flex-col p-5.5">
-        <h3 className="font-heading text-[19px] font-semibold">{project.title}</h3>
-        <p className="mt-2.5 text-sm leading-[1.65] text-muted">{project.desc}</p>
+        <h3 className="font-heading text-[19px] font-semibold">
+          {project.title}
+        </h3>
+        <p className="mt-2.5 text-sm leading-[1.65] text-muted">
+          {project.desc}
+        </p>
         <div className="mt-4 flex flex-wrap gap-2">
           {project.tags.map((tag) => (
             <span

@@ -13,6 +13,7 @@ export function useTimelineThread(
   const knotRef = useRef<SVGCircleElement>(null);
   const lengthRef = useRef(0);
   const progressRef = useRef(0);
+  const cardPointsRef = useRef<HTMLElement[]>([]);
 
   useEffect(() => {
     gsap.registerPlugin(ScrollTrigger);
@@ -28,31 +29,53 @@ export function useTimelineThread(
     const setProgress = (progress: number) => {
       progressRef.current = progress;
       if (!lengthRef.current) return;
+      const knotPoint = path.getPointAtLength(
+        lengthRef.current * Math.max(0, Math.min(1, progress)),
+      );
       path.style.strokeDashoffset = String(lengthRef.current * (1 - progress));
       const knot = knotRef.current;
       if (!knot) return;
       knot.style.opacity = progress > 0.005 && progress < 0.995 ? "1" : "0";
-      const point = path.getPointAtLength(
-        lengthRef.current * Math.max(0, Math.min(1, progress)),
-      );
-      knot.setAttribute("cx", point.x.toFixed(1));
-      knot.setAttribute("cy", point.y.toFixed(1));
+      knot.setAttribute("cx", knotPoint.x.toFixed(1));
+      knot.setAttribute("cy", knotPoint.y.toFixed(1));
+
+      const containerRect = container.getBoundingClientRect();
+      const activeRadius = 274;
+      const maxScale = 4;
+      for (const point of cardPointsRef.current) {
+        const pointRect = point.getBoundingClientRect();
+        const pointX =
+          pointRect.left - containerRect.left + pointRect.width / 2;
+        const pointY = pointRect.top - containerRect.top + pointRect.height / 2;
+        const distance = Math.hypot(pointX - knotPoint.x, pointY - knotPoint.y);
+        const intensity = Math.max(0, 1 - distance / activeRadius);
+        gsap.set(point, {
+          scale: 1 + intensity * (maxScale - 1),
+          transformOrigin: "50% 50%",
+        });
+
+        gsap.set(point.parentElement, {
+          scale: Math.max(1, 1 + intensity / 10),
+        });
+      }
     };
 
     const build = () => {
       const cards = container.querySelectorAll<HTMLElement>(entrySelector);
       const startPoint = document.getElementById("timeline-knot-start");
+      const endPoint = document.getElementById("timeline-knot-end");
       const cardPoints = Array.from(cards)
         .map((card) => card.querySelector<HTMLElement>("[data-tl-point]"))
         .filter(Boolean) as HTMLElement[];
       if (cards.length === 0 || cardPoints.length === 0) return;
+      cardPointsRef.current = cardPoints;
       const containerRect = container.getBoundingClientRect();
       if (!containerRect.width || !containerRect.height) return;
       svg.setAttribute(
         "viewBox",
         `0 0 ${Math.round(containerRect.width)} ${Math.round(containerRect.height)}`,
       );
-      const pointElements = [startPoint, ...cardPoints].filter(
+      const pointElements = [startPoint, ...cardPoints, endPoint].filter(
         Boolean,
       ) as HTMLElement[];
 

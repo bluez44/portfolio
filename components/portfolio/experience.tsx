@@ -117,6 +117,12 @@ export function Experience() {
           </div>
         </div>
       </div>
+      <span
+        id="timeline-knot-end"
+        aria-hidden
+        className="opacity-0 absolute bottom-0 left-1/2 h-3.25 w-3.25 -translate-x-1/2 translate-y-1/2 rounded-full border-2 bg-accent shadow-[0_0_10px_var(--glow)]"
+        style={{ borderColor: "var(--bg2)" }}
+      />
     </section>
   );
 }
