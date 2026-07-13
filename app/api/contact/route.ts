@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { Resend } from "resend";
 import { contactSchema } from "@/lib/schemas/contact";
+import { z } from "zod";
 
 export async function POST(request: Request) {
   let body: unknown;
@@ -13,7 +14,7 @@ export async function POST(request: Request) {
   const parsed = contactSchema.safeParse(body);
   if (!parsed.success) {
     return NextResponse.json(
-      { error: "Invalid form data.", issues: parsed.error.flatten() },
+      { error: "Invalid form data.", issues: z.treeifyError(parsed.error) },
       { status: 400 },
     );
   }
