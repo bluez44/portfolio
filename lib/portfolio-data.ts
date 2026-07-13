@@ -336,10 +336,9 @@ export const certifications: Certification[] = [
 export const socials: SocialLink[] = [
   {
     label: "Email",
-    value: "[you@example.com]",
-    href: "mailto:you@example.com",
+    value: "vlqvinh444@gmail.com",
+    href: "mailto:vlqvinh444@gmail.com",
   },
-  { label: "GitHub", value: "[github.com/yourhandle]", href: "#" },
-  { label: "LinkedIn", value: "[linkedin.com/in/yourhandle]", href: "#" },
-  { label: "X / Twitter", value: "[@yourhandle]", href: "#" },
+  { label: "GitHub", value: "github.com/bluez44", href: "https://github.com/bluez44" },
+  { label: "LinkedIn", value: "linkedin.com/in/vinh-quang-485331286", href: "https://www.linkedin.com/in/vinh-quang-485331286" },
 ];
