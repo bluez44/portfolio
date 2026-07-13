@@ -123,6 +123,8 @@ export function Contact() {
               <a
                 key={social.label}
                 href={social.href}
+                target="_blank"
+                rel="noopener noreferrer"
                 className="flex items-center justify-between gap-3 rounded-xl border border-panel-border bg-panel p-[17px_20px] backdrop-blur-sm transition hover:translate-x-1 hover:border-accent"
               >
                 <span className="flex flex-col gap-0.5">
