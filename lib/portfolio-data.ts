@@ -308,36 +308,29 @@ export const roles: (Role & {
 
 export const education: EducationEntry[] = [
   {
-    degree: "[Degree — e.g. B.Sc. Computer Science]",
-    school: "[University Name]",
-    dates: "[2014 — 2018]",
-    note: "[Optional note — honors, thesis topic, relevant coursework.]",
-  },
-  {
-    degree: "[Degree or Program]",
-    school: "[Institution Name]",
-    dates: "[Year]",
-    note: "[Optional note.]",
+    degree: "Degree — Bachelor of Computer Science",
+    school: "VNUHCM - University of Technology (HCMUT)",
+    dates: "[2022 — 2026]",
+    note: "",
   },
 ];
 
 export const certifications: Certification[] = [
   {
-    name: "[Certification 1]",
-    issuer: "[Issuing organization]",
-    year: "[Year]",
+    name: "Certified Junior React Developer",
+    issuer: "Certificates.dev",
+    year: "2026",
   },
   {
-    name: "[Certification 2]",
-    issuer: "[Issuing organization]",
-    year: "[Year]",
+    name: "Toeic Listening and Reading 880",
+    issuer: "IIG Vietnam",
+    year: "2026",
   },
   {
-    name: "[Certification 3]",
-    issuer: "[Issuing organization]",
-    year: "[Year]",
+    name: "SDWS Training",
+    issuer: "Axon Active - Agile Software Development Company",
+    year: "2025",
   },
-  { name: "[Course / Nanodegree]", issuer: "[Platform]", year: "[Year]" },
 ];
 
 export const socials: SocialLink[] = [
