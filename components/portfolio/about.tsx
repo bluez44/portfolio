@@ -26,8 +26,6 @@ export function About() {
   const panelStackOffset =
     animatedPanelCount > 0 ? 50 + (animatedPanelCount - 1) * 30 : 0;
 
-  console.log("About panels stack offset:", panelStackOffset);
-
   useEffect(() => {
     const content = contentRef.current;
     if (!content || isMobile) return;
@@ -74,30 +72,23 @@ export function About() {
       });
 
       const start = index * 0.85;
-      timeline
-        .to(
-          panel,
-          {
-            opacity: 0.8,
-            y: 200 + index * 30,
-            scale: 1,
-            duration: 0.45,
-            ease: "power2.out",
-          },
-          start,
-        )
-        .to(
-          panel,
-          {
-            y: 50 + index * 30,
-            x: 20 + index * 50,
-            opacity: 1,
-            scale: 0.98,
-            duration: 0.45,
-            ease: "power1.out",
-          },
-          start + 0.35,
-        );
+      timeline.to(
+        panel,
+        {
+          ease: "none",
+          keyframes: [
+            { opacity: 0.8, y: 200 + index * 30, scale: 1, duration: 0.45 },
+            {
+              y: 50 + index * 30,
+              x: 20 + index * 50,
+              opacity: 1,
+              scale: 0.98,
+              duration: 0.35,
+            },
+          ],
+        },
+        start,
+      );
     });
 
     return () => {
