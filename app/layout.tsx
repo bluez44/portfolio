@@ -3,7 +3,7 @@ import { SpeedInsights } from "@vercel/speed-insights/next";
 import { Space_Grotesk, Manrope } from "next/font/google";
 import { ThemeProvider } from "@/components/providers/theme-provider";
 import { SmoothScrollProvider } from "@/components/providers/smooth-scroll-provider";
-import { Analytics } from "@vercel/analytics/next"
+import { Analytics } from "@vercel/analytics/next";
 import "./globals.css";
 
 const spaceGrotesk = Space_Grotesk({
@@ -19,9 +19,35 @@ const manrope = Manrope({
 });
 
 export const metadata: Metadata = {
-  title: "Quang Vinh | Portfolio",
+  title: "Võ Lê Quang Vinh | Portfolio",
   description:
     "Portfolio of Võ Lê Quang Vinh. Projects, skills, experience and contact.",
+
+  metadataBase: new URL("https://www.vinhvolequang.io.vn/"),
+  alternates: {
+    canonical: "/",
+    languages: {
+      "vi-VN": "/vi",
+      "en-US": "/en",
+    },
+  },
+
+  openGraph: {
+    title: "Võ Lê Quang Vinh | Portfolio",
+    description:
+      "Portfolio of Võ Lê Quang Vinh. Projects, skills, experience and contact.",
+    url: "https://www.vinhvolequang.io.vn/",
+    siteName: "Võ Lê Quang Vinh | Portfolio",
+    locale: "vi_VN",
+    type: "website",
+  },
+
+  twitter: {
+    card: "summary_large_image",
+    title: "Võ Lê Quang Vinh | Portfolio",
+    description:
+      "Portfolio of Võ Lê Quang Vinh. Projects, skills, experience and contact.",
+  },
 };
 
 export default function RootLayout({
