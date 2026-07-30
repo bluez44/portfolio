@@ -23,6 +23,10 @@ export const metadata: Metadata = {
   description:
     "Portfolio of Võ Lê Quang Vinh. Projects, skills, experience and contact.",
 
+  verification: {
+    google: "GSAj7DO0vmq3LpE0LJucIlCK_wTfgl3TdCGNiDgPpyQ",
+  },
+
   metadataBase: new URL("https://www.vinhvolequang.io.vn/"),
   alternates: {
     canonical: "/",
