@@ -17,6 +17,8 @@ const eslintConfig = defineConfig([
     ".claude/worktrees/**",
     // Reference-only vendored source, not part of the Next.js app.
     "Developer Portfolio Template/**",
+    // Ignore the local skills directory containing independent scripts and specs.
+    "skills/**",
   ]),
 ]);
 
