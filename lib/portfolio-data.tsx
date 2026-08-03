@@ -1,3 +1,5 @@
+import { ReactLogoModel } from "@/components/preview/react-logo-model";
+
 export interface NavLink {
   label: string;
   href: string;
@@ -15,6 +17,7 @@ export interface TechItem {
   prof: number;
   profLabel: string;
   years: string;
+  component?: React.ReactNode;
 }
 
 export interface Project {
@@ -138,6 +141,7 @@ export const techs: TechItem[] = [
     prof: 90,
     profLabel: "[Expert]",
     years: "[X] yrs",
+    component: <ReactLogoModel scale={0.4} />,
   },
   {
     tier: 0,
@@ -339,6 +343,14 @@ export const socials: SocialLink[] = [
     value: "vlqvinh444@gmail.com",
     href: "mailto:vlqvinh444@gmail.com",
   },
-  { label: "GitHub", value: "github.com/bluez44", href: "https://github.com/bluez44" },
-  { label: "LinkedIn", value: "linkedin.com/in/vinh-quang-485331286", href: "https://www.linkedin.com/in/vinh-quang-485331286" },
+  {
+    label: "GitHub",
+    value: "github.com/bluez44",
+    href: "https://github.com/bluez44",
+  },
+  {
+    label: "LinkedIn",
+    value: "linkedin.com/in/vinh-quang-485331286",
+    href: "https://www.linkedin.com/in/vinh-quang-485331286",
+  },
 ];

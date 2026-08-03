@@ -1,4 +1,4 @@
-import { TmaLogoScene } from "@/components/portfolio/tma-logo-scene";
+import { TmaLogoScene } from "@/components/preview/tma-logo-scene";
 
 export default function TmaPreviewPage() {
   return (

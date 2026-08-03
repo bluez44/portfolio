@@ -54,7 +54,11 @@ function computeTechPosition(
     : angle0 + orbitTime * tier.dir * (1 + tierIndex * 0.18);
   const y =
     tier.y + (reducedMotion ? 0 : Math.sin(orbitTime * 1.3 + index) * 0.07);
-  return new THREE.Vector3(Math.cos(angle) * tier.r, y, Math.sin(angle) * tier.r);
+  return new THREE.Vector3(
+    Math.cos(angle) * tier.r,
+    y,
+    Math.sin(angle) * tier.r,
+  );
 }
 
 interface TechMeshProps {
@@ -143,7 +147,7 @@ function TechMesh({
   return (
     <mesh
       ref={meshRef}
-      geometry={geometry}
+      // geometry={geometry}
       onPointerOver={(event: ThreeEvent<PointerEvent>) => {
         event.stopPropagation();
         if (dragMovedRef.current > 0) return;
@@ -159,19 +163,23 @@ function TechMesh({
         onSelect(index);
       }}
     >
-      <meshStandardMaterial
-        color={0x232c3a}
-        emissive={accent}
-        emissiveIntensity={0.3}
-        roughness={0.35}
-        metalness={0.45}
-        transparent
-        opacity={0}
-      />
-      <lineSegments>
-        <primitive object={edges} attach="geometry" />
-        <lineBasicMaterial color={accent} transparent opacity={0.5} />
-      </lineSegments>
+      {tech.component || (
+        <>
+          <meshStandardMaterial
+            color={0x232c3a}
+            emissive={accent}
+            emissiveIntensity={0.3}
+            roughness={0.35}
+            metalness={0.45}
+            transparent
+            opacity={0}
+          />
+          <lineSegments>
+            <primitive object={edges} attach="geometry" />
+            <lineBasicMaterial color={accent} transparent opacity={0.5} />
+          </lineSegments>
+        </>
+      )}
     </mesh>
   );
 }
@@ -241,7 +249,12 @@ function TechTrunk({
       ))}
       <mesh position={[0, 5.85, 0]}>
         <sphereGeometry args={[0.09, 12, 12]} />
-        <meshBasicMaterial ref={tipMaterialRef} color={accent} transparent opacity={0} />
+        <meshBasicMaterial
+          ref={tipMaterialRef}
+          color={accent}
+          transparent
+          opacity={0}
+        />
       </mesh>
     </group>
   );
@@ -264,8 +277,18 @@ function TechLights({ accent }: { accent: string }) {
   return (
     <>
       <ambientLight intensity={0.55} />
-      <pointLight color={accent} intensity={1.1} distance={40} position={[3, 5, 5]} />
-      <pointLight color={0xffffff} intensity={0.35} distance={40} position={[-4, -2, 4]} />
+      <pointLight
+        color={accent}
+        intensity={1.1}
+        distance={40}
+        position={[3, 5, 5]}
+      />
+      <pointLight
+        color={0xffffff}
+        intensity={0.35}
+        distance={40}
+        position={[-4, -2, 4]}
+      />
     </>
   );
 }
@@ -311,7 +334,12 @@ function DragCatcher({
       onPointerOut={onPointerUp}
     >
       <sphereGeometry args={[20, 8, 8]} />
-      <meshBasicMaterial transparent opacity={0} depthWrite={false} side={THREE.BackSide} />
+      <meshBasicMaterial
+        transparent
+        opacity={0}
+        depthWrite={false}
+        side={THREE.BackSide}
+      />
     </mesh>
   );
 }

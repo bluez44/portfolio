@@ -1,4 +1,4 @@
-import { QuangVinhLogoScene } from "@/components/portfolio/quang-vinh-logo-scene";
+import { QuangVinhLogoScene } from "@/components/preview/quang-vinh-logo-scene";
 
 export default function QuangVinhPreviewPage() {
   return (
