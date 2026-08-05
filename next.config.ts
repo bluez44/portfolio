@@ -8,6 +8,7 @@ const nextConfig: NextConfig = {
     // Turbopack doesn't infer the wrong workspace root.
     root: path.resolve(__dirname),
   },
+  output: "standalone"
 };
 
 export default nextConfig;
