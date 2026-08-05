@@ -15,6 +15,7 @@ import { SocketIOLogoModel } from "@/components/preview/socketio-logo-model";
 import { PostgresqlLogoModel } from "@/components/preview/postgresql-logo-model";
 import { FigmaLogoModel } from "@/components/preview/figma-logo-model";
 import { JavaLogoModel } from "@/components/preview/java-logo-model";
+import { JavascriptLogoModel } from "@/components/preview/javascript-logo-model";
 
 export interface NavLink {
   label: string;
@@ -165,7 +166,7 @@ export const techs: TechItem[] = [
     prof: 95,
     profLabel: "Expert",
     years: "3+ yrs",
-    component: <ReactLogoModel scale={0.4} />,
+    component: <JavascriptLogoModel scale={0.1} />,
   },
   {
     tier: 0,
