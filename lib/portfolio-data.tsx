@@ -16,6 +16,7 @@ import { PostgresqlLogoModel } from "@/components/preview/postgresql-logo-model"
 import { FigmaLogoModel } from "@/components/preview/figma-logo-model";
 import { JavaLogoModel } from "@/components/preview/java-logo-model";
 import { JavascriptLogoModel } from "@/components/preview/javascript-logo-model";
+import { WebRTCLogoModel } from "@/components/preview/webrtc-logo-model";
 
 export interface NavLink {
   label: string;
@@ -61,6 +62,7 @@ export interface Certification {
   name: string;
   issuer: string;
   year: string;
+  link?: string;
 }
 
 export interface SocialLink {
@@ -261,6 +263,12 @@ export const techs: TechItem[] = [
     label: "Figma",
     desc: "Design handoff, prototyping, and building component libraries that translate 1-to-1 into React code.",
     component: <FigmaLogoModel scale={0.2} />,
+  },
+  {
+    tier: 2,
+    label: "WebRTC",
+    desc: "Ultra-low latency P2P communication — powered the real-time multiplayer gameplay and PeerJS integrations in HandFight.",
+    component: <WebRTCLogoModel scale={0.2} />,
   },
 ];
 
