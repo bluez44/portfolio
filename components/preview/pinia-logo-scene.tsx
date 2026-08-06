@@ -11,10 +11,8 @@ function TurntableGroup({ children }: { children: React.ReactNode }) {
 
   useFrame((state) => {
     if (ref.current) {
-      ref.current.rotation.y =
-        Math.sin(state.clock.getElapsedTime() * 0.4) * 0.25;
-      ref.current.rotation.x =
-        Math.cos(state.clock.getElapsedTime() * 0.3) * 0.08;
+      ref.current.rotation.y = Math.sin(state.clock.getElapsedTime() * 0.4) * 0.25;
+      ref.current.rotation.x = Math.cos(state.clock.getElapsedTime() * 0.3) * 0.08;
     }
   });
 
@@ -25,8 +23,8 @@ export function PiniaLogoScene() {
   return (
     <CanvasErrorBoundary
       fallback={
-        <div className="flex h-full w-full items-center justify-center bg-neutral-900 text-white">
-          <p className="text-sm text-neutral-400">Pinia 3D Model Preview</p>
+        <div className="flex h-full w-full items-center justify-center bg-[#fcfcfc] text-[#52ce63]">
+          <p className="text-sm font-medium">Pinia 3D Model Preview</p>
         </div>
       }
     >
@@ -35,35 +33,32 @@ export function PiniaLogoScene() {
         gl={{ alpha: true, antialias: true }}
         dpr={[1, 2]}
         shadows
-        camera={{ fov: 32, near: 0.1, far: 100, position: [0, 0, 8.5] }}
+        camera={{ fov: 35, near: 0.1, far: 100, position: [0, 0, 9] }}
       >
-        <color attach="background" args={["#0d0c08"]} />
+        <color attach="background" args={["#fcfcfc"]} />
 
-        {/* Soft Ambient Light */}
-        <ambientLight intensity={0.8} />
+        <ambientLight intensity={1.1} color="#ffffff" />
 
-        {/* Key Light casting clean specular glints */}
         <directionalLight
           position={[5, 6, 6]}
-          intensity={2.2}
+          intensity={2.5}
+          color="#ffffff"
           castShadow
           shadow-mapSize={[2048, 2048]}
           shadow-bias={-0.0001}
         />
 
-        {/* Pinia Golden Amber Accent Light */}
         <pointLight
-          position={[-4, -2, 4]}
-          intensity={2.0}
-          color="#ffd859"
+          position={[3, 3, 5]}
+          intensity={1.2}
+          color="#ffe56c"
           distance={15}
         />
 
-        {/* Warm Rim Light */}
         <directionalLight
           position={[-4, 4, 3]}
-          intensity={0.8}
-          color="#ffe9a0"
+          intensity={1.0}
+          color="#52ce63"
         />
 
         <TurntableGroup>

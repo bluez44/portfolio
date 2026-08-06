@@ -7,34 +7,23 @@ import { SVGLoader } from "three/examples/jsm/loaders/SVGLoader.js";
 
 /**
  * Three.js 3D procedural reconstruction of the Pinia logo (public/pinia.svg).
- *
- * Technical Highlights:
- * 1. Uses client-side SVGLoader to extrude the charming Pinia pineapple mark
- *    from the official Simple Icons SVG.
- * 2. Pinia warm amber (#ffd859) MeshPhysicalMaterial with honey-gold emissive
- *    glow and ultra-reflective clearcoat for a premium candy-coated finish.
- * 3. Smooth floating animation with gentle Y-axis oscillation.
  */
 
-const PINIA_YELLOW = "#ffd859";
-const PINIA_EMISSIVE = "#7a5a00";
-
-const EXTRUDE_SETTINGS: THREE.ExtrudeGeometryOptions = {
-  depth: 14,
+const PINIA_EXTRUDE_SETTINGS: THREE.ExtrudeGeometryOptions = {
+  depth: 8,
   bevelEnabled: true,
-  bevelThickness: 1.5,
-  bevelSize: 1.5,
+  bevelThickness: 0.9,
+  bevelSize: 0.9,
   bevelSegments: 5,
   curveSegments: 32,
 };
 
-const PINIA_SVG_STRING = `<svg role="img" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><title>Pinia</title><path d="M13.277.002c-.079-.01-.193.024-.31.09a2.346 2.346 0 0 0-.415.311c-.301.274-.65.68-.985 1.176-.672.99-1.31 2.356-1.485 3.785-.12.977-.154 1.849-.074 2.578a5.878 5.878 0 0 1 1.956-.338c.922 0 1.804.218 2.618.613.197-.637.34-1.395.445-2.246.175-1.429-.1-2.907-.499-4.028a6.695 6.695 0 0 0-.653-1.378 2.296 2.296 0 0 0-.321-.401c-.097-.092-.199-.153-.277-.162zm-6.81 2.965a.603.603 0 0 0-.288.117l-.013.011a.863.863 0 0 0-.177.327c-.051.15-.094.344-.126.565a8.205 8.205 0 0 0-.044 1.637c.08 1.222.397 2.665 1.079 3.769.093.15.193.296.294.442.726-.776 1.567-1.385 2.488-1.768-.1-.79-.06-1.714.066-2.744.038-.31.1-.616.176-.916a6.45 6.45 0 0 0-1.692-1.08 4.575 4.575 0 0 0-1.29-.366 1.805 1.805 0 0 0-.474.006zm11.751 1.789c-.21.003-.442.022-.687.06a5.974 5.974 0 0 0-2.132.76c-.009.146-.019.291-.036.437-.11.888-.258 1.684-.475 2.364.848.468 1.614 1.13 2.267 1.94.823-.85 1.43-2.05 1.787-3.13.187-.57.304-1.1.35-1.514.022-.207.027-.38.017-.51-.01-.133-.042-.206-.04-.202a.35.35 0 0 0-.114-.072 1.516 1.516 0 0 0-.375-.1 3.42 3.42 0 0 0-.562-.033zm-6.254 3.139c-2.014 0-3.83 1.087-5.147 2.834-1.316 1.748-2.131 4.16-2.131 6.807 0 2.65.806 4.258 2.131 5.218C8.132 23.707 9.96 24 11.964 24c2.004 0 3.831-.293 5.147-1.246 1.326-.96 2.133-2.568 2.133-5.218 0-2.647-.816-5.059-2.133-6.806-1.317-1.748-3.134-2.835-5.147-2.835Zm-3.297 5.209a1.282 1.282 0 0 1 .292 2.518c.115.094.177.201.164.307-.032.265-.521.424-1.09.354-.571-.07-1.007-.342-.974-.607.024-.198.302-.336.678-.364a1.282 1.282 0 0 1 .93-2.208zm6.284.22a1.282 1.282 0 0 1 .726 2.303c.437.058.757.244.757.466 0 .267-.466.483-1.04.483-.574 0-1.04-.216-1.04-.483 0-.098.063-.189.17-.265a1.282 1.282 0 0 1 .427-2.505zm-6.318.215a.822.822 0 1 0 .028 1.645.822.822 0 0 0-.028-1.645zm6.284.22a.822.822 0 1 0 .027 1.644.822.822 0 0 0-.027-1.644zm-6.543.109a.338.338 0 1 1-.023.677.338.338 0 0 1 .023-.677zm6.284.22a.339.339 0 1 1-.018 0h.018zm-3.91 1.179c.17.252.432.404.808.447.372.043.694-.05.976-.28a.145.145 0 1 1 .183.226c-.344.28-.745.394-1.192.343-.445-.051-.79-.24-1.016-.574a.145.145 0 1 1 .24-.162z"/></svg>`;
+const PINIA_SVG_STRING = `<svg height="477" viewBox="0 0 319 477" width="319" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"><linearGradient id="a"><stop offset="0" stop-color="#52ce63"/><stop offset="1" stop-color="#51a256"/></linearGradient><linearGradient id="b" x1="55.342075%" x2="42.816933%" xlink:href="#a" y1="0%" y2="42.862855%"/><linearGradient id="c" x1="55.348642%" x2="42.808103%" xlink:href="#a" y1="0%" y2="42.862855%"/><linearGradient id="d" x1="50%" x2="50%" y1="0%" y2="58.811243%"><stop offset="0" stop-color="#8ae99c"/><stop offset="1" stop-color="#52ce63"/></linearGradient><linearGradient id="e" x1="51.37763%" x2="44.584719%" y1="17.472551%" y2="100%"><stop offset="0" stop-color="#ffe56c"/><stop offset="1" stop-color="#ffc63a"/></linearGradient><g fill="none" fill-rule="evenodd" transform="translate(-34 -24)"><g transform="matrix(.99254615 .12186934 -.12186934 .99254615 33.922073 .976691)"><path d="m103.950535 258.274149c44.361599-4.360825 60.014503-40.391282 65.353094-94.699444s-30.93219-103.451001-46.020347-101.9678079c-15.088156 1.4831932-63.0385313 58.9051239-68.3771222 113.2132869-5.3385908 54.308162 4.6827754 87.814791 49.0443752 83.453965z" fill="url(#b)" transform="matrix(.70710678 -.70710678 .70710678 .70710678 -80.496332 125.892944)"/><path d="m275.876752 258.273992c44.3616 4.360826 53.167133-29.265322 47.828542-83.573485-5.338591-54.308162-52.073133-111.6105744-67.16129-113.0937675-15.088156-1.4831931-52.57477 47.5401275-47.236179 101.8482895s22.207328 90.458137 66.568927 94.818963z" fill="url(#c)" transform="matrix(.70710678 .70710678 -.70710678 .70710678 191.403399 -141.861963)"/><path d="m188.370027 216.876305c39.941834 0 50.95265-38.251987 50.95265-97.89874 0-59.6467532-37.367733-118.10125956-50.95265-118.10125956s-52.04735 58.45450636-52.04735 118.10125956c0 59.646753 12.105516 97.89874 52.04735 97.89874z" fill="url(#d)"/></g><path d="m184.473473 501c83.118854 0 150.526527-24.145148 150.526527-133.645148s-67.407673-199.354852-150.526527-199.354852c-83.118855 0-150.473473 89.854852-150.473473 199.354852s67.354618 133.645148 150.473473 133.645148z" fill="url(#e)"/><ellipse cx="260.5" cy="335" fill="#eaadcc" rx="21.5" ry="10"/><ellipse cx="102.5" cy="329" fill="#eaadcc" rx="21.5" ry="10" transform="matrix(.99254615 .12186934 -.12186934 .99254615 40.859033 -10.039292)"/><g transform="matrix(-.99939083 .0348995 .0348995 .99939083 269.284825 271.027667)"><path d="m73.1046985 58.2728794c6.7372416 4.9130333 14.3132632 6.6640587 22.7280649 5.2530761 8.4148016-1.4109825 14.5054466-5.2535769 18.2719346-11.527783" stroke="#000" stroke-linecap="round" stroke-linejoin="round" stroke-width="6" transform="matrix(.9998477 .01745241 -.01745241 .9998477 1.026464 -1.624794)"/><path d="m154.501124 3c-5.937545 0-11.312782 2.40629805-15.203644 6.29680621-3.89094 3.89058529-6.29748 9.26545449-6.29748 15.20263179 0 5.9376888 2.406488 11.3127422 6.297291 15.2034272 3.890886 3.8907673 9.266197 6.2971348 15.203833 6.2971348 5.937109 0 11.311896-2.4063889 15.202387-6.2972348 3.890299-3.8906535 6.296489-9.2656636 6.296489-15.2033272 0-5.9371521-2.406242-11.3119781-6.296677-15.20253181-3.890469-3.89058674-9.265181-6.29690619-15.202199-6.29690619z" fill="#000" /><path d="m154 21c0-3.865549 3.135362-7 6.999413-7 3.866399 0 7.000587 3.134451 7.000587 7s-3.134188 7-7.000587 7c-3.864051-.0011735-6.999413-3.134451-6.999413-7z" fill="#fff"/><path d="m24.5 13c-5.9375292 0-11.312426 2.406268-15.20299427 6.2967181-3.89069464 3.8905765-6.29700573 9.2654765-6.29700573 15.2027199 0 5.9377549 2.40625962 11.3128391 6.29681766 15.2035153 3.89059104 3.8907092 9.26556184 6.2970467 15.20318234 6.2970467 5.9371249 0 11.3122514-2.406419 15.2030371-6.2973229 3.8905441-3.8906623 6.2969629-9.2656416 6.2969629-15.2032391 0-5.937086-2.4064703-11.3118811-6.297151-15.2024437-3.890763-3.8906448-9.2658154-6.2969943-15.202849-6.2969943z" fill="#000" /><g fill="#fff"><path d="m136 24.499438c0 10.2185232 8.282911 18.500562 18.501124 18.500562 10.217089 0 18.498876-8.2820388 18.498876-18.500562 0-10.2173992-8.281787-18.499438-18.498876-18.499438-10.218213 0-18.501124 8.2820388-18.501124 18.499438zm-6 0c0-13.5311954 10.96929-24.499438 24.501124-24.499438 13.530838 0 24.498876 10.9683711 24.498876 24.499438 0 13.5319607-10.967808 24.500562-24.498876 24.500562-13.532064 0-24.501124-10.9684728-24.501124-24.500562z" fill-rule="nonzero" stroke="#fff" stroke-width="3"/><path d="m6 34.499438c0 10.2185232 8.2817873 18.500562 18.5 18.500562 10.2170889 0 18.5-8.2820388 18.5-18.500562 0-10.2173992-8.2829111-18.499438-18.5-18.499438-10.2182127 0-18.5 8.2820388-18.5 18.499438zm-6 0c0-13.531297 10.9682681-24.499438 24.5-24.499438 13.5309398 0 24.5 10.9684728 24.5 24.499438 0 13.5318591-10.96883 24.500562-24.5 24.500562-13.531962 0-24.5-10.9683711-24.5-24.500562z" fill-rule="nonzero" stroke="#fff" stroke-width="3"/><path d="m24 31c0-3.865549 3.134451-7 7-7s7 3.134451 7 7-3.134451 7-7 7-7-3.134451-7-7z"/></g></g><g stroke-linecap="round" stroke-width="11"><g stroke="#ecb732"><path d="m70.5 377.5 74 77"/><path d="m134.5 386.5-47 50"/></g><g stroke="#ecb732" transform="matrix(-1 0 0 1 298 377)"><path d="m.5.5 74 77"/><path d="m64.5 9.5-47 50"/></g><g stroke="#ffc73b" transform="matrix(0 1 -1 0 215 207)"><path d="m.5.5 49 49"/><path d="m.5 10.5 49 49" transform="matrix(-1 0 0 1 50 0)"/></g></g></g></svg>`;
 
 export function PiniaLogoModel({ scale = 1 }: { scale?: number }) {
   const groupRef = useRef<THREE.Group>(null);
-  const [geometry, setGeometry] = useState<THREE.BufferGeometry | null>(null);
+  const [meshes, setMeshes] = useState<JSX.Element[]>([]);
 
-  // Smooth floating turntable motion
   useFrame((state) => {
     if (groupRef.current) {
       const t = state.clock.getElapsedTime();
@@ -43,50 +32,88 @@ export function PiniaLogoModel({ scale = 1 }: { scale?: number }) {
     }
   });
 
-  // Client-side SVG path parsing & extrusion
   useEffect(() => {
-    if (typeof window === "undefined" || typeof DOMParser === "undefined")
-      return;
+    if (typeof window === "undefined" || typeof DOMParser === "undefined") return;
 
     try {
       const loader = new SVGLoader();
       const svgData = loader.parse(PINIA_SVG_STRING);
-      const shapes: THREE.Shape[] = [];
+      const generatedMeshes: JSX.Element[] = [];
 
-      svgData.paths.forEach((path) => {
-        const generated = path.toShapes();
-        shapes.push(...generated);
+      // SVG gradients are not automatically parsed to mesh colors, so we map them manually
+      const colorMap: Record<string, string> = {
+        "url(#b)": "#52ce63", // Left leaf
+        "url(#c)": "#52ce63", // Right leaf
+        "url(#d)": "#8ae99c", // Center leaf
+        "url(#e)": "#ffe56c", // Pineapple body
+        "#eaadcc": "#eaadcc", // Cheeks
+        "#000": "#222222",    // Glasses frame/eyes
+        "#000000": "#222222",
+        "#fff": "#ffffff",    // Glasses inner
+        "#ffffff": "#ffffff",
+      };
+
+      svgData.paths.forEach((path, index) => {
+        const fill = path.userData.style.fill;
+        const stroke = path.userData.style.stroke;
+
+        const createMesh = (shapes: THREE.Shape[], colorStr: string, isStroke: boolean) => {
+          let mappedColor = colorMap[colorStr] || (path.color ? "#" + path.color.getHexString() : "#52ce63");
+          if (colorStr === 'none') return;
+
+          if (shapes.length > 0) {
+            const geo = new THREE.ExtrudeGeometry(shapes, PINIA_EXTRUDE_SETTINGS);
+            geo.computeVertexNormals();
+
+            // Translate center relative to 319x477 SVG viewbox
+            geo.translate(-159.5, -238.5, 0);
+
+            // Scale uniformly
+            geo.scale(0.011, 0.011, 0.011);
+
+            // Z-offset to prevent z-fighting
+            const zOffset = (index * 0.015);
+            geo.translate(0, 0, zOffset);
+
+            generatedMeshes.push(
+              <mesh key={`${index}-${isStroke}`} geometry={geo} scale={[1, -1, 1]} castShadow receiveShadow>
+                <meshPhysicalMaterial
+                  color={mappedColor}
+                  roughness={0.2}
+                  metalness={0.05}
+                  emissive={mappedColor}
+                  emissiveIntensity={0.15}
+                  clearcoat={0.8}
+                  clearcoatRoughness={0.2}
+                  side={THREE.DoubleSide}
+                />
+              </mesh>
+            );
+          }
+        };
+
+        if (fill !== undefined && fill !== 'none') {
+          // true enforces CCW for shapes and CW for holes
+          const shapes = path.toShapes(true);
+          createMesh(shapes, fill, false);
+        }
+
+        if (stroke !== undefined && stroke !== 'none') {
+          // Attempt to extrude strokes if they produce valid shapes
+          const shapes = path.toShapes(true);
+          createMesh(shapes, stroke, true);
+        }
       });
 
-      if (shapes.length > 0) {
-        const geo = new THREE.ExtrudeGeometry(shapes, EXTRUDE_SETTINGS);
-        geo.computeVertexNormals();
-        geo.center();
-        geo.scale(0.11, -0.11, 0.11);
-        setGeometry(geo);
-      }
+      setMeshes(generatedMeshes);
     } catch (err) {
-      console.warn("SVGLoader parsing error:", err);
+      console.warn("SVGLoader parsing error for Pinia logo:", err);
     }
   }, []);
 
-  if (!geometry) return null;
-
   return (
     <group ref={groupRef} scale={scale}>
-      <mesh geometry={geometry} castShadow receiveShadow>
-        <meshPhysicalMaterial
-          color={PINIA_YELLOW}
-          roughness={0.12}
-          metalness={0.15}
-          emissive={PINIA_EMISSIVE}
-          emissiveIntensity={0.2}
-          clearcoat={1.0}
-          clearcoatRoughness={0.04}
-          reflectivity={1.0}
-          side={THREE.DoubleSide}
-        />
-      </mesh>
+      {meshes}
     </group>
   );
 }
