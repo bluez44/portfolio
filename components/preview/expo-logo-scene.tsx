@@ -11,10 +11,8 @@ function TurntableGroup({ children }: { children: React.ReactNode }) {
 
   useFrame((state) => {
     if (ref.current) {
-      ref.current.rotation.y =
-        Math.sin(state.clock.getElapsedTime() * 0.4) * 0.25;
-      ref.current.rotation.x =
-        Math.cos(state.clock.getElapsedTime() * 0.3) * 0.08;
+      ref.current.rotation.y = Math.sin(state.clock.getElapsedTime() * 0.4) * 0.25;
+      ref.current.rotation.x = Math.cos(state.clock.getElapsedTime() * 0.3) * 0.08;
     }
   });
 
@@ -25,8 +23,8 @@ export function ExpoLogoScene() {
   return (
     <CanvasErrorBoundary
       fallback={
-        <div className="flex h-full w-full items-center justify-center bg-neutral-900 text-white">
-          <p className="text-sm text-neutral-400">Expo 3D Model Preview</p>
+        <div className="flex h-full w-full items-center justify-center bg-neutral-100 text-neutral-900">
+          <p className="text-sm text-neutral-600">Expo 3D Model Preview</p>
         </div>
       }
     >
@@ -37,37 +35,33 @@ export function ExpoLogoScene() {
         shadows
         camera={{ fov: 32, near: 0.1, far: 100, position: [0, 0, 8.5] }}
       >
-        <color attach="background" args={["#000012"]} />
+        <color attach="background" args={["#f0f2f5"]} />
 
-        {/* Soft Ambient Light */}
-        <ambientLight intensity={0.9} />
+        <ambientLight intensity={0.8} />
 
-        {/* Key Light casting clean specular glints */}
         <directionalLight
           position={[5, 6, 6]}
-          intensity={2.5}
+          intensity={2.2}
           castShadow
           shadow-mapSize={[2048, 2048]}
           shadow-bias={-0.0001}
         />
 
-        {/* Expo Blue-White Accent Point Light */}
         <pointLight
-          position={[-4, -2, 4]}
+          position={[2, 2, 5]}
           intensity={1.5}
-          color="#9999ff"
+          color="#ffffff"
           distance={15}
         />
 
-        {/* Cool Rim Light */}
         <directionalLight
           position={[-4, 4, 3]}
-          intensity={1.0}
-          color="#ffffff"
+          intensity={0.8}
+          color="#e0e6ed"
         />
 
         <TurntableGroup>
-          <ExpoLogoModel scale={1.2} />
+          <ExpoLogoModel scale={1.1} />
         </TurntableGroup>
       </Canvas>
     </CanvasErrorBoundary>
