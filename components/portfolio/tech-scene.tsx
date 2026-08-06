@@ -30,9 +30,9 @@ export interface TechSceneProps {
 }
 
 const TIERS = [
-  { y: -1.7, r: 2.5, dir: 1 },
-  { y: 0.25, r: 2.0, dir: -1 },
   { y: 2.05, r: 1.5, dir: 1 },
+  { y: 0.25, r: 2.0, dir: -1 },
+  { y: -1.7, r: 2.5, dir: 1 },
 ] as const;
 
 const CAMERA_HOME = new THREE.Vector3(0, 0.7, 8.4);
