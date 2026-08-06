@@ -7,10 +7,10 @@ import { SVGLoader } from "three/examples/jsm/loaders/SVGLoader.js";
 
 /**
  * Three.js 3D procedural reconstruction of the React Native logo (public/react-native.svg).
- * 
+ *
  * Technical Highlights:
  * 1. Central nucleus atom sphere in signature React cyan (#61dafb).
- * 2. Three 3D elliptical tube orbital rings rotated at 0°, 60°, and 120° apart 
+ * 2. Three 3D elliptical tube orbital rings rotated at 0°, 60°, and 120° apart
  *    with dynamic gyroscopic 3D animation.
  * 3. Extruded 3D "REACT NATIVE" typography parsed from public/react-native.svg vector paths.
  * 4. High-contrast MeshPhysicalMaterial with clearcoat lacquer reflectivity & emissive warmth.
@@ -30,9 +30,16 @@ class EllipseCurve3D extends THREE.Curve<THREE.Vector3> {
     this.ry = ry;
   }
 
-  getPoint(t: number, target: THREE.Vector3 = new THREE.Vector3()): THREE.Vector3 {
+  getPoint(
+    t: number,
+    target: THREE.Vector3 = new THREE.Vector3(),
+  ): THREE.Vector3 {
     const radians = t * Math.PI * 2;
-    return target.set(this.rx * Math.cos(radians), this.ry * Math.sin(radians), 0);
+    return target.set(
+      this.rx * Math.cos(radians),
+      this.ry * Math.sin(radians),
+      0,
+    );
   }
 }
 
@@ -52,7 +59,9 @@ export function ReactNativeLogoModel({ scale = 1 }: { scale?: number }) {
   const ring1Ref = useRef<THREE.Group>(null);
   const ring2Ref = useRef<THREE.Group>(null);
   const ring3Ref = useRef<THREE.Group>(null);
-  const [textGeometry, setTextGeometry] = useState<THREE.BufferGeometry | null>(null);
+  const [textGeometry, setTextGeometry] = useState<THREE.BufferGeometry | null>(
+    null,
+  );
 
   // Smooth gyroscopic rotation for orbital rings
   useFrame((state) => {
@@ -61,9 +70,13 @@ export function ReactNativeLogoModel({ scale = 1 }: { scale?: number }) {
       groupRef.current.position.y = Math.sin(t * 1.5) * 0.05;
       groupRef.current.rotation.y = Math.sin(t * 0.4) * 0.18;
     }
-    if (ring1Ref.current) ring1Ref.current.rotation.z = Math.sin(t * 0.5) * 0.15;
-    if (ring2Ref.current) ring2Ref.current.rotation.z = Math.PI / 3 + Math.cos(t * 0.5) * 0.15;
-    if (ring3Ref.current) ring3Ref.current.rotation.z = (Math.PI * 2) / 3 + Math.sin(t * 0.5) * 0.15;
+    if (ring1Ref.current)
+      ring1Ref.current.rotation.z = Math.sin(t * 0.5) * 0.15;
+    if (ring2Ref.current)
+      ring2Ref.current.rotation.z = Math.PI / 3 + Math.cos(t * 0.5) * 0.15;
+    if (ring3Ref.current)
+      ring3Ref.current.rotation.z =
+        (Math.PI * 2) / 3 + Math.sin(t * 0.5) * 0.15;
   });
 
   // 3D Elliptical Tube Geometry for the React Orbital Rings
@@ -76,7 +89,8 @@ export function ReactNativeLogoModel({ scale = 1 }: { scale?: number }) {
 
   // Client-side SVG path parsing for "REACT NATIVE" text monogram
   useEffect(() => {
-    if (typeof window === "undefined" || typeof DOMParser === "undefined") return;
+    if (typeof window === "undefined" || typeof DOMParser === "undefined")
+      return;
 
     try {
       const loader = new SVGLoader();
@@ -84,7 +98,7 @@ export function ReactNativeLogoModel({ scale = 1 }: { scale?: number }) {
       const shapes: THREE.Shape[] = [];
 
       svgData.paths.forEach((path) => {
-        const generated = SVGLoader.createShapes(path);
+        const generated = path.toShapes();
         shapes.push(...generated);
       });
 
@@ -175,7 +189,12 @@ export function ReactNativeLogoModel({ scale = 1 }: { scale?: number }) {
 
       {/* Extruded 3D REACT NATIVE Text Monogram */}
       {textGeometry && (
-        <mesh geometry={textGeometry} position={[0, 0, 0]} castShadow receiveShadow>
+        <mesh
+          geometry={textGeometry}
+          position={[0, 0, 0]}
+          castShadow
+          receiveShadow
+        >
           <meshPhysicalMaterial
             color={REACT_CYAN}
             roughness={0.1}

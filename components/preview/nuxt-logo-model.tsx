@@ -65,7 +65,7 @@ export function NuxtLogoModel({ scale = 1 }: { scale?: number }) {
 
       if (svgData.paths.length >= 3) {
         // Path 0: Emerald Green Peak (#00C58E)
-        const greenShapes = SVGLoader.createShapes(svgData.paths[0]);
+        const greenShapes = svgData.paths[0].toShapes();
         if (greenShapes.length > 0) {
           const g = new THREE.ExtrudeGeometry(greenShapes, EXTRUDE_SETTINGS);
           g.computeVertexNormals();
@@ -75,7 +75,7 @@ export function NuxtLogoModel({ scale = 1 }: { scale?: number }) {
         }
 
         // Path 1: Dark Slate Navy Peak (#2F495E)
-        const slateShapes = SVGLoader.createShapes(svgData.paths[1]);
+        const slateShapes = svgData.paths[1].toShapes();
         if (slateShapes.length > 0) {
           const s = new THREE.ExtrudeGeometry(slateShapes, EXTRUDE_SETTINGS);
           s.computeVertexNormals();
@@ -85,7 +85,7 @@ export function NuxtLogoModel({ scale = 1 }: { scale?: number }) {
         }
 
         // Path 2: Deep Teal Peak (#108775)
-        const tealShapes = SVGLoader.createShapes(svgData.paths[2]);
+        const tealShapes = svgData.paths[2].toShapes();
         if (tealShapes.length > 0) {
           const t = new THREE.ExtrudeGeometry(tealShapes, EXTRUDE_SETTINGS);
           t.computeVertexNormals();

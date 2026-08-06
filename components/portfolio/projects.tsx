@@ -102,7 +102,7 @@ export function Projects() {
       </div>
       <div
         ref={viewportRef}
-        className="overflow-x-auto px-6 py-8 [-webkit-overflow-scrolling:touch] overscroll-x-contain scrollbar-none"
+        className="container mx-auto overflow-x-auto px-6 py-8 [-webkit-overflow-scrolling:touch] overscroll-x-contain scrollbar-none"
       >
         <div
           ref={trackRef}

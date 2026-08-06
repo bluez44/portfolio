@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { useScrollReveal } from "@/lib/hooks/use-scroll-reveal";
 import { certifications, education } from "@/lib/portfolio-data";
 
@@ -45,10 +46,10 @@ export function Education() {
                   key={cert.name}
                   className="flex flex-wrap items-baseline justify-between gap-1.5 border-b border-line py-3.25"
                 >
-                  <div>
-                    <p className="text-[14.5px] font-semibold">{cert.name}</p>
+                  <Link href={cert.link || ""} target="_blank" className="group flex flex-col gap-0.75">
+                    <p className="group-hover:text-accent group-hover:underline transition-all duration-300 text-[14.5px] font-semibold">{cert.name}</p>
                     <p className="mt-0.75 text-[12.5px] text-muted">{cert.issuer}</p>
-                  </div>
+                  </Link>
                   <span className="font-mono text-xs text-accent">{cert.year}</span>
                 </div>
               ))}

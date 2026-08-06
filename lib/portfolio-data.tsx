@@ -1,4 +1,22 @@
 import { ReactLogoModel } from "@/components/preview/react-logo-model";
+import { TypeScriptLogoModel } from "@/components/preview/typescript-logo-model";
+import { NextjsLogoModel } from "@/components/preview/nextjs-logo-model";
+import { VuejsLogoModel } from "@/components/preview/vuejs-logo-model";
+import { NuxtLogoModel } from "@/components/preview/nuxt-logo-model";
+import { NestJSLogoModel } from "@/components/preview/nestjs-logo-model";
+import { ReactNativeLogoModel } from "@/components/preview/react-native-logo-model";
+import { SpringBootLogoModel } from "@/components/preview/spring-boot-logo-model";
+import { NodeJSLogoModel } from "@/components/preview/nodejs-logo-model";
+import { TailwindCSSLogoModel } from "@/components/preview/tailwindcss-logo-model";
+import { ExpoLogoModel } from "@/components/preview/expo-logo-model";
+import { ReduxLogoModel } from "@/components/preview/redux-logo-model";
+import { PiniaLogoModel } from "@/components/preview/pinia-logo-model";
+import { SocketIOLogoModel } from "@/components/preview/socketio-logo-model";
+import { PostgresqlLogoModel } from "@/components/preview/postgresql-logo-model";
+import { FigmaLogoModel } from "@/components/preview/figma-logo-model";
+import { JavaLogoModel } from "@/components/preview/java-logo-model";
+import { JavascriptLogoModel } from "@/components/preview/javascript-logo-model";
+import { WebRTCLogoModel } from "@/components/preview/webrtc-logo-model";
 
 export interface NavLink {
   label: string;
@@ -14,9 +32,9 @@ export interface TechItem {
   tier: 0 | 1 | 2;
   label: string;
   desc: string;
-  prof: number;
-  profLabel: string;
-  years: string;
+  prof?: number;
+  profLabel?: string;
+  years?: string;
   component?: React.ReactNode;
 }
 
@@ -44,6 +62,7 @@ export interface Certification {
   name: string;
   issuer: string;
   year: string;
+  link?: string;
 }
 
 export interface SocialLink {
@@ -78,8 +97,6 @@ export const navLinks: NavLink[] = [
 
 export const stats: Stat[] = [
   { value: "1+", label: "Years of experience" },
-  // { value: "[XX]+", label: "Projects completed" },
-  // { value: "[XX]", label: "Happy clients / teams" },
 ];
 
 export const aboutPanels: AboutIntroPanel[] = [
@@ -87,7 +104,7 @@ export const aboutPanels: AboutIntroPanel[] = [
     kicker: "Snapshot",
     title: "A little about me",
     description:
-      "Hi, I\'m Vo Le Quang Vinh (Tom), an HCMUT (Bach Khoa) alumnus and a software engineer specializing in the JS/TS ecosystem (React, Vue.js, NestJS, React Native). I love bridging the gap between robust system architecture and seamless, modern UI/UX design. I am passionate about engineering high-performance applications that don\'t compromise on technical depth or visual appeal, strictly adhering to SOLID principles. My experience spans challenging domains, most notably developing TrackNest, a real-time location tracking and SOS emergency platform utilizing background tasks and gRPC, as well as building AI-driven Intelligent Tutoring Systems.",
+      "Hi, I'm Vo Le Quang Vinh (Tom), an HCMUT (Bach Khoa) alumnus and a software engineer specializing in the JS/TS ecosystem (React, Vue.js, NestJS, React Native). I love bridging the gap between robust system architecture and seamless, modern UI/UX design. I am passionate about engineering high-performance applications that don't compromise on technical depth or visual appeal. My experience spans challenging domains, most notably developing TrackNest, a real-time location tracking and SOS emergency platform utilizing background tasks and gRPC.",
     image: {
       src: "/portrait.jpg",
       alt: "Picture of the author",
@@ -125,103 +142,133 @@ export const aboutPanels: AboutIntroPanel[] = [
   },
 ];
 
-export const tierNames = ["Languages", "Frameworks", "Tools / DevOps"] as const;
+export const tierNames = ["Languages", "Frameworks", "Others"] as const;
 
 export const tierLegend = [
-  { kicker: "Tier 03", name: "Tools / DevOps" },
-  { kicker: "Tier 02", name: "Frameworks" },
   { kicker: "Tier 01", name: "Languages · foundations" },
+  { kicker: "Tier 02", name: "Frameworks" },
+  { kicker: "Tier 03", name: "Others" },
 ];
 
 export const techs: TechItem[] = [
+  // ── Tier 0 — Languages (foundations) ────────────────────────────────────
   {
     tier: 0,
-    label: "[Tech 1]",
-    desc: "[One-line description of how you use this language and where it shines in your work.]",
-    prof: 90,
-    profLabel: "[Expert]",
-    years: "[X] yrs",
-    component: <ReactLogoModel scale={0.4} />,
+    label: "TypeScript",
+    desc: "My primary language across every project — type-safe React, NestJS APIs, and shared domain models.",
+    component: <TypeScriptLogoModel scale={0.3} />,
   },
   {
     tier: 0,
-    label: "[Tech 2]",
-    desc: "[One-line description of how you use this language.]",
-    prof: 85,
-    profLabel: "[Advanced]",
-    years: "[X] yrs",
+    label: "JavaScript",
+    desc: "Deep understanding of the runtime, closures, async/await patterns, and ES2024+ features.",
+    component: <JavascriptLogoModel scale={0.07} />,
   },
   {
     tier: 0,
-    label: "[Tech 3]",
-    desc: "[One-line description of how you use this language.]",
-    prof: 75,
-    profLabel: "[Advanced]",
-    years: "[X] yrs",
+    label: "Java",
+    desc: "Solid fundamentals for backend work — built microservices and gRPC APIs for TrackNest using Spring Boot.",
+    component: <JavaLogoModel scale={0.2} />,
   },
+
+  // ── Tier 1 — Frameworks ──────────────────────────────────────────────────
   {
-    tier: 0,
-    label: "[Tech 4]",
-    desc: "[One-line description of how you use this language.]",
-    prof: 65,
-    profLabel: "[Proficient]",
-    years: "[X] yrs",
+    tier: 1,
+    label: "React.js",
+    desc: "My everyday UI toolkit — built high-performance UIs at TalentGetGo and TMA Solutions, mastering hooks and custom state patterns.",
+    component: <ReactLogoModel scale={0.2} />,
   },
   {
     tier: 1,
-    label: "[Tech 5]",
-    desc: "[One-line description of how you use this framework and typical projects built with it.]",
-    prof: 88,
-    profLabel: "[Expert]",
-    years: "[X] yrs",
+    label: "Next.js",
+    desc: "Go-to for production web apps — built the TrackNest web dashboard utilizing App Router, SSR/SSG, and API routes.",
+    component: <NextjsLogoModel scale={0.2} />,
   },
   {
     tier: 1,
-    label: "[Tech 6]",
-    desc: "[One-line description of how you use this framework.]",
-    prof: 80,
-    profLabel: "[Advanced]",
-    years: "[X] yrs",
+    label: "Vue.js",
+    desc: "Composition API, Pinia state management, and enterprise feature delivery at TalentGetGo.",
+    component: <VuejsLogoModel scale={0.2} />,
   },
   {
     tier: 1,
-    label: "[Tech 7]",
-    desc: "[One-line description of how you use this framework.]",
-    prof: 72,
-    profLabel: "[Proficient]",
-    years: "[X] yrs",
+    label: "Nuxt",
+    desc: "SSR Vue apps with file-based routing and auto-imports — used to build robust platform features at TalentGetGo.",
+    component: <NuxtLogoModel scale={0.2} />,
   },
   {
     tier: 1,
-    label: "[Tech 8]",
-    desc: "[One-line description of how you use this framework.]",
-    prof: 68,
-    profLabel: "[Proficient]",
-    years: "[X] yrs",
+    label: "React Native",
+    desc: "Cross-platform mobile apps — developed the TrackNest app with background location tracking, SOS flows, and Google Maps integration.",
+    component: <ReactNativeLogoModel scale={0.2} />,
+  },
+  {
+    tier: 1,
+    label: "Expo",
+    desc: "Managed workflow for React Native — leveraged in TrackNest for rapid development, OTA updates, and native module bridging.",
+    component: <ExpoLogoModel scale={0.2} />,
+  },
+  {
+    tier: 1,
+    label: "NestJS",
+    desc: "Modular Node.js backend framework — built REST APIs and a Socket.io signaling server for room creation and matchmaking in HandFight.",
+    component: <NestJSLogoModel scale={0.2} />,
+  },
+  {
+    tier: 1,
+    label: "Node.js",
+    desc: "Event-driven server runtime powering NestJS backends and real-time WebSocket services for my multiplayer projects.",
+    component: <NodeJSLogoModel scale={0.2} />,
+  },
+  {
+    tier: 1,
+    label: "Spring Boot",
+    desc: "Java microservices with REST APIs and Spring Security — integrated with gRPC and Kafka to power the TrackNest backend.",
+    component: <SpringBootLogoModel scale={0.2} />,
+  },
+
+  // ── Tier 2 — Tools / DevOps ─────────────────────────────────────────────
+  {
+    tier: 2,
+    label: "Tailwind CSS",
+    desc: "Utility-first styling for rapid, consistent, and fully responsive UIs across projects like HandFight.",
+    component: <TailwindCSSLogoModel scale={0.2} />,
   },
   {
     tier: 2,
-    label: "[Tech 9]",
-    desc: "[One-line description of how you use this tool in your delivery pipeline.]",
-    prof: 82,
-    profLabel: "[Advanced]",
-    years: "[X] yrs",
+    label: "Redux",
+    desc: "Predictable global state with Redux Toolkit — managed complex multi-step UI workflows at TMA Solutions.",
+    component: <ReduxLogoModel scale={0.2} />,
   },
   {
     tier: 2,
-    label: "[Tech 10]",
-    desc: "[One-line description of how you use this tool.]",
-    prof: 70,
-    profLabel: "[Proficient]",
-    years: "[X] yrs",
+    label: "Pinia",
+    desc: "Vue's intuitive store — designed scalable state architecture at TalentGetGo with seamless API integration.",
+    component: <PiniaLogoModel scale={0.2} />,
   },
   {
     tier: 2,
-    label: "[Tech 11]",
-    desc: "[One-line description of how you use this tool.]",
-    prof: 60,
-    profLabel: "[Familiar]",
-    years: "[X] yrs",
+    label: "Socket.io",
+    desc: "Real-time bidirectional events — built the signaling server and live game-state relay for HandFight.",
+    component: <SocketIOLogoModel scale={0.2} />,
+  },
+  {
+    tier: 2,
+    label: "PostgreSQL",
+    desc: "Primary relational database — data modelling, indexing, and executing complex queries for robust backend architectures.",
+    component: <PostgresqlLogoModel scale={0.2} />,
+  },
+  {
+    tier: 2,
+    label: "Figma",
+    desc: "Design handoff, prototyping, and building component libraries that translate 1-to-1 into React code.",
+    component: <FigmaLogoModel scale={0.2} />,
+  },
+  {
+    tier: 2,
+    label: "WebRTC",
+    desc: "Ultra-low latency P2P communication — powered the real-time multiplayer gameplay and PeerJS integrations in HandFight.",
+    component: <WebRTCLogoModel scale={0.2} />,
   },
 ];
 
@@ -235,69 +282,60 @@ export const chipTiers = tierNames.map((name, tierIndex) => ({
 
 export const projects: Project[] = [
   {
-    title: "[Project Title 1]",
-    desc: "[Short description — what the project does, who it serves, and one impressive technical detail.]",
-    tags: ["[Tag]", "[Tag]", "[Tag]"],
+    title: "TrackNest",
+    desc: "An event-driven, microservices-based safety platform with real-time background location tracking, SOS emergency response, and anomaly detection. Built a React Native mobile app and Next.js web dashboard integrated via API Gateway, gRPC, and Kafka event streams.",
+    tags: ["React Native", "Next.js", "Expo", "gRPC", "Spring Boot", "Google Maps API"],
   },
   {
-    title: "[Project Title 2]",
-    desc: "[Short description — what the project does and the problem it solves.]",
-    tags: ["[Tag]", "[Tag]"],
+    title: "HandFight",
+    desc: "A web-based multiplayer fighting game with real-time hand-tracking controls powered by MediaPipe. Features ultra-low latency P2P gameplay via WebRTC (PeerJS), with a NestJS + Socket.io signaling server for room creation and matchmaking.",
+    tags: ["React", "NestJS", "WebRTC", "Socket.io", "MediaPipe", "Tailwind CSS"],
   },
   {
-    title: "[Project Title 3]",
-    desc: "[Short description — highlight measurable impact if possible.]",
-    tags: ["[Tag]", "[Tag]", "[Tag]"],
+    title: "Upcoming",
+    desc: "",
+    tags: [],
   },
   {
-    title: "[Project Title 4]",
-    desc: "[Short description — what the project does and your specific role.]",
-    tags: ["[Tag]", "[Tag]"],
+    title: "Upcoming",
+    desc: "",
+    tags: [],
   },
   {
-    title: "[Project Title 5]",
-    desc: "[Short description — a side project or open-source contribution.]",
-    tags: ["[Tag]", "[Tag]", "[Tag]"],
+    title: "Upcoming",
+    desc: "",
+    tags: [],
   },
   {
-    title: "[Project Title 6]",
-    desc: "[Short description — an experiment, tool, or library you built.]",
-    tags: ["[Tag]", "[Tag]"],
+    title: "Upcoming",
+    desc: "",
+    tags: [],
   },
 ];
 
 const roleRotations = [-2.2, 1.9, -1.7, 2.4];
 const baseRoles: Role[] = [
   {
-    position: "[Position — e.g. Senior Engineer]",
-    company: "[Company 1]",
-    dates: "[2024 — Present]",
+    position: "Front-end Developer",
+    company: "TalentGetGo",
+    dates: "02/2026 — 06/2026",
     points: [
-      "[Key achievement with a measurable outcome.]",
-      "[Second achievement — scope, team size, or technology led.]",
-      "[Third achievement — shipped feature, system, or improvement.]",
+      "Built and optimized platform features utilizing React.js and Nuxt, delivering high-performance and responsive user interfaces.",
+      "Designed and implemented scalable global state management with Pinia, ensuring seamless data flow and efficient RESTful API integrations.",
+      "Leveraged AI assistants (GitHub Copilot, OpenCode) to reverse-engineer legacy logic, significantly accelerating code refactoring and improving overall maintainability.",
+      "Collaborated within an Agile environment to establish UI/UX and coding best practices, ensuring the continuous delivery of platform features.",
     ],
   },
   {
-    position: "[Position]",
-    company: "[Company 2]",
-    dates: "[2022 — 2024]",
+    position: "Front-end Developer Intern",
+    company: "TMA Solutions",
+    dates: "06/2025 — 09/2025",
     points: [
-      "[Key achievement with a measurable outcome.]",
-      "[Second achievement.]",
+      "Developed and maintained internal and customer web using React.js, collaborating closely with senior engineers to deliver functional UIs.",
+      "Implemented API integrations and managed complex application state utilizing Redux to ensure consistent data flow across components.",
+      "Engineered automated workflows and integrated custom n8n/chat components, effectively streamlining internal operational tasks.",
+      "Participated actively in enterprise Agile workflows, including daily stand-ups and sprint reviews, to align with continuous integration pipelines.",
     ],
-  },
-  {
-    position: "[Position]",
-    company: "[Company 3]",
-    dates: "[2020 — 2022]",
-    points: ["[Key achievement.]", "[Second achievement.]"],
-  },
-  {
-    position: "[Position — e.g. Junior Developer]",
-    company: "[Company 4]",
-    dates: "[2018 — 2020]",
-    points: ["[Where it all started — first role, core skills built.]"],
   },
 ];
 
@@ -312,10 +350,10 @@ export const roles: (Role & {
 
 export const education: EducationEntry[] = [
   {
-    degree: "Degree — Bachelor of Computer Science",
-    school: "VNUHCM - University of Technology (HCMUT)",
-    dates: "[2022 — 2026]",
-    note: "",
+    degree: "Bachelor of Computer Science",
+    school: "VNUHCM - Ho Chi Minh University of Technology (HCMUT)",
+    dates: "2022 — 2026",
+    note: "GPA: 3.3 / 4.0",
   },
 ];
 
@@ -324,16 +362,18 @@ export const certifications: Certification[] = [
     name: "Certified Junior React Developer",
     issuer: "Certificates.dev",
     year: "2026",
+    link: "https://certificates.dev/react/certificates/a2154acb-c66d-466a-bc12-6c97fab3bf92"
   },
   {
-    name: "Toeic Listening and Reading 880",
+    name: "Software Development with Scrum",
+    issuer: "Axon Active Vietnam",
+    year: "2025",
+    link: "https://verified.sertifier.com/en/verify/96457173847611/"
+  },
+  {
+    name: "TOEIC Listening & Reading — 880",
     issuer: "IIG Vietnam",
     year: "2026",
-  },
-  {
-    name: "SDWS Training",
-    issuer: "Axon Active - Agile Software Development Company",
-    year: "2025",
   },
 ];
 
