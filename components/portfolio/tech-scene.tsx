@@ -2,12 +2,12 @@
 
 import {
   forwardRef,
+  RefObject,
   Suspense,
   useImperativeHandle,
   useMemo,
   useRef,
   useState,
-  type MutableRefObject,
 } from "react";
 import { Canvas, useFrame, useLoader, type ThreeEvent } from "@react-three/fiber";
 import * as THREE from "three";
@@ -71,9 +71,9 @@ interface TechMeshProps {
   reducedMotion: boolean;
   focused: boolean;
   dimmed: boolean;
-  growRef: MutableRefObject<number>;
-  orbitTimeRef: MutableRefObject<number>;
-  dragMovedRef: MutableRefObject<number>;
+  growRef: RefObject<number>;
+  orbitTimeRef: RefObject<number>;
+  dragMovedRef: RefObject<number>;
   onSelect: (index: number) => void;
 }
 
@@ -196,7 +196,7 @@ function TechTrunk({
   growRef,
 }: {
   accent: string;
-  growRef: MutableRefObject<number>;
+  growRef: RefObject<number>;
 }) {
   const groupRef = useRef<THREE.Group>(null);
   const gltf = useLoader(GLTFLoader, "/stylized_tree/scene.gltf");
@@ -267,9 +267,9 @@ function DragCatcher({
   tiltTargetRef,
   dragMovedRef,
 }: {
-  rotYTargetRef: MutableRefObject<number>;
-  tiltTargetRef: MutableRefObject<number>;
-  dragMovedRef: MutableRefObject<number>;
+  rotYTargetRef: RefObject<number>;
+  tiltTargetRef: RefObject<number>;
+  dragMovedRef: RefObject<number>;
 }) {
   const draggingRef = useRef(false);
   const lastRef = useRef({ x: 0, y: 0 });
@@ -325,9 +325,9 @@ function TechCameraRig({
   techs: TechItem[];
   angle0s: number[];
   focusedIndex: number | null;
-  orbitTimeRef: MutableRefObject<number>;
-  rotYRef: MutableRefObject<number>;
-  tiltRef: MutableRefObject<number>;
+  orbitTimeRef: RefObject<number>;
+  rotYRef: RefObject<number>;
+  tiltRef: RefObject<number>;
   reducedMotion: boolean;
 }) {
   const camTarget = useRef(CAMERA_HOME.clone());
