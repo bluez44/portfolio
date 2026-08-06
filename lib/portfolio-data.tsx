@@ -31,9 +31,9 @@ export interface TechItem {
   tier: 0 | 1 | 2;
   label: string;
   desc: string;
-  prof: number;
-  profLabel: string;
-  years: string;
+  prof?: number;
+  profLabel?: string;
+  years?: string;
   component?: React.ReactNode;
 }
 
@@ -143,9 +143,9 @@ export const aboutPanels: AboutIntroPanel[] = [
 export const tierNames = ["Languages", "Frameworks", "Others"] as const;
 
 export const tierLegend = [
-  { kicker: "Tier 03", name: "Others" },
-  { kicker: "Tier 02", name: "Frameworks" },
   { kicker: "Tier 01", name: "Languages · foundations" },
+  { kicker: "Tier 02", name: "Frameworks" },
+  { kicker: "Tier 03", name: "Others" },
 ];
 
 export const techs: TechItem[] = [
@@ -154,27 +154,18 @@ export const techs: TechItem[] = [
     tier: 0,
     label: "TypeScript",
     desc: "My primary language across every project — type-safe React, NestJS APIs, and shared domain models.",
-    prof: 92,
-    profLabel: "Expert",
-    years: "2+ yrs",
     component: <TypeScriptLogoModel scale={0.3} />,
   },
   {
     tier: 0,
     label: "JavaScript",
     desc: "Deep understanding of the runtime, closures, async/await patterns, and ES2024+ features.",
-    prof: 95,
-    profLabel: "Expert",
-    years: "3+ yrs",
     component: <JavascriptLogoModel scale={0.07} />,
   },
   {
     tier: 0,
     label: "Java",
-    desc: "Solid fundamentals for backend work — used in Spring Boot microservices and gRPC services.",
-    prof: 60,
-    profLabel: "Proficient",
-    years: "1 yr",
+    desc: "Solid fundamentals for backend work — built microservices and gRPC APIs for TrackNest using Spring Boot.",
     component: <JavaLogoModel scale={0.2} />,
   },
 
@@ -182,82 +173,55 @@ export const techs: TechItem[] = [
   {
     tier: 1,
     label: "React.js",
-    desc: "My everyday UI toolkit — hooks, custom state patterns, performance optimisation, and component libraries.",
-    prof: 93,
-    profLabel: "Expert",
-    years: "2+ yrs",
+    desc: "My everyday UI toolkit — built high-performance UIs at TalentGetGo and TMA Solutions, mastering hooks and custom state patterns.",
     component: <ReactLogoModel scale={0.2} />,
   },
   {
     tier: 1,
     label: "Next.js",
-    desc: "Go-to for production web apps — App Router, SSR/SSG, API routes, and edge deployments.",
-    prof: 88,
-    profLabel: "Expert",
-    years: "1.5 yrs",
+    desc: "Go-to for production web apps — built the TrackNest web dashboard utilizing App Router, SSR/SSG, and API routes.",
     component: <NextjsLogoModel scale={0.2} />,
   },
   {
     tier: 1,
     label: "Vue.js",
     desc: "Composition API, Pinia state management, and enterprise feature delivery at TalentGetGo.",
-    prof: 82,
-    profLabel: "Advanced",
-    years: "1 yr",
     component: <VuejsLogoModel scale={0.2} />,
   },
   {
     tier: 1,
     label: "Nuxt",
-    desc: "SSR Vue apps with file-based routing, auto-imports, and server middleware for BFF patterns.",
-    prof: 78,
-    profLabel: "Advanced",
-    years: "1 yr",
+    desc: "SSR Vue apps with file-based routing and auto-imports — used to build robust platform features at TalentGetGo.",
     component: <NuxtLogoModel scale={0.2} />,
   },
   {
     tier: 1,
     label: "React Native",
-    desc: "Cross-platform mobile apps — background location tracking, SOS flows, and Google Maps integration.",
-    prof: 85,
-    profLabel: "Advanced",
-    years: "1.5 yrs",
+    desc: "Cross-platform mobile apps — developed the TrackNest app with background location tracking, SOS flows, and Google Maps integration.",
     component: <ReactNativeLogoModel scale={0.2} />,
   },
   {
     tier: 1,
     label: "Expo",
-    desc: "Managed workflow for React Native — OTA updates, Expo Router, and native module bridging.",
-    prof: 80,
-    profLabel: "Advanced",
-    years: "1 yr",
+    desc: "Managed workflow for React Native — leveraged in TrackNest for rapid development, OTA updates, and native module bridging.",
     component: <ExpoLogoModel scale={0.2} />,
   },
   {
     tier: 1,
     label: "NestJS",
-    desc: "Modular Node.js backend framework — built REST APIs and a Socket.io signaling server for HandFight.",
-    prof: 78,
-    profLabel: "Advanced",
-    years: "1 yr",
+    desc: "Modular Node.js backend framework — built REST APIs and a Socket.io signaling server for room creation and matchmaking in HandFight.",
     component: <NestJSLogoModel scale={0.2} />,
   },
   {
     tier: 1,
     label: "Node.js",
-    desc: "Event-driven server runtime powering Express, NestJS, and real-time WebSocket services.",
-    prof: 82,
-    profLabel: "Advanced",
-    years: "2 yrs",
+    desc: "Event-driven server runtime powering NestJS backends and real-time WebSocket services for my multiplayer projects.",
     component: <NodeJSLogoModel scale={0.2} />,
   },
   {
     tier: 1,
     label: "Spring Boot",
-    desc: "Java microservices with REST APIs, Spring Security, and integration into gRPC-based platforms.",
-    prof: 60,
-    profLabel: "Proficient",
-    years: "1 yr",
+    desc: "Java microservices with REST APIs and Spring Security — integrated with gRPC and Kafka to power the TrackNest backend.",
     component: <SpringBootLogoModel scale={0.2} />,
   },
 
@@ -265,55 +229,37 @@ export const techs: TechItem[] = [
   {
     tier: 2,
     label: "Tailwind CSS",
-    desc: "Utility-first styling for rapid, consistent, and fully responsive UI across all projects.",
-    prof: 90,
-    profLabel: "Expert",
-    years: "2 yrs",
+    desc: "Utility-first styling for rapid, consistent, and fully responsive UIs across projects like HandFight.",
     component: <TailwindCSSLogoModel scale={0.2} />,
   },
   {
     tier: 2,
     label: "Redux",
     desc: "Predictable global state with Redux Toolkit — managed complex multi-step UI workflows at TMA Solutions.",
-    prof: 75,
-    profLabel: "Advanced",
-    years: "1 yr",
     component: <ReduxLogoModel scale={0.2} />,
   },
   {
     tier: 2,
     label: "Pinia",
     desc: "Vue's intuitive store — designed scalable state architecture at TalentGetGo with seamless API integration.",
-    prof: 78,
-    profLabel: "Advanced",
-    years: "1 yr",
     component: <PiniaLogoModel scale={0.2} />,
   },
   {
     tier: 2,
     label: "Socket.io",
     desc: "Real-time bidirectional events — built the signaling server and live game-state relay for HandFight.",
-    prof: 72,
-    profLabel: "Advanced",
-    years: "0.5 yrs",
     component: <SocketIOLogoModel scale={0.2} />,
   },
   {
     tier: 2,
     label: "PostgreSQL",
-    desc: "Primary relational database — complex queries, indexing strategies, and data modelling for production apps.",
-    prof: 70,
-    profLabel: "Proficient",
-    years: "1 yr",
+    desc: "Primary relational database — data modelling, indexing, and executing complex queries for robust backend architectures.",
     component: <PostgresqlLogoModel scale={0.2} />,
   },
   {
     tier: 2,
     label: "Figma",
     desc: "Design handoff, prototyping, and building component libraries that translate 1-to-1 into React code.",
-    prof: 75,
-    profLabel: "Advanced",
-    years: "2 yrs",
     component: <FigmaLogoModel scale={0.2} />,
   },
 ];
