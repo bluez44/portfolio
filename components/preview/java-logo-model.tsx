@@ -38,7 +38,9 @@ type SubMesh = {
 export function JavaLogoModel({ scale = 1 }: { scale?: number }) {
   const groupRef = useRef<THREE.Group>(null);
   const [meshes, setMeshes] = useState<SubMesh[]>([]);
-  const [groupOffset, setGroupOffset] = useState<THREE.Vector3>(new THREE.Vector3(0, 0, 0));
+  const [groupOffset, setGroupOffset] = useState<THREE.Vector3>(
+    new THREE.Vector3(0, 0, 0),
+  );
 
   useFrame((state) => {
     if (groupRef.current) {
@@ -49,7 +51,8 @@ export function JavaLogoModel({ scale = 1 }: { scale?: number }) {
   });
 
   useEffect(() => {
-    if (typeof window === "undefined" || typeof DOMParser === "undefined") return;
+    if (typeof window === "undefined" || typeof DOMParser === "undefined")
+      return;
 
     try {
       const loader = new SVGLoader();
@@ -57,8 +60,9 @@ export function JavaLogoModel({ scale = 1 }: { scale?: number }) {
       const subMeshes: SubMesh[] = [];
 
       svgData.paths.forEach((path) => {
-        const color = ((path.userData?.style as any)?.fill as string) || "#ffffff";
-        const shapes = SVGLoader.createShapes(path);
+        const color =
+          ((path.userData?.style as any)?.fill as string) || "#ffffff";
+        const shapes = path.toShapes();
 
         shapes.forEach((shape) => {
           const geo = new THREE.ExtrudeGeometry(shape, EXTRUDE_SETTINGS);
@@ -80,7 +84,7 @@ export function JavaLogoModel({ scale = 1 }: { scale?: number }) {
         const center = new THREE.Vector3();
         groupBox.getCenter(center);
         setGroupOffset(new THREE.Vector3(-center.x, -center.y, -center.z));
-        
+
         setMeshes(subMeshes);
       }
     } catch (err) {
@@ -97,10 +101,10 @@ export function JavaLogoModel({ scale = 1 }: { scale?: number }) {
           // Adjust materials slightly per color. Orange is steam/accent, blue is cup/body.
           const isOrange = mesh.color === "#e76f00";
           return (
-            <mesh 
-              key={index} 
-              geometry={mesh.geometry} 
-              castShadow 
+            <mesh
+              key={index}
+              geometry={mesh.geometry}
+              castShadow
               receiveShadow
               position={groupOffset}
             >

@@ -7,7 +7,7 @@ import { SVGLoader } from "three/examples/jsm/loaders/SVGLoader.js";
 
 /**
  * Three.js 3D procedural reconstruction of the Spring Boot logo (public/Spring_Boot.svg).
- * 
+ *
  * Technical Highlights:
  * 1. Client-side SVGLoader parsing of Spring_Boot.svg vector paths.
  * 2. Positive scale factors (0.032, 0.032, 0.032) combined with 180° X-axis rotation (rotation={[Math.PI, 0, 0]})
@@ -45,7 +45,8 @@ export function SpringBootLogoModel({ scale = 1 }: { scale?: number }) {
 
   // Client-side SVG path parsing & extrusion
   useEffect(() => {
-    if (typeof window === "undefined" || typeof DOMParser === "undefined") return;
+    if (typeof window === "undefined" || typeof DOMParser === "undefined")
+      return;
 
     try {
       const loader = new SVGLoader();
@@ -53,7 +54,7 @@ export function SpringBootLogoModel({ scale = 1 }: { scale?: number }) {
       const shapes: THREE.Shape[] = [];
 
       svgData.paths.forEach((path) => {
-        const generated = SVGLoader.createShapes(path);
+        const generated = path.toShapes();
         shapes.push(...generated);
       });
 

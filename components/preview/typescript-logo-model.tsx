@@ -7,11 +7,11 @@ import { SVGLoader } from "three/examples/jsm/loaders/SVGLoader.js";
 
 /**
  * Three.js 3D procedural reconstruction of the TypeScript logo (public/Typescript.svg).
- * 
+ *
  * Technical Highlights:
  * 1. Extruded rounded square background badge in TypeScript signature blue (#3178c6).
  * 2. Pure brilliant white (#ffffff) embossed TS letterforms with non-metallic crisp finish.
- * 3. Exact positioning: "T" on left, "S" on right, situated at the bottom-right of the 
+ * 3. Exact positioning: "T" on left, "S" on right, situated at the bottom-right of the
  *    blue badge card in authentic TypeScript brand layout.
  * 4. Extrusion directed forward towards camera with DoubleSide MeshPhysicalMaterial.
  */
@@ -46,7 +46,8 @@ const TS_ABSOLUTE_SVG_STRING = `<svg viewBox="0 0 512 512" xmlns="http://www.w3.
 
 export function TypeScriptLogoModel({ scale = 1 }: { scale?: number }) {
   const groupRef = useRef<THREE.Group>(null);
-  const [lettersGeometry, setLettersGeometry] = useState<THREE.BufferGeometry | null>(null);
+  const [lettersGeometry, setLettersGeometry] =
+    useState<THREE.BufferGeometry | null>(null);
 
   // Smooth floating turntable motion
   useFrame((state) => {
@@ -82,7 +83,8 @@ export function TypeScriptLogoModel({ scale = 1 }: { scale?: number }) {
 
   // Client-side SVG path parsing for white TS letterforms
   useEffect(() => {
-    if (typeof window === "undefined" || typeof DOMParser === "undefined") return;
+    if (typeof window === "undefined" || typeof DOMParser === "undefined")
+      return;
 
     try {
       const loader = new SVGLoader();
@@ -90,7 +92,7 @@ export function TypeScriptLogoModel({ scale = 1 }: { scale?: number }) {
       const shapes: THREE.Shape[] = [];
 
       svgData.paths.forEach((path) => {
-        const generated = SVGLoader.createShapes(path);
+        const generated = path.toShapes();
         shapes.push(...generated);
       });
 
@@ -128,7 +130,12 @@ export function TypeScriptLogoModel({ scale = 1 }: { scale?: number }) {
 
       {/* Pure White TS Letterforms Mounted Proudly on Front Surface */}
       {lettersGeometry && (
-        <mesh geometry={lettersGeometry} position={[0, 0, 0.17]} castShadow receiveShadow>
+        <mesh
+          geometry={lettersGeometry}
+          position={[0, 0, 0.17]}
+          castShadow
+          receiveShadow
+        >
           <meshStandardMaterial
             color={TS_PURE_WHITE}
             roughness={0.05}

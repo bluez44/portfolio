@@ -40,7 +40,9 @@ type SubMesh = {
 export function NodeJSLogoModel({ scale = 1 }: { scale?: number }) {
   const groupRef = useRef<THREE.Group>(null);
   const [meshes, setMeshes] = useState<SubMesh[]>([]);
-  const [groupOffset, setGroupOffset] = useState<THREE.Vector3>(new THREE.Vector3(0, 0, 0));
+  const [groupOffset, setGroupOffset] = useState<THREE.Vector3>(
+    new THREE.Vector3(0, 0, 0),
+  );
 
   useFrame((state) => {
     if (groupRef.current) {
@@ -51,7 +53,8 @@ export function NodeJSLogoModel({ scale = 1 }: { scale?: number }) {
   });
 
   useEffect(() => {
-    if (typeof window === "undefined" || typeof DOMParser === "undefined") return;
+    if (typeof window === "undefined" || typeof DOMParser === "undefined")
+      return;
 
     try {
       const loader = new SVGLoader();
@@ -59,9 +62,10 @@ export function NodeJSLogoModel({ scale = 1 }: { scale?: number }) {
       const subMeshes: SubMesh[] = [];
 
       svgData.paths.forEach((path) => {
-        let color = ((path.userData?.style as any)?.fill as string) || "#689f63";
-        
-        const shapes = SVGLoader.createShapes(path);
+        let color =
+          ((path.userData?.style as any)?.fill as string) || "#689f63";
+
+        const shapes = path.toShapes();
         shapes.forEach((shape) => {
           const geo = new THREE.ExtrudeGeometry(shape, EXTRUDE_SETTINGS);
           geo.computeVertexNormals();
@@ -82,7 +86,7 @@ export function NodeJSLogoModel({ scale = 1 }: { scale?: number }) {
         const center = new THREE.Vector3();
         groupBox.getCenter(center);
         setGroupOffset(new THREE.Vector3(-center.x, -center.y, -center.z));
-        
+
         setMeshes(subMeshes);
       }
     } catch (err) {
@@ -98,17 +102,19 @@ export function NodeJSLogoModel({ scale = 1 }: { scale?: number }) {
         {meshes.map((mesh, index) => {
           // Dark parts (like #333) vs Green parts
           const isDark = mesh.color === "#333" || mesh.color === "#333333";
-          
+
           // To resolve Z-fighting and properly render the green holes inside "o", "d", "e":
           // The green holes are rendered as separate shapes in the SVG. We push them forward slightly.
-          const isHole = ["#55934f", "#619857", "#6bbf47"].includes(mesh.color.toLowerCase());
+          const isHole = ["#55934f", "#619857", "#6bbf47"].includes(
+            mesh.color.toLowerCase(),
+          );
           const zOffset = isHole ? 2.0 : 0.0;
-          
+
           return (
-            <mesh 
-              key={index} 
-              geometry={mesh.geometry} 
-              castShadow 
+            <mesh
+              key={index}
+              geometry={mesh.geometry}
+              castShadow
               receiveShadow
               position={[groupOffset.x, groupOffset.y, groupOffset.z + zOffset]}
             >

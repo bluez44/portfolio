@@ -45,7 +45,8 @@ export function ExpoLogoModel({ scale = 1 }: { scale?: number }) {
 
   // Client-side SVG path parsing & extrusion
   useEffect(() => {
-    if (typeof window === "undefined" || typeof DOMParser === "undefined") return;
+    if (typeof window === "undefined" || typeof DOMParser === "undefined")
+      return;
 
     try {
       const loader = new SVGLoader();
@@ -53,7 +54,7 @@ export function ExpoLogoModel({ scale = 1 }: { scale?: number }) {
       const shapes: THREE.Shape[] = [];
 
       svgData.paths.forEach((path) => {
-        const generated = SVGLoader.createShapes(path);
+        const generated = path.toShapes();
         shapes.push(...generated);
       });
 

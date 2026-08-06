@@ -7,7 +7,7 @@ import { SVGLoader } from "three/examples/jsm/loaders/SVGLoader.js";
 
 /**
  * Three.js 3D procedural reconstruction of the Next.js logo (public/next-js.svg).
- * 
+ *
  * Technical Highlights:
  * 1. Extruded 3D vector paths of the Next.js circular badge & stylized N monogram.
  * 2. Uses geo.scale(0.0035, -0.0035, 0.0035) to orient Y-down SVG paths upright
@@ -31,7 +31,9 @@ const NEXTJS_SVG_STRING = `<svg height="1024pt" viewBox=".5 -.2 1023 1024.1" wid
 
 export function NextjsLogoModel({ scale = 1 }: { scale?: number }) {
   const groupRef = useRef<THREE.Group>(null);
-  const [logoGeometry, setLogoGeometry] = useState<THREE.BufferGeometry | null>(null);
+  const [logoGeometry, setLogoGeometry] = useState<THREE.BufferGeometry | null>(
+    null,
+  );
 
   // Smooth floating turntable motion
   useFrame((state) => {
@@ -44,7 +46,8 @@ export function NextjsLogoModel({ scale = 1 }: { scale?: number }) {
 
   // Client-side SVG parsing for Next.js logo paths
   useEffect(() => {
-    if (typeof window === "undefined" || typeof DOMParser === "undefined") return;
+    if (typeof window === "undefined" || typeof DOMParser === "undefined")
+      return;
 
     try {
       const loader = new SVGLoader();
@@ -52,7 +55,7 @@ export function NextjsLogoModel({ scale = 1 }: { scale?: number }) {
       const shapes: THREE.Shape[] = [];
 
       svgData.paths.forEach((path) => {
-        const generated = SVGLoader.createShapes(path);
+        const generated = path.toShapes();
         shapes.push(...generated);
       });
 

@@ -86,7 +86,7 @@ export function PostgresqlLogoModel({ scale = 1 }: { scale?: number }) {
 
       if (svgData.paths.length >= 4) {
         // Path 0: Charcoal Black Outline Border Frame
-        const frameShapes = SVGLoader.createShapes(svgData.paths[0]);
+        const frameShapes = svgData.paths[0].toShapes();
         if (frameShapes.length > 0) {
           const fg = new THREE.ExtrudeGeometry(frameShapes, EXTRUDE_FRAME);
           fg.computeVertexNormals();
@@ -96,7 +96,7 @@ export function PostgresqlLogoModel({ scale = 1 }: { scale?: number }) {
         }
 
         // Path 1: PostgreSQL Signature Steel Blue Body (#336791)
-        const bodyShapes = SVGLoader.createShapes(svgData.paths[1]);
+        const bodyShapes = svgData.paths[1].toShapes();
         if (bodyShapes.length > 0) {
           const bg = new THREE.ExtrudeGeometry(bodyShapes, EXTRUDE_BODY);
           bg.computeVertexNormals();
@@ -106,7 +106,7 @@ export function PostgresqlLogoModel({ scale = 1 }: { scale?: number }) {
         }
 
         // Path 2: Left Eye Oval Highlight (#ffffff)
-        const eyeLShapes = SVGLoader.createShapes(svgData.paths[2]);
+        const eyeLShapes = svgData.paths[2].toShapes();
         if (eyeLShapes.length > 0) {
           const elg = new THREE.ExtrudeGeometry(eyeLShapes, EXTRUDE_ACCENT);
           elg.computeVertexNormals();
@@ -116,7 +116,7 @@ export function PostgresqlLogoModel({ scale = 1 }: { scale?: number }) {
         }
 
         // Path 3: Right Eye Oval Highlight (#ffffff)
-        const eyeRShapes = SVGLoader.createShapes(svgData.paths[3]);
+        const eyeRShapes = svgData.paths[3].toShapes();
         if (eyeRShapes.length > 0) {
           const erg = new THREE.ExtrudeGeometry(eyeRShapes, EXTRUDE_ACCENT);
           erg.computeVertexNormals();

@@ -7,10 +7,10 @@ import { SVGLoader } from "three/examples/jsm/loaders/SVGLoader.js";
 
 /**
  * Three.js 3D procedural reconstruction of the NestJS logo (public/NestJS.svg).
- * 
+ *
  * Technical Highlights:
  * 1. Uses client-side SVGLoader parsing to extract 100% authentic vector paths from NestJS.svg.
- * 2. Uses rotation={[Math.PI, 0, 0]} (180° rotation around X-axis) to orient Y-down SVG paths 
+ * 2. Uses rotation={[Math.PI, 0, 0]} (180° rotation around X-axis) to orient Y-down SVG paths
  *    upright into Three.js Y-up coordinates without reversing horizontal X direction.
  * 3. Applies THREE.DoubleSide MeshPhysicalMaterial with NestJS signature crimson red (#e0234e),
  *    emissive warmth (#4a0817), and ultra-reflective clearcoat sheen.
@@ -45,7 +45,8 @@ export function NestJSLogoModel({ scale = 1 }: { scale?: number }) {
 
   // Client-side SVG path parsing & extrusion
   useEffect(() => {
-    if (typeof window === "undefined" || typeof DOMParser === "undefined") return;
+    if (typeof window === "undefined" || typeof DOMParser === "undefined")
+      return;
 
     try {
       const loader = new SVGLoader();
@@ -53,7 +54,7 @@ export function NestJSLogoModel({ scale = 1 }: { scale?: number }) {
       const shapes: THREE.Shape[] = [];
 
       svgData.paths.forEach((path) => {
-        const generated = SVGLoader.createShapes(path);
+        const generated = path.toShapes();
         shapes.push(...generated);
       });
 
@@ -72,7 +73,7 @@ export function NestJSLogoModel({ scale = 1 }: { scale?: number }) {
   if (!geometry) return null;
 
   return (
-    <group ref={groupRef} scale={scale} >
+    <group ref={groupRef} scale={scale}>
       <mesh geometry={geometry} castShadow receiveShadow>
         <meshPhysicalMaterial
           color={NESTJS_RED}
