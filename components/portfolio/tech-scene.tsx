@@ -2,14 +2,16 @@
 
 import {
   forwardRef,
+  Suspense,
   useImperativeHandle,
   useMemo,
   useRef,
   useState,
   type MutableRefObject,
 } from "react";
-import { Canvas, useFrame, type ThreeEvent } from "@react-three/fiber";
+import { Canvas, useFrame, useLoader, type ThreeEvent } from "@react-three/fiber";
 import * as THREE from "three";
+import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader.js";
 import type { TechItem } from "@/lib/portfolio-data";
 
 export interface TechSceneHandle {
@@ -184,6 +186,11 @@ function TechMesh({
   );
 }
 
+// Local-space height of the loaded tree (leaves top ~29 * the model's own
+// embedded 0.01 scale) once its glTF node transforms are applied, used to
+// convert the fixed TREE_SCALE below into a predictable world-space size.
+const TREE_SCALE = 20;
+
 function TechTrunk({
   accent,
   growRef,
@@ -192,70 +199,32 @@ function TechTrunk({
   growRef: MutableRefObject<number>;
 }) {
   const groupRef = useRef<THREE.Group>(null);
-  const tipMaterialRef = useRef<THREE.MeshBasicMaterial>(null);
+  const gltf = useLoader(GLTFLoader, "/stylized_tree/scene.gltf");
 
-  const trunkMaterial = useMemo(
-    () =>
-      new THREE.MeshStandardMaterial({
-        color: 0x2a3442,
-        emissive: accent,
-        emissiveIntensity: 0.35,
-        roughness: 0.4,
-        metalness: 0.3,
-      }),
-    [accent],
-  );
-
-  const trunkGeometry = useMemo(() => {
-    const geo = new THREE.CylinderGeometry(0.035, 0.11, 5.8, 10);
-    geo.translate(0, 2.9, 0);
-    return geo;
-  }, []);
-
-  const roots = useMemo(
-    () =>
-      Array.from({ length: 5 }, (_, i) => {
-        const geo = new THREE.CylinderGeometry(0.012, 0.05, 1.1, 6);
-        geo.translate(0, -0.55, 0);
-        const angle = (i / 5) * Math.PI * 2;
-        return {
-          geo,
-          rotationZ: Math.cos(angle) * 0.85,
-          rotationX: Math.sin(angle) * 0.85,
-        };
-      }),
-    [],
-  );
+  const scene = useMemo(() => {
+    const cloned = gltf.scene.clone(true);
+    cloned.traverse((child) => {
+      if (child instanceof THREE.Mesh && child.material instanceof THREE.MeshStandardMaterial) {
+        const material = child.material.clone();
+        material.emissive = new THREE.Color(accent);
+        material.emissiveIntensity = 0.25;
+        child.material = material;
+      }
+    });
+    return cloned;
+  }, [gltf, accent]);
 
   useFrame(() => {
     const group = groupRef.current;
     if (!group) return;
     const grow = growRef.current;
     const ease = grow < 1 ? 1 - Math.pow(1 - grow, 3) : 1;
-    group.scale.y = Math.max(0.001, ease);
-    if (tipMaterialRef.current) tipMaterialRef.current.opacity = ease;
+    group.scale.set(TREE_SCALE, Math.max(0.001, ease) * TREE_SCALE, TREE_SCALE);
   });
 
   return (
     <group ref={groupRef} position={[0, -2.9, 0]}>
-      <mesh geometry={trunkGeometry} material={trunkMaterial} />
-      {roots.map((root, i) => (
-        <mesh
-          key={i}
-          geometry={root.geo}
-          material={trunkMaterial}
-          rotation={[root.rotationX, 0, root.rotationZ]}
-        />
-      ))}
-      <mesh position={[0, 5.85, 0]}>
-        <sphereGeometry args={[0.09, 12, 12]} />
-        <meshBasicMaterial
-          ref={tipMaterialRef}
-          color={accent}
-          transparent
-          opacity={0}
-        />
-      </mesh>
+      <primitive object={scene} />
     </group>
   );
 }
@@ -474,7 +443,9 @@ const TechWorld = forwardRef<TechSceneHandle, TechWorldProps>(
           dragMovedRef={dragMovedRef}
         />
         <group ref={worldGroupRef}>
-          <TechTrunk accent={accent} growRef={growRef} />
+          <Suspense fallback={null}>
+            <TechTrunk accent={accent} growRef={growRef} />
+          </Suspense>
           <OrbitRings accent={accent} />
           {techs.map((tech, index) => (
             <TechMesh
