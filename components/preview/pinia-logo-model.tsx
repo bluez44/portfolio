@@ -54,11 +54,11 @@ export function PiniaLogoModel({ scale = 1 }: { scale?: number }) {
       };
 
       svgData.paths.forEach((path, index) => {
-        const fill = path.userData.style.fill;
-        const stroke = path.userData.style.stroke;
+        const fill = (path.userData as { style: { fill: string } }).style.fill;
+        const stroke = (path.userData as { style: { stroke: string } }).style.stroke;
 
         const createMesh = (shapes: THREE.Shape[], colorStr: string, isStroke: boolean) => {
-          let mappedColor = colorMap[colorStr] || (path.color ? "#" + path.color.getHexString() : "#52ce63");
+          const mappedColor = colorMap[colorStr] || (path.color ? "#" + path.color.getHexString() : "#52ce63");
           if (colorStr === 'none') return;
 
           if (shapes.length > 0) {

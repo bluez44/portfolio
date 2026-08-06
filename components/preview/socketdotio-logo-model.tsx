@@ -56,7 +56,7 @@ export function SocketIOLogoModel({ scale = 1 }: { scale?: number }) {
       };
 
       svgData.paths.forEach((path, index) => {
-        const fill = path.userData.style.fill;
+        const fill = (path.userData as { style: { fill: string } }).style.fill;
 
         if (fill !== undefined && fill !== 'none') {
           const mappedColor = colorMap[fill] || fill;
