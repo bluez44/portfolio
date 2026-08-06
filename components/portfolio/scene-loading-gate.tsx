@@ -51,6 +51,7 @@ export function SceneLoadingGate() {
         width={200}
         height={200}
         className="animate-spin-slow"
+        loading="eager"
       />
       <div className="flex items-center gap-1">
         <span
