@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useState, useRef, JSX } from "react";
 import * as THREE from "three";
 import { useFrame } from "@react-three/fiber";
 import { SVGLoader } from "three/examples/jsm/loaders/SVGLoader.js";
@@ -83,7 +83,7 @@ export function WebRTCLogoModel({ scale = 1 }: { scale?: number }) {
             metalness = 0.2;
           }
 
-          const shapes = path.toShapes(true);
+          const shapes = path.toShapes();
           
           if (shapes.length > 0) {
             const geo = new THREE.ExtrudeGeometry(shapes, WEBRTC_EXTRUDE_SETTINGS);

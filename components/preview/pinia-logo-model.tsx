@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useState, useRef, JSX } from "react";
 import * as THREE from "three";
 import { useFrame } from "@react-three/fiber";
 import { SVGLoader } from "three/examples/jsm/loaders/SVGLoader.js";
@@ -94,13 +94,13 @@ export function PiniaLogoModel({ scale = 1 }: { scale?: number }) {
 
         if (fill !== undefined && fill !== 'none') {
           // true enforces CCW for shapes and CW for holes
-          const shapes = path.toShapes(true);
+          const shapes = path.toShapes();
           createMesh(shapes, fill, false);
         }
 
         if (stroke !== undefined && stroke !== 'none') {
           // Attempt to extrude strokes if they produce valid shapes
-          const shapes = path.toShapes(true);
+          const shapes = path.toShapes();
           createMesh(shapes, stroke, true);
         }
       });

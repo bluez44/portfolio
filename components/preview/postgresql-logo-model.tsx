@@ -125,7 +125,7 @@ export function PostgresqlLogoModel({ scale = 1 }: { scale?: number }) {
         // Filled regions (black silhouette base, blue body, white eyes).
         if (fill && fill !== "none") {
           const hexColor = "#" + path.color.getHexString();
-          const shapes = path.toShapes(true);
+          const shapes = path.toShapes();
           if (shapes.length === 0) return;
 
           if (hexColor === PG_BLUE) {
