@@ -25,7 +25,9 @@ const REDUX_SVG_STRING = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1
 
 export function ReduxLogoModel({ scale = 1 }: { scale?: number }) {
   const groupRef = useRef<THREE.Group>(null);
-  const [logoGeometry, setLogoGeometry] = useState<THREE.BufferGeometry | null>(null);
+  const [logoGeometry, setLogoGeometry] = useState<THREE.BufferGeometry | null>(
+    null,
+  );
 
   useFrame((state) => {
     if (groupRef.current) {
@@ -36,7 +38,8 @@ export function ReduxLogoModel({ scale = 1 }: { scale?: number }) {
   });
 
   useEffect(() => {
-    if (typeof window === "undefined" || typeof DOMParser === "undefined") return;
+    if (typeof window === "undefined" || typeof DOMParser === "undefined")
+      return;
 
     try {
       const loader = new SVGLoader();
@@ -44,7 +47,7 @@ export function ReduxLogoModel({ scale = 1 }: { scale?: number }) {
       const shapes: THREE.Shape[] = [];
 
       svgData.paths.forEach((path) => {
-        const generated = path.toShapes(true);
+        const generated = path.toShapes();
         shapes.push(...generated);
       });
 
@@ -67,7 +70,12 @@ export function ReduxLogoModel({ scale = 1 }: { scale?: number }) {
   return (
     <group ref={groupRef} scale={scale}>
       {logoGeometry && (
-        <mesh geometry={logoGeometry} scale={[1, -1, 1]} castShadow receiveShadow>
+        <mesh
+          geometry={logoGeometry}
+          scale={[1, -1, 1]}
+          castShadow
+          receiveShadow
+        >
           <meshPhysicalMaterial
             color={REDUX_COLOR}
             roughness={0.15}

@@ -24,7 +24,9 @@ const EXPO_SVG_STRING = `<svg role="img" viewBox="0 0 24 24" xmlns="http://www.w
 
 export function ExpoLogoModel({ scale = 1 }: { scale?: number }) {
   const groupRef = useRef<THREE.Group>(null);
-  const [logoGeometry, setLogoGeometry] = useState<THREE.BufferGeometry | null>(null);
+  const [logoGeometry, setLogoGeometry] = useState<THREE.BufferGeometry | null>(
+    null,
+  );
 
   useFrame((state) => {
     if (groupRef.current) {
@@ -35,7 +37,8 @@ export function ExpoLogoModel({ scale = 1 }: { scale?: number }) {
   });
 
   useEffect(() => {
-    if (typeof window === "undefined" || typeof DOMParser === "undefined") return;
+    if (typeof window === "undefined" || typeof DOMParser === "undefined")
+      return;
 
     try {
       const loader = new SVGLoader();
@@ -44,7 +47,7 @@ export function ExpoLogoModel({ scale = 1 }: { scale?: number }) {
 
       svgData.paths.forEach((path) => {
         // Expo logo has one path, toShapes(true) is safe
-        const generated = path.toShapes(true);
+        const generated = path.toShapes();
         shapes.push(...generated);
       });
 
@@ -67,7 +70,12 @@ export function ExpoLogoModel({ scale = 1 }: { scale?: number }) {
   return (
     <group ref={groupRef} scale={scale}>
       {logoGeometry && (
-        <mesh geometry={logoGeometry} scale={[1, -1, 1]} castShadow receiveShadow>
+        <mesh
+          geometry={logoGeometry}
+          scale={[1, -1, 1]}
+          castShadow
+          receiveShadow
+        >
           <meshPhysicalMaterial
             color={EXPO_COLOR}
             roughness={0.15}
