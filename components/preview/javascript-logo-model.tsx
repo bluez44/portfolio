@@ -55,10 +55,10 @@ export function JavascriptLogoModel({ scale = 1 }: { scale?: number }) {
 
       svgData.paths.forEach((path) => {
         // If a path has no fill style specified, it defaults to black
-        const color = ((path.userData?.style as any)?.fill as string) || "#000000";
+        const color =
+          ((path.userData?.style as { fill: string })?.fill as string) ||
+          "#000000";
         const shapes = path.toShapes();
-
-        console.log("Path", path, "Color", color, "Shapes", shapes);
 
         shapes.forEach((shape) => {
           const geo = new THREE.ExtrudeGeometry(shape, EXTRUDE_SETTINGS);
