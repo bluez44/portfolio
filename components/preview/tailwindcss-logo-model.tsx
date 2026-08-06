@@ -7,34 +7,28 @@ import { SVGLoader } from "three/examples/jsm/loaders/SVGLoader.js";
 
 /**
  * Three.js 3D procedural reconstruction of the Tailwind CSS logo (public/tailwindcss.svg).
- *
- * Technical Highlights:
- * 1. Uses client-side SVGLoader to extrude the iconic twin-wave mark from the
- *    official Simple Icons Tailwind CSS SVG.
- * 2. Tailwind signature cyan (#06b6d4) MeshPhysicalMaterial with sky-blue emissive
- *    glow and premium clearcoat sheen.
- * 3. Smooth floating turntable animation with gentle oscillation.
  */
 
-const TAILWIND_CYAN = "#06b6d4";
-const TAILWIND_EMISSIVE = "#012f38";
+const TAILWINDCSS_COLOR = "#38bdf8";
+const TAILWINDCSS_EMISSIVE = "#1c5e7c";
 
-const EXTRUDE_SETTINGS: THREE.ExtrudeGeometryOptions = {
-  depth: 16,
+const TAILWINDCSS_EXTRUDE_SETTINGS: THREE.ExtrudeGeometryOptions = {
+  depth: 1.35,
   bevelEnabled: true,
-  bevelThickness: 2.0,
-  bevelSize: 2.0,
+  bevelThickness: 0.15,
+  bevelSize: 0.15,
   bevelSegments: 5,
   curveSegments: 32,
 };
 
-const TAILWIND_SVG_STRING = `<svg role="img" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><title>Tailwind CSS</title><path d="M12.001,4.8c-3.2,0-5.2,1.6-6,4.8c1.2-1.6,2.6-2.2,4.2-1.8c0.913,0.228,1.565,0.89,2.288,1.624 C13.666,10.618,15.027,12,18.001,12c3.2,0,5.2-1.6,6-4.8c-1.2,1.6-2.6,2.2-4.2,1.8c-0.913-0.228-1.565-0.89-2.288-1.624 C16.337,6.182,14.976,4.8,12.001,4.8z M6.001,12c-3.2,0-5.2,1.6-6,4.8c1.2-1.6,2.6-2.2,4.2-1.8c0.913,0.228,1.565,0.89,2.288,1.624 c1.177,1.194,2.538,2.576,5.512,2.576c3.2,0,5.2-1.6,6-4.8c-1.2,1.6-2.6,2.2-4.2,1.8c-0.913-0.228-1.565-0.89-2.288-1.624 C10.337,13.382,8.976,12,6.001,12z"/></svg>`;
+const TAILWINDCSS_SVG_STRING = `<svg xmlns="http://www.w3.org/2000/svg" fill="${TAILWINDCSS_COLOR}" viewBox="0 0 54 33"><path fill="#38bdf8" fill-rule="evenodd" d="M27 0c-7.2 0-11.7 3.6-13.5 10.8 2.7-3.6 5.85-4.95 9.45-4.05 2.054.513 3.522 2.004 5.147 3.653C30.744 13.09 33.808 16.2 40.5 16.2c7.2 0 11.7-3.6 13.5-10.8-2.7 3.6-5.85 4.95-9.45 4.05-2.054-.513-3.522-2.004-5.147-3.653C36.756 3.11 33.692 0 27 0zM13.5 16.2C6.3 16.2 1.8 19.8 0 27c2.7-3.6 5.85-4.95 9.45-4.05 2.054.514 3.522 2.004 5.147 3.653C17.244 29.29 20.308 32.4 27 32.4c7.2 0 11.7-3.6 13.5-10.8-2.7 3.6-5.85 4.95-9.45 4.05-2.054-.513-3.522-2.004-5.147-3.653C23.256 19.31 20.192 16.2 13.5 16.2z" clip-rule="evenodd"/></svg>`;
 
 export function TailwindCSSLogoModel({ scale = 1 }: { scale?: number }) {
   const groupRef = useRef<THREE.Group>(null);
-  const [geometry, setGeometry] = useState<THREE.BufferGeometry | null>(null);
+  const [logoGeometry, setLogoGeometry] = useState<THREE.BufferGeometry | null>(
+    null,
+  );
 
-  // Smooth floating turntable motion
   useFrame((state) => {
     if (groupRef.current) {
       const t = state.clock.getElapsedTime();
@@ -43,14 +37,13 @@ export function TailwindCSSLogoModel({ scale = 1 }: { scale?: number }) {
     }
   });
 
-  // Client-side SVG path parsing & extrusion
   useEffect(() => {
     if (typeof window === "undefined" || typeof DOMParser === "undefined")
       return;
 
     try {
       const loader = new SVGLoader();
-      const svgData = loader.parse(TAILWIND_SVG_STRING);
+      const svgData = loader.parse(TAILWINDCSS_SVG_STRING);
       const shapes: THREE.Shape[] = [];
 
       svgData.paths.forEach((path) => {
@@ -59,34 +52,41 @@ export function TailwindCSSLogoModel({ scale = 1 }: { scale?: number }) {
       });
 
       if (shapes.length > 0) {
-        const geo = new THREE.ExtrudeGeometry(shapes, EXTRUDE_SETTINGS);
+        const geo = new THREE.ExtrudeGeometry(
+          shapes,
+          TAILWINDCSS_EXTRUDE_SETTINGS,
+        );
         geo.computeVertexNormals();
-        geo.center();
-        geo.scale(0.11, -0.11, 0.11);
-        setGeometry(geo);
+
+        // Translate center relative to 54x33 SVG viewbox
+        geo.translate(-27, -16.5, 0);
+
+        // Scale uniformly; do not scale negatively here to preserve winding order
+        geo.scale(0.065, 0.065, 0.065);
+        setLogoGeometry(geo);
       }
     } catch (err) {
-      console.warn("SVGLoader parsing error:", err);
+      console.warn("SVGLoader parsing error for Tailwind CSS logo:", err);
     }
   }, []);
 
-  if (!geometry) return null;
-
   return (
     <group ref={groupRef} scale={scale}>
-      <mesh geometry={geometry} castShadow receiveShadow>
-        <meshPhysicalMaterial
-          color={TAILWIND_CYAN}
-          roughness={0.12}
-          metalness={0.2}
-          emissive={TAILWIND_EMISSIVE}
-          emissiveIntensity={0.25}
-          clearcoat={1.0}
-          clearcoatRoughness={0.04}
-          reflectivity={1.0}
-          side={THREE.DoubleSide}
-        />
-      </mesh>
+      {logoGeometry && (
+        <mesh geometry={logoGeometry} scale={[1, -1, 1]} castShadow receiveShadow>
+          <meshPhysicalMaterial
+            color={TAILWINDCSS_COLOR}
+            roughness={0.15}
+            metalness={0.15}
+            emissive={TAILWINDCSS_EMISSIVE}
+            emissiveIntensity={0.2}
+            clearcoat={1.0}
+            clearcoatRoughness={0.1}
+            reflectivity={1.0}
+            side={THREE.DoubleSide}
+          />
+        </mesh>
+      )}
     </group>
   );
 }
