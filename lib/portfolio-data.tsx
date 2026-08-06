@@ -291,6 +291,26 @@ export const projects: Project[] = [
     desc: "A web-based multiplayer fighting game with real-time hand-tracking controls powered by MediaPipe. Features ultra-low latency P2P gameplay via WebRTC (PeerJS), with a NestJS + Socket.io signaling server for room creation and matchmaking.",
     tags: ["React", "NestJS", "WebRTC", "Socket.io", "MediaPipe", "Tailwind CSS"],
   },
+  {
+    title: "Upcoming",
+    desc: "",
+    tags: [],
+  },
+  {
+    title: "Upcoming",
+    desc: "",
+    tags: [],
+  },
+  {
+    title: "Upcoming",
+    desc: "",
+    tags: [],
+  },
+  {
+    title: "Upcoming",
+    desc: "",
+    tags: [],
+  },
 ];
 
 const roleRotations = [-2.2, 1.9, -1.7, 2.4];
@@ -342,11 +362,13 @@ export const certifications: Certification[] = [
     name: "Certified Junior React Developer",
     issuer: "Certificates.dev",
     year: "2026",
+    link: "https://certificates.dev/react/certificates/a2154acb-c66d-466a-bc12-6c97fab3bf92"
   },
   {
     name: "Software Development with Scrum",
     issuer: "Axon Active Vietnam",
     year: "2025",
+    link: "https://verified.sertifier.com/en/verify/96457173847611/"
   },
   {
     name: "TOEIC Listening & Reading — 880",
