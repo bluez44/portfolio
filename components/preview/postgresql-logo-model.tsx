@@ -6,68 +6,96 @@ import { useFrame } from "@react-three/fiber";
 import { SVGLoader } from "three/examples/jsm/loaders/SVGLoader.js";
 
 /**
- * Three.js 3D procedural reconstruction of the PostgreSQL Elephant logo (public/Postgresql_elephant.svg).
- * 
- * Technical Highlights:
- * 1. Multi-layered extruded 3D Slavik the Elephant mascot assembly.
- * 2. Signature PostgreSQL color palette: Steel Blue (#336791), Charcoal Black frame (#0a0f14),
- *    and Pure White accent highlights (#ffffff).
- * 3. Exact 3D Z-layering:
- *    - Background Frame (z = 0.00): Charcoal Black outline border frame
- *    - Main Body        (z = +0.06): PostgreSQL Steel Blue (#336791)
- *    - Accent Details   (z = +0.12): Pure White contour linework
- *    - Eye Highlights   (z = +0.14): Pure White eye ovals
- * 4. High-vibrancy MeshStandardMaterial with smooth floating turntable animation.
+ * Three.js 3D procedural reconstruction of the PostgreSQL "Slonik" elephant
+ * logo (public/Postgresql_elephant.svg), rebuilt directly from the source
+ * SVG path data so proportions, silhouette angles, and colours match 1:1.
+ *
+ * The source logo isn't just flat-filled regions: its identity comes from
+ * a heavy 37.4pt black stroke outline around the silhouette (approximated
+ * here as path 0's own fill, extruded and dilated slightly outward so it
+ * peeks out from behind the blue body -- SVGLoader.pointsToStroke produces
+ * self-intersecting geometry on this path because of its size/complexity)
+ * and a set of unfilled white STROKE paths tracing the trunk/ear/tusk
+ * linework, reconstructed with SVGLoader.pointsToStroke (those paths are
+ * short and simple, so the ribbon geometry stays clean). Layered
+ * front-to-back: black outline at the back, the extruded blue body above
+ * it, white linework on top of the body, and the two extruded white eye
+ * highlights frontmost.
  */
 
+const PG_BLACK = "#000000";
 const PG_BLUE = "#336791";
-const PG_BLACK = "#0a0f14";
 const PG_WHITE = "#ffffff";
 
+// Source viewBox="0 0 432.071 445.383" -> centre used to re-origin all paths.
+const VIEWBOX_CENTER_X = 216.0355;
+const VIEWBOX_CENTER_Y = 222.6915;
+const SVG_SCALE = 0.0075;
+
 const EXTRUDE_BODY: THREE.ExtrudeGeometryOptions = {
-  depth: 24,
+  depth: 22,
   bevelEnabled: true,
-  bevelThickness: 2.5,
-  bevelSize: 2.0,
+  bevelThickness: 2,
+  bevelSize: 1.8,
   bevelSegments: 5,
   curveSegments: 32,
 };
 
-const EXTRUDE_FRAME: THREE.ExtrudeGeometryOptions = {
-  depth: 28,
+const EXTRUDE_EYE: THREE.ExtrudeGeometryOptions = {
+  depth: 6,
   bevelEnabled: true,
-  bevelThickness: 3.0,
-  bevelSize: 2.5,
-  bevelSegments: 5,
+  bevelThickness: 0.6,
+  bevelSize: 0.5,
+  bevelSegments: 4,
+  curveSegments: 24,
+};
+
+const EXTRUDE_OUTLINE: THREE.ExtrudeGeometryOptions = {
+  depth: 14,
+  bevelEnabled: true,
+  bevelThickness: 1.4,
+  bevelSize: 1.2,
+  bevelSegments: 4,
   curveSegments: 32,
 };
 
-const EXTRUDE_ACCENT: THREE.ExtrudeGeometryOptions = {
-  depth: 10,
-  bevelEnabled: true,
-  bevelThickness: 1.0,
-  bevelSize: 0.8,
-  bevelSegments: 5,
-  curveSegments: 32,
-};
+// Approximates the source's 37.4pt black stroke: path 0's own fill dilated
+// outward (in X/Y only) so it silhouettes slightly larger than the blue
+// body sitting in front of it, producing the border peek-through.
+const OUTLINE_DILATE = 1.24;
 
-const PG_SVG_STRING = `<svg viewBox="0 0 432.071 445.383" xmlns="http://www.w3.org/2000/svg">
-  <g fill-rule="nonzero">
-    <path fill="#0a0f14" d="M323.205,324.227c2.833-23.601,1.984-27.062,19.563-23.239l4.463,0.392c13.517,0.615,31.199-2.174,41.587-7c22.362-10.376,35.622-27.7,13.572-23.148c-50.297,10.376-53.755-6.655-53.755-6.655c53.111-78.803,75.313-178.836,56.149-203.322 C352.514-5.534,262.036,26.049,260.522,26.869l-0.482,0.089c-9.938-2.062-21.06-3.294-33.554-3.496c-22.761-0.374-40.032,5.967-53.133,15.904c0,0-161.408-66.498-153.899,83.628c1.597,31.936,45.777,241.655,98.47,178.31 c19.259-23.163,37.871-42.748,37.871-42.748c9.242,6.14,20.307,9.272,31.912,8.147l0.897-0.765c-0.281,2.876-0.157,5.689,0.359,9.019c-13.572,15.167-9.584,17.83-36.723,23.416c-27.457,5.659-11.326,15.734-0.797,18.367c12.768,3.193,42.305,7.716,62.268-20.224 l-0.795,3.188c5.325,4.26,4.965,30.619,5.72,49.452c0.756,18.834,2.017,36.409,5.856,46.771c3.839,10.36,8.369,37.05,44.036,29.406c29.809-6.388,52.6-15.582,54.677-101.107"/>
-    <path fill="#336791" d="M402.395,271.23c-50.302,10.376-53.76-6.655-53.76-6.655c53.111-78.808,75.313-178.843,56.153-203.326c-52.27-66.785-142.752-35.2-144.262-34.38l-0.486,0.087c-9.938-2.063-21.06-3.292-33.56-3.496c-22.761-0.373-40.026,5.967-53.127,15.902 c0,0-161.411-66.495-153.904,83.63c1.597,31.938,45.776,241.657,98.471,178.312c19.26-23.163,37.869-42.748,37.869-42.748c9.243,6.14,20.308,9.272,31.908,8.147l0.901-0.765c-0.28,2.876-0.152,5.689,0.361,9.019c-13.575,15.167-9.586,17.83-36.723,23.416 c-27.459,5.659-11.328,15.734-0.796,18.367c12.768,3.193,42.307,7.716,62.266-20.224l-0.796,3.188c5.319,4.26,9.054,27.711,8.428,48.969c-0.626,21.259-1.044,35.854,3.147,47.254c4.191,11.4,8.368,37.05,44.042,29.406c29.809-6.388,45.256-22.942,47.405-50.555 c1.525-19.631,4.976-16.729,5.194-34.28l2.768-8.309c3.192-26.611,0.507-35.196,18.872-31.203l4.463,0.392c13.517,0.615,31.208-2.174,41.591-7c22.358-10.376,35.618-27.7,13.573-23.148z"/>
-    <path fill="#ffffff" d="M172.517,141.7c-0.288,2.039,3.733,7.48,8.976,8.207c5.234,0.73,9.714-3.522,9.998-5.559c0.284-2.039-3.732-4.285-8.977-5.015c-5.237-0.731-9.719,0.333-9.996,2.367z"/>
-    <path fill="#ffffff" d="M331.941,137.543c0.284,2.039-3.732,7.48-8.976,8.207c-5.238,0.73-9.718-3.522-10.005-5.559c-0.277-2.039,3.74-4.285,8.979-5.015c5.239-0.73,9.718,0.333,10.002,2.368z"/>
-  </g>
+// Faithful copy of public/Postgresql_elephant.svg, preserving the original
+// group-level stroke styling (white 12.4651pt round linework) that the
+// unfilled trunk/ear/tusk paths inherit.
+const POSTGRES_SVG_STRING = `<svg viewBox="0 0 432.071 445.383" xmlns="http://www.w3.org/2000/svg">
+<g style="fill:none;stroke:#FFFFFF;stroke-width:12.4651;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;">
+<path style="fill:#000000;stroke:#000000;stroke-width:37.3953;stroke-linecap:butt;stroke-linejoin:miter;" d="M323.205,324.227c2.833-23.601,1.984-27.062,19.563-23.239l4.463,0.392c13.517,0.615,31.199-2.174,41.587-7c22.362-10.376,35.622-27.7,13.572-23.148c-50.297,10.376-53.755-6.655-53.755-6.655c53.111-78.803,75.313-178.836,56.149-203.322    C352.514-5.534,262.036,26.049,260.522,26.869l-0.482,0.089c-9.938-2.062-21.06-3.294-33.554-3.496c-22.761-0.374-40.032,5.967-53.133,15.904c0,0-161.408-66.498-153.899,83.628c1.597,31.936,45.777,241.655,98.47,178.31    c19.259-23.163,37.871-42.748,37.871-42.748c9.242,6.14,20.307,9.272,31.912,8.147l0.897-0.765c-0.281,2.876-0.157,5.689,0.359,9.019c-13.572,15.167-9.584,17.83-36.723,23.416c-27.457,5.659-11.326,15.734-0.797,18.367c12.768,3.193,42.305,7.716,62.268-20.224    l-0.795,3.188c5.325,4.26,4.965,30.619,5.72,49.452c0.756,18.834,2.017,36.409,5.856,46.771c3.839,10.36,8.369,37.05,44.036,29.406c29.809-6.388,52.6-15.582,54.677-101.107"/>
+<path style="fill:#336791;stroke:none;" d="M402.395,271.23c-50.302,10.376-53.76-6.655-53.76-6.655c53.111-78.808,75.313-178.843,56.153-203.326c-52.27-66.785-142.752-35.2-144.262-34.38l-0.486,0.087c-9.938-2.063-21.06-3.292-33.56-3.496c-22.761-0.373-40.026,5.967-53.127,15.902    c0,0-161.411-66.495-153.904,83.63c1.597,31.938,45.776,241.657,98.471,178.312c19.26-23.163,37.869-42.748,37.869-42.748c9.243,6.14,20.308,9.272,31.908,8.147l0.901-0.765c-0.28,2.876-0.152,5.689,0.361,9.019c-13.575,15.167-9.586,17.83-36.723,23.416    c-27.459,5.659-11.328,15.734-0.796,18.367c12.768,3.193,42.307,7.716,62.266-20.224l-0.796,3.188c5.319,4.26,9.054,27.711,8.428,48.969c-0.626,21.259-1.044,35.854,3.147,47.254c4.191,11.4,8.368,37.05,44.042,29.406c29.809-6.388,45.256-22.942,47.405-50.555    c1.525-19.631,4.976-16.729,5.194-34.28l2.768-8.309c3.192-26.611,0.507-35.196,18.872-31.203l4.463,0.392c13.517,0.615,31.208-2.174,41.591-7c22.358-10.376,35.618-27.7,13.573-23.148z"/>
+<path d="M215.866,286.484c-1.385,49.516,0.348,99.377,5.193,111.495c4.848,12.118,15.223,35.688,50.9,28.045c29.806-6.39,40.651-18.756,45.357-46.051c3.466-20.082,10.148-75.854,11.005-87.281"/>
+<path d="M173.104,38.256c0,0-161.521-66.016-154.012,84.109c1.597,31.938,45.779,241.664,98.473,178.316c19.256-23.166,36.671-41.335,36.671-41.335"/>
+<path d="M260.349,26.207c-5.591,1.753,89.848-34.889,144.087,34.417c19.159,24.484-3.043,124.519-56.153,203.329"/>
+<path style="stroke-linejoin:bevel;" d="M348.282,263.953c0,0,3.461,17.036,53.764,6.653c22.04-4.552,8.776,12.774-13.577,23.155c-18.345,8.514-59.474,10.696-60.146-1.069c-1.729-30.355,21.647-21.133,19.96-28.739c-1.525-6.85-11.979-13.573-18.894-30.338    c-6.037-14.633-82.796-126.849,21.287-110.183c3.813-0.789-27.146-99.002-124.553-100.599c-97.385-1.597-94.19,119.762-94.19,119.762"/>
+<path d="M188.604,274.334c-13.577,15.166-9.584,17.829-36.723,23.417c-27.459,5.66-11.326,15.733-0.797,18.365c12.768,3.195,42.307,7.718,62.266-20.229c6.078-8.509-0.036-22.086-8.385-25.547c-4.034-1.671-9.428-3.765-16.361,3.994z"/>
+<path d="M187.715,274.069c-1.368-8.917,2.93-19.528,7.536-31.942c6.922-18.626,22.893-37.255,10.117-96.339c-9.523-44.029-73.396-9.163-73.436-3.193c-0.039,5.968,2.889,30.26-1.067,58.548c-5.162,36.913,23.488,68.132,56.479,64.938"/>
+<path style="fill:#FFFFFF;stroke-width:4.155;stroke-linecap:butt;stroke-linejoin:miter;" d="M172.517,141.7c-0.288,2.039,3.733,7.48,8.976,8.207c5.234,0.73,9.714-3.522,9.998-5.559c0.284-2.039-3.732-4.285-8.977-5.015c-5.237-0.731-9.719,0.333-9.996,2.367z"/>
+<path style="fill:#FFFFFF;stroke-width:2.0775;stroke-linecap:butt;stroke-linejoin:miter;" d="M331.941,137.543c0.284,2.039-3.732,7.48-8.976,8.207c-5.238,0.73-9.718-3.522-10.005-5.559c-0.277-2.039,3.74-4.285,8.979-5.015c5.239-0.73,9.718,0.333,10.002,2.368z"/>
+<path d="M350.676,123.432c0.863,15.994-3.445,26.888-3.988,43.914c-0.804,24.748,11.799,53.074-7.191,81.435"/>
+</g>
 </svg>`;
+
+function reorientAndScale(geometry: THREE.BufferGeometry) {
+  geometry.translate(-VIEWBOX_CENTER_X, -VIEWBOX_CENTER_Y, 0);
+  geometry.scale(SVG_SCALE, SVG_SCALE, SVG_SCALE);
+  return geometry;
+}
 
 export function PostgresqlLogoModel({ scale = 1 }: { scale?: number }) {
   const groupRef = useRef<THREE.Group>(null);
-  const [frameGeo, setFrameGeo] = useState<THREE.BufferGeometry | null>(null);
+  const [blackOutlineGeos, setBlackOutlineGeos] = useState<THREE.BufferGeometry[]>([]);
   const [bodyGeo, setBodyGeo] = useState<THREE.BufferGeometry | null>(null);
-  const [eyeLGeo, setEyeLGeo] = useState<THREE.BufferGeometry | null>(null);
-  const [eyeRGeo, setEyeRGeo] = useState<THREE.BufferGeometry | null>(null);
+  const [whiteLineGeos, setWhiteLineGeos] = useState<THREE.BufferGeometry[]>([]);
+  const [eyeGeos, setEyeGeos] = useState<THREE.BufferGeometry[]>([]);
 
-  // Smooth floating turntable motion
   useFrame((state) => {
     if (groupRef.current) {
       const t = state.clock.getElapsedTime();
@@ -76,55 +104,67 @@ export function PostgresqlLogoModel({ scale = 1 }: { scale?: number }) {
     }
   });
 
-  // Client-side SVG path parsing for PostgreSQL 3D elephant mascot
   useEffect(() => {
     if (typeof window === "undefined" || typeof DOMParser === "undefined") return;
 
     try {
       const loader = new SVGLoader();
-      const svgData = loader.parse(PG_SVG_STRING);
+      const svgData = loader.parse(POSTGRES_SVG_STRING);
+      const outlineRibbons: THREE.BufferGeometry[] = [];
+      const lineRibbons: THREE.BufferGeometry[] = [];
+      const eyes: THREE.BufferGeometry[] = [];
 
-      if (svgData.paths.length >= 4) {
-        // Path 0: Charcoal Black Outline Border Frame
-        const frameShapes = svgData.paths[0].toShapes();
-        if (frameShapes.length > 0) {
-          const fg = new THREE.ExtrudeGeometry(frameShapes, EXTRUDE_FRAME);
-          fg.computeVertexNormals();
-          fg.translate(-216, -222, 0);
-          fg.scale(0.0075, -0.0075, 0.0075);
-          setFrameGeo(fg);
+      svgData.paths.forEach((path) => {
+        const style = path.userData?.style as
+          | { fill?: string; stroke?: string; strokeWidth?: string | number }
+          | undefined;
+        const fill = style?.fill;
+        const stroke = style?.stroke;
+        const strokeWidth = Number(style?.strokeWidth) || 0;
+
+        // Filled regions (black silhouette base, blue body, white eyes).
+        if (fill && fill !== "none") {
+          const hexColor = "#" + path.color.getHexString();
+          const shapes = path.toShapes(true);
+          if (shapes.length === 0) return;
+
+          if (hexColor === PG_BLUE) {
+            const geo = reorientAndScale(new THREE.ExtrudeGeometry(shapes, EXTRUDE_BODY));
+            geo.computeVertexNormals();
+            setBodyGeo(geo);
+          } else if (hexColor === PG_WHITE) {
+            const geo = reorientAndScale(new THREE.ExtrudeGeometry(shapes, EXTRUDE_EYE));
+            geo.computeVertexNormals();
+            eyes.push(geo);
+          } else if (hexColor === PG_BLACK) {
+            const geo = new THREE.ExtrudeGeometry(shapes, EXTRUDE_OUTLINE);
+            geo.translate(-VIEWBOX_CENTER_X, -VIEWBOX_CENTER_Y, 0);
+            geo.scale(OUTLINE_DILATE, OUTLINE_DILATE, 1);
+            geo.scale(SVG_SCALE, SVG_SCALE, SVG_SCALE);
+            geo.computeVertexNormals();
+            outlineRibbons.push(geo);
+          }
         }
 
-        // Path 1: PostgreSQL Signature Steel Blue Body (#336791)
-        const bodyShapes = svgData.paths[1].toShapes();
-        if (bodyShapes.length > 0) {
-          const bg = new THREE.ExtrudeGeometry(bodyShapes, EXTRUDE_BODY);
-          bg.computeVertexNormals();
-          bg.translate(-216, -222, 0);
-          bg.scale(0.0075, -0.0075, 0.0075);
-          setBodyGeo(bg);
-        }
+        // Stroke-only trunk/ear/tusk linework (thin, simple curves -- the
+        // huge 37.4pt outline stroke on path 0 is handled above instead).
+        if (stroke && stroke !== "none" && strokeWidth > 6 && strokeWidth <= 20) {
+          path.subPaths.forEach((subPath) => {
+            const points = subPath.getPoints();
+            if (points.length < 2) return;
 
-        // Path 2: Left Eye Oval Highlight (#ffffff)
-        const eyeLShapes = svgData.paths[2].toShapes();
-        if (eyeLShapes.length > 0) {
-          const elg = new THREE.ExtrudeGeometry(eyeLShapes, EXTRUDE_ACCENT);
-          elg.computeVertexNormals();
-          elg.translate(-216, -222, 0);
-          elg.scale(0.0075, -0.0075, 0.0075);
-          setEyeLGeo(elg);
+            const ribbon = reorientAndScale(
+              SVGLoader.pointsToStroke(points, path.userData!.style as Parameters<typeof SVGLoader.pointsToStroke>[1])
+            );
+            ribbon.computeVertexNormals();
+            lineRibbons.push(ribbon);
+          });
         }
+      });
 
-        // Path 3: Right Eye Oval Highlight (#ffffff)
-        const eyeRShapes = svgData.paths[3].toShapes();
-        if (eyeRShapes.length > 0) {
-          const erg = new THREE.ExtrudeGeometry(eyeRShapes, EXTRUDE_ACCENT);
-          erg.computeVertexNormals();
-          erg.translate(-216, -222, 0);
-          erg.scale(0.0075, -0.0075, 0.0075);
-          setEyeRGeo(erg);
-        }
-      }
+      setBlackOutlineGeos(outlineRibbons);
+      setWhiteLineGeos(lineRibbons);
+      setEyeGeos(eyes);
     } catch (err) {
       console.warn("SVGLoader parsing error for PostgreSQL logo:", err);
     }
@@ -132,59 +172,54 @@ export function PostgresqlLogoModel({ scale = 1 }: { scale?: number }) {
 
   return (
     <group ref={groupRef} scale={scale}>
-      {/* 1. Charcoal Black Border Frame (Background z = 0.00) */}
-      {frameGeo && (
-        <mesh geometry={frameGeo} position={[0, 0, 0.0]} castShadow receiveShadow>
-          <meshStandardMaterial
-            color={PG_BLACK}
-            roughness={0.2}
-            metalness={0.3}
-            side={THREE.DoubleSide}
-          />
+      {blackOutlineGeos.map((geo, index) => (
+        <mesh key={index} geometry={geo} scale={[1, -1, 1]} position={[0, 0, -0.14]} castShadow receiveShadow>
+          <meshPhysicalMaterial color={PG_BLACK} roughness={0.5} metalness={0.1} clearcoat={0} side={THREE.DoubleSide} />
         </mesh>
-      )}
+      ))}
 
-      {/* 2. PostgreSQL Steel Blue Elephant Body (Midground z = +0.06) */}
       {bodyGeo && (
-        <mesh geometry={bodyGeo} position={[0, 0, 0.06]} castShadow receiveShadow>
-          <meshStandardMaterial
+        <mesh geometry={bodyGeo} scale={[1, -1, 1]} position={[0, 0, 0]} castShadow receiveShadow>
+          <meshPhysicalMaterial
             color={PG_BLUE}
-            roughness={0.15}
+            roughness={0.18}
             metalness={0.2}
             emissive={PG_BLUE}
-            emissiveIntensity={0.2}
+            emissiveIntensity={0.15}
+            clearcoat={0.8}
+            clearcoatRoughness={0.15}
             side={THREE.DoubleSide}
           />
         </mesh>
       )}
 
-      {/* 3. Pure White Left Eye Highlight (Foreground z = +0.14) */}
-      {eyeLGeo && (
-        <mesh geometry={eyeLGeo} position={[0, 0, 0.14]} castShadow receiveShadow>
-          <meshStandardMaterial
+      {whiteLineGeos.map((geo, index) => (
+        <mesh key={index} geometry={geo} scale={[1, -1, 1]} position={[0, 0, 0.2]} castShadow receiveShadow>
+          <meshPhysicalMaterial
             color={PG_WHITE}
-            roughness={0.05}
-            metalness={0.0}
-            emissive={PG_WHITE}
-            emissiveIntensity={0.2}
+            roughness={0.15}
+            metalness={0}
+            clearcoat={0.6}
+            clearcoatRoughness={0.15}
             side={THREE.DoubleSide}
           />
         </mesh>
-      )}
+      ))}
 
-      {/* 4. Pure White Right Eye Highlight (Foreground z = +0.14) */}
-      {eyeRGeo && (
-        <mesh geometry={eyeRGeo} position={[0, 0, 0.14]} castShadow receiveShadow>
-          <meshStandardMaterial
+      {eyeGeos.map((geo, index) => (
+        <mesh key={index} geometry={geo} scale={[1, -1, 1]} position={[0, 0, 0.23]} castShadow receiveShadow>
+          <meshPhysicalMaterial
             color={PG_WHITE}
             roughness={0.05}
-            metalness={0.0}
+            metalness={0}
             emissive={PG_WHITE}
-            emissiveIntensity={0.2}
+            emissiveIntensity={0.15}
+            clearcoat={1}
+            clearcoatRoughness={0.05}
             side={THREE.DoubleSide}
           />
         </mesh>
-      )}
+      ))}
     </group>
   );
 }
