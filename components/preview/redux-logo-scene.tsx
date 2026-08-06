@@ -11,10 +11,8 @@ function TurntableGroup({ children }: { children: React.ReactNode }) {
 
   useFrame((state) => {
     if (ref.current) {
-      ref.current.rotation.y =
-        Math.sin(state.clock.getElapsedTime() * 0.4) * 0.25;
-      ref.current.rotation.x =
-        Math.cos(state.clock.getElapsedTime() * 0.3) * 0.08;
+      ref.current.rotation.y = Math.sin(state.clock.getElapsedTime() * 0.4) * 0.25;
+      ref.current.rotation.x = Math.cos(state.clock.getElapsedTime() * 0.3) * 0.08;
     }
   });
 
@@ -25,8 +23,8 @@ export function ReduxLogoScene() {
   return (
     <CanvasErrorBoundary
       fallback={
-        <div className="flex h-full w-full items-center justify-center bg-neutral-900 text-white">
-          <p className="text-sm text-neutral-400">Redux 3D Model Preview</p>
+        <div className="flex h-full w-full items-center justify-center bg-[#f4f2fb] text-[#764abc]">
+          <p className="text-sm font-medium">Redux 3D Model Preview</p>
         </div>
       }
     >
@@ -37,37 +35,34 @@ export function ReduxLogoScene() {
         shadows
         camera={{ fov: 32, near: 0.1, far: 100, position: [0, 0, 8.5] }}
       >
-        <color attach="background" args={["#0d0918"]} />
+        <color attach="background" args={["#f4f2fb"]} />
 
-        {/* Soft Ambient Light */}
-        <ambientLight intensity={0.8} />
+        <ambientLight intensity={0.9} color="#ffffff" />
 
-        {/* Key Light casting clean specular glints */}
         <directionalLight
           position={[5, 6, 6]}
-          intensity={2.2}
+          intensity={2.5}
+          color="#ffffff"
           castShadow
           shadow-mapSize={[2048, 2048]}
           shadow-bias={-0.0001}
         />
 
-        {/* Redux Purple Accent Point Light */}
         <pointLight
-          position={[-4, -2, 4]}
-          intensity={2.0}
-          color="#764abc"
+          position={[2, 2, 5]}
+          intensity={1.5}
+          color="#a37ced"
           distance={15}
         />
 
-        {/* Cool Rim Light */}
         <directionalLight
           position={[-4, 4, 3]}
-          intensity={0.8}
-          color="#c9b4f0"
+          intensity={1.2}
+          color="#c8aeff"
         />
 
         <TurntableGroup>
-          <ReduxLogoModel scale={1.2} />
+          <ReduxLogoModel scale={1.1} />
         </TurntableGroup>
       </Canvas>
     </CanvasErrorBoundary>
