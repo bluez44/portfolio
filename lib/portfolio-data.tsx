@@ -140,10 +140,10 @@ export const aboutPanels: AboutIntroPanel[] = [
   },
 ];
 
-export const tierNames = ["Languages", "Frameworks", "Tools / DevOps"] as const;
+export const tierNames = ["Languages", "Frameworks", "Others"] as const;
 
 export const tierLegend = [
-  { kicker: "Tier 03", name: "Tools / DevOps" },
+  { kicker: "Tier 03", name: "Others" },
   { kicker: "Tier 02", name: "Frameworks" },
   { kicker: "Tier 01", name: "Languages · foundations" },
 ];
@@ -157,7 +157,7 @@ export const techs: TechItem[] = [
     prof: 92,
     profLabel: "Expert",
     years: "2+ yrs",
-    component: <TypeScriptLogoModel scale={0.4} />,
+    component: <TypeScriptLogoModel scale={0.3} />,
   },
   {
     tier: 0,
@@ -166,7 +166,7 @@ export const techs: TechItem[] = [
     prof: 95,
     profLabel: "Expert",
     years: "3+ yrs",
-    component: <JavascriptLogoModel scale={0.1} />,
+    component: <JavascriptLogoModel scale={0.07} />,
   },
   {
     tier: 0,
@@ -175,7 +175,7 @@ export const techs: TechItem[] = [
     prof: 60,
     profLabel: "Proficient",
     years: "1 yr",
-    component: <JavaLogoModel scale={0.4} />,
+    component: <JavaLogoModel scale={0.2} />,
   },
 
   // ── Tier 1 — Frameworks ──────────────────────────────────────────────────
@@ -186,7 +186,7 @@ export const techs: TechItem[] = [
     prof: 93,
     profLabel: "Expert",
     years: "2+ yrs",
-    component: <ReactLogoModel scale={0.4} />,
+    component: <ReactLogoModel scale={0.2} />,
   },
   {
     tier: 1,
@@ -195,7 +195,7 @@ export const techs: TechItem[] = [
     prof: 88,
     profLabel: "Expert",
     years: "1.5 yrs",
-    component: <NextjsLogoModel scale={0.4} />,
+    component: <NextjsLogoModel scale={0.2} />,
   },
   {
     tier: 1,
@@ -204,7 +204,7 @@ export const techs: TechItem[] = [
     prof: 82,
     profLabel: "Advanced",
     years: "1 yr",
-    component: <VuejsLogoModel scale={0.4} />,
+    component: <VuejsLogoModel scale={0.2} />,
   },
   {
     tier: 1,
@@ -213,7 +213,7 @@ export const techs: TechItem[] = [
     prof: 78,
     profLabel: "Advanced",
     years: "1 yr",
-    component: <NuxtLogoModel scale={0.4} />,
+    component: <NuxtLogoModel scale={0.2} />,
   },
   {
     tier: 1,
@@ -222,7 +222,7 @@ export const techs: TechItem[] = [
     prof: 85,
     profLabel: "Advanced",
     years: "1.5 yrs",
-    component: <ReactNativeLogoModel scale={0.4} />,
+    component: <ReactNativeLogoModel scale={0.2} />,
   },
   {
     tier: 1,
@@ -231,7 +231,7 @@ export const techs: TechItem[] = [
     prof: 80,
     profLabel: "Advanced",
     years: "1 yr",
-    component: <ExpoLogoModel scale={0.4} />,
+    component: <ExpoLogoModel scale={0.2} />,
   },
   {
     tier: 1,
@@ -240,7 +240,7 @@ export const techs: TechItem[] = [
     prof: 78,
     profLabel: "Advanced",
     years: "1 yr",
-    component: <NestJSLogoModel scale={0.4} />,
+    component: <NestJSLogoModel scale={0.2} />,
   },
   {
     tier: 1,
@@ -249,7 +249,7 @@ export const techs: TechItem[] = [
     prof: 82,
     profLabel: "Advanced",
     years: "2 yrs",
-    component: <NodeJSLogoModel scale={0.4} />,
+    component: <NodeJSLogoModel scale={0.2} />,
   },
   {
     tier: 1,
@@ -258,7 +258,7 @@ export const techs: TechItem[] = [
     prof: 60,
     profLabel: "Proficient",
     years: "1 yr",
-    component: <SpringBootLogoModel scale={0.4} />,
+    component: <SpringBootLogoModel scale={0.2} />,
   },
 
   // ── Tier 2 — Tools / DevOps ─────────────────────────────────────────────
@@ -269,7 +269,7 @@ export const techs: TechItem[] = [
     prof: 90,
     profLabel: "Expert",
     years: "2 yrs",
-    component: <TailwindCSSLogoModel scale={0.4} />,
+    component: <TailwindCSSLogoModel scale={0.2} />,
   },
   {
     tier: 2,
@@ -278,7 +278,7 @@ export const techs: TechItem[] = [
     prof: 75,
     profLabel: "Advanced",
     years: "1 yr",
-    component: <ReduxLogoModel scale={0.4} />,
+    component: <ReduxLogoModel scale={0.2} />,
   },
   {
     tier: 2,
@@ -287,7 +287,7 @@ export const techs: TechItem[] = [
     prof: 78,
     profLabel: "Advanced",
     years: "1 yr",
-    component: <PiniaLogoModel scale={0.4} />,
+    component: <PiniaLogoModel scale={0.2} />,
   },
   {
     tier: 2,
@@ -296,7 +296,7 @@ export const techs: TechItem[] = [
     prof: 72,
     profLabel: "Advanced",
     years: "0.5 yrs",
-    component: <SocketIOLogoModel scale={0.4} />,
+    component: <SocketIOLogoModel scale={0.2} />,
   },
   {
     tier: 2,
@@ -305,7 +305,7 @@ export const techs: TechItem[] = [
     prof: 70,
     profLabel: "Proficient",
     years: "1 yr",
-    component: <PostgresqlLogoModel scale={0.4} />,
+    component: <PostgresqlLogoModel scale={0.2} />,
   },
   {
     tier: 2,
@@ -314,7 +314,7 @@ export const techs: TechItem[] = [
     prof: 75,
     profLabel: "Advanced",
     years: "2 yrs",
-    component: <FigmaLogoModel scale={0.4} />,
+    component: <FigmaLogoModel scale={0.2} />,
   },
 ];
 
