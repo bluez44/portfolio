@@ -105,9 +105,9 @@ export function About() {
     >
       <div className="mx-auto max-w-280">
         <div ref={revealRef} className="mb-10 lg:mb-14">
-          <p className="mb-2.5 font-mono text-[12.5px] tracking-[0.18em] text-accent uppercase">
+          {/* <p className="mb-2.5 font-mono text-[12.5px] tracking-[0.18em] text-accent uppercase">
             01 / About
-          </p>
+          </p> */}
           <h2 className="mb-11 font-heading text-[clamp(1.8rem,4vw,2.6rem)] font-bold tracking-[-0.01em]">
             A little about me
           </h2>
@@ -158,9 +158,11 @@ export function About() {
                   <p className="font-mono text-[12px] tracking-[0.18em] text-accent uppercase">
                     {panel.kicker}
                   </p>
-                  <h3 className="mt-3 font-heading text-[clamp(1.4rem,2.3vw,2rem)] font-semibold tracking-[-0.01em] text-fg">
-                    {panel.title}
-                  </h3>
+                  {panel.title && (
+                    <h3 className="mt-3 font-heading text-[clamp(1.4rem,2.3vw,2rem)] font-semibold tracking-[-0.01em] text-fg">
+                      {panel.title}
+                    </h3>
+                  )}
 
                   {panel.description ? (
                     <p className="mt-4 text-[16.5px] leading-[1.85] text-muted">

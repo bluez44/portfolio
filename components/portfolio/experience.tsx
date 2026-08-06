@@ -27,9 +27,9 @@ export function Experience() {
       />
       <div className="mx-auto max-w-240">
         <div ref={headingRef}>
-          <p className="mb-2.5 font-mono text-[12.5px] tracking-[0.18em] text-accent uppercase">
+          {/* <p className="mb-2.5 font-mono text-[12.5px] tracking-[0.18em] text-accent uppercase">
             04 / Experience
-          </p>
+          </p> */}
           <h2 className="mb-14 font-heading text-[clamp(1.8rem,4vw,2.6rem)] font-bold tracking-[-0.01em]">
             Where I&apos;ve worked
           </h2>

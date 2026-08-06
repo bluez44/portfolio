@@ -90,9 +90,9 @@ export function Projects() {
       className="relative overflow-hidden py-[clamp(72px,8vw,100px)]"
     >
       <div className="mx-auto max-w-280 px-6">
-        <p className="mb-2.5 font-mono text-[12.5px] tracking-[0.18em] text-accent uppercase">
+        {/* <p className="mb-2.5 font-mono text-[12.5px] tracking-[0.18em] text-accent uppercase">
           03 / Projects
-        </p>
+        </p> */}
         <h2 className="font-heading text-[clamp(1.8rem,4vw,2.6rem)] font-bold tracking-[-0.01em]">
           Selected work
         </h2>

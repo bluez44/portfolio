@@ -102,7 +102,7 @@ export const stats: Stat[] = [
 export const aboutPanels: AboutIntroPanel[] = [
   {
     kicker: "Snapshot",
-    title: "A little about me",
+    title: "",
     description:
       "Hi, I'm Vo Le Quang Vinh (Tom), an HCMUT (Bach Khoa) alumnus and a software engineer specializing in the JS/TS ecosystem (React, Vue.js, NestJS, React Native). I love bridging the gap between robust system architecture and seamless, modern UI/UX design. I am passionate about engineering high-performance applications that don't compromise on technical depth or visual appeal. My experience spans challenging domains, most notably developing TrackNest, a real-time location tracking and SOS emergency platform utilizing background tasks and gRPC.",
     image: {

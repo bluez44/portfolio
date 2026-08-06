@@ -42,18 +42,27 @@ export function Contact() {
   return (
     <section
       id="contact"
-      className="border-t border-line px-6 py-[clamp(72px,10vw,120px)]"
-      style={{ background: "var(--bg2)" }}
+      className="relative border-t border-line px-6 py-[clamp(72px,10vw,120px)]"
+      // style={{ background: "var(--bg2)" }}
     >
+      <div className="absolute inset-0 -z-10 overflow-hidden opacity-20">
+        <video autoPlay loop muted playsInline className="">
+          <source src="/videos/earth.mp4" type="video/mp4" />
+        </video>
+      </div>
       <div ref={revealRef} className="mx-auto max-w-280">
-        <p className="mb-2.5 font-mono text-[12.5px] tracking-[0.18em] text-accent uppercase">
+        {/* <p className="mb-2.5 font-mono text-[12.5px] tracking-[0.18em] text-accent uppercase">
           06 / Contact
-        </p>
+        </p> */}
         <h2 className="mb-11 font-heading text-[clamp(1.8rem,4vw,2.6rem)] font-bold tracking-[-0.01em]">
           Let&apos;s build something
         </h2>
         <div className="grid items-start gap-11 grid-cols-[repeat(auto-fit,minmax(300px,1fr))]">
-          <form onSubmit={handleSubmit(onSubmit)} noValidate className="flex flex-col gap-4">
+          <form
+            onSubmit={handleSubmit(onSubmit)}
+            noValidate
+            className="flex flex-col gap-4"
+          >
             <label className="flex flex-col gap-1.75 text-[13px] font-semibold text-muted">
               Name
               <input
@@ -105,7 +114,8 @@ export function Contact() {
             </button>
             {status === "success" && (
               <p role="status" className="text-[13.5px] text-accent">
-                Message sent — thanks for reaching out, I&apos;ll reply within a day.
+                Message sent — thanks for reaching out, I&apos;ll reply within a
+                day.
               </p>
             )}
             {status === "error" && (
@@ -128,8 +138,12 @@ export function Contact() {
                 className="flex items-center justify-between gap-3 rounded-xl border border-panel-border bg-panel p-[17px_20px] backdrop-blur-sm transition hover:translate-x-1 hover:border-accent"
               >
                 <span className="flex flex-col gap-0.5">
-                  <span className="text-[14.5px] font-semibold">{social.label}</span>
-                  <span className="text-[12.5px] text-muted">{social.value}</span>
+                  <span className="text-[14.5px] font-semibold">
+                    {social.label}
+                  </span>
+                  <span className="text-[12.5px] text-muted">
+                    {social.value}
+                  </span>
                 </span>
                 <span aria-hidden className="text-accent">
                   ↗

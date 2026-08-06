@@ -10,9 +10,9 @@ export function Education() {
   return (
     <section id="education" className="px-6 py-[clamp(72px,10vw,120px)]">
       <div ref={revealRef} className="mx-auto max-w-280">
-        <p className="mb-2.5 font-mono text-[12.5px] tracking-[0.18em] text-accent uppercase">
+        {/* <p className="mb-2.5 font-mono text-[12.5px] tracking-[0.18em] text-accent uppercase">
           05 / Education
-        </p>
+        </p> */}
         <h2 className="mb-11 font-heading text-[clamp(1.8rem,4vw,2.6rem)] font-bold tracking-[-0.01em]">
           Education &amp; certifications
         </h2>
