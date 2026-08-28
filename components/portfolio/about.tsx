@@ -1,207 +1,197 @@
 "use client";
 
-import { useEffect, useRef } from "react";
-import type { CSSProperties } from "react";
-import gsap from "gsap";
-import { ScrollTrigger } from "gsap/ScrollTrigger";
+import Image from "next/image";
 import { useScrollReveal } from "@/lib/hooks/use-scroll-reveal";
 import { aboutPanels } from "@/lib/portfolio-data";
-import Image from "next/image";
-import { useMediaQuery } from "react-responsive";
+
+const PANEL_ACCENTS = ["tomato", "blue", "jade"] as const;
 
 export function About() {
-  const revealRef = useScrollReveal<HTMLDivElement>();
-  const contentRef = useRef<HTMLDivElement | null>(null);
-
-  const isMobile = useMediaQuery({
-    query: "(max-width: 1024px)",
-  });
-
-  // GSAP only animates panels after the first one (see querySelectorAll
-  // below), translating each further down via `y: 50 + index * 30`. Those
-  // panels are `lg:absolute`, so they don't contribute to the wrapper's
-  // layout height — without this reserved space, the last panel visually
-  // renders on top of the section's bottom padding instead of pushing it down.
-  const animatedPanelCount = Math.max(aboutPanels.length - 1, 0);
-  const panelStackOffset =
-    animatedPanelCount > 0 ? 50 + (animatedPanelCount - 1) * 30 : 0;
-
-  useEffect(() => {
-    const content = contentRef.current;
-    if (!content || isMobile) return;
-
-    gsap.registerPlugin(ScrollTrigger);
-
-    console.log("Setting up about panels scroll animation", isMobile);
-
-    const panels = Array.from(
-      content.querySelectorAll<HTMLElement>(
-        "[data-about-panel]:not([data-about-panel]:first-child)",
-      ),
-    );
-    if (panels.length === 0) return;
-
-    const reduceMotion = window.matchMedia(
-      "(prefers-reduced-motion: reduce)",
-    ).matches;
-    if (reduceMotion) return;
-
-    // gsap.set(panels, {});
-
-    const timeline = gsap.timeline({
-      scrollTrigger: {
-        trigger: content,
-        start: "top top",
-        end: "bottom top",
-        scrub: 1,
-        pin: true,
-        anticipatePin: 1,
-        invalidateOnRefresh: true,
-      },
-    });
-
-    panels.forEach((panel, index) => {
-      gsap.set(panel, {
-        zIndex: 30 + index * 10,
-        opacity: 0,
-        y: 200 + index * 30,
-        x: 20 + index * 50,
-        scale: 0.96,
-        transformOrigin: "top center",
-        willChange: "transform, opacity",
-      });
-
-      const start = index * 0.85;
-      timeline.to(
-        panel,
-        {
-          ease: "none",
-          keyframes: [
-            { opacity: 0.8, y: 200 + index * 30, scale: 1, duration: 0.45 },
-            {
-              y: 50 + index * 30,
-              x: 20 + index * 50,
-              opacity: 1,
-              scale: 0.98,
-              duration: 0.35,
-            },
-          ],
-        },
-        start,
-      );
-    });
-
-    return () => {
-      timeline.scrollTrigger?.kill();
-      timeline.kill();
-    };
-  }, [isMobile]);
+  const headerRef = useScrollReveal<HTMLDivElement>();
+  const panelsRef = useScrollReveal<HTMLDivElement>(true);
 
   return (
     <section
-      ref={contentRef}
       id="about"
-      className="px-6 py-[clamp(72px,10vw,120px)]"
+      className="relative px-6 py-[clamp(80px,10vw,140px)]"
     >
-      <div className="mx-auto max-w-280">
-        <div ref={revealRef} className="mb-10 lg:mb-14">
-          <p className="mb-2.5 font-mono text-[12.5px] tracking-[0.18em] text-accent uppercase">
-            01 / About
-          </p>
-          <h2 className="mb-11 font-heading text-[clamp(1.8rem,4vw,2.6rem)] font-bold tracking-[-0.01em]">
-            A little about me
+      <div className="mx-auto max-w-7xl">
+        {/* section head */}
+        <div ref={headerRef} className="mb-16 flex flex-col gap-6">
+          <div className="flex items-center gap-3">
+            <span className="font-mono text-[11px] tracking-[0.28em] text-ink-2 uppercase">
+              02 · About
+            </span>
+            <span aria-hidden className="h-px flex-1 max-w-40 bg-ink/20" />
+          </div>
+          <h2
+            className="font-heading font-bold leading-[0.95] tracking-[-0.035em] text-ink"
+            style={{
+              fontSize: "clamp(2.4rem, 6vw, 5rem)",
+              fontVariationSettings: '"wdth" 90, "opsz" 96',
+            }}
+          >
+            The person behind{" "}
+            <span className="relative inline-block">
+              <span
+                aria-hidden
+                className="absolute -inset-x-1 bottom-[12%] -z-0 h-[36%] bg-canary"
+                style={{ transform: "rotate(-1deg)" }}
+              />
+              <span className="relative z-10">the code.</span>
+            </span>
           </h2>
         </div>
 
-        <div
-          className="relative lg:pb-(--panel-stack-offset)"
-          style={
-            { "--panel-stack-offset": `${panelStackOffset}px` } as CSSProperties
-          }
-        >
-          {aboutPanels.map((panel, index) => (
-            <div
-              key={panel.kicker}
-              data-about-panel
-              className={`${index === 0 ? "relative" : "lg:absolute relative"} top-0 left-0 rounded-3xl border border-panel-border bg-panel/80 p-6 shadow-[0_24px_60px_rgba(0,0,0,0.18)] backdrop-blur-sm lg:p-8 mt-8`}
-            >
-              <div className="grid items-start gap-8 lg:grid-cols-[minmax(260px,320px)_1fr]">
-                <div className="relative max-w-95">
-                  <div
-                    role="img"
-                    aria-label={panel.image.alt}
-                    className="flex aspect-4/5 items-center justify-center overflow-hidden rounded-2xl border border-panel-border bg-bg2"
-                    style={{
-                      backgroundImage:
-                        "repeating-linear-gradient(-45deg, var(--panel) 0 12px, transparent 12px 24px)",
-                    }}
-                  >
-                    <Image
-                      src={panel.image.src}
-                      width={panel.image.width}
-                      height={panel.image.height}
-                      alt={panel.image.alt}
-                      className="h-full w-full object-cover"
-                    />
-                  </div>
-                  <div
-                    aria-hidden
-                    className="absolute -z-10 rounded-2xl border"
-                    style={{
-                      inset: "14px -14px -14px 14px",
-                      borderColor: "var(--accent-dim)",
-                    }}
-                  />
-                </div>
+        {/* three panels — asymmetric alternating */}
+        <div ref={panelsRef} className="flex flex-col gap-16 lg:gap-24">
+          {aboutPanels.map((panel, index) => {
+            const accent = PANEL_ACCENTS[index % PANEL_ACCENTS.length];
+            const reverse = index % 2 === 1;
+            const isMetrics = !!panel.stats;
 
-                <div>
-                  <p className="font-mono text-[12px] tracking-[0.18em] text-accent uppercase">
-                    {panel.kicker}
-                  </p>
-                  <h3 className="mt-3 font-heading text-[clamp(1.4rem,2.3vw,2rem)] font-semibold tracking-[-0.01em] text-fg">
+            return (
+              <article
+                key={panel.kicker}
+                className={`grid gap-8 lg:gap-14 ${
+                  isMetrics
+                    ? "lg:grid-cols-1"
+                    : reverse
+                      ? "lg:grid-cols-[5fr_7fr]"
+                      : "lg:grid-cols-[7fr_5fr]"
+                }`}
+              >
+                {/* text side (or full width for metrics) */}
+                <div
+                  className={`flex flex-col ${
+                    reverse && !isMetrics ? "lg:order-2" : ""
+                  }`}
+                >
+                  <div className="mb-5 flex items-baseline gap-4">
+                    <span
+                      className="font-heading text-6xl font-bold leading-none"
+                      style={{
+                        color: `var(--${accent})`,
+                        fontVariationSettings: '"wdth" 80, "opsz" 96',
+                      }}
+                    >
+                      0{index + 1}
+                    </span>
+                    <span className="font-mono text-[11px] tracking-[0.24em] text-ink-2 uppercase">
+                      / {panel.kicker}
+                    </span>
+                  </div>
+
+                  <h3
+                    className="mb-6 font-heading font-semibold leading-[1.05] tracking-[-0.02em] text-ink"
+                    style={{ fontSize: "clamp(1.6rem, 3.2vw, 2.4rem)" }}
+                  >
                     {panel.title}
                   </h3>
 
-                  {panel.description ? (
-                    <p className="mt-4 text-[16.5px] leading-[1.85] text-muted">
+                  {panel.description && (
+                    <p className="max-w-prose text-[17px] leading-[1.72] text-ink-2">
                       {panel.description}
                     </p>
-                  ) : null}
+                  )}
 
-                  {panel.body ? (
-                    <div className="mt-5 grid gap-4 md:grid-cols-3">
-                      {panel.body.map((item) => (
-                        <div
+                  {panel.body && (
+                    <ul className="mt-2 flex flex-col gap-3">
+                      {panel.body.map((item, i) => (
+                        <li
                           key={item}
-                          className="rounded-2xl border border-panel-border bg-bg2 p-4 text-[15px] leading-[1.7] text-muted"
+                          className="group flex items-start gap-4 border-b border-ink/12 pb-3 last:border-none"
                         >
-                          {item}
-                        </div>
+                          <span
+                            className="mt-1.5 flex-none font-mono text-[11px] tracking-[0.18em] text-ink-3 uppercase"
+                            style={{ minWidth: "2rem" }}
+                          >
+                            0{i + 1}
+                          </span>
+                          <span className="text-[17px] leading-[1.6] text-ink">
+                            {item}
+                          </span>
+                        </li>
                       ))}
-                    </div>
-                  ) : null}
+                    </ul>
+                  )}
 
-                  {panel.stats ? (
-                    <div className="mt-6 grid gap-3.5 grid-cols-[repeat(auto-fit,minmax(130px,1fr))]">
+                  {panel.stats && (
+                    <div className="grid gap-6 sm:grid-cols-3 lg:mt-4">
                       {panel.stats.map((stat) => (
                         <div
                           key={stat.label}
-                          className="rounded-xl border border-panel-border bg-bg2 p-[20px_18px]"
+                          className="relative rounded-[var(--r-round)] border-[1.5px] border-ink bg-paper p-6"
+                          style={{ boxShadow: "5px 5px 0 var(--tomato)" }}
                         >
-                          <p className="font-heading text-[30px] font-bold text-accent">
+                          <p
+                            className="font-heading text-6xl font-bold leading-none text-ink"
+                            style={{
+                              fontVariationSettings: '"wdth" 82, "opsz" 96',
+                            }}
+                          >
                             {stat.value}
                           </p>
-                          <p className="mt-1.5 text-[13px] text-muted">
+                          <p className="mt-3 text-[13px] leading-[1.5] text-ink-2">
                             {stat.label}
                           </p>
                         </div>
                       ))}
                     </div>
-                  ) : null}
+                  )}
                 </div>
-              </div>
-            </div>
-          ))}
+
+                {/* portrait side */}
+                {!isMetrics && (
+                  <div
+                    className={`relative ${
+                      reverse ? "lg:order-1" : ""
+                    }`}
+                  >
+                    <div
+                      className="relative overflow-hidden rounded-[var(--r-round)] border-[1.5px] border-ink bg-paper-2"
+                      style={{
+                        aspectRatio: "4/5",
+                        boxShadow: `8px 8px 0 var(--${accent})`,
+                      }}
+                    >
+                      {/* halftone texture overlay */}
+                      <span
+                        aria-hidden
+                        className="pointer-events-none absolute inset-0 z-10 opacity-25 mix-blend-multiply"
+                        style={{
+                          background:
+                            "radial-gradient(color-mix(in oklab, var(--ink) 20%, transparent) 1px, transparent 1.5px)",
+                          backgroundSize: "10px 10px",
+                        }}
+                      />
+                      <Image
+                        src={panel.image.src}
+                        width={panel.image.width}
+                        height={panel.image.height}
+                        alt={panel.image.alt}
+                        className="h-full w-full object-cover"
+                      />
+                    </div>
+                    {/* corner index chip */}
+                    <span
+                      className={`absolute -top-4 rounded-full border-[1.5px] border-ink px-3 py-1 font-mono text-[11px] tracking-[0.2em] uppercase ${
+                        reverse ? "-left-3" : "-right-3"
+                      }`}
+                      style={{
+                        background: `var(--${accent})`,
+                        color: "var(--paper)",
+                        boxShadow: "2px 2px 0 var(--ink)",
+                        transform: "rotate(-3deg)",
+                      }}
+                    >
+                      Fig · 0{index + 1}
+                    </span>
+                  </div>
+                )}
+              </article>
+            );
+          })}
         </div>
       </div>
     </section>

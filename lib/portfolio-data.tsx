@@ -82,7 +82,7 @@ export interface AboutIntroPanel {
   stats?: Stat[];
 }
 
-export const ACCENT_COLOR = "#3D8BFF";
+export const ACCENT_COLOR = "#EF4E2B";
 
 export const navLinks: NavLink[] = [
   { label: "About", href: "#about" },
