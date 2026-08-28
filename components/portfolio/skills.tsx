@@ -14,16 +14,18 @@ const TechScene = dynamic(
   { ssr: false },
 );
 
+const TIER_ACCENT = ["tomato", "blue", "jade"] as const;
+
 function WebglFallback() {
   return (
     <div
       className="flex h-[clamp(360px,50vh,520px)] items-center justify-center"
       style={{
         backgroundImage:
-          "repeating-linear-gradient(-45deg, var(--panel) 0 12px, transparent 12px 24px)",
+          "repeating-linear-gradient(-45deg, var(--paper-2) 0 12px, transparent 12px 24px)",
       }}
     >
-      <p className="font-mono text-[13px] text-muted">
+      <p className="font-mono text-[13px] text-ink-2">
         [ 3D unavailable on this device — skills listed below ]
       </p>
     </div>
@@ -31,7 +33,7 @@ function WebglFallback() {
 }
 
 export function Skills() {
-  const revealRef = useScrollReveal<HTMLDivElement>();
+  const headerRef = useScrollReveal<HTMLDivElement>();
   const chipsRef = useScrollReveal<HTMLDivElement>(true);
   const wrapperRef = useRef<HTMLDivElement>(null);
   const sceneRef = useRef<TechSceneHandle>(null);
@@ -41,9 +43,6 @@ export function Skills() {
   const [focusedIndex, setFocusedIndex] = useState<number | null>(null);
 
   useEffect(() => {
-    // Reading matchMedia is a browser-only API unavailable during SSR, so this value
-    // can only be determined after mount. This intentional state update in an effect
-    // is necessary to avoid a client/server mismatch. See react-hooks/set-state-in-effect.
     // eslint-disable-next-line react-hooks/set-state-in-effect
     setReducedMotion(
       window.matchMedia("(prefers-reduced-motion: reduce)").matches,
@@ -72,34 +71,85 @@ export function Skills() {
   return (
     <section
       id="skills"
-      className="border-y border-line px-6 py-[clamp(72px,10vw,120px)]"
-      style={{ background: "var(--bg2)" }}
+      className="relative border-t-[1.5px] border-ink px-6 py-[clamp(80px,10vw,140px)]"
+      style={{ background: "var(--paper-2)" }}
     >
-      <div className="mx-auto max-w-280">
-        <div ref={revealRef}>
-          {/* <p className="mb-2.5 font-mono text-[12.5px] tracking-[0.18em] text-accent uppercase">
-            02 / Skills
-          </p> */}
-          <h2 className="mb-3 font-heading text-[clamp(1.8rem,4vw,2.6rem)] font-bold tracking-[-0.01em]">
-            The knowledge path
-          </h2>
-          <p className="mb-8 max-w-150 text-[15.5px] leading-[1.7] text-muted">
-            A living map of my stack — foundations at the root, specialized
-            tools at the crown. Drag to orbit, click a node (or a chip below)
-            to inspect it.
-          </p>
+      <div className="mx-auto max-w-7xl">
+        {/* section head */}
+        <div ref={headerRef} className="mb-14 flex flex-col gap-6">
+          <div className="flex items-center gap-3">
+            <span className="font-mono text-[11px] tracking-[0.28em] text-ink-2 uppercase">
+              03 · Skills
+            </span>
+            <span aria-hidden className="h-px flex-1 max-w-40 bg-ink/20" />
+          </div>
+
+          <div className="flex flex-col gap-8 lg:flex-row lg:items-end lg:justify-between">
+            <h2
+              className="font-heading font-bold leading-[0.95] tracking-[-0.035em] text-ink"
+              style={{
+                fontSize: "clamp(2.4rem, 6vw, 5rem)",
+                fontVariationSettings: '"wdth" 90, "opsz" 96',
+              }}
+            >
+              The knowledge{" "}
+              <span
+                className="italic text-tomato"
+                style={{ fontVariationSettings: '"wdth" 82' }}
+              >
+                garden.
+              </span>
+            </h2>
+            <p className="max-w-md text-[16px] leading-[1.6] text-ink-2">
+              A living map of my stack — foundations at the root, specialised
+              tools at the crown. Drag to orbit, click a node or chip to inspect.
+            </p>
+          </div>
+
+          {/* tier legend row */}
+          <div className="mt-4 flex flex-wrap items-center gap-x-8 gap-y-3 border-t-[1.5px] border-ink/20 pt-4">
+            {tierLegend.map((tier, i) => (
+              <div key={tier.kicker} className="flex items-center gap-3">
+                <span
+                  aria-hidden
+                  className="grid h-6 w-6 place-items-center rounded-full border-[1.5px] border-ink font-mono text-[10px] font-bold"
+                  style={{
+                    background: `var(--${TIER_ACCENT[TIER_ACCENT.length - 1 - i]})`,
+                    color: "var(--paper)",
+                  }}
+                >
+                  {3 - i}
+                </span>
+                <div>
+                  <p className="font-mono text-[10px] tracking-[0.22em] text-ink-3 uppercase">
+                    {tier.kicker}
+                  </p>
+                  <p className="font-heading text-[14px] font-semibold text-ink">
+                    {tier.name}
+                  </p>
+                </div>
+              </div>
+            ))}
+          </div>
         </div>
 
+        {/* 3D orbit stage */}
         <div
           ref={wrapperRef}
-          className="relative overflow-hidden rounded-2xl border border-panel-border bg-bg"
-          style={{
-            backgroundImage:
-              "radial-gradient(ellipse 80% 70% at 50% 40%, var(--accent-dim) 0%, transparent 55%)",
-          }}
+          className="relative overflow-hidden rounded-[var(--r-round)] border-[1.5px] border-ink bg-paper"
+          style={{ boxShadow: "8px 8px 0 var(--ink)" }}
         >
+          {/* subtle radial bloom */}
+          <span
+            aria-hidden
+            className="pointer-events-none absolute inset-0 opacity-40"
+            style={{
+              background:
+                "radial-gradient(ellipse 70% 60% at 50% 45%, color-mix(in oklab, var(--tomato) 12%, transparent) 0%, transparent 65%)",
+            }}
+          />
           <CanvasErrorBoundary fallback={<WebglFallback />}>
-            <div className="h-[clamp(420px,62vh,640px)] cursor-grab [touch-action:pan-y]">
+            <div className="relative h-[clamp(420px,62vh,640px)] cursor-grab [touch-action:pan-y]">
               <TechScene
                 ref={sceneRef}
                 techs={techs}
@@ -112,23 +162,6 @@ export function Skills() {
             </div>
           </CanvasErrorBoundary>
 
-          <div
-            aria-hidden
-            className="pointer-events-none absolute top-1/2 left-5 hidden -translate-y-1/2 flex-col gap-11 md:flex"
-          >
-            {tierLegend.map((tier) => (
-              <div key={tier.kicker} className="flex items-center gap-2.5">
-                <span className="h-px w-5.5 bg-accent opacity-60" />
-                <div>
-                  <p className="font-mono text-[11px] tracking-[0.14em] text-accent uppercase">
-                    {tier.kicker}
-                  </p>
-                  <p className="mt-0.5 text-[12.5px] text-muted">{tier.name}</p>
-                </div>
-              </div>
-            ))}
-          </div>
-
           {focusedTech && (
             <TechFocusPanel
               tech={focusedTech}
@@ -136,44 +169,63 @@ export function Skills() {
             />
           )}
 
-          <div className="absolute bottom-3.5 left-4 flex flex-wrap items-center gap-2.5">
+          {/* stage controls */}
+          <div className="absolute bottom-4 left-4 flex flex-wrap items-center gap-3">
             <button
               onClick={toggleHands}
               aria-pressed={handOn}
-              className="rounded-full border px-3.5 py-2 text-xs font-semibold backdrop-blur-md transition hover:border-accent hover:text-accent"
+              className="rounded-full border-[1.5px] border-ink px-4 py-2 text-[12px] font-semibold transition-transform hover:-translate-y-0.5"
               style={{
-                borderColor: handOn ? "var(--accent)" : "var(--panel-border)",
-                background: handOn ? "var(--accent-dim)" : "var(--panel-strong)",
-                color: handOn ? "var(--accent)" : "var(--muted)",
+                background: handOn ? "var(--jade)" : "var(--paper)",
+                color: handOn ? "var(--paper)" : "var(--ink)",
+                boxShadow: "3px 3px 0 var(--ink)",
               }}
             >
-              {handOn ? "✕ Disable hand control" : "Enable hand control (webcam)"}
+              {handOn ? "✕ Hand control ON" : "◉ Enable hand control"}
             </button>
             {handStatus && (
-              <p role="status" className="max-w-[320px] text-xs text-muted">
+              <p
+                role="status"
+                className="max-w-[320px] rounded-full border-[1.5px] border-ink bg-paper px-3 py-1.5 text-[11px] text-ink-2"
+              >
                 {handStatus}
               </p>
             )}
           </div>
         </div>
 
-        <div ref={chipsRef} className="mt-7 flex flex-col gap-4">
-          {chipTiers.map((tier) => (
-            <div key={tier.name} className="flex flex-wrap items-center gap-2.5">
-              <p className="w-30 flex-none font-mono text-[11px] tracking-[0.12em] text-muted uppercase">
-                {tier.name}
-              </p>
-              {tier.items.map((item) => (
-                <button
-                  key={item.index}
-                  onClick={() => sceneRef.current?.focusTech(item.index)}
-                  className="rounded-full border border-panel-border bg-chip px-3.75 py-2 text-[13px] font-medium transition hover:border-accent hover:shadow-[0_0_14px_var(--glow)]"
+        {/* chip clusters */}
+        <div ref={chipsRef} className="mt-10 flex flex-col gap-6">
+          {chipTiers.map((tier, tierIdx) => {
+            const accent = TIER_ACCENT[tierIdx];
+            return (
+              <div
+                key={tier.name}
+                className="flex flex-wrap items-center gap-3"
+              >
+                <p
+                  className="flex w-36 flex-none items-center gap-2 font-mono text-[10px] tracking-[0.22em] text-ink-2 uppercase"
                 >
-                  {item.label}
-                </button>
-              ))}
-            </div>
-          ))}
+                  <span
+                    aria-hidden
+                    className="inline-block h-2 w-2 rounded-full border-[1.5px] border-ink"
+                    style={{ background: `var(--${accent})` }}
+                  />
+                  {tier.name}
+                </p>
+                {tier.items.map((item) => (
+                  <button
+                    key={item.index}
+                    onClick={() => sceneRef.current?.focusTech(item.index)}
+                    className="rounded-full border-[1.5px] border-ink bg-paper px-4 py-2 text-[13px] font-semibold text-ink transition-transform hover:-translate-y-0.5 hover:-translate-x-0.5"
+                    style={{ boxShadow: `2px 2px 0 var(--${accent})` }}
+                  >
+                    {item.label}
+                  </button>
+                ))}
+              </div>
+            );
+          })}
         </div>
       </div>
     </section>

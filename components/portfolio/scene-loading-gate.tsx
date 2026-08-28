@@ -41,31 +41,43 @@ export function SceneLoadingGate() {
     <div
       id="scene-loading-overlay"
       aria-hidden={ready}
-      className={`fixed inset-0 z-100 flex flex-col items-center justify-center gap-3 bg-bg transition-opacity duration-500 ${
+      role="status"
+      className={`fixed inset-0 z-100 flex flex-col items-center justify-center gap-5 bg-paper transition-opacity duration-500 ${
         ready ? "pointer-events-none opacity-0" : "opacity-100"
       }`}
     >
+      {/* halftone backdrop */}
+      <span
+        aria-hidden
+        className="pointer-events-none absolute inset-0 opacity-40 mix-blend-multiply"
+        style={{
+          background:
+            "radial-gradient(color-mix(in oklab, var(--ink) 8%, transparent) 1px, transparent 1.5px)",
+          backgroundSize: "22px 22px",
+        }}
+      />
+
       <Image
         src={LoadingCat}
         alt="Loading cat"
         width={200}
         height={200}
-        className="animate-spin-slow"
-        loading="eager"
+        className="relative animate-spin-slow"
       />
-      <div className="flex items-center gap-1">
+
+      <div className="relative flex items-center gap-2">
         <span
           aria-hidden
-          className="h-2.5 w-2.5 rounded-full bg-accent shadow-[0_0_10px_var(--glow)]"
-          style={{ animation: "pulse-dot 1.4s ease-in-out infinite" }}
+          className="h-2 w-2 rounded-full border-[1.5px] border-ink bg-tomato"
+          style={{
+            boxShadow: "1.5px 1.5px 0 var(--ink)",
+            animation: "pulse-dot 1.4s ease-in-out infinite",
+          }}
         />
-        <p className="font-mono text-[12px] tracking-[0.18em] text-muted uppercase">
+        <p className="font-mono text-[12px] tracking-[0.22em] text-ink-2 uppercase">
           Loading experience
         </p>
       </div>
-      <noscript>
-        <style>{"#scene-loading-overlay{display:none}"}</style>
-      </noscript>
     </div>
   );
 }

@@ -1,204 +1,200 @@
 "use client";
 
-import { useEffect, useRef } from "react";
-import gsap from "gsap";
-import { ScrollTrigger } from "gsap/ScrollTrigger";
+import { useScrollReveal } from "@/lib/hooks/use-scroll-reveal";
 import { projects, type Project } from "@/lib/portfolio-data";
 
-const ACCENT_GLOW = "rgba(61, 139, 255, 0.30)";
+const PROJECT_ACCENTS = ["blue", "tomato"] as const;
 
 export function Projects() {
-  const sectionRef = useRef<HTMLElement>(null);
-  const viewportRef = useRef<HTMLDivElement>(null);
-  const trackRef = useRef<HTMLDivElement>(null);
-  const progressRef = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    const section = sectionRef.current;
-    const viewport = viewportRef.current;
-    const track = trackRef.current;
-    const progress = progressRef.current;
-    if (!section || !viewport || !track || !progress) return;
-
-    const reduceMotion = window.matchMedia(
-      "(prefers-reduced-motion: reduce)",
-    ).matches;
-
-    // Reduced motion: skip the scroll-jacked scrub and rely on the browser's
-    // native horizontal scroll (touch swipe / shift+wheel), driving the
-    // progress bar off the real scrollLeft instead.
-    if (reduceMotion) {
-      const onScroll = () => {
-        const max = viewport.scrollWidth - viewport.clientWidth;
-        const pct = max > 0 ? (viewport.scrollLeft / max) * 100 : 0;
-        progress.style.width = `${pct}%`;
-      };
-      viewport.addEventListener("scroll", onScroll, { passive: true });
-      onScroll();
-      return () => viewport.removeEventListener("scroll", onScroll);
-    }
-
-    gsap.registerPlugin(ScrollTrigger);
-
-    // Native overflow-x-auto only ever moves via an explicit horizontal
-    // gesture (shift+wheel, trackpad swipe) — a plain vertical mouse wheel
-    // never scrolls it. Pin the section and drive the track's x-transform
-    // from the page's vertical scroll instead, so a normal desktop wheel
-    // makes the gallery glide sideways.
-    viewport.style.overflow = "hidden";
-
-    const getDistance = () => {
-      // The scroll distance must match the viewport's actual visible content
-      // width, not its full clientWidth — clientWidth includes the
-      // viewport's own px-6 padding (Tailwind class, not inline style), so
-      // subtracting it unadjusted under-scrolls the track by 2x that padding
-      // and clips the rightmost card.
-      const styles = window.getComputedStyle(viewport);
-      const paddingLeft = parseFloat(styles.paddingLeft) || 0;
-      const paddingRight = parseFloat(styles.paddingRight) || 0;
-      const visibleWidth = viewport.clientWidth - paddingLeft - paddingRight;
-      return Math.max(0, track.scrollWidth - visibleWidth);
-    };
-
-    const tween = gsap.to(track, {
-      x: () => -getDistance(),
-      ease: "none",
-      scrollTrigger: {
-        trigger: section,
-        start: "top top",
-        end: () => `+=${getDistance()}`,
-        pin: true,
-        scrub: 0.6,
-        invalidateOnRefresh: true,
-        onUpdate: (self) => {
-          progress.style.width = `${self.progress * 100}%`;
-        },
-      },
-    });
-
-    return () => {
-      tween.scrollTrigger?.kill();
-      tween.kill();
-      viewport.style.overflow = "";
-    };
-  }, []);
+  const headerRef = useScrollReveal<HTMLDivElement>();
 
   return (
     <section
-      ref={sectionRef}
       id="projects"
-      className="relative overflow-hidden py-[clamp(72px,8vw,100px)]"
+      className="relative px-6 py-[clamp(80px,10vw,140px)]"
     >
-      <div className="mx-auto max-w-280 px-6">
-        {/* <p className="mb-2.5 font-mono text-[12.5px] tracking-[0.18em] text-accent uppercase">
-          03 / Projects
-        </p> */}
-        <h2 className="font-heading text-[clamp(1.8rem,4vw,2.6rem)] font-bold tracking-[-0.01em]">
-          Selected work
-        </h2>
-        <p className="mt-2.5 text-sm text-muted">
-          Keep scrolling — the gallery glides sideways.
-        </p>
-      </div>
-      <div
-        ref={viewportRef}
-        className="container mx-auto overflow-x-auto px-6 py-8 [-webkit-overflow-scrolling:touch] overscroll-x-contain scrollbar-none"
-      >
-        <div
-          ref={trackRef}
-          className="flex w-max items-stretch gap-6 will-change-transform"
-        >
-          {projects.map((project) => (
-            <ProjectCard key={project.title} project={project} />
-          ))}
+      <div className="mx-auto max-w-7xl">
+        {/* section head */}
+        <div ref={headerRef} className="mb-16 flex flex-col gap-6">
+          <div className="flex items-center gap-3">
+            <span className="font-mono text-[11px] tracking-[0.28em] text-ink-2 uppercase">
+              04 · Projects
+            </span>
+            <span aria-hidden className="h-px flex-1 max-w-40 bg-ink/20" />
+          </div>
+          <div className="flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between">
+            <h2
+              className="font-heading font-bold leading-[0.95] tracking-[-0.035em] text-ink"
+              style={{
+                fontSize: "clamp(2.4rem, 6vw, 5rem)",
+                fontVariationSettings: '"wdth" 90, "opsz" 96',
+              }}
+            >
+              Selected{" "}
+              <span
+                className="italic text-blue"
+                style={{ fontVariationSettings: '"wdth" 82' }}
+              >
+                work.
+              </span>
+            </h2>
+            <p className="max-w-md text-[16px] leading-[1.6] text-ink-2">
+              Two case studies from the last twelve months — each shipped end
+              to end, from architecture to interaction detail.
+            </p>
+          </div>
         </div>
-      </div>
-      <div className="mx-auto max-w-280 px-6">
-        <div className="h-0.5 max-w-[320px] overflow-hidden rounded-full bg-line">
-          <div
-            ref={progressRef}
-            className="h-full w-0 bg-accent shadow-[0_0_8px_var(--glow)]"
-          />
+
+        {/* project spreads */}
+        <div className="flex flex-col gap-24 lg:gap-32">
+          {projects.map((project, index) => (
+            <ProjectSpread
+              key={project.title}
+              project={project}
+              index={index}
+              accent={PROJECT_ACCENTS[index % PROJECT_ACCENTS.length]}
+              reverse={index % 2 === 1}
+            />
+          ))}
         </div>
       </div>
     </section>
   );
 }
 
-function ProjectCard({ project }: { project: Project }) {
-  const cardRef = useRef<HTMLElement>(null);
-
-  const onEnter = () => {
-    if (!cardRef.current) return;
-    gsap.to(cardRef.current, {
-      y: -6,
-      boxShadow: `0 14px 40px rgba(0,0,0,.28), 0 0 24px ${ACCENT_GLOW}`,
-      duration: 0.35,
-      ease: "power2.out",
-    });
-  };
-
-  const onLeave = () => {
-    if (!cardRef.current) return;
-    gsap.to(cardRef.current, {
-      y: 0,
-      boxShadow: "0 0 0 rgba(0,0,0,0)",
-      duration: 0.45,
-      ease: "power2.out",
-    });
-  };
+function ProjectSpread({
+  project,
+  index,
+  accent,
+  reverse,
+}: {
+  project: Project;
+  index: number;
+  accent: (typeof PROJECT_ACCENTS)[number];
+  reverse: boolean;
+}) {
+  const spreadRef = useScrollReveal<HTMLElement>(true);
 
   return (
     <article
-      ref={cardRef}
-      onMouseEnter={onEnter}
-      onMouseLeave={onLeave}
-      className="flex w-[min(400px,80vw)] flex-none flex-col overflow-hidden rounded-2xl border border-panel-border bg-panel backdrop-blur-sm"
+      ref={spreadRef}
+      className={`grid gap-8 lg:gap-14 ${
+        reverse ? "lg:grid-cols-[5fr_7fr]" : "lg:grid-cols-[7fr_5fr]"
+      }`}
     >
+      {/* poster panel */}
       <div
-        role="img"
-        aria-label="Project preview placeholder"
-        className="relative aspect-video overflow-hidden border-b border-line"
+        className={`relative ${reverse ? "lg:order-2" : ""}`}
+        style={{ aspectRatio: "4/3" }}
       >
         <div
-          className="absolute inset-y-0 -inset-x-8 flex items-center justify-center bg-bg2"
+          className="relative flex h-full w-full flex-col justify-between overflow-hidden rounded-[var(--r-round)] border-[1.5px] border-ink p-8"
           style={{
-            backgroundImage:
-              "repeating-linear-gradient(-45deg, var(--chip) 0 12px, transparent 12px 24px)",
+            background: `var(--${accent})`,
+            boxShadow: "8px 8px 0 var(--ink)",
           }}
         >
-          <span className="font-mono text-[11.5px] tracking-[0.08em] text-muted">
-            [ project preview ]
-          </span>
+          {/* diagonal riso stripes */}
+          <span
+            aria-hidden
+            className="pointer-events-none absolute inset-0 opacity-25"
+            style={{
+              background:
+                "repeating-linear-gradient(-45deg, rgba(255,255,255,0.35) 0 2px, transparent 2px 22px)",
+            }}
+          />
+          {/* halftone dots */}
+          <span
+            aria-hidden
+            className="pointer-events-none absolute inset-0 opacity-30 mix-blend-multiply"
+            style={{
+              background:
+                "radial-gradient(rgba(0,0,0,0.4) 1px, transparent 1.5px)",
+              backgroundSize: "12px 12px",
+            }}
+          />
+          <div className="relative z-10 flex items-start justify-between">
+            <span className="font-mono text-[11px] tracking-[0.24em] text-paper/85 uppercase">
+              Case · 0{index + 1}
+            </span>
+            <span
+              className="grid h-10 w-10 place-items-center rounded-full border-[1.5px] border-ink bg-paper font-mono text-[11px] font-bold text-ink"
+              style={{ boxShadow: "2px 2px 0 var(--ink)" }}
+            >
+              0{index + 1}
+            </span>
+          </div>
+          <div className="relative z-10">
+            <h3
+              className="font-heading font-bold leading-[0.92] tracking-[-0.03em] text-paper"
+              style={{
+                fontSize: "clamp(2.6rem, 6.5vw, 5.5rem)",
+                fontVariationSettings: '"wdth" 82, "opsz" 96',
+              }}
+            >
+              {project.title}
+            </h3>
+            <p className="mt-3 font-mono text-[11px] tracking-[0.2em] text-paper/80 uppercase">
+              {project.tags.slice(0, 3).join(" · ")}
+            </p>
+          </div>
         </div>
       </div>
-      <div className="flex flex-1 flex-col p-5.5">
-        <h3 className="font-heading text-[19px] font-semibold">
+
+      {/* copy side */}
+      <div
+        className={`flex flex-col justify-center ${
+          reverse ? "lg:order-1" : ""
+        }`}
+      >
+        <div className="mb-4 flex items-baseline gap-4">
+          <span
+            className="font-heading text-6xl font-bold leading-none"
+            style={{
+              color: `var(--${accent})`,
+              fontVariationSettings: '"wdth" 80, "opsz" 96',
+            }}
+          >
+            0{index + 1}
+          </span>
+          <span className="font-mono text-[11px] tracking-[0.24em] text-ink-2 uppercase">
+            / Project
+          </span>
+        </div>
+
+        <h4
+          className="mb-5 font-heading font-semibold leading-[1.05] tracking-[-0.02em] text-ink"
+          style={{ fontSize: "clamp(1.6rem, 3.2vw, 2.4rem)" }}
+        >
           {project.title}
-        </h3>
-        <p className="mt-2.5 text-sm leading-[1.65] text-muted">
-          {project.desc}
-        </p>
-        <div className="mt-4 flex flex-wrap gap-2">
+        </h4>
+
+        <p className="text-[17px] leading-[1.72] text-ink-2">{project.desc}</p>
+
+        {/* tags — wrapped riso pills */}
+        <div className="mt-6 flex flex-wrap gap-2">
           {project.tags.map((tag) => (
             <span
               key={tag}
-              className="rounded-full bg-accent-dim px-2.75 py-1 font-mono text-[11px] tracking-[0.04em] text-accent"
+              className="rounded-full border-[1.5px] border-ink bg-paper px-3 py-1 font-mono text-[11px] tracking-[0.06em] text-ink"
             >
               {tag}
             </span>
           ))}
         </div>
-        <div className="mt-auto flex gap-4.5 border-t border-line pt-4.5">
+
+        {/* actions */}
+        <div className="mt-8 flex flex-wrap items-center gap-5 border-t-[1.5px] border-ink/15 pt-5">
           <a
             href="#"
-            className="inline-flex items-center gap-1.5 text-[13.5px] font-semibold text-accent"
+            className="riso-press inline-flex items-center gap-2 rounded-full border-[1.5px] border-ink bg-ink px-5 py-2.5 text-[13px] font-semibold text-paper"
+            style={{ boxShadow: `4px 4px 0 var(--${accent})` }}
           >
             Live Demo <span aria-hidden>↗</span>
           </a>
           <a
             href="#"
-            className="text-[13.5px] font-semibold text-muted transition-colors hover:text-accent"
+            className="text-[14px] font-semibold text-ink underline decoration-tomato decoration-[2px] underline-offset-[5px] transition-colors hover:text-tomato"
           >
             Source Code
           </a>
