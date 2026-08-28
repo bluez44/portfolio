@@ -2,38 +2,22 @@
 
 import dynamic from "next/dynamic";
 import { useEffect, useRef, useState } from "react";
-import { TypeAnimation } from "react-type-animation";
 import { CanvasErrorBoundary } from "./canvas-error-boundary";
-import { useTypewriterPairs } from "@/lib/hooks/use-typewriter-pairs";
-import { ACCENT_COLOR } from "@/lib/portfolio-data";
 
 const HeroScene = dynamic(
   () => import("./hero-scene").then((mod) => mod.HeroScene),
   { ssr: false },
 );
 
-const GREETINGS = [
-  { prefix: "Hi, I'm ", highlight: "Quang Vinh" },
-  { prefix: "Hello, my name's ", highlight: "Tom" },
-] as const;
-const ROLE_SEQUENCE = [
-  "Fullstack Developer",
-  1500,
-  "Frontend Developer",
-  1500,
-  "Fulltime Dreamer",
-  1500,
-];
+const ROLES = ["Fullstack Developer", "Frontend Developer", "Fulltime Dreamer"];
 
 export function Hero() {
   const sectionRef = useRef<HTMLElement>(null);
   const [visible, setVisible] = useState(true);
   const [reducedMotion, setReducedMotion] = useState(false);
+  const [roleIndex, setRoleIndex] = useState(0);
 
   useEffect(() => {
-    // Reading matchMedia is a browser-only API unavailable during SSR, so this value
-    // can only be determined after mount. This intentional state update in an effect
-    // is necessary to avoid a client/server mismatch. See react-hooks/set-state-in-effect.
     // eslint-disable-next-line react-hooks/set-state-in-effect
     setReducedMotion(
       window.matchMedia("(prefers-reduced-motion: reduce)").matches,
@@ -51,9 +35,14 @@ export function Hero() {
     return () => observer.disconnect();
   }, []);
 
-  const { prefix, highlight } = useTypewriterPairs(GREETINGS, {
-    reducedMotion,
-  });
+  useEffect(() => {
+    if (reducedMotion) return;
+    const id = setInterval(
+      () => setRoleIndex((i) => (i + 1) % ROLES.length),
+      2600,
+    );
+    return () => clearInterval(id);
+  }, [reducedMotion]);
 
   return (
     <section
@@ -61,98 +50,197 @@ export function Hero() {
       ref={sectionRef}
       className="relative flex min-h-screen items-center overflow-hidden"
     >
+      {/* 3D bg — subtle grid + particle mist */}
       <CanvasErrorBoundary fallback={null}>
         <HeroScene
-          accent={ACCENT_COLOR}
+          accent="#7a7a83"
           visible={visible}
           reducedMotion={reducedMotion}
         />
       </CanvasErrorBoundary>
+
+      {/* atmospheric vignette to soften the grid edges */}
       <div
         className="pointer-events-none absolute inset-0"
         style={{
           background:
-            "radial-gradient(ellipse 70% 55% at 50% 45%, transparent 30%, var(--bg) 100%)",
+            "radial-gradient(ellipse 75% 60% at 55% 40%, transparent 25%, var(--paper) 92%)",
         }}
       />
-      <div className="relative z-10 mx-auto w-full max-w-280 px-6 pt-30 pb-20">
-        <p className="mb-4.5 flex items-center font-mono text-[13px] tracking-[0.18em] text-accent uppercase">
-          <span
-            aria-hidden
-            className="mr-2.5 inline-block h-1.75 w-1.75 rounded-full bg-accent shadow-[0_0_10px_var(--glow)]"
-            style={{ animation: "pulse-dot 2.4s ease-in-out infinite" }}
-          />
-          Available for work
-        </p>
-        <h1
-          aria-label={`${GREETINGS[0].prefix}${GREETINGS[0].highlight}`}
-          className="font-heading text-[clamp(2.7rem,7.5vw,5.4rem)] leading-[1.04] font-bold tracking-[-0.02em]"
+
+      {/* grand entrance — one-time halftone sweep on load */}
+      {!reducedMotion && <div aria-hidden className="grand-entrance" />}
+
+      {/* soft tomato bloom top-right — atmosphere without more halftone */}
+      <div
+        aria-hidden
+        className="pointer-events-none absolute top-0 right-0 h-[70vh] w-[55vw] opacity-30"
+        style={{
+          background:
+            "radial-gradient(circle at 80% 30%, color-mix(in oklab, var(--tomato) 30%, transparent), transparent 60%)",
+        }}
+      />
+      <div
+        aria-hidden
+        className="pointer-events-none absolute bottom-0 left-0 h-[50vh] w-[45vw] opacity-25"
+        style={{
+          background:
+            "radial-gradient(circle at 20% 70%, color-mix(in oklab, var(--blue) 25%, transparent), transparent 55%)",
+        }}
+      />
+
+      <div className="relative z-10 mx-auto flex w-full max-w-7xl flex-col px-6 pt-32 pb-24">
+        {/* editorial index label */}
+        <div
+          className="reveal flex items-center gap-3"
+          style={{ animationDelay: "80ms" }}
         >
-          <span aria-hidden="true">
-            {prefix}
-            <span className="text-accent">{highlight}</span>
-            {!reducedMotion && (
-              <span
-                aria-hidden
-                className="ml-1 inline-block h-[0.85em] w-0.75 translate-y-[0.1em] bg-current align-middle"
-                style={{ animation: "caret-blink 1s step-end infinite" }}
-              />
-            )}
+          <span className="font-mono text-[11px] tracking-[0.28em] text-ink-2 uppercase">
+            01 · Intro
+          </span>
+          <span aria-hidden className="h-px flex-1 max-w-40 bg-ink/25" />
+        </div>
+
+        {/* availability ribbon */}
+        <div
+          className="reveal mt-6 self-start"
+          style={{ animationDelay: "160ms" }}
+        >
+          <span
+            className="inline-flex items-center gap-2 rounded-full border-[1.5px] border-ink bg-jade px-4 py-1.5 text-[12px] font-semibold tracking-[0.16em] text-paper uppercase"
+            style={{
+              boxShadow: "3px 3px 0 var(--ink)",
+              transform: "rotate(-3deg)",
+            }}
+          >
+            <span
+              aria-hidden
+              className="inline-block h-1.5 w-1.5 rounded-full bg-paper"
+              style={{ animation: "pulse-dot 2.2s ease-in-out infinite" }}
+            />
+            Available for work · 2026
+          </span>
+        </div>
+
+        {/* massive display headline */}
+        <h1
+          className="reveal mt-10 font-heading font-bold leading-[0.95] tracking-[-0.035em] text-ink"
+          style={{
+            animationDelay: "260ms",
+            fontSize: "clamp(3rem, 9vw, 7.5rem)",
+            fontVariationSettings: '"wdth" 88, "opsz" 96',
+          }}
+        >
+          <span className="block">Hi, I&apos;m</span>
+          <span className="relative inline-block">
+            <span
+              aria-hidden
+              className="absolute -inset-x-2 bottom-[10%] -z-0 h-[38%] bg-canary"
+              style={{ transform: "rotate(-1deg)" }}
+            />
+            <span className="relative z-10 text-ink">Quang Vinh.</span>
           </span>
         </h1>
-        {reducedMotion ? (
-          <p
-            aria-label={ROLE_SEQUENCE[0] as string}
-            className="mt-4.5 font-heading text-[clamp(1.25rem,2.6vw,1.8rem)] font-medium text-accent"
+
+        {/* rotating role — no typewriter, just soft fade */}
+        <p
+          className="reveal mt-4 font-heading text-tomato font-medium"
+          style={{
+            animationDelay: "360ms",
+            fontSize: "clamp(1.4rem, 3vw, 2rem)",
+          }}
+          aria-live="polite"
+        >
+          <span
+            key={roleIndex}
+            className="inline-block"
+            style={{
+              animation: reducedMotion
+                ? "none"
+                : "ink-drop 480ms var(--ease) both",
+            }}
           >
-            {ROLE_SEQUENCE[0]}
-          </p>
-        ) : (
-          <TypeAnimation
-            wrapper="p"
-            aria-label={ROLE_SEQUENCE[0] as string}
-            sequence={ROLE_SEQUENCE}
-            repeat={Infinity}
-            speed={44}
-            deletionSpeed={66}
-            preRenderFirstString
-            className="mt-4.5 font-heading text-[clamp(1.25rem,2.6vw,1.8rem)] font-medium text-accent"
-          />
-        )}
-        <p className="mt-5.5 max-w-140 text-[clamp(1rem,1.6vw,1.125rem)] leading-[1.7] text-muted">
-          Fullstack Software Engineer crafting fast, scalable web and mobile
-          applications with a focus on clean architecture and intuitive user
-          experiences.
+            {ROLES[roleIndex]}
+          </span>
+          <span className="text-ink-3"> —</span>
         </p>
-        <div className="mt-9.5 flex flex-wrap gap-3.5">
+
+        {/* supporting paragraph */}
+        <p
+          className="reveal mt-8 max-w-xl text-[17px] leading-[1.65] text-ink-2"
+          style={{ animationDelay: "460ms" }}
+        >
+          Fullstack Software Engineer crafting fast, scalable web and mobile
+          applications. I care about clean architecture, generous typography,
+          and interfaces that don&apos;t feel like everyone else&apos;s.
+        </p>
+
+        {/* CTAs — riso offset shadow, no glow */}
+        <div
+          className="reveal mt-10 flex flex-wrap items-center gap-4"
+          style={{ animationDelay: "560ms" }}
+        >
           <a
             href="#projects"
-            className="rounded-lg bg-accent px-6.5 py-3.25 text-[15px] font-semibold text-white shadow-[0_0_24px_var(--glow)] transition hover:-translate-y-0.5 hover:shadow-[0_0_36px_var(--glow)]"
+            className="riso-press inline-flex items-center gap-2.5 rounded-full border-[1.5px] border-ink bg-tomato px-7 py-3.5 text-[15px] font-semibold text-paper"
+            style={{ boxShadow: "5px 5px 0 var(--ink)" }}
           >
             View Projects
+            <span aria-hidden>→</span>
           </a>
           <a
             href="#contact"
-            className="rounded-lg border border-panel-border bg-panel px-6.5 py-3.25 text-[15px] font-semibold backdrop-blur-sm transition hover:-translate-y-0.5 hover:border-accent hover:text-accent"
+            className="riso-press inline-flex items-center gap-2.5 rounded-full border-[1.5px] border-ink bg-paper px-7 py-3.5 text-[15px] font-semibold text-ink"
+            style={{ boxShadow: "5px 5px 0 var(--blue)" }}
           >
             Contact Me
           </a>
+          <a
+            href="/Resume - Vo Le Quang Vinh.pdf"
+            download
+            className="ml-1 hidden text-[14px] font-medium text-ink-2 underline decoration-tomato decoration-[2px] underline-offset-[6px] hover:text-ink sm:inline-block"
+          >
+            or grab the CV ↓
+          </a>
+        </div>
+
+        {/* meta strip */}
+        <div
+          className="reveal mt-16 flex flex-wrap items-end justify-between gap-6 border-t-[1.5px] border-ink/20 pt-5"
+          style={{ animationDelay: "680ms" }}
+        >
+          <div className="flex flex-wrap gap-x-8 gap-y-3">
+            {[
+              { k: "Based", v: "Ho Chi Minh City, VN" },
+              { k: "Stack", v: "React · Next · Vue · React Native" },
+              { k: "Currently", v: "@ TalentGetGo" },
+            ].map((item) => (
+              <div key={item.k} className="flex flex-col gap-0.5">
+                <span className="font-mono text-[10px] tracking-[0.22em] text-ink-3 uppercase">
+                  {item.k}
+                </span>
+                <span className="font-heading text-[15px] font-semibold text-ink">
+                  {item.v}
+                </span>
+              </div>
+            ))}
+          </div>
+          <a
+            href="#about"
+            aria-label="Scroll to About"
+            className="group flex items-center gap-3 font-mono text-[11px] tracking-[0.24em] text-ink-2 uppercase transition-colors hover:text-tomato"
+          >
+            Scroll
+            <span
+              aria-hidden
+              className="grid h-9 w-9 place-items-center rounded-full border-[1.5px] border-ink text-ink transition-transform group-hover:translate-y-1"
+              style={{ boxShadow: "2px 2px 0 var(--ink)" }}
+            >
+              ↓
+            </span>
+          </a>
         </div>
       </div>
-      <a
-        href="#about"
-        aria-label="Scroll to About"
-        className="absolute bottom-7 left-1/2 flex -translate-x-1/2 flex-col items-center gap-2 text-[12px] tracking-[0.2em] text-muted uppercase"
-      >
-        scroll
-        <span className="relative block h-12.5 w-7.5 rounded-full border border-muted">
-          <span
-            aria-hidden
-            className="animate-pulse absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 h-8.5 w-1.25 rounded-b-full rounded-t-full"
-            style={{ background: "linear-gradient(white, transparent)" }}
-          />
-        </span>
-      </a>
     </section>
   );
 }

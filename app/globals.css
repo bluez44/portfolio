@@ -1,46 +1,135 @@
 @import "tailwindcss";
 
-:root {
-  --bg: #0b0d11;
-  --bg2: #0e1218;
-  --text: #e9edf2;
-  --muted: #96a0ac;
-  --accent: #3d8bff;
-  --accent-dim: rgba(61, 139, 255, 0.14);
-  --glow: rgba(61, 139, 255, 0.35);
-  --line: rgba(255, 255, 255, 0.08);
-  --panel: rgba(255, 255, 255, 0.04);
-  --panel-strong: rgba(17, 22, 30, 0.72);
-  --panel-border: rgba(255, 255, 255, 0.09);
-  --header-bg: rgba(11, 13, 17, 0.72);
-  --chip: rgba(255, 255, 255, 0.06);
+/* ────────────────────────────────────────────────────────────────
+   RESTRAINED RISO — design tokens
+   surface = warm paper, ink = softened black, 4 saturated accents
+   used sparingly. Light-first.
+   ──────────────────────────────────────────────────────────────── */
 
-  ::-webkit-scrollbar {
-    display: none;
-  }
+:root {
+  /* surfaces — warm off-white, cream restrained */
+  --paper: #fbf8f2;
+  --paper-2: #f2ede2;
+  --paper-3: #e7e1d3;
+
+  /* ink */
+  --ink: #1c1b1f;
+  --ink-2: #4a4a52;
+  --ink-3: #7a7a83;
+
+  /* accents (restrained riso quartet) */
+  --tomato: #ef4e2b;
+  --tomato-ink: #c53814;
+  --blue: #1240e5;
+  --blue-ink: #0a2eb0;
+  --canary: #f5c518;
+  --canary-ink: #b8900a;
+  --jade: #0f8f65;
+  --jade-ink: #0a6a4a;
+
+  /* semantic aliases (kept for legacy component classes) */
+  --bg: var(--paper);
+  --bg2: var(--paper-2);
+  --text: var(--ink);
+  --muted: var(--ink-2);
+  --accent: var(--tomato);
+  --accent-2: var(--blue);
+  --accent-dim: color-mix(in oklab, var(--tomato) 14%, transparent);
+  --glow: color-mix(in oklab, var(--tomato) 30%, transparent);
+  --line: color-mix(in oklab, var(--ink) 12%, transparent);
+  --panel: color-mix(in oklab, var(--paper) 88%, var(--ink) 4%);
+  --panel-strong: color-mix(in oklab, var(--paper) 96%, var(--ink) 2%);
+  --panel-border: color-mix(in oklab, var(--ink) 14%, transparent);
+  --header-bg: color-mix(in oklab, var(--paper) 82%, transparent);
+  --chip: color-mix(in oklab, var(--ink) 6%, transparent);
+  --halftone: color-mix(in oklab, var(--ink) 7%, transparent);
+
+  /* elevation — riso offset shadows (no blur, no glow) */
+  --offset-sm: 3px 3px 0 var(--ink);
+  --offset-md: 5px 5px 0 var(--ink);
+  --offset-lg: 8px 8px 0 var(--ink);
+  --offset-tomato: 5px 5px 0 var(--tomato);
+  --offset-blue: 5px 5px 0 var(--blue);
+  --offset-canary: 5px 5px 0 var(--canary);
+  --offset-jade: 5px 5px 0 var(--jade);
+
+  /* radius */
+  --r-sharp: 0px;
+  --r-soft: 6px;
+  --r-round: 14px;
+  --r-pill: 999px;
+
+  /* motion */
+  --ease: cubic-bezier(0.22, 1, 0.36, 1);
+  --ease-in: cubic-bezier(0.7, 0, 0.84, 0);
+  --dur-fast: 180ms;
+  --dur-base: 320ms;
+  --dur-lush: 620ms;
 }
 
-[data-theme="light"] {
-  --bg: #f3f5f8;
-  --bg2: #eaeef4;
-  --text: #161b22;
-  --muted: #5a6572;
-  --accent-dim: rgba(61, 139, 255, 0.12);
-  --glow: rgba(61, 139, 255, 0.28);
-  --line: rgba(12, 22, 34, 0.1);
-  --panel: rgba(255, 255, 255, 0.62);
-  --panel-strong: rgba(255, 255, 255, 0.82);
-  --panel-border: rgba(12, 22, 34, 0.09);
-  --header-bg: rgba(243, 245, 248, 0.78);
-  --chip: rgba(12, 22, 34, 0.05);
+[data-theme="dark"] {
+  --paper: #14120e;
+  --paper-2: #1e1b16;
+  --paper-3: #2a2620;
+
+  --ink: #f1ead8;
+  --ink-2: #a69f91;
+  --ink-3: #6f695d;
+
+  --tomato: #ff6b4a;
+  --tomato-ink: #ffa48c;
+  --blue: #6a8cff;
+  --blue-ink: #a7b8ff;
+  --canary: #ffd65c;
+  --canary-ink: #ffe89a;
+  --jade: #4fbf97;
+  --jade-ink: #86d5b4;
+
+  --bg: var(--paper);
+  --bg2: var(--paper-2);
+  --text: var(--ink);
+  --muted: var(--ink-2);
+  --accent: var(--tomato);
+  --accent-2: var(--blue);
+  --accent-dim: color-mix(in oklab, var(--tomato) 20%, transparent);
+  --glow: color-mix(in oklab, var(--tomato) 40%, transparent);
+  --line: color-mix(in oklab, var(--ink) 14%, transparent);
+  --panel: color-mix(in oklab, var(--paper) 82%, var(--ink) 4%);
+  --panel-strong: color-mix(in oklab, var(--paper-2) 92%, transparent);
+  --panel-border: color-mix(in oklab, var(--ink) 18%, transparent);
+  --header-bg: color-mix(in oklab, var(--paper) 78%, transparent);
+  --chip: color-mix(in oklab, var(--ink) 8%, transparent);
+  --halftone: color-mix(in oklab, var(--ink) 12%, transparent);
+
+  --offset-sm: 3px 3px 0 var(--ink-3);
+  --offset-md: 5px 5px 0 var(--ink-3);
+  --offset-lg: 8px 8px 0 var(--ink-3);
 }
 
 @theme inline {
+  --color-paper: var(--paper);
+  --color-paper-2: var(--paper-2);
+  --color-paper-3: var(--paper-3);
+  --color-ink: var(--ink);
+  --color-ink-2: var(--ink-2);
+  --color-ink-3: var(--ink-3);
+
+  --color-tomato: var(--tomato);
+  --color-tomato-ink: var(--tomato-ink);
+  --color-blue: var(--blue);
+  --color-blue-ink: var(--blue-ink);
+  --color-canary: var(--canary);
+  --color-canary-ink: var(--canary-ink);
+  --color-jade: var(--jade);
+  --color-jade-ink: var(--jade-ink);
+
+  /* legacy aliases */
   --color-bg: var(--bg);
   --color-bg2: var(--bg2);
   --color-fg: var(--text);
   --color-muted: var(--muted);
   --color-accent: var(--accent);
+  --color-accent-2: var(--accent-2);
   --color-accent-dim: var(--accent-dim);
   --color-line: var(--line);
   --color-panel: var(--panel);
@@ -48,17 +137,156 @@
   --color-panel-border: var(--panel-border);
   --color-header-bg: var(--header-bg);
   --color-chip: var(--chip);
-  --font-heading: var(--font-space-grotesk);
-  --font-sans: var(--font-manrope);
+  --color-halftone: var(--halftone);
+
+  --font-heading: var(--font-bricolage);
+  --font-sans: var(--font-instrument);
+  --font-mono: var(--font-jetbrains);
 }
+
+/* ────────────────────────────────────────────────────────────────
+   base
+   ──────────────────────────────────────────────────────────────── */
+
+::-webkit-scrollbar {
+  display: none;
+}
+
+body {
+  background: var(--paper);
+  color: var(--ink);
+  font-family: var(--font-instrument), "Helvetica Neue", Helvetica, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  transition:
+    background 0.4s var(--ease),
+    color 0.4s var(--ease);
+}
+
+/* halftone dot texture — very subtle, layered on paper */
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 1;
+  background-image: radial-gradient(
+    var(--halftone) 1px,
+    transparent 1px
+  );
+  background-size: 28px 28px;
+  opacity: 0.28;
+  mix-blend-mode: multiply;
+}
+
+[data-theme="dark"] body::before {
+  mix-blend-mode: screen;
+  opacity: 0.35;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+  transition: color var(--dur-fast) var(--ease);
+}
+
+::selection {
+  background: var(--canary);
+  color: var(--ink);
+}
+
+input:focus-visible,
+textarea:focus-visible,
+button:focus-visible,
+a:focus-visible {
+  outline: 2.5px solid var(--blue);
+  outline-offset: 3px;
+  border-radius: var(--r-pill);
+}
+
+/* screen-reader-only helper */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* skip-to-content link — visible only on keyboard focus */
+.skip-link {
+  position: fixed;
+  top: -100px;
+  left: 12px;
+  z-index: 200;
+  padding: 10px 16px;
+  border: 1.5px solid var(--ink);
+  border-radius: var(--r-pill);
+  background: var(--tomato);
+  color: var(--paper);
+  font: 600 13px/1 var(--font-instrument), sans-serif;
+  box-shadow: 3px 3px 0 var(--ink);
+  transition: top var(--dur-base) var(--ease);
+}
+.skip-link:focus-visible {
+  top: 12px;
+  outline: none;
+}
+
+/* ────────────────────────────────────────────────────────────────
+   typography helpers
+   ──────────────────────────────────────────────────────────────── */
+
+.display {
+  font-family: var(--font-bricolage), Georgia, serif;
+  font-variation-settings: "wdth" 90, "opsz" 96;
+  letter-spacing: -0.03em;
+  line-height: 0.95;
+  font-weight: 700;
+}
+
+.kicker {
+  font-family: var(--font-jetbrains), monospace;
+  font-size: 12px;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  /* color inherits from context so .kicker works on both light + dark surfaces */
+}
+
+/* ────────────────────────────────────────────────────────────────
+   utility: riso offset + press
+   ──────────────────────────────────────────────────────────────── */
+
+.riso-press {
+  transition:
+    transform var(--dur-fast) var(--ease),
+    box-shadow var(--dur-fast) var(--ease);
+}
+.riso-press:hover {
+  transform: translate(-2px, -2px);
+  box-shadow: 7px 7px 0 var(--ink);
+}
+.riso-press:active {
+  transform: translate(1px, 1px);
+  box-shadow: 2px 2px 0 var(--ink);
+}
+
+/* ────────────────────────────────────────────────────────────────
+   keyframes
+   ──────────────────────────────────────────────────────────────── */
 
 @keyframes pulse-dot {
   0%,
   100% {
-    opacity: 0.5;
+    opacity: 0.6;
+    transform: scale(1);
   }
   50% {
     opacity: 1;
+    transform: scale(1.15);
   }
 }
 
@@ -73,37 +301,97 @@
   }
 }
 
-body {
-  background: var(--bg);
-  color: var(--text);
-  font-family: var(--font-manrope), "Helvetica Neue", Helvetica, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  transition:
-    background 0.35s ease,
-    color 0.35s ease;
+@keyframes ink-drop {
+  0% {
+    opacity: 0;
+    transform: translateY(24px) scale(0.98);
+    filter: blur(6px);
+  }
+  60% {
+    filter: blur(0);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+    filter: blur(0);
+  }
 }
 
-a {
-  color: var(--text);
-  text-decoration: none;
-  transition: color 0.25s ease;
+@keyframes ribbon-flag {
+  0% {
+    transform: rotate(-4deg) translateX(-8px);
+    opacity: 0;
+  }
+  100% {
+    transform: rotate(-4deg) translateX(0);
+    opacity: 1;
+  }
 }
 
-::selection {
-  background: var(--accent-dim);
-  color: var(--text);
+@keyframes halftone-sweep {
+  0% {
+    transform: translateX(-110%) skewX(-14deg);
+    opacity: 0;
+  }
+  35% {
+    opacity: 0.45;
+  }
+  100% {
+    transform: translateX(110%) skewX(-14deg);
+    opacity: 0;
+  }
 }
 
-input:focus-visible,
-textarea:focus-visible,
-button:focus-visible,
-a:focus-visible {
-  outline: 2px solid var(--accent);
-  outline-offset: 2px;
+.grand-entrance {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 20;
+  background: repeating-linear-gradient(
+    -45deg,
+    color-mix(in oklab, var(--tomato) 22%, transparent) 0 4px,
+    transparent 4px 12px
+  );
+  animation: halftone-sweep 1400ms var(--ease) 120ms both;
+}
+
+@keyframes shine {
+  0% {
+    background-position: 200% 0;
+  }
+  100% {
+    background-position: -200% 0;
+  }
+}
+
+.reveal {
+  opacity: 0;
+  animation: ink-drop var(--dur-lush) var(--ease) forwards;
 }
 
 @media (prefers-reduced-motion: reduce) {
   html {
     scroll-behavior: auto;
+  }
+  .reveal,
+  .grand-entrance {
+    animation: none;
+    opacity: 1;
+  }
+  .grand-entrance {
+    display: none;
+  }
+  * {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+  }
+}
+
+@media (max-width: 640px) {
+  /* halftone texture disabled on small screens for perf + readability */
+  body::before {
+    background-size: 40px 40px;
+    opacity: 0.18;
   }
 }

@@ -245,18 +245,27 @@ function OrbitRings({ accent }: { accent: string }) {
 function TechLights({ accent }: { accent: string }) {
   return (
     <>
-      <ambientLight intensity={0.55} />
+      {/* Balanced fill so PBR materials read on a light background */}
+      <ambientLight intensity={1.4} />
+      <hemisphereLight
+        args={["#fbf8f2", "#1c1b1f", 0.9]}
+      />
+      <directionalLight
+        color={0xffffff}
+        intensity={1.6}
+        position={[4, 6, 5]}
+      />
+      <directionalLight
+        color={0xffffff}
+        intensity={0.9}
+        position={[-5, -2, 4]}
+      />
+      {/* accent kicker — subtle warm tint only, no dominant colour cast */}
       <pointLight
         color={accent}
-        intensity={1.1}
+        intensity={0.55}
         distance={40}
         position={[3, 5, 5]}
-      />
-      <pointLight
-        color={0xffffff}
-        intensity={0.35}
-        distance={40}
-        position={[-4, -2, 4]}
       />
     </>
   );
