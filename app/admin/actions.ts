@@ -18,8 +18,14 @@ export async function loginAction(prevState: any, formData: FormData) {
 
   const reqHeaders = await headers();
   const ip = reqHeaders.get('x-forwarded-for') || 'Unknown IP';
-  const country = reqHeaders.get('x-vercel-ip-country') || 'Unknown Country';
-  const city = reqHeaders.get('x-vercel-ip-city') || 'Unknown City';
+  const rawCountry = reqHeaders.get('x-vercel-ip-country') || 'Unknown Country';
+  const rawCity = reqHeaders.get('x-vercel-ip-city') || 'Unknown City';
+  
+  let country = rawCountry;
+  let city = rawCity;
+  try { country = decodeURIComponent(rawCountry); } catch {}
+  try { city = decodeURIComponent(rawCity); } catch {}
+
   const userAgent = reqHeaders.get('user-agent') || 'Unknown Device';
   
   const success = username === validUsername && password === validPassword;

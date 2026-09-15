@@ -28,8 +28,14 @@ export async function GET() {
 // Create a new visitor record
 export async function POST(request: Request) {
   const ip = request.headers.get('x-forwarded-for') || 'Unknown IP';
-  const country = request.headers.get('x-vercel-ip-country') || 'Unknown Country';
-  const city = request.headers.get('x-vercel-ip-city') || 'Unknown City';
+  const rawCountry = request.headers.get('x-vercel-ip-country') || 'Unknown Country';
+  const rawCity = request.headers.get('x-vercel-ip-city') || 'Unknown City';
+  
+  let country = rawCountry;
+  let city = rawCity;
+  try { country = decodeURIComponent(rawCountry); } catch {}
+  try { city = decodeURIComponent(rawCity); } catch {}
+
   const userAgent = request.headers.get('user-agent') || 'Unknown Device';
 
   try {

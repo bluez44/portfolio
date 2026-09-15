@@ -61,7 +61,15 @@ export default function VisitorList() {
           {visitors.map((v) => (
             <tr key={v.id} className="hover:bg-zinc-900/30 transition">
               <td className="px-6 py-4">{v.ip}</td>
-              <td className="px-6 py-4">{v.city}, {v.country}</td>
+              <td className="px-6 py-4">
+                {(() => {
+                  let city = v.city;
+                  let country = v.country;
+                  try { city = decodeURIComponent(v.city); } catch {}
+                  try { country = decodeURIComponent(v.country); } catch {}
+                  return `${city}, ${country}`;
+                })()}
+              </td>
               <td className="px-6 py-4 max-w-xs truncate" title={v.userAgent}>
                 {v.userAgent}
               </td>
