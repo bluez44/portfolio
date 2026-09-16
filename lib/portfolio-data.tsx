@@ -17,6 +17,9 @@ import { FigmaLogoModel } from "@/components/preview/figma-logo-model";
 import { JavaLogoModel } from "@/components/preview/java-logo-model";
 import { JavascriptLogoModel } from "@/components/preview/javascript-logo-model";
 import { WebRTCLogoModel } from "@/components/preview/webrtc-logo-model";
+import { WordpressLogoModel } from "@/components/preview/wordpress-logo-model";
+import { VercelLogoModel } from "@/components/preview/vercel-logo-model";
+import { ClaudeLogoModel } from "@/components/preview/claude-logo-model";
 
 export interface NavLink {
   label: string;
@@ -227,6 +230,13 @@ export const techs: TechItem[] = [
     component: <SpringBootLogoModel scale={0.2} />,
   },
 
+  {
+    tier: 1,
+    label: "WordPress",
+    desc: "CMS-driven corporate sites — maintained and modernized a legacy company website alongside custom theme and template work.",
+    component: <WordpressLogoModel scale={0.2} />,
+  },
+
   // ── Tier 2 — Tools / DevOps ─────────────────────────────────────────────
   {
     tier: 2,
@@ -269,6 +279,18 @@ export const techs: TechItem[] = [
     label: "WebRTC",
     desc: "Ultra-low latency P2P communication — powered the real-time multiplayer gameplay and PeerJS integrations in HandFight.",
     component: <WebRTCLogoModel scale={0.2} />,
+  },
+  {
+    tier: 2,
+    label: "Vercel",
+    desc: "Deployment platform for Next.js — shipped and managed Proof of Concepts in a professional setting for rapid testing and stakeholder demos.",
+    component: <VercelLogoModel scale={0.2} />,
+  },
+  {
+    tier: 2,
+    label: "Claude",
+    desc: "My daily AI pair for chat, code, and UI/UX prototyping — extended with skills, MCP servers, and connectors to wire it into real workflows.",
+    component: <ClaudeLogoModel scale={0.2} />,
   },
 ];
 
