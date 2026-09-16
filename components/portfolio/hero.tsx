@@ -213,7 +213,7 @@ export function Hero() {
             {[
               { k: "Based", v: "Ho Chi Minh City, VN" },
               { k: "Stack", v: "React · Next · Vue · React Native" },
-              { k: "Currently", v: "@ TalentGetGo" },
+              { k: "Currently", v: "Open to opportunities" },
             ].map((item) => (
               <div key={item.k} className="flex flex-col gap-0.5">
                 <span className="font-mono text-[10px] tracking-[0.22em] text-ink-3 uppercase">
