@@ -58,6 +58,10 @@ export interface Project {
   title: string;
   desc: string;
   tags: string[];
+  /** Public source repository. Omit when there is nothing to link yet. */
+  repo?: string;
+  /** Live deployment. Omit when the project is not hosted anywhere. */
+  demo?: string;
 }
 
 export interface Role {
@@ -342,11 +346,13 @@ export const projects: Project[] = [
     title: "TrackNest",
     desc: "An event-driven, microservices-based safety platform with real-time background location tracking, SOS emergency response, and anomaly detection. Built a React Native mobile app and Next.js web dashboard integrated via API Gateway, gRPC, and Kafka event streams.",
     tags: ["React Native", "Next.js", "Expo", "gRPC", "Spring Boot", "Google Maps API"],
+    repo: "https://github.com/NguyenVu04/track-nest",
   },
   {
     title: "HandFight",
     desc: "A web-based multiplayer fighting game with real-time hand-tracking controls powered by MediaPipe. Features ultra-low latency P2P gameplay via WebRTC (PeerJS), with a NestJS + Socket.io signaling server for room creation and matchmaking.",
     tags: ["React", "NestJS", "WebRTC", "Socket.io", "MediaPipe", "Tailwind CSS"],
+    repo: "https://github.com/bluez44/Handfight",
   },
   {
     title: "Upcoming",
