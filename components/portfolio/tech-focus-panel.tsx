@@ -2,7 +2,7 @@
 
 import { X } from "lucide-react";
 
-import { tierNames, type TechItem } from "@/lib/portfolio-data";
+import { TECH_LEVELS, tierNames, type TechItem } from "@/lib/portfolio-data";
 
 const TIER_ACCENT = ["tomato", "blue", "jade"] as const;
 
@@ -14,6 +14,7 @@ export function TechFocusPanel({
   onClose: () => void;
 }) {
   const accent = TIER_ACCENT[tech.tier];
+  const levelIndex = TECH_LEVELS.indexOf(tech.level);
   return (
     <div
       role="dialog"
@@ -55,23 +56,49 @@ export function TechFocusPanel({
               Proficiency
             </span>
             <span className="font-heading text-[13px] font-semibold text-ink">
-              {tech.profLabel} · {tech.prof}%
+              {tech.level}
             </span>
           </div>
-          <div className="h-3 overflow-hidden rounded-full border-[1.5px] border-ink bg-paper-2">
-            <div
-              className="h-full transition-[width] duration-700"
-              style={{
-                width: `${tech.prof}%`,
-                background: `repeating-linear-gradient(-45deg, var(--${accent}) 0 6px, color-mix(in oklab, var(--${accent}) 65%, var(--ink)) 6px 12px)`,
-              }}
-            />
+
+          {/* Stepped meter — one segment per named level, filled up to this
+              tech's own step. Replaces the old percentage bar: a number implies
+              a precision nobody can defend. */}
+          <div
+            role="img"
+            aria-label={`Proficiency: ${tech.level} — step ${levelIndex + 1} of ${TECH_LEVELS.length}`}
+            className="flex gap-1.5"
+          >
+            {TECH_LEVELS.map((step, index) => {
+              const filled = index <= levelIndex;
+              return (
+                <span
+                  key={step}
+                  title={step}
+                  className="h-3 flex-1 rounded-[3px] border-[1.5px] border-ink transition-colors duration-500"
+                  style={
+                    filled
+                      ? {
+                          background: `repeating-linear-gradient(-45deg, var(--${accent}) 0 6px, color-mix(in oklab, var(--${accent}) 65%, var(--ink)) 6px 12px)`,
+                        }
+                      : { background: "var(--paper-2)" }
+                  }
+                />
+              );
+            })}
+          </div>
+
+          <div className="mt-1.5 flex justify-between font-mono text-[9px] tracking-[0.16em] text-ink-3 uppercase">
+            <span>{TECH_LEVELS[0]}</span>
+            <span>{TECH_LEVELS[TECH_LEVELS.length - 1]}</span>
           </div>
         </div>
-        <p className="mt-4 font-mono text-[11px] tracking-[0.14em] text-ink-2 uppercase">
-          Experience —{" "}
-          <span className="font-semibold text-ink">{tech.years}</span>
-        </p>
+
+        {tech.years ? (
+          <p className="mt-4 font-mono text-[11px] tracking-[0.14em] text-ink-2 uppercase">
+            Experience —{" "}
+            <span className="font-semibold text-ink">{tech.years}</span>
+          </p>
+        ) : null}
       </div>
     </div>
   );
