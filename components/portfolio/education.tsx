@@ -1,6 +1,7 @@
 "use client";
 
-import Link from "next/link";
+import { ShieldCheck } from "lucide-react";
+
 import { useScrollReveal } from "@/lib/hooks/use-scroll-reveal";
 import { certifications, education } from "@/lib/portfolio-data";
 
@@ -164,11 +165,29 @@ export function Education() {
                       </p>
                     </div>
                   </div>
-                  <span
-                    className="inline-flex items-center rounded-full border-[1.5px] border-ink px-2.5 py-0.5 font-mono text-[10px] font-bold tracking-[0.1em] text-ink uppercase"
-                    style={{ background: "var(--canary)" }}
-                  >
-                    {cert.year}
+                  <span className="inline-flex items-center gap-2">
+                    <span
+                      className="inline-flex items-center rounded-full border-[1.5px] border-ink px-2.5 py-0.5 font-mono text-[10px] font-bold tracking-[0.1em] text-ink uppercase"
+                      style={{ background: "var(--canary)" }}
+                    >
+                      {cert.year}
+                    </span>
+
+                    {/* Verify — only rendered for credentials that publish a
+                        public verification URL. */}
+                    {cert.link ? (
+                      <a
+                        href={cert.link}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        title={`Verify: ${cert.name}`}
+                        aria-label={`Verify ${cert.name} (opens in a new tab)`}
+                        className="grid h-6 w-6 flex-none place-items-center rounded-full border-[1.5px] border-ink bg-paper text-ink transition-all hover:-translate-y-0.5 hover:bg-jade hover:text-paper"
+                        style={{ boxShadow: "2px 2px 0 var(--ink)" }}
+                      >
+                        <ShieldCheck size={14} strokeWidth={2} />
+                      </a>
+                    ) : null}
                   </span>
                 </div>
               ))}
