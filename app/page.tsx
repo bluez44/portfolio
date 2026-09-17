@@ -8,10 +8,12 @@ import { Education } from "@/components/portfolio/education";
 import { Contact } from "@/components/portfolio/contact";
 import { Footer } from "@/components/portfolio/footer";
 import { SceneLoadingGate } from "@/components/portfolio/scene-loading-gate";
+import { VisitorTracker } from "@/components/VisitorTracker";
 
 export default function Home() {
   return (
     <>
+      <VisitorTracker />
       <Header />
       <main>
         <Hero />

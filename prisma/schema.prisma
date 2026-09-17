@@ -1,0 +1,28 @@
+generator client {
+  provider = "prisma-client"
+  output   = "../generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model UserStats {
+  id        String   @id @default(uuid())
+  ip        String
+  country   String
+  city      String
+  userAgent String
+  createdAt DateTime @default(now())
+}
+
+model AdminLoginHistory {
+  id        String   @id @default(uuid())
+  ip        String
+  country   String
+  city      String
+  userAgent String
+  createdAt DateTime @default(now())
+  username  String
+  success   Boolean
+}

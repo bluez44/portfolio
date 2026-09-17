@@ -75,6 +75,19 @@ function ProjectSpread({
 }) {
   const spreadRef = useScrollReveal<HTMLElement>(true);
 
+  // A live deployment is the headline action when there is one; otherwise the
+  // repo is promoted into the filled button so the row keeps its visual weight
+  // instead of collapsing to a lone underlined link.
+  const primaryAction = project.demo
+    ? { href: project.demo, label: "Live Demo" }
+    : project.repo
+      ? { href: project.repo, label: "Source Code" }
+      : null;
+  const secondaryAction =
+    project.demo && project.repo
+      ? { href: project.repo, label: "Source Code" }
+      : null;
+
   return (
     <article
       ref={spreadRef}
@@ -183,22 +196,32 @@ function ProjectSpread({
           ))}
         </div>
 
-        {/* actions */}
-        <div className="mt-8 flex flex-wrap items-center gap-5 border-t-[1.5px] border-ink/15 pt-5">
-          <a
-            href="#"
-            className="riso-press inline-flex items-center gap-2 rounded-full border-[1.5px] border-ink bg-ink px-5 py-2.5 text-[13px] font-semibold text-paper"
-            style={{ boxShadow: `4px 4px 0 var(--${accent})` }}
-          >
-            Live Demo <span aria-hidden>↗</span>
-          </a>
-          <a
-            href="#"
-            className="text-[14px] font-semibold text-ink underline decoration-tomato decoration-[2px] underline-offset-[5px] transition-colors hover:text-tomato"
-          >
-            Source Code
-          </a>
-        </div>
+        {/* actions — hidden entirely for placeholder entries with no links */}
+        {primaryAction ? (
+          <div className="mt-8 flex flex-wrap items-center gap-5 border-t-[1.5px] border-ink/15 pt-5">
+            <a
+              href={primaryAction.href}
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label={`${primaryAction.label} — ${project.title} (opens in a new tab)`}
+              className="riso-press inline-flex items-center gap-2 rounded-full border-[1.5px] border-ink bg-ink px-5 py-2.5 text-[13px] font-semibold text-paper"
+              style={{ boxShadow: `4px 4px 0 var(--${accent})` }}
+            >
+              {primaryAction.label} <span aria-hidden>↗</span>
+            </a>
+            {secondaryAction ? (
+              <a
+                href={secondaryAction.href}
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label={`${secondaryAction.label} — ${project.title} (opens in a new tab)`}
+                className="text-[14px] font-semibold text-ink underline decoration-tomato decoration-[2px] underline-offset-[5px] transition-colors hover:text-tomato"
+              >
+                {secondaryAction.label}
+              </a>
+            ) : null}
+          </div>
+        ) : null}
       </div>
     </article>
   );
