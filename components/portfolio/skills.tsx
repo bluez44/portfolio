@@ -118,7 +118,7 @@ export function Skills() {
                     color: "var(--paper)",
                   }}
                 >
-                  {3 - i}
+                  {i + 1}
                 </span>
                 <div>
                   <p className="font-mono text-[10px] tracking-[0.22em] text-ink-3 uppercase">
