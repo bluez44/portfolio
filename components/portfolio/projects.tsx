@@ -49,7 +49,7 @@ export function Projects() {
         <div className="flex flex-col gap-24 lg:gap-32">
           {projects.map((project, index) => (
             <ProjectSpread
-              key={project.title}
+              key={project.id}
               project={project}
               index={index}
               accent={PROJECT_ACCENTS[index % PROJECT_ACCENTS.length]}

@@ -55,6 +55,7 @@ export interface TechItem {
 }
 
 export interface Project {
+  id: number;
   title: string;
   desc: string;
   tags: string[];
@@ -62,6 +63,12 @@ export interface Project {
   repo?: string;
   /** Live deployment. Omit when the project is not hosted anywhere. */
   demo?: string;
+  img?: {
+    src: string;
+    alt: string;
+    width: number;
+    height: number;
+  };
 }
 
 export interface Role {
@@ -343,36 +350,47 @@ export const chipTiers = tierNames.map((name, tierIndex) => ({
 
 export const projects: Project[] = [
   {
+    id: 1,
     title: "TrackNest",
     desc: "An event-driven, microservices-based safety platform with real-time background location tracking, SOS emergency response, and anomaly detection. Built a React Native mobile app and Next.js web dashboard integrated via API Gateway, gRPC, and Kafka event streams.",
     tags: ["React Native", "Next.js", "Expo", "gRPC", "Spring Boot", "Google Maps API"],
     repo: "https://github.com/NguyenVu04/track-nest",
   },
   {
+    id: 2,
     title: "HandFight",
     desc: "A web-based multiplayer fighting game with real-time hand-tracking controls powered by MediaPipe. Features ultra-low latency P2P gameplay via WebRTC (PeerJS), with a NestJS + Socket.io signaling server for room creation and matchmaking.",
     tags: ["React", "NestJS", "WebRTC", "Socket.io", "MediaPipe", "Tailwind CSS"],
     repo: "https://github.com/bluez44/Handfight",
   },
   {
-    title: "Upcoming",
-    desc: "",
-    tags: [],
+    id: 3,
+    title: "Rong",
+    desc: "Rong is an all-in-one mobile and web application designed to help travelers discover curated destinations across Vietnam and build complete, budget-optimized itineraries in seconds rather than hours.",
+    tags: ["React", "NestJS", "React Native", "Google Maps API", "Google Places API", "Gemini", "Claude Code", "Tailwind CSS"],
+    repo: "https://github.com/bluez44/Rong",
   },
   {
-    title: "Upcoming",
-    desc: "",
-    tags: [],
+    id: 4,
+    title: "SpendLens",
+    desc: "A camera-first expense diary for Vietnamese users. Snap a receipt, add the amount and a note, then browse day/week/month summaries and charts. Inspired by Locket's photo-forward interaction — every expense begins with a photo.",
+    tags: ["React Native", "Expo", "Tailwind CSS", "Claude Code"],
+    repo: "https://github.com/bluez44/SpendLens",
   },
   {
-    title: "Upcoming",
-    desc: "",
-    tags: [],
+    id: 5,
+    title: "Expatcare",
+    desc: "An all-in-one web platform designed for Carrot Global to manage global mobility and Employer of Record (EoR) operations. The website functions as a centralized service hub featuring four core solutions: 주재원 리로케이션 (expatriate relocation and visa support), 현채인 초청 연수 (overseas talent invitation and training), 해외 법인 HR 지원 (overseas subsidiary HR and payroll management), and 현지 채용 · EoR (local recruitment and EoR services).",
+    tags: ["React", "Next.js", "Tailwind CSS", "Claude Code", "Vercel", "Lottie", "Motion", "Lenis", "AppScript", "Google Sheets API"],
+    repo: "https://github.com/bluez44/expatecare",
+    demo: "https://expatcare.vercel.app/",
   },
   {
-    title: "Upcoming",
-    desc: "",
-    tags: [],
+    id: 6,
+    title: "CarrotGlobalVN",
+    desc: "A website that introduces Carrot Global VN's services and solutions, including global mobility, EoR, and HR support. The site features a modern design with interactive elements, smooth animations, and responsive layouts to provide an engaging user experience.",
+    tags: ["WordPress", "PHP", "JavaScript", "CSS", "HTML", "Claude Code"],
+    demo: "https://carrotglobal.vn/",
   },
 ];
 
