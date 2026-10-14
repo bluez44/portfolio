@@ -125,7 +125,7 @@ export function Header() {
           </button>
 
           <a
-            href="/Resume - Vo Le Quang Vinh.pdf"
+            href="/vo-le-quang-vinh-resume.pdf"
             download
             className="hidden items-center gap-2 rounded-full border-[1.5px] border-ink bg-tomato px-4.5 py-2 text-[13px] font-semibold text-paper transition-all hover:-translate-y-0.5 md:inline-flex"
             style={{ boxShadow: "3px 3px 0 var(--ink)" }}
@@ -164,7 +164,7 @@ export function Header() {
             </a>
           ))}
           <a
-            href="/Resume - Vo Le Quang Vinh.pdf"
+            href="/vo-le-quang-vinh-resume.pdf"
             download
             className="mt-3 rounded-full border-[1.5px] border-ink bg-tomato py-3 text-center font-semibold text-paper"
             style={{ boxShadow: "3px 3px 0 var(--ink)" }}

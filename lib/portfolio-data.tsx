@@ -134,7 +134,7 @@ export const aboutPanels: AboutIntroPanel[] = [
       "Hi, I'm Vo Le Quang Vinh (Tom), an HCMUT (Bach Khoa) alumnus and a software engineer specializing in the JS/TS ecosystem (React, Vue.js, NestJS, React Native). I love bridging the gap between robust system architecture and seamless, modern UI/UX design. I am passionate about engineering high-performance applications that don't compromise on technical depth or visual appeal. My experience spans challenging domains, most notably developing TrackNest, a real-time location tracking and SOS emergency platform utilizing background tasks and gRPC. More recently I have extended that range into internal corporate web platforms — shipping Next.js and Node.js applications, modernizing a legacy WordPress site, and deploying cloud PoCs on Vercel for rapid stakeholder feedback.",
     image: {
       src: "/portrait.jpg",
-      alt: "Picture of the author",
+      alt: "Portrait of Võ Lê Quang Vinh, Fullstack Software Engineer",
       width: 400,
       height: 400,
     },
@@ -145,7 +145,7 @@ export const aboutPanels: AboutIntroPanel[] = [
     description: "",
     image: {
       src: "/portrait.jpg",
-      alt: "Picture of the author",
+      alt: "Võ Lê Quang Vinh – current career focus",
       width: 400,
       height: 400,
     },
@@ -161,7 +161,7 @@ export const aboutPanels: AboutIntroPanel[] = [
     description: "",
     image: {
       src: "/portrait.jpg",
-      alt: "Picture of the author",
+      alt: "Võ Lê Quang Vinh – experience highlights",
       width: 400,
       height: 400,
     },

@@ -27,39 +27,54 @@ const jetbrains = JetBrains_Mono({
   display: "swap",
 });
 
+const SITE_URL = "https://www.vinhvolequang.io.vn";
+const TITLE = "Võ Lê Quang Vinh – Fullstack Software Engineer | Portfolio";
+const DESCRIPTION =
+  "Võ Lê Quang Vinh – Fullstack Software Engineer in Ho Chi Minh City. Building fast, scalable web & mobile apps with React, Next.js, Vue, React Native and NestJS.";
+
 export const metadata: Metadata = {
-  title: "Võ Lê Quang Vinh | Portfolio",
-  description:
-    "Portfolio of Võ Lê Quang Vinh. Projects, skills, experience and contact.",
+  metadataBase: new URL(SITE_URL),
+  title: TITLE,
+  description: DESCRIPTION,
+  applicationName: "Võ Lê Quang Vinh Portfolio",
+  authors: [{ name: "Võ Lê Quang Vinh", url: SITE_URL }],
+  creator: "Võ Lê Quang Vinh",
+  keywords: [
+    "Võ Lê Quang Vinh",
+    "Vo Le Quang Vinh",
+    "Fullstack Software Engineer",
+    "Frontend Developer",
+    "React",
+    "Next.js",
+    "Vue.js",
+    "React Native",
+    "NestJS",
+    "Ho Chi Minh City",
+  ],
 
   verification: {
     google: "GSAj7DO0vmq3LpE0LJucIlCK_wTfgl3TdCGNiDgPpyQ",
   },
 
-  metadataBase: new URL("https://www.vinhvolequang.io.vn/"),
   alternates: {
     canonical: "/",
-    languages: {
-      "vi-VN": "/vi",
-      "en-US": "/en",
-    },
   },
 
   openGraph: {
-    title: "Võ Lê Quang Vinh | Portfolio",
-    description:
-      "Portfolio of Võ Lê Quang Vinh. Projects, skills, experience and contact.",
-    url: "https://www.vinhvolequang.io.vn/",
-    siteName: "Võ Lê Quang Vinh | Portfolio",
-    locale: "vi_VN",
-    type: "website",
+    title: TITLE,
+    description: DESCRIPTION,
+    url: SITE_URL,
+    siteName: "Võ Lê Quang Vinh Portfolio",
+    locale: "en_US",
+    type: "profile",
+    firstName: "Vinh",
+    lastName: "Võ Lê Quang",
   },
 
   twitter: {
     card: "summary_large_image",
-    title: "Võ Lê Quang Vinh | Portfolio",
-    description:
-      "Portfolio of Võ Lê Quang Vinh. Projects, skills, experience and contact.",
+    title: TITLE,
+    description: DESCRIPTION,
   },
 };
 

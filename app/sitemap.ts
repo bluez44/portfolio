@@ -16,7 +16,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const staticUrls = [
     {
       url: "https://www.vinhvolequang.io.vn/",
-      lastModified: new Date(),
+      lastModified: new Date("2026-10-14"),
       changeFrequency: "yearly" as const,
       priority: 1.0,
     },

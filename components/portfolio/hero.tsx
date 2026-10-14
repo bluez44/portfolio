@@ -140,6 +140,10 @@ export function Hero() {
             />
             <span className="relative z-10 text-ink">Quang Vinh.</span>
           </span>
+          <span className="sr-only">
+            {" "}
+            Võ Lê Quang Vinh – Fullstack Software Engineer
+          </span>
         </h1>
 
         {/* rotating role — no typewriter, just soft fade */}
@@ -196,7 +200,7 @@ export function Hero() {
             Contact Me
           </a>
           <a
-            href="/Resume - Vo Le Quang Vinh.pdf"
+            href="/vo-le-quang-vinh-resume.pdf"
             download
             className="ml-1 hidden text-[14px] font-medium text-ink-2 underline decoration-tomato decoration-[2px] underline-offset-[6px] hover:text-ink sm:inline-block"
           >
