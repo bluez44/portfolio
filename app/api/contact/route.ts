@@ -20,8 +20,9 @@ export async function POST(request: Request) {
   }
 
   const apiKey = process.env.RESEND_API_KEY;
+  const from = process.env.CONTACT_FROM_EMAIL;
   const to = process.env.CONTACT_TO_EMAIL;
-  if (!apiKey || !to) {
+  if (!apiKey || !from || !to) {
     return NextResponse.json(
       { error: "Email service is not configured." },
       { status: 500 },
@@ -32,7 +33,7 @@ export async function POST(request: Request) {
   const resend = new Resend(apiKey);
 
   const { error } = await resend.emails.send({
-    from: "Portfolio Contact <onboarding@resend.dev>",
+    from,
     to,
     replyTo: email,
     subject: `New message from ${name}`,
