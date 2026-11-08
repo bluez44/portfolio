@@ -4,6 +4,7 @@ import { Bricolage_Grotesque, Instrument_Sans, JetBrains_Mono } from "next/font/
 import { ThemeProvider } from "@/components/providers/theme-provider";
 import { SmoothScrollProvider } from "@/components/providers/smooth-scroll-provider";
 import { Analytics } from "@vercel/analytics/next";
+import { SITE_URL } from "@/lib/site";
 import "./globals.css";
 
 const bricolage = Bricolage_Grotesque({
@@ -27,7 +28,6 @@ const jetbrains = JetBrains_Mono({
   display: "swap",
 });
 
-const SITE_URL = "https://www.vinhvolequang.io.vn";
 const TITLE = "Võ Lê Quang Vinh – Fullstack Software Engineer | Portfolio";
 const DESCRIPTION =
   "Võ Lê Quang Vinh – Fullstack Software Engineer in Ho Chi Minh City. Building fast, scalable web & mobile apps with React, Next.js, Vue, React Native and NestJS.";
