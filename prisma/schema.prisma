@@ -26,3 +26,27 @@ model AdminLoginHistory {
   username  String
   success   Boolean
 }
+
+model Guest {
+  id        String   @id @default(uuid())
+  slug      String   @unique
+  name      String
+  note      String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  rsvp      Rsvp?
+}
+
+enum RsvpStatus {
+  yes
+  no
+}
+
+model Rsvp {
+  id        String     @id @default(uuid())
+  guestId   String     @unique
+  guest     Guest      @relation(fields: [guestId], references: [id], onDelete: Cascade)
+  status    RsvpStatus
+  createdAt DateTime   @default(now())
+  updatedAt DateTime   @updatedAt
+}
