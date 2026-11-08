@@ -191,6 +191,10 @@ function TechMesh({
 // convert the fixed TREE_SCALE below into a predictable world-space size.
 const TREE_SCALE = 20;
 
+// Flip to true to bring the 3D tree back in the Skills "knowledge garden".
+// While false, TechTrunk is not rendered and the glTF is never fetched.
+const SHOW_TREE = false;
+
 function TechTrunk({
   accent,
   growRef,
@@ -452,9 +456,11 @@ const TechWorld = forwardRef<TechSceneHandle, TechWorldProps>(
           dragMovedRef={dragMovedRef}
         />
         <group ref={worldGroupRef}>
-          <Suspense fallback={null}>
-            <TechTrunk accent={accent} growRef={growRef} />
-          </Suspense>
+          {SHOW_TREE && (
+            <Suspense fallback={null}>
+              <TechTrunk accent={accent} growRef={growRef} />
+            </Suspense>
+          )}
           <OrbitRings accent={accent} />
           {techs.map((tech, index) => (
             <TechMesh
