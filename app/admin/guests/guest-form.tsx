@@ -10,6 +10,7 @@ export function GuestForm({ guest, onDone }: { guest?: GuestListItem; onDone?: (
   const [state, action, pending] = useActionState(saveGuestAction, null);
   const formRef = useRef<HTMLFormElement>(null);
   const errors = state && !state.ok ? state.fieldErrors : {};
+  const formError = state && !state.ok && 'error' in state ? state.error : null;
 
   useEffect(() => {
     if (!state?.ok) return;
@@ -19,6 +20,7 @@ export function GuestForm({ guest, onDone }: { guest?: GuestListItem; onDone?: (
 
   return (
     <form ref={formRef} action={action} className="grid gap-2 sm:grid-cols-[1fr_1fr_2fr_auto] sm:items-start">
+      {formError && <p className="col-span-full text-xs text-red-300">{formError}</p>}
       {guest && <input type="hidden" name="id" value={guest.id} />}
       <label className="grid gap-1">
         <input name="name" placeholder="Tên hiển thị" defaultValue={guest?.name} className={input} required />
