@@ -10,8 +10,7 @@ import { Footer } from "@/components/portfolio/footer";
 import { SceneLoadingGate } from "@/components/portfolio/scene-loading-gate";
 import { VisitorTracker } from "@/components/VisitorTracker";
 import { education, socials } from "@/lib/portfolio-data";
-
-const SITE_URL = "https://www.vinhvolequang.io.vn";
+import { SITE_URL } from "@/lib/site";
 
 const jsonLd = {
   "@context": "https://schema.org",
