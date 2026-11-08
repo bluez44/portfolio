@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
-import { Resend } from "resend";
 import { contactSchema } from "@/lib/schemas/contact";
+import { sendEmail } from "@/lib/email/send-email";
 import { z } from "zod";
 
 export async function POST(request: Request) {
@@ -19,29 +19,18 @@ export async function POST(request: Request) {
     );
   }
 
-  const apiKey = process.env.RESEND_API_KEY;
-  const from = process.env.CONTACT_FROM_EMAIL;
-  const to = process.env.CONTACT_TO_EMAIL;
-  if (!apiKey || !from || !to) {
-    return NextResponse.json(
-      { error: "Email service is not configured." },
-      { status: 500 },
-    );
-  }
-
   const { name, email, message } = parsed.data;
-  const resend = new Resend(apiKey);
 
-  const { error } = await resend.emails.send({
-    from,
-    to,
-    replyTo: email,
+  const result = await sendEmail({
     subject: `New message from ${name}`,
     text: `From: ${name} <${email}>\n\n${message}`,
+    replyTo: email,
   });
 
-  if (error) {
-    return NextResponse.json({ error: "Failed to send message." }, { status: 502 });
+  if (!result.ok) {
+    return result.reason === "not_configured"
+      ? NextResponse.json({ error: "Email service is not configured." }, { status: 500 })
+      : NextResponse.json({ error: "Failed to send message." }, { status: 502 });
   }
 
   return NextResponse.json({ success: true });
