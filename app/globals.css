@@ -52,6 +52,8 @@
   --offset-blue: 5px 5px 0 var(--blue);
   --offset-canary: 5px 5px 0 var(--canary);
   --offset-jade: 5px 5px 0 var(--jade);
+  --offset-xs: 2px 2px 0 var(--ink);
+  --stripes-tape: repeating-linear-gradient(-45deg, rgba(255, 255, 255, 0.28) 0 2px, transparent 2px 8px);
 
   /* radius */
   --r-sharp: 0px;
@@ -280,6 +282,33 @@
 .riso-press:active {
   transform: translate(1px, 1px);
   box-shadow: 2px 2px 0 var(--ink);
+}
+
+/* riso button: offset shadow driven by --off / --off-color */
+.riso-btn {
+  --off: 5px;
+  --off-color: var(--ink);
+  box-shadow: var(--off) var(--off) 0 var(--off-color);
+  transition:
+    transform var(--dur-fast) var(--ease),
+    box-shadow var(--dur-fast) var(--ease);
+}
+.riso-btn:hover,
+.riso-btn:focus-visible {
+  transform: translate(-2px, -2px);
+  box-shadow: calc(var(--off) + 2px) calc(var(--off) + 2px) 0 var(--off-color);
+}
+.riso-btn:active {
+  transform: translate(1px, 1px);
+  box-shadow: 2px 2px 0 var(--off-color);
+}
+.riso-btn:disabled {
+  opacity: 0.6;
+  pointer-events: none;
+}
+.riso-focus:focus-visible {
+  outline: 2px solid var(--blue);
+  outline-offset: 3px;
 }
 
 /* ────────────────────────────────────────────────────────────────
