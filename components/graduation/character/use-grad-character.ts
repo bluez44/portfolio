@@ -18,7 +18,13 @@ export function useGradCharacter(hostRef: RefObject<HTMLDivElement | null>, { sc
     const host = hostRef.current;
     if (reduced || !host) return;
     gsap.registerPlugin(ScrollTrigger);
-    const character = createGradCharacter(host, { scale });
+    let character: GradCharacter;
+    try {
+      character = createGradCharacter(host, { scale });
+    } catch (error) {
+      console.error("Graduation character disabled (WebGL unavailable):", error);
+      return;
+    }
     charRef.current = character;
 
     const relayout = () => {
