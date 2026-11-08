@@ -10,33 +10,42 @@ export function useYouTubePlayer(videoId: string, onError: () => void) {
   const [status, setStatus] = useState<MusicStatus>("idle");
   const [open, setOpen] = useState(false);
   const mountRef = useRef<HTMLDivElement | null>(null);
+  // playerRef is only set once the player fires onReady, so its methods are safe to call.
   const playerRef = useRef<YTPlayer | null>(null);
+  // instanceRef tracks the raw (possibly-not-ready) instance, so it can still be destroyed on unmount/retry.
+  const instanceRef = useRef<YTPlayer | null>(null);
   const onErrorRef = useRef(onError);
   useEffect(() => {
     onErrorRef.current = onError;
   }, [onError]);
 
   const fail = useCallback(() => {
+    instanceRef.current?.destroy();
+    instanceRef.current = null;
+    playerRef.current = null;
     setStatus("error");
     setOpen(false);
     onErrorRef.current();
   }, []);
 
   useEffect(() => {
-    if (!open || playerRef.current || !mountRef.current) return;
+    if (!open || instanceRef.current || !mountRef.current) return;
     let cancelled = false;
     const mount = mountRef.current;
     loadYouTubeIframeApi()
       .then((YT) => {
         if (cancelled) return;
-        playerRef.current = new YT.Player(mount, {
+        instanceRef.current = new YT.Player(mount, {
           host: "https://www.youtube-nocookie.com",
           videoId,
           width: 200,
           height: 200,
           playerVars: { autoplay: 1, loop: 1, playlist: videoId, controls: 0, playsinline: 1, modestbranding: 1, rel: 0 },
           events: {
-            onReady: (e) => e.target.playVideo(),
+            onReady: (e) => {
+              playerRef.current = e.target;
+              e.target.playVideo();
+            },
             onStateChange: (e) => {
               if (e.data === YT.PlayerState.PLAYING) setStatus("playing");
               else if (e.data === YT.PlayerState.PAUSED) setStatus("paused");
@@ -51,7 +60,7 @@ export function useYouTubePlayer(videoId: string, onError: () => void) {
     };
   }, [open, videoId, fail]);
 
-  useEffect(() => () => playerRef.current?.destroy(), []);
+  useEffect(() => () => instanceRef.current?.destroy(), []);
 
   const toggle = useCallback(() => {
     if (!videoId) return fail();
