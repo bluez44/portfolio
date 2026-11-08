@@ -13,10 +13,15 @@ const BASE_TITLE = "Graduation Invitation – Võ Lê Quang Vinh";
 export async function generateMetadata({ searchParams }: Props): Promise<Metadata> {
   const slug = parseGuestSlug((await searchParams).to);
   const found = slug ? await getInvitationGuest(slug) : null;
+  const title = found ? `Thư mời tốt nghiệp · ${found.guest.name}` : BASE_TITLE;
+  const description = "You're invited to celebrate my graduation.";
   return {
-    title: found ? `Thư mời tốt nghiệp · ${found.guest.name}` : BASE_TITLE,
-    description: "You're invited to celebrate my graduation.",
+    title,
+    description,
     robots: { index: false, follow: false },
+    openGraph: { title, description, url: "/graduation" },
+    twitter: { card: "summary_large_image", title, description },
+    alternates: { canonical: "/graduation" },
   };
 }
 
