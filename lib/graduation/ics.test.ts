@@ -1,0 +1,17 @@
+import { describe, expect, it } from "vitest";
+import { GRADUATION_EVENT } from "./event";
+import { buildIcs } from "./ics";
+
+describe("buildIcs", () => {
+  const ics = buildIcs(GRADUATION_EVENT, new Date("2026-11-08T00:00:00Z"));
+  it("uses UTC start/end and stamp", () => {
+    expect(ics).toContain("DTSTART:20261219T020000Z");
+    expect(ics).toContain("DTEND:20261219T043000Z");
+    expect(ics).toContain("DTSTAMP:20261108T000000Z");
+  });
+  it("escapes commas in LOCATION and uses CRLF", () => {
+    expect(ics).toContain("LOCATION:Hội trường A4\\, ĐH Bách Khoa\\, 268 Lý Thường Kiệt\\, Phường 14\\, Quận 10\\, TP. Hồ Chí Minh");
+    expect(ics.split("\r\n")[0]).toBe("BEGIN:VCALENDAR");
+    expect(ics.endsWith("END:VCALENDAR")).toBe(true);
+  });
+});
