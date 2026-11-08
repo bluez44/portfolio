@@ -1,18 +1,18 @@
 'use server';
 
-import { cookies } from 'next/headers';
+import { readAdminSecret, startAdminSession } from '@/lib/admin-auth/session';
 import prisma from '@/lib/prisma';
 import { headers } from 'next/headers';
 import { redirect } from 'next/navigation';
 
-export async function loginAction(prevState: any, formData: FormData) {
+export async function loginAction(prevState: { error?: string } | null, formData: FormData) {
   const username = formData.get('username') as string;
   const password = formData.get('password') as string;
-  
+
   const validUsername = process.env.ADMIN_USERNAME;
   const validPassword = process.env.ADMIN_PASSWORD;
 
-  if (!validUsername || !validPassword) {
+  if (!validUsername || !validPassword || !readAdminSecret()) {
     return { error: 'Admin credentials are not configured in environment variables.' };
   }
 
@@ -46,8 +46,7 @@ export async function loginAction(prevState: any, formData: FormData) {
   }
 
   if (success) {
-    const cookieStore = await cookies();
-    cookieStore.set('admin_auth', 'true', { httpOnly: true, secure: true, path: '/' });
+    await startAdminSession();
     redirect('/admin');
   } else {
     return { error: 'Invalid username or password.' };

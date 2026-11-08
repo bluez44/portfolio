@@ -1,11 +1,10 @@
 import { NextResponse } from 'next/server';
 import prisma from '@/lib/prisma';
-import { cookies } from 'next/headers';
+import { isAdminSession } from '@/lib/admin-auth/session';
 
 // Fetch all visitors (Admin only)
 export async function GET() {
-  const cookieStore = await cookies();
-  const isAdmin = cookieStore.get('admin_auth')?.value === 'true';
+  const isAdmin = await isAdminSession();
 
   if (!isAdmin) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
