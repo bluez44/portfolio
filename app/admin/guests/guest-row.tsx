@@ -29,7 +29,7 @@ export function GuestRow({ guest }: { guest: GuestListItem }) {
       <span className="text-xs">
         {guest.rsvpStatus ? RSVP_LABEL[guest.rsvpStatus] : '—'}
         {guest.rsvpUpdatedAt && (
-          <span className="block text-zinc-500">{new Date(guest.rsvpUpdatedAt).toLocaleString('vi-VN')}</span>
+          <span className="block text-zinc-500">{new Date(guest.rsvpUpdatedAt).toLocaleString('vi-VN', { timeZone: 'Asia/Ho_Chi_Minh' })}</span>
         )}
       </span>
       <span className="flex gap-3">
