@@ -1,10 +1,9 @@
-import { cookies } from 'next/headers';
+import { isAdminSession } from '@/lib/admin-auth/session';
 import VisitorList from './VisitorList';
 import LoginForm from './LoginForm';
 
 export default async function AdminPage() {
-  const cookieStore = await cookies();
-  const isAuthenticated = cookieStore.get('admin_auth')?.value === 'true';
+  const isAuthenticated = await isAdminSession();
 
   if (!isAuthenticated) {
     return <LoginForm />;
