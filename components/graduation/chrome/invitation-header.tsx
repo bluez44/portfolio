@@ -22,7 +22,7 @@ export function InvitationHeader({
         <div className="flex items-center gap-3.5">
           <span className="hidden font-mono text-[11px] tracking-[0.28em] text-ink uppercase sm:inline">Graduation 2026</span>
           {musicNote && (
-            <span role="status" className="font-mono text-[10px] tracking-[0.14em] text-tomato uppercase">
+            <span role="status" className="absolute top-full right-6 mt-1 whitespace-nowrap font-mono text-[10px] tracking-[0.14em] text-tomato uppercase">
               Không phát được nhạc · Music unavailable
             </span>
           )}
