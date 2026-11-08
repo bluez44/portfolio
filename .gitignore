@@ -44,3 +44,6 @@ next-env.d.ts
 generated/prisma/
 # agent skill caches
 .agents/
+
+# subagent-driven-development scratch
+.superpowers/
