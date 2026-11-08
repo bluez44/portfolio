@@ -11,6 +11,7 @@ type Props = ButtonHTMLAttributes<HTMLButtonElement> & {
 
 export function RisoIconButton({ size = "md", fill = "paper", label, className = "", style, children, ...rest }: Props) {
   const d = SIZE[size];
+  const light = fill === "paper" || fill === "canary";
   return (
     <button
       type="button"
@@ -23,7 +24,7 @@ export function RisoIconButton({ size = "md", fill = "paper", label, className =
         height: d,
         fontSize: d >= 36 ? 14 : 11,
         background: `var(--${fill})`,
-        color: fill === "paper" ? "var(--ink)" : "var(--paper)",
+        color: light ? "var(--ink)" : "var(--paper)",
         boxShadow: "var(--offset-xs)",
         ...style,
       }}
