@@ -49,6 +49,12 @@ describe("submitRsvp", () => {
     expect(d.saveRsvp).not.toHaveBeenCalled();
   });
 
+  it("skips the notify email when the answer did not change", async () => {
+    const d = deps({ saveRsvp: vi.fn(async () => ({ previous: "yes" as const })) });
+    await expect(submitRsvp({ slug: "minh-anh", status: "yes" }, d)).resolves.toEqual({ ok: true, status: "yes" });
+    expect(d.notify).not.toHaveBeenCalled();
+  });
+
   it("still succeeds when the email is not configured or fails", async () => {
     const errorSpy = vi.spyOn(console, "error").mockImplementation(() => {});
     const notConfigured = deps({ notify: vi.fn(async () => ({ ok: false as const, reason: "not_configured" as const })) });

@@ -24,12 +24,14 @@ export async function submitRsvp(raw: unknown, deps: RsvpDeps): Promise<SubmitRs
 
   const { previous } = await deps.saveRsvp(guest.id, status);
 
-  const message = buildRsvpEmail({ name: guest.name, slug, status, previous, at: deps.now() });
-  try {
-    const sent = await deps.notify(message);
-    if (!sent.ok) console.error(`RSVP email not sent (${sent.reason}) for ${slug}`);
-  } catch (error) {
-    console.error("RSVP email failed:", error);
+  if (previous !== status) {
+    const message = buildRsvpEmail({ name: guest.name, slug, status, previous, at: deps.now() });
+    try {
+      const sent = await deps.notify(message);
+      if (!sent.ok) console.error(`RSVP email not sent (${sent.reason}) for ${slug}`);
+    } catch (error) {
+      console.error("RSVP email failed:", error);
+    }
   }
 
   return { ok: true, status };
