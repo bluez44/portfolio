@@ -10,9 +10,9 @@ export const vi: GraduationCopy = {
   header: { title: "Tốt nghiệp 2026", musicUnavailable: "Không phát được nhạc", music: "Nhạc nền", switchLang: "Chọn ngôn ngữ" },
   rails: {
     when: "Thời gian",
-    whenValue: "Thứ Bảy 19.12.2026",
+    whenValue: "Thứ Bảy 28.11.2026",
     where: "Địa điểm",
-    whereValue: "Hội trường A4 · ĐH Bách Khoa",
+    whereValue: "Hội trường A5 · ĐH Bách Khoa",
     whereSub: "268 Lý Thường Kiệt · Q.10",
   },
   envelope: {
@@ -53,9 +53,9 @@ export const vi: GraduationCopy = {
     intro: "Chương này khép lại bằng một buổi lễ — và sẽ thật ý nghĩa nếu được chia sẻ khoảnh khắc ấy cùng bạn.",
     stamp: ["Vé mời", "· Một ·", "Khách"],
     when: "Thời gian",
-    day: "Thứ Bảy, 2026",
+    day: "Thứ Bảy, 28.11.2026",
     where: "Địa điểm",
-    venue: "Hội trường A4, ĐH Bách Khoa",
+    venue: "Hội trường A5, ĐH Bách Khoa",
     venueSub: "Trường ĐH Bách Khoa — ĐHQG-HCM",
     notes: ["Trang phục · Lịch sự", "Gửi xe · Cổng Lý Thường Kiệt", "Chụp ảnh sau lễ"],
     directions: "Chỉ đường",

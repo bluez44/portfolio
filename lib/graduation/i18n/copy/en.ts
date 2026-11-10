@@ -10,9 +10,9 @@ export const en: GraduationCopy = {
   header: { title: "Graduation 2026", musicUnavailable: "Music unavailable", music: "Background music", switchLang: "Choose language" },
   rails: {
     when: "When",
-    whenValue: "Sat · Dec 19, 2026",
+    whenValue: "Sat · Nov 28, 2026",
     where: "Where",
-    whereValue: "Hall A4 · HCMUT",
+    whereValue: "Hall A5 · HCMUT",
     whereSub: "268 Ly Thuong Kiet · D.10",
   },
   envelope: {
@@ -55,7 +55,7 @@ export const en: GraduationCopy = {
     when: "When",
     day: "Saturday, 2026",
     where: "Where",
-    venue: "Hall A4, HCMUT",
+    venue: "Hall A5, HCMUT",
     venueSub: "Ho Chi Minh City University of Technology",
     notes: ["Dress code · Smart casual", "Parking · Ly Thuong Kiet gate", "Photos after the ceremony"],
     directions: "Directions",
