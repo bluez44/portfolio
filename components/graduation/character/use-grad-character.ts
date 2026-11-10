@@ -5,9 +5,10 @@ import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { useEffect, useRef, type RefObject } from "react";
 import { useIsDark } from "@/lib/hooks/use-is-dark";
 import { useReducedMotion } from "@/lib/hooks/use-reduced-motion";
-import { buildBeats, envelopeSideX } from "./beats";
-import { createGradCharacter, type GradCharacter } from "./grad-character";
-import { measureEnvelopeWidth, measureSections } from "./measure-sections";
+import { buildBeats } from "./choreography/beats";
+import { measureEnvelopeWidth, measureSections } from "./choreography/measure-sections";
+import { besideX, envelopeSideX } from "./choreography/placement";
+import { createGradCharacter, type GradCharacter } from "./scene/grad-character";
 
 export function useGradCharacter(hostRef: RefObject<HTMLDivElement | null>, { scale = 0.85 } = {}) {
   const reduced = useReducedMotion();
@@ -32,7 +33,9 @@ export function useGradCharacter(hostRef: RefObject<HTMLDivElement | null>, { sc
       const metrics = measureSections();
       const { halfW, scale: s } = character.view();
       const sx = envelopeSideX({ viewportW: window.innerWidth, envelopeW: measureEnvelopeWidth(), halfW, scale: s });
-      character.resize(metrics && buildBeats(metrics, sx));
+      const noteW = metrics?.noteFinale?.width;
+      const cheerX = noteW ? besideX({ viewportW: window.innerWidth, objectW: noteW, halfW, scale: s }) : undefined;
+      character.resize(metrics && buildBeats(metrics, sx, cheerX));
     };
     const tick = (time: number) => character.frame(time, window.scrollY);
 

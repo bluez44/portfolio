@@ -1,14 +1,11 @@
 import * as THREE from "three";
-import { targetPose } from "./beats";
+import { targetPose } from "../choreography/target-pose";
 import { applyPalette, createMaterials, disposeMaterials, type Materials } from "./materials";
 import { createMeshKit } from "./mesh-kit";
 import { applyPose, type PoseState } from "./pose";
 import { buildRig } from "./rig";
-import type { Beat } from "./types";
-
-const FOV = 28;
-const CAMERA_Z = 14;
-const MOBILE_BREAKPOINT = 760;
+import type { Beat } from "../types";
+import { CAMERA_Y, CAMERA_Z, FOV, INITIAL_POSE, MAX_PIXEL_RATIO, MOBILE_BREAKPOINT, MOBILE_SCALE } from "./constants";
 
 export type GradCharacter = {
   frame(time: number, scrollY: number): void;
@@ -24,12 +21,12 @@ export function createGradCharacter(host: HTMLElement, opts: { scale: number }):
   let materials: Materials | undefined;
 
   try {
-    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio, MAX_PIXEL_RATIO));
     host.appendChild(renderer.domElement);
 
     const scene = new THREE.Scene();
     const camera = new THREE.PerspectiveCamera(FOV, 1, 0.1, 100);
-    camera.position.set(0, 1.2, CAMERA_Z);
+    camera.position.set(0, CAMERA_Y, CAMERA_Z);
     camera.lookAt(0, 0, 0);
     scene.add(new THREE.HemisphereLight(0xffffff, 0x9a9488, 0.85));
     const light = new THREE.DirectionalLight(0xffffff, 0.8);
@@ -39,7 +36,7 @@ export function createGradCharacter(host: HTMLElement, opts: { scale: number }):
     const M = createMaterials();
     materials = M;
     const rig = buildRig(scene, createMeshKit(M.outline), M);
-    const S: PoseState = { x: 0.68, ry: -0.5, wave: 1, bow: 0, sit: 0, point: 0, toss: 0, walk: 0, dir: 0 };
+    const S: PoseState = { ...INITIAL_POSE };
     const view = { halfW: 1, halfH: 1, scale: opts.scale };
     let beats: Beat[] | null = null;
     let phase = 0;
@@ -66,7 +63,7 @@ export function createGradCharacter(host: HTMLElement, opts: { scale: number }):
         camera.updateProjectionMatrix();
         view.halfH = CAMERA_Z * Math.tan(((FOV / 2) * Math.PI) / 180);
         view.halfW = view.halfH * camera.aspect;
-        view.scale = opts.scale * (w < MOBILE_BREAKPOINT ? 0.7 : 1);
+        view.scale = opts.scale * (w < MOBILE_BREAKPOINT ? MOBILE_SCALE : 1);
         beats = nextBeats;
       },
       applyPalette(dark) {
