@@ -33,7 +33,7 @@ export function GuestRow({ guest }: { guest: GuestListItem }) {
         )}
       </span>
       <span className="flex gap-3">
-        <CopyLinkButton slug={guest.slug} />
+        <CopyLinkButton guestId={guest.id} slug={guest.slug} />
         <button type="button" onClick={() => setEditing(true)} className="text-xs text-zinc-300">Edit</button>
         <form
           action={deleteGuestAction}
