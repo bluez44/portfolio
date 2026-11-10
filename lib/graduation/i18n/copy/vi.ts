@@ -1,0 +1,82 @@
+import { withMomentStyle } from "../moments";
+import type { GraduationCopy } from "../types";
+
+export const vi: GraduationCopy = {
+  meta: {
+    title: "Thư mời tốt nghiệp – Võ Lê Quang Vinh",
+    guestTitle: (name) => `Thư mời tốt nghiệp · ${name}`,
+    description: "Bạn được mời đến dự lễ tốt nghiệp của mình.",
+  },
+  header: { title: "Tốt nghiệp 2026", musicUnavailable: "Không phát được nhạc", music: "Nhạc nền", switchLang: "Chọn ngôn ngữ" },
+  rails: {
+    when: "Thời gian",
+    whenValue: "Thứ Bảy 19.12.2026",
+    where: "Địa điểm",
+    whereValue: "Hội trường A4 · ĐH Bách Khoa",
+    whereSub: "268 Lý Thường Kiệt · Q.10",
+  },
+  envelope: {
+    airMail: "Thư hàng không",
+    invitationNo: "Thư mời · Nº 2026",
+    to: "Gửi",
+    cordially: "Trân trọng kính mời",
+    from: "Từ: Võ Lê Quang Vinh",
+    returnTo: "Người gửi",
+    faculty: "K22 · Khoa học Máy tính · HCMUT",
+  },
+  card: {
+    label: "Thiệp mời",
+    greeting: "Xin chào,",
+    body: "Mình là Quang Vinh. Sau bốn năm ở Bách Khoa, mình sắp khoác lên tấm áo cử nhân — và mình rất muốn có bạn ở đó.",
+    keepScrolling: "Cuộn tiếp ↓",
+  },
+  stage: {
+    coverKicker: "01 · Bạn được mời",
+    cover: { lead: "Ngày", accent: "tốt nghiệp." },
+    greetKicker: "02 · Lời chào",
+    scrollHint: "Cuộn để mở thư",
+  },
+  met: {
+    kicker: "03 · Chúng ta gặp nhau",
+    heading: { lead: "Bốn năm,", accent: "một hành trình." },
+    intro: "Những tấm thẻ ghi dọc đường — ghim lại trên bảng, từ ngày đầu nhập học đến hôm nay.",
+    moments: withMomentStyle([
+      { title: "Nhập học Bách Khoa", body: "Bước chân vào Khoa học Máy tính — ĐHQG-HCM, Trường ĐH Bách Khoa." },
+      { title: "Những đêm deadline", body: "Bài lab, đồ án và những dòng code đầu tiên chạy được lúc hai giờ sáng." },
+      { title: "Thực tập đầu tiên", body: "Thực tập tại TMA Solutions — viết React thật cho khách hàng thật, học cách làm việc trong một đội Agile." },
+      { title: "Đi làm & luận văn", body: "Front-end Developer ban ngày, TrackNest ban đêm — và chặng cuối của tấm bằng." },
+    ]),
+    andYou: (name) => `Và bạn, ${name}`,
+    defaultNote: "Ở đâu đó trên hành trình ấy, mình đã gặp bạn. Cảm ơn vì đã là một phần của câu chuyện.",
+  },
+  ends: {
+    kicker: "04 · Hồi kết",
+    heading: { lead: "Và rồi,", accent: "tốt nghiệp." },
+    intro: "Chương này khép lại bằng một buổi lễ — và sẽ thật ý nghĩa nếu được chia sẻ khoảnh khắc ấy cùng bạn.",
+    stamp: ["Vé mời", "· Một ·", "Khách"],
+    when: "Thời gian",
+    day: "Thứ Bảy, 2026",
+    where: "Địa điểm",
+    venue: "Hội trường A4, ĐH Bách Khoa",
+    venueSub: "Trường ĐH Bách Khoa — ĐHQG-HCM",
+    notes: ["Trang phục · Lịch sự", "Gửi xe · Cổng Lý Thường Kiệt", "Chụp ảnh sau lễ"],
+    directions: "Chỉ đường",
+    addToCalendar: "Thêm vào lịch",
+  },
+  rsvp: {
+    heading: { lead: "Bạn sẽ", accent: "đến chứ?" },
+    prompt: (name) => `Báo mình một tiếng để mình giữ chỗ nhé, ${name}.`,
+    yes: "Mình sẽ đến",
+    no: "Tiếc quá, không kịp",
+    error: "Không gửi được, thử lại nhé",
+    result: { yes: "✓ Đã nhận — hẹn gặp bạn ngày 19.12!", no: "✓ Đã nhận — cảm ơn bạn đã báo" },
+    change: "Đổi ý",
+  },
+  music: { nowPlaying: "♪ Đang phát", close: "Tắt nhạc" },
+  footer: "Cảm ơn bạn đã cùng mình ăn mừng",
+  notFound: {
+    kicker: "404 · Trả lại người gửi",
+    heading: { lead: "Thiệp này", accent: "không tồn tại." },
+    body: "Kiểm tra lại đường link bạn nhận được nhé.",
+  },
+};

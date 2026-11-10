@@ -1,0 +1,82 @@
+import { withMomentStyle } from "../moments";
+import type { GraduationCopy } from "../types";
+
+export const en: GraduationCopy = {
+  meta: {
+    title: "Graduation Invitation – Võ Lê Quang Vinh",
+    guestTitle: (name) => `Graduation invitation · ${name}`,
+    description: "You're invited to celebrate my graduation.",
+  },
+  header: { title: "Graduation 2026", musicUnavailable: "Music unavailable", music: "Background music", switchLang: "Choose language" },
+  rails: {
+    when: "When",
+    whenValue: "Sat · Dec 19, 2026",
+    where: "Where",
+    whereValue: "Hall A4 · HCMUT",
+    whereSub: "268 Ly Thuong Kiet · D.10",
+  },
+  envelope: {
+    airMail: "Air Mail",
+    invitationNo: "Invitation · Nº 2026",
+    to: "To",
+    cordially: "Cordially invited",
+    from: "From: Võ Lê Quang Vinh",
+    returnTo: "Return to",
+    faculty: "K22 · Computer Science · HCMUT",
+  },
+  card: {
+    label: "Invitation",
+    greeting: "Hello,",
+    body: "I'm Quang Vinh. After four years at HCMUT, I'm finally graduating — and I'd love for you to be there.",
+    keepScrolling: "Keep scrolling ↓",
+  },
+  stage: {
+    coverKicker: "01 · You're invited",
+    cover: { lead: "Graduation", accent: "day." },
+    greetKicker: "02 · Hello",
+    scrollHint: "Scroll to open",
+  },
+  met: {
+    kicker: "03 · How we met",
+    heading: { lead: "Four years,", accent: "one journey." },
+    intro: "Index cards from the road — pinned to the board, from the first day of school until today.",
+    moments: withMomentStyle([
+      { title: "Freshman at HCMUT", body: "Stepping into Computer Science at Ho Chi Minh City University of Technology — VNU-HCM." },
+      { title: "Late-night deadlines", body: "Labs, projects, and the first lines of code that finally ran at 2 a.m." },
+      { title: "First internship", body: "Interning at TMA Solutions — writing real React for real clients and learning to work in an Agile team." },
+      { title: "Work meets thesis", body: "Front-end Developer by day, TrackNest by night — and the final stretch of the degree." },
+    ]),
+    andYou: (name) => `And you, ${name}`,
+    defaultNote: "Somewhere along the way, I met you. Thank you for being part of the story.",
+  },
+  ends: {
+    kicker: "04 · How it ends",
+    heading: { lead: "And then,", accent: "graduation." },
+    intro: "This chapter closes with a ceremony — and it would mean a lot to share it with you.",
+    stamp: ["Admit", "· One ·", "Guest"],
+    when: "When",
+    day: "Saturday, 2026",
+    where: "Where",
+    venue: "Hall A4, HCMUT",
+    venueSub: "Ho Chi Minh City University of Technology",
+    notes: ["Dress code · Smart casual", "Parking · Ly Thuong Kiet gate", "Photos after the ceremony"],
+    directions: "Directions",
+    addToCalendar: "Add to calendar",
+  },
+  rsvp: {
+    heading: { lead: "Will you", accent: "be there?" },
+    prompt: (name) => `Let me know so I can save you a seat, ${name}.`,
+    yes: "I'll be there",
+    no: "Sorry, can't make it",
+    error: "Couldn't send, please try again",
+    result: { yes: "✓ Postmarked — see you on Dec 19!", no: "✓ Noted — thanks for letting me know" },
+    change: "Change answer",
+  },
+  music: { nowPlaying: "♪ Now playing", close: "Close music" },
+  footer: "Thanks for celebrating with me",
+  notFound: {
+    kicker: "404 · Return to sender",
+    heading: { lead: "This invitation", accent: "doesn't exist." },
+    body: "Please double-check the link you received.",
+  },
+};
