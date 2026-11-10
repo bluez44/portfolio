@@ -12,12 +12,12 @@ export function NoteFinaleStage({ label, note }: { label: string; note: string }
     <div data-trail-end className="relative">
       <div data-trail-pin className="relative">
         <div data-note-scale className="relative origin-top">
-          {/* Offset by the outline gap (8px); sized and drawn by `layout-outline`. */}
+          <PersonalNoteCard label={label} note={note} />
+          {/* After the card so it paints over the card's shadow. Offset by the outline gap (8px); sized and drawn by `layout-outline`. */}
           <svg data-note-outline aria-hidden className="pointer-events-none absolute -top-2 -left-2 overflow-visible">
             <path data-outline-half {...outlineStroke} />
             <path data-outline-half {...outlineStroke} />
           </svg>
-          <PersonalNoteCard label={label} note={note} />
         </div>
         <BkBadge docked />
       </div>
