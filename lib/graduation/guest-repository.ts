@@ -1,6 +1,7 @@
 import prisma from "@/lib/prisma";
 import { SlugTakenError } from "./slug-taken-error";
-import type { GuestData, GuestListItem, GuestRecord, InvitationGuest, RsvpStatus } from "./types";
+import { fromRsvpRow } from "./rsvp-mapper";
+import type { GuestData, GuestListItem, GuestRecord, InvitationGuest, RsvpAnswer } from "./types";
 
 const recordSelect = { id: true, slug: true, name: true, note: true } as const;
 
@@ -24,14 +25,14 @@ export const guestRepository = {
 
   async findInvitation(
     slug: string,
-  ): Promise<{ guest: InvitationGuest; rsvp: RsvpStatus | null } | null> {
+  ): Promise<{ guest: InvitationGuest; rsvp: RsvpAnswer | null } | null> {
     const row = await prisma.guest.findUnique({
       where: { slug },
-      select: { slug: true, name: true, note: true, rsvp: { select: { status: true } } },
+      select: { slug: true, name: true, note: true, rsvp: { select: { status: true, contact: true, reason: true, wish: true } } },
     });
     if (!row) return null;
     const { rsvp, ...guest } = row;
-    return { guest, rsvp: rsvp?.status ?? null };
+    return { guest, rsvp: rsvp ? fromRsvpRow(rsvp) : null };
   },
 
   async list(): Promise<GuestListItem[]> {

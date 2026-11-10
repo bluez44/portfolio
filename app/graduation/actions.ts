@@ -4,11 +4,10 @@ import { sendEmail } from "@/lib/email/send-email";
 import { guestRepository } from "@/lib/graduation/guest-repository";
 import { rsvpRepository } from "@/lib/graduation/rsvp-repository";
 import { submitRsvp, type SubmitRsvpResult } from "@/lib/graduation/rsvp-service";
-import type { RsvpStatus } from "@/lib/graduation/types";
-
-export async function submitRsvpAction(slug: string, status: RsvpStatus): Promise<SubmitRsvpResult> {
+/** `input` is untrusted form data; `submitRsvp` validates it. */
+export async function submitRsvpAction(input: Record<string, unknown>): Promise<SubmitRsvpResult> {
   return submitRsvp(
-    { slug, status },
+    input,
     {
       findGuest: guestRepository.findBySlug,
       saveRsvp: rsvpRepository.save,
