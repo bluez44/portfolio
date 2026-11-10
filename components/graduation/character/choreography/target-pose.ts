@@ -1,11 +1,6 @@
 import { smoothstep } from "@/lib/math/smoothstep";
 import { ACTIONS, type Beat, type PoseTarget } from "../types";
-
-/** Share of a transition spent fading the old action out (start) and the new one in (end). */
-const FADE = 0.25;
-/** Window of a transition in which the character walks. */
-const WALK_FROM = 0.18;
-const WALK_SPAN = 0.64;
+import { FADE, WALK_FROM, WALK_SPAN } from "./constants";
 
 const rest = (): PoseTarget => {
   const pose = { walk: 0, dir: 0, x: 0, ry: 0 } as PoseTarget;
