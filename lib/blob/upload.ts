@@ -16,14 +16,38 @@ export async function uploadImageToBlob(
     );
   }
 
+  const access = (process.env.BLOB_ACCESS as "public" | "private") || "private";
   const safeName = filename.replace(/[^a-zA-Z0-9.-]/g, "_");
-  const blob = await put(`graduation/${Date.now()}-${safeName}`, file, {
-    access: "public",
-    token,
-  });
+
+  // Attempt upload with configured access mode (defaulting to private as requested)
+  let blob;
+  try {
+    blob = await put(`graduation/${Date.now()}-${safeName}`, file, {
+      access,
+      token,
+    });
+  } catch (err) {
+    // If private access fails due to store mode, attempt fallback or rethrow
+    const errMsg = err instanceof Error ? err.message : String(err);
+    if (errMsg.includes("public") || errMsg.includes("private")) {
+      const fallbackAccess = access === "private" ? "public" : "private";
+      blob = await put(`graduation/${Date.now()}-${safeName}`, file, {
+        access: fallbackAccess,
+        token,
+      });
+    } else {
+      throw err;
+    }
+  }
+
+  // If the blob is private, route through our server-side proxy route so visitors can display it
+  const isPrivate = access === "private" || blob.url.includes("private");
+  const url = isPrivate
+    ? `/api/graduation/image?pathname=${encodeURIComponent(blob.pathname)}`
+    : blob.url;
 
   return {
-    url: blob.url,
+    url,
     pathname: blob.pathname,
   };
 }
