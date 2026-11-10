@@ -25,11 +25,11 @@ describe("buildBeats with the note finale", () => {
   const finale = { start: 5000, grown: 5500, end: 6000, width: 700 };
   const beats = buildBeats({ ...M, metHeight: 2500, endsTop: 6700, noteFinale: finale }, 0.8, 0.9);
 
-  it("sits until the note pins, cheers beside it while it grows, holds until the pin ends", () => {
+  it("sits until the note pins, cheers beside it, holds until the section bottom shows", () => {
     expect(beats).toHaveLength(11);
     expect(beats[5]).toMatchObject({ s: 5000, act: "sit", x: 0.66 });
     expect(beats[6]).toMatchObject({ s: 5300, act: "cheer", x: 0.9 });
-    expect(beats[7]).toMatchObject({ s: 6000, act: "cheer", x: 0.9 });
+    expect(beats[7]).toMatchObject({ s: 5700, act: "cheer", x: 0.9 }); // metTop + metHeight - vh
     expect(beats[8]).toMatchObject({ act: "point" });
   });
 
@@ -37,6 +37,18 @@ describe("buildBeats with the note finale", () => {
     const walking = targetPose(beats, 5150)!;
     expect(walking.walk).toBeGreaterThan(0.9);
     expect(walking.dir).toBe(1);
-    expect(targetPose(beats, 5700)).toMatchObject({ cheer: 1, sit: 0, walk: 0, x: 0.9 });
+    expect(targetPose(beats, 5500)).toMatchObject({ cheer: 1, sit: 0, walk: 0, x: 0.9 });
+  });
+
+  it("heads left as soon as the section bottom enters the viewport", () => {
+    const leaving = targetPose(beats, 5701)!;
+    expect(leaving.dir).toBe(-1);
+    expect(leaving.cheer).toBeLessThan(1);
+  });
+});
+
+describe("buildBeats without the note finale", () => {
+  it("leaves the desk when the section bottom enters the viewport", () => {
+    expect(buildBeats(M, 0.8)[5]).toMatchObject({ s: 4700, act: "sit" }); // 4200 + 1500 - 1000
   });
 });

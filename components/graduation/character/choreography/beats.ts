@@ -3,17 +3,22 @@ import { CHEER_BY, CHEER_RY, DESK, MIN_GAP, POINTING, TOSSING } from "./constant
 
 type RawBeat = [scroll: number, x: number, ry: number, act: Action];
 
+/** Scroll at which the bottom edge of "How we met" enters the viewport. */
+const metBottomEnters = (m: SectionMetrics) => m.metTop + m.metHeight - m.vh;
+
 /**
  * End of the "How we met" section. With the note finale the character sits until the note pins,
- * stands and walks to `cheerX` beside it while it grows, then cheers until the pin ends.
+ * stands and walks to `cheerX` beside it while it grows, then cheers. It leaves for the next
+ * section as soon as this section's bottom edge comes into view.
  */
 function metEndBeats(m: SectionMetrics, cheerX: number): RawBeat[] {
+  const leave = metBottomEnters(m);
   const f = m.noteFinale;
-  if (!f) return [[m.metTop + m.metHeight - m.vh * 0.9, DESK.x, DESK.ry, DESK.act]];
+  if (!f) return [[leave, DESK.x, DESK.ry, DESK.act]];
   return [
     [f.start, DESK.x, DESK.ry, DESK.act],
     [f.start + (f.grown - f.start) * CHEER_BY, cheerX, CHEER_RY, "cheer"],
-    [f.end, cheerX, CHEER_RY, "cheer"],
+    [leave, cheerX, CHEER_RY, "cheer"],
   ];
 }
 
