@@ -37,7 +37,6 @@ export const vi: GraduationCopy = {
     scrollHint: "Cuộn để mở thư",
   },
   met: {
-    kicker: "03 · Chúng ta gặp nhau",
     heading: { lead: "Bốn năm,", accent: "một hành trình." },
     intro: "Những tấm thẻ ghi dọc đường — ghim lại trên bảng, từ ngày đầu nhập học đến hôm nay.",
     moments: withMomentStyle([

@@ -37,7 +37,6 @@ export const en: GraduationCopy = {
     scrollHint: "Scroll to open",
   },
   met: {
-    kicker: "03 · How we met",
     heading: { lead: "Four years,", accent: "one journey." },
     intro: "Index cards from the road — pinned to the board, from the first day of school until today.",
     moments: withMomentStyle([
