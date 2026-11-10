@@ -28,5 +28,6 @@ export function createTrailTimeline(
   });
   return timeline
     .fromTo(draw, { drawSVG: "0%" }, { drawSVG: "100%" }, 0)
-    .to(rider, { motionPath: { path: base, align: base, alignOrigin: [0.5, 0.5] } }, 0);
+    // immediateRender puts the badge on the path start before the trail is scrolled into range.
+    .to(rider, { motionPath: { path: base, align: base, alignOrigin: [0.5, 0.5] }, immediateRender: true }, 0);
 }
