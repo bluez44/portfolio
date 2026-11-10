@@ -49,7 +49,6 @@ export const en: GraduationCopy = {
     defaultNote: "Somewhere along the way, I met you. Thank you for being part of the story.",
   },
   ends: {
-    kicker: "04 · How it ends",
     heading: { lead: "And then,", accent: "graduation." },
     intro: "This chapter closes with a ceremony — and it would mean a lot to share it with you.",
     stamp: ["Admit", "· One ·", "Guest"],

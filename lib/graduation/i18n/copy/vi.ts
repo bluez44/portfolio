@@ -49,7 +49,6 @@ export const vi: GraduationCopy = {
     defaultNote: "Ở đâu đó trên hành trình ấy, mình đã gặp bạn. Cảm ơn vì đã là một phần của câu chuyện.",
   },
   ends: {
-    kicker: "04 · Hồi kết",
     heading: { lead: "Và rồi,", accent: "tốt nghiệp." },
     intro: "Chương này khép lại bằng một buổi lễ — và sẽ thật ý nghĩa nếu được chia sẻ khoảnh khắc ấy cùng bạn.",
     stamp: ["Vé mời", "· Một ·", "Khách"],

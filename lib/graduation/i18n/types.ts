@@ -22,7 +22,6 @@ export type GraduationCopy = {
   stage: { coverKicker: string; cover: Heading; greetKicker: string; scrollHint: string };
   met: { heading: Heading; intro: string; moments: Moment[]; andYou: (name: string) => string; defaultNote: string };
   ends: {
-    kicker: string;
     heading: Heading;
     intro: string;
     stamp: string[];
