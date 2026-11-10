@@ -8,7 +8,7 @@ export type Heading = { lead: string; accent: string };
 export type Field = { label: string; placeholder: string };
 /** One tab of the venue guide: its label and the iframe title. */
 export type GuideTab = { tab: string; frameTitle: string };
-export type VenueGuideCopy = { tabsLabel: string; map: GuideTab; tour: GuideTab & { load: string; open: string } };
+export type VenueGuideCopy = { tabsLabel: string; map: GuideTab & { hint: string }; tour: GuideTab & { load: string; open: string } };
 
 export type GraduationCopy = {
   meta: { title: string; guestTitle: (name: string) => string; description: string };
