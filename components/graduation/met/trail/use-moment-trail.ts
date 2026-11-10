@@ -43,12 +43,14 @@ export function useMomentTrail(rootRef: RefObject<HTMLElement | null>, reduced: 
       return () => setCardsActivation(trail.cards, 0);
     }
 
+    const showBadge = (progress: number) => handOverBadge(trail.rider, finale.dock, progress >= ARRIVED_AT);
     const ctx = gsap.context(() => {
-      createTrailTimeline(trail, (progress) => {
+      const timeline = createTrailTimeline(trail, (progress) => {
         activateCards(trail.cards, metrics, progress);
-        handOverBadge(trail.rider, finale.dock, progress >= ARRIVED_AT);
+        showBadge(progress);
       });
       createFinaleTimeline(finale);
+      showBadge(timeline.progress());
     }, root);
     const stopSpin = startBadgeSpin(trail.spinners);
 
