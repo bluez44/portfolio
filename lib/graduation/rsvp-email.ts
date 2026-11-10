@@ -1,10 +1,11 @@
 import type { EmailMessage } from "@/lib/email/send-email";
-import type { RsvpStatus } from "./types";
+import { isEmail } from "./rsvp-contact";
+import type { RsvpAnswer, RsvpStatus } from "./types";
 
 export type RsvpNotice = {
   name: string;
   slug: string;
-  status: RsvpStatus;
+  answer: RsvpAnswer;
   previous: RsvpStatus | null;
   at: Date;
 };
@@ -18,15 +19,27 @@ const formatAt = (at: Date) =>
     timeStyle: "short",
   }).format(at);
 
-export function buildRsvpEmail({ name, slug, status, previous, at }: RsvpNotice): EmailMessage {
-  const change = previous ? `Đổi từ: ${LABEL[previous]}` : "Lần đầu trả lời";
+function history(status: RsvpStatus, previous: RsvpStatus | null): string {
+  if (!previous) return "Lần đầu trả lời";
+  return previous === status ? "Cập nhật câu trả lời" : `Đổi từ: ${LABEL[previous]}`;
+}
+
+function details(answer: RsvpAnswer): string[] {
+  const main = answer.status === "yes" ? `Liên hệ: ${answer.contact}` : `Lý do: ${answer.reason}`;
+  return [main, `Lời chúc: ${answer.wish ?? "(không có)"}`];
+}
+
+export function buildRsvpEmail({ name, slug, answer, previous, at }: RsvpNotice): EmailMessage {
+  const replyTo = answer.status === "yes" && isEmail(answer.contact) ? answer.contact : undefined;
   return {
-    subject: `RSVP: ${name} — ${LABEL[status]}`,
+    subject: `RSVP: ${name} — ${LABEL[answer.status]}`,
     text: [
       `Khách: ${name} (${slug})`,
-      `Trả lời: ${LABEL[status]}`,
-      change,
+      `Trả lời: ${LABEL[answer.status]}`,
+      ...details(answer),
+      history(answer.status, previous),
       `Lúc: ${formatAt(at)}`,
     ].join("\n"),
+    replyTo,
   };
 }

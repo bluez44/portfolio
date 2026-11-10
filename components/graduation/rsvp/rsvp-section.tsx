@@ -1,25 +1,27 @@
 "use client";
 
-import type { RsvpStatus } from "@/lib/graduation/types";
+import type { RsvpAnswer } from "@/lib/graduation/types";
 import { useScrollReveal } from "@/lib/hooks/use-scroll-reveal";
+import { useCopy } from "../i18n/lang-context";
 import { GraduationSection } from "../shared/graduation-section";
 import { SectionHeading } from "../shared/section-heading";
-import { RsvpChoices } from "./rsvp-choices";
+import { RsvpForm } from "./rsvp-form";
 import { RsvpResult } from "./rsvp-result";
 import { useRsvp } from "./use-rsvp";
-import { useCopy } from "../i18n/lang-context";
 
 export function RsvpSection({
   slug,
   guestName,
   initialRsvp,
+  ownerPhone,
 }: {
   slug: string;
   guestName: string;
-  initialRsvp: RsvpStatus | null;
+  initialRsvp: RsvpAnswer | null;
+  ownerPhone: string | null;
 }) {
   const ref = useScrollReveal<HTMLDivElement>();
-  const { status, pending, error, choose, reset } = useRsvp(slug, initialRsvp);
+  const rsvp = useRsvp(slug, initialRsvp);
   const { rsvp: t } = useCopy();
   return (
     <GraduationSection id="rsvp" tone="paper-2" align="left" className="min-h-[78vh]">
@@ -28,7 +30,11 @@ export function RsvpSection({
         <p className="m-0 max-w-[46ch] text-[17px] leading-[1.72] text-pretty text-ink-2">
           {t.prompt(guestName)}
         </p>
-        {status ? <RsvpResult status={status} onReset={reset} /> : <RsvpChoices pending={pending} error={error} onChoose={choose} />}
+        {rsvp.saved && !rsvp.editing ? (
+          <RsvpResult status={rsvp.saved.status} onReset={rsvp.edit} />
+        ) : (
+          <RsvpForm rsvp={rsvp} ownerPhone={ownerPhone} />
+        )}
       </div>
     </GraduationSection>
   );

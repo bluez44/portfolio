@@ -1,5 +1,10 @@
 export type RsvpStatus = "yes" | "no";
 
+/** A guest's RSVP: attending guests leave a contact, declining guests a reason; both may add a wish. */
+export type RsvpAnswer =
+  | { status: "yes"; contact: string; wish: string | null }
+  | { status: "no"; reason: string; wish: string | null };
+
 export type GuestRecord = { id: string; slug: string; name: string; note: string | null };
 
 /** What the public invitation page needs about a guest. */

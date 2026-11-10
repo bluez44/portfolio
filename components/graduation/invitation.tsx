@@ -3,7 +3,7 @@
 import { useRef } from "react";
 import { GRADUATION_EVENT } from "@/lib/graduation/event";
 import type { Lang } from "@/lib/graduation/i18n";
-import type { InvitationGuest, RsvpStatus } from "@/lib/graduation/types";
+import type { InvitationGuest, RsvpAnswer } from "@/lib/graduation/types";
 import { useTransientFlag } from "@/lib/hooks/use-transient-flag";
 import { useGradCharacter } from "./character/use-grad-character";
 import { InvitationFooter } from "./chrome/invitation-footer";
@@ -21,10 +21,12 @@ export function GraduationInvitation({
   guest,
   initialRsvp,
   initialLang,
+  ownerPhone,
 }: {
   guest: InvitationGuest;
-  initialRsvp: RsvpStatus | null;
+  initialRsvp: RsvpAnswer | null;
   initialLang: Lang;
+  ownerPhone: string | null;
 }) {
   const canvasHost = useRef<HTMLDivElement>(null);
   useGradCharacter(canvasHost);
@@ -44,7 +46,7 @@ export function GraduationInvitation({
           <EnvelopeStage guestName={guest.name} />
           <MetSection guestName={guest.name} note={guest.note} />
           <EndsSection />
-          <RsvpSection slug={guest.slug} guestName={guest.name} initialRsvp={initialRsvp} />
+          <RsvpSection slug={guest.slug} guestName={guest.name} initialRsvp={initialRsvp} ownerPhone={ownerPhone} />
         </main>
 
         <InvitationFooter />

@@ -1,9 +1,11 @@
 import type { RisoColor } from "../event";
+import type { RsvpFieldError } from "../rsvp-schema";
 
 export type Lang = "vi" | "en";
 
 export type Moment = { n: string; year: string; title: string; body: string; color: RisoColor; rot: number; image: string };
 export type Heading = { lead: string; accent: string };
+export type Field = { label: string; placeholder: string };
 
 export type GraduationCopy = {
   meta: { title: string; guestTitle: (name: string) => string; description: string };
@@ -42,6 +44,14 @@ export type GraduationCopy = {
     error: string;
     result: { yes: string; no: string };
     change: string;
+    contact: Field;
+    reason: Field;
+    wish: Field;
+    optional: string;
+    submit: string;
+    sending: string;
+    ownerPhone: string;
+    fieldErrors: Record<RsvpFieldError, string>;
   };
   music: { nowPlaying: string; close: string };
   footer: string;

@@ -3,6 +3,7 @@ import { notFound } from "next/navigation";
 import { GraduationInvitation } from "@/components/graduation/invitation";
 import { getGraduationLang } from "@/lib/graduation/i18n/get-lang";
 import { getInvitationGuest } from "@/lib/graduation/get-invitation-guest";
+import { readOwnerPhone } from "@/lib/graduation/owner-phone";
 import { GRADUATION_COPY } from "@/lib/graduation/i18n";
 import { parseGuestSlug } from "@/lib/graduation/slug";
 
@@ -32,5 +33,5 @@ export default async function GraduationPage({ searchParams }: Props) {
   const found = await getInvitationGuest(slug);
   if (!found) notFound();
   const lang = await getGraduationLang();
-  return <GraduationInvitation guest={found.guest} initialRsvp={found.rsvp} initialLang={lang} />;
+  return <GraduationInvitation guest={found.guest} initialRsvp={found.rsvp} initialLang={lang} ownerPhone={readOwnerPhone()} />;
 }
