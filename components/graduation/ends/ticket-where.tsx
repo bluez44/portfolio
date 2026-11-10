@@ -6,7 +6,7 @@ import { GRADUATION_EVENT as E } from "@/lib/graduation/event";
 import { buildIcs } from "@/lib/graduation/ics";
 import { useCopy } from "../i18n/lang-context";
 
-export function TicketWhere() {
+export function TicketWhere({ onDirections }: { onDirections: () => void }) {
   const { ends: t } = useCopy();
   const addToCalendar = () =>
     downloadTextFile("tot-nghiep-quang-vinh.ics", "text/calendar", buildIcs(E, new Date()));
@@ -23,7 +23,7 @@ export function TicketWhere() {
         <span className="text-ink-3 italic">{t.venueSub}</span>
       </span>
       <div className="mt-1.5 flex flex-wrap gap-3">
-        <RisoButton variant="primary" size="md" href={E.mapsUrl} target="_blank" rel="noopener noreferrer" icon="↗">
+        <RisoButton variant="primary" size="md" onClick={onDirections} icon="↓">
           {t.directions}
         </RisoButton>
         <RisoButton variant="secondary" size="md" onClick={addToCalendar} icon="↓">
