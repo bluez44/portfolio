@@ -6,6 +6,9 @@ export type Lang = "vi" | "en";
 export type Moment = { n: string; year: string; title: string; body: string; color: RisoColor; rot: number; image: string };
 export type Heading = { lead: string; accent: string };
 export type Field = { label: string; placeholder: string };
+/** One tab of the venue guide: its label, the poster's call to action, and the iframe title. */
+export type GuideTab = { tab: string; load: string; open: string; frameTitle: string };
+export type VenueGuideCopy = { title: string; tabsLabel: string; map: GuideTab; tour: GuideTab };
 
 export type GraduationCopy = {
   meta: { title: string; guestTitle: (name: string) => string; description: string };
@@ -35,6 +38,7 @@ export type GraduationCopy = {
     notes: string[];
     directions: string;
     addToCalendar: string;
+    guide: VenueGuideCopy;
   };
   rsvp: {
     heading: Heading;

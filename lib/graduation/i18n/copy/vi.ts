@@ -60,6 +60,12 @@ export const vi: GraduationCopy = {
     notes: ["Trang phục · Lịch sự", "Gửi xe · Cổng Lý Thường Kiệt", "Chụp ảnh sau lễ"],
     directions: "Chỉ đường",
     addToCalendar: "Thêm vào lịch",
+    guide: {
+      title: "Đường đến hội trường",
+      tabsLabel: "Bản đồ và tham quan trường",
+      map: { tab: "Bản đồ", load: "Xem bản đồ", open: "Mở Google Maps", frameTitle: "Bản đồ đến hội trường" },
+      tour: { tab: "Tham quan 360°", load: "Bắt đầu tham quan", open: "Mở toàn màn hình", frameTitle: "Tham quan 360° ĐH Bách Khoa" },
+    },
   },
   rsvp: {
     heading: { lead: "Bạn sẽ", accent: "đến chứ?" },

@@ -4,11 +4,13 @@ import { useScrollReveal } from "@/lib/hooks/use-scroll-reveal";
 import { GraduationSection } from "../shared/graduation-section";
 import { SectionHeading } from "../shared/section-heading";
 import { TicketCard } from "./ticket-card";
+import { VenueGuide } from "./venue-guide/venue-guide";
 import { useCopy } from "../i18n/lang-context";
 
 export function EndsSection() {
   const headRef = useScrollReveal<HTMLDivElement>();
   const cardRef = useScrollReveal<HTMLDivElement>();
+  const guideRef = useScrollReveal<HTMLDivElement>();
   const { ends: t } = useCopy();
   return (
     <GraduationSection id="ends" tone="paper" align="right">
@@ -20,6 +22,9 @@ export function EndsSection() {
       </div>
       <div ref={cardRef}>
         <TicketCard />
+      </div>
+      <div ref={guideRef}>
+        <VenueGuide />
       </div>
     </GraduationSection>
   );
