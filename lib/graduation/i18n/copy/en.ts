@@ -62,7 +62,7 @@ export const en: GraduationCopy = {
     addToCalendar: "Add to calendar",
     guide: {
       tabsLabel: "Map and campus tour",
-      map: { tab: "Map", frameTitle: "Map to the hall" },
+      map: { tab: "Map", frameTitle: "Map to the hall", hint: "Ctrl + scroll to zoom · Click to use the map" },
       tour: { tab: "360° tour", load: "Start the tour", open: "Open full screen", frameTitle: "HCMUT 360° campus tour" },
     },
   },

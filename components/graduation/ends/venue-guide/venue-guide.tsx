@@ -8,6 +8,7 @@ import { EmbedFrame } from "./embed-frame";
 import { TourPoster } from "./tour-poster";
 import { GuideTabs, type GuideTabId } from "./guide-tabs";
 import { LazyEmbed } from "./lazy-embed";
+import { ScrollShield } from "./scroll-shield";
 
 /** Permissions the 3DVista tour uses for full screen and device-orientation look-around. */
 const TOUR_ALLOW = "fullscreen; accelerometer; gyroscope; magnetometer; xr-spatial-tracking";
@@ -34,7 +35,15 @@ export function VenueGuide({
   const idFor = (id: GuideTabId) => ({ tab: `${base}-${id}-tab`, panel: `${base}-${id}-panel` });
 
   const panels: Panel[] = [
-    { id: "map", copy: t.map, frame: <EmbedFrame src={E.mapEmbedUrl} title={t.map.frameTitle} lazy /> },
+    {
+      id: "map",
+      copy: t.map,
+      frame: (
+        <ScrollShield hint={t.map.hint}>
+          <EmbedFrame src={E.mapEmbedUrl} title={t.map.frameTitle} lazy />
+        </ScrollShield>
+      ),
+    },
     {
       id: "tour",
       copy: t.tour,
