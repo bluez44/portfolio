@@ -31,7 +31,7 @@ export const vi: GraduationCopy = {
     keepScrolling: "Cuộn tiếp ↓",
   },
   stage: {
-    coverKicker: "01 · Bạn được mời",
+    coverKicker: "Bạn được mời",
     cover: { lead: "Ngày", accent: "tốt nghiệp." },
     greetKicker: "02 · Lời chào",
     scrollHint: "Cuộn để mở thư",

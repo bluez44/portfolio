@@ -31,7 +31,7 @@ export const en: GraduationCopy = {
     keepScrolling: "Keep scrolling ↓",
   },
   stage: {
-    coverKicker: "01 · You're invited",
+    coverKicker: "You're invited",
     cover: { lead: "Graduation", accent: "day." },
     greetKicker: "02 · Hello",
     scrollHint: "Scroll to open",
