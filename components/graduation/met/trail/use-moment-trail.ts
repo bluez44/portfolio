@@ -11,13 +11,15 @@ import { layoutOutline } from "../finale/layout-outline";
 import { handOverBadge } from "./badge-handover";
 import { startBadgeSpin } from "./badge-spin";
 import { activateCards, setCardsActivation } from "./card-activation";
+import { cardFocusKeys } from "./card-focus";
 import { ARRIVED_AT } from "./constants";
 import { layoutTrail, type TrailMetrics } from "./layout-trail";
 import { createTrailTimeline } from "./trail-timeline";
 
 /**
  * Scroll-driven "How we met":
- * 1. The BK badge rides a winding path past each moment card, drawing it; cards wake as it passes.
+ * 1. The BK badge rides a winding path past each moment card, drawing it; it meets each card as
+ *    that card reaches mid-screen, and cards wake as it passes.
  * 2. On reaching the personal note it hands over to a badge docked there, and the note pins while
  *    its outline draws and it grows.
  * The badge spins slowly at rest and faster with scroll speed.
@@ -30,7 +32,7 @@ export function useMomentTrail(rootRef: RefObject<HTMLElement | null>, reduced: 
     const { trail, finale } = els;
     gsap.registerPlugin(ScrollTrigger, MotionPathPlugin, DrawSVGPlugin);
 
-    let metrics: TrailMetrics = { stops: [], total: 0 };
+    let metrics: TrailMetrics = { docks: [], stops: [], total: 0 };
     const layout = () => {
       metrics = layoutTrail(trail);
       layoutOutline(finale);
@@ -43,14 +45,23 @@ export function useMomentTrail(rootRef: RefObject<HTMLElement | null>, reduced: 
       return () => setCardsActivation(trail.cards, 0);
     }
 
-    const showBadge = (progress: number) => handOverBadge(trail.rider, finale.dock, progress >= ARRIVED_AT);
+    const keysFor = (trigger: ScrollTrigger) => {
+      const rootTop = root.getBoundingClientRect().top + window.scrollY;
+      return cardFocusKeys({
+        dockTops: metrics.docks.map((dock) => rootTop + dock.y),
+        stops: metrics.stops,
+        total: metrics.total,
+        vh: window.innerHeight,
+        start: trigger.start,
+        end: trigger.end,
+      });
+    };
     const ctx = gsap.context(() => {
-      const timeline = createTrailTimeline(trail, (progress) => {
-        activateCards(trail.cards, metrics, progress);
-        showBadge(progress);
+      createTrailTimeline(trail, keysFor, (fraction) => {
+        activateCards(trail.cards, metrics, fraction);
+        handOverBadge(trail.rider, finale.dock, fraction >= ARRIVED_AT);
       });
       createFinaleTimeline(finale);
-      showBadge(timeline.progress());
     }, root);
     const stopSpin = startBadgeSpin(trail.spinners);
 

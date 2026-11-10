@@ -3,8 +3,8 @@ import type { TrailElements } from "../elements";
 import { DOCK_GAP, START_INSET } from "./constants";
 import { buildTrail, type Point } from "./trail-path";
 
-/** Path length (px) to each card's dock, and the trail's total length. */
-export type TrailMetrics = { stops: number[]; total: number };
+/** Each card's dock (column coordinates), the path length (px) to it, and the trail's total length. */
+export type TrailMetrics = { docks: Point[]; stops: number[]; total: number };
 
 /** The section's top-right corner (inset), in the trail column's coordinates; outside the column. */
 function sectionCorner({ root, section }: TrailElements): Point {
@@ -45,5 +45,5 @@ export function layoutTrail(els: TrailElements): TrailMetrics {
   });
   base.setAttribute("d", d);
   draw.setAttribute("d", d);
-  return { stops, total: base.getTotalLength() };
+  return { docks, stops, total: base.getTotalLength() };
 }

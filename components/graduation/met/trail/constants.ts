@@ -1,5 +1,7 @@
 /** The trail starts this far (px) in from the section's top-right corner, so the badge sits fully inside it. */
 export const START_INSET = 40;
+/** The badge reaches each card as that card's dock crosses this share of the viewport height. */
+export const CARD_FOCUS_AT = 0.5;
 /** ScrollTrigger line where the badge sets off. */
 export const START_LINE = "top 70%";
 /** Gap (px) between a card's edge and the point where the trail docks beside it. */
