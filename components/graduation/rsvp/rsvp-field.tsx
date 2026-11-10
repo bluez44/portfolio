@@ -1,5 +1,12 @@
-import { useId } from "react";
+import { useId, type KeyboardEvent } from "react";
 import type { Field } from "@/lib/graduation/i18n";
+
+/** Enter submits the form (Shift+Enter adds a line); ignored while an IME (e.g. Telex) is composing. */
+function submitOnEnter(event: KeyboardEvent<HTMLTextAreaElement>) {
+  if (event.key !== "Enter" || event.shiftKey || event.nativeEvent.isComposing) return;
+  event.preventDefault();
+  event.currentTarget.form?.requestSubmit();
+}
 
 const control =
   "riso-focus w-full rounded-[10px] border-[1.5px] bg-paper px-4 py-3 text-[15px] leading-normal text-ink outline-none placeholder:text-ink-3";
@@ -37,7 +44,7 @@ export function RsvpField({
         {field.label}
         {optionalLabel && <span className="text-ink-3 normal-case"> · {optionalLabel}</span>}
       </label>
-      {multiline ? <textarea rows={3} {...props} className={`${props.className} resize-y`} /> : <input type="text" {...props} />}
+      {multiline ? <textarea rows={3} {...props} onKeyDown={submitOnEnter} className={`${props.className} resize-y`} /> : <input type="text" {...props} />}
       {error && (
         <p id={errorId} className="m-0 text-[13px] text-tomato">
           {error}
