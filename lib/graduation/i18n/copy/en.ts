@@ -33,7 +33,7 @@ export const en: GraduationCopy = {
   stage: {
     coverKicker: "You're invited",
     cover: { lead: "Graduation", accent: "day." },
-    greetKicker: "02 · Hello",
+    greetKicker: "Hello",
     scrollHint: "Scroll to open",
   },
   met: {

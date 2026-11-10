@@ -33,7 +33,7 @@ export const vi: GraduationCopy = {
   stage: {
     coverKicker: "Bạn được mời",
     cover: { lead: "Ngày", accent: "tốt nghiệp." },
-    greetKicker: "02 · Lời chào",
+    greetKicker: "Lời chào",
     scrollHint: "Cuộn để mở thư",
   },
   met: {
