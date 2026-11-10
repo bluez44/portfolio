@@ -35,6 +35,7 @@ export function GuestTable({ guests }: GuestTableProps) {
               <th className="px-4 py-3">Khách mời</th>
               <th className="px-4 py-3">Guest ID (UUID) & Slug</th>
               <th className="px-4 py-3">Trạng thái RSVP</th>
+              <th className="px-4 py-3">Lời chúc</th>
               <th className="px-4 py-3">Custom Content</th>
               <th className="px-4 py-3 text-right">Thao tác</th>
             </tr>
@@ -42,7 +43,7 @@ export function GuestTable({ guests }: GuestTableProps) {
           <tbody className="divide-y divide-zinc-800/80 text-zinc-300">
             {guests.length === 0 ? (
               <tr>
-                <td colSpan={5} className="py-8 text-center text-zinc-500">
+                <td colSpan={6} className="py-8 text-center text-zinc-500">
                   Chưa có khách mời nào. Nhấn &ldquo;Thêm khách mời mới&rdquo; để bắt đầu.
                 </td>
               </tr>
@@ -97,6 +98,19 @@ export function GuestTable({ guests }: GuestTableProps) {
                         </div>
                       ) : (
                         <span className="text-[11px] text-zinc-500 italic">Chưa phản hồi</span>
+                      )}
+                    </td>
+
+                    <td className="px-4 py-3.5 max-w-[220px]">
+                      {guest.rsvpWish ? (
+                        <div
+                          className="line-clamp-2 text-[11px] italic text-zinc-300 break-words"
+                          title={guest.rsvpWish}
+                        >
+                          &ldquo;{guest.rsvpWish}&rdquo;
+                        </div>
+                      ) : (
+                        <span className="text-[11px] text-zinc-600">—</span>
                       )}
                     </td>
 

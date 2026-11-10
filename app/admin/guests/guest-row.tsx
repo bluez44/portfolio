@@ -22,10 +22,11 @@ export function GuestRow({ guest }: { guest: GuestListItem }) {
   }
 
   return (
-    <li className="grid gap-2 rounded border border-zinc-800 p-3 text-sm sm:grid-cols-[1fr_1fr_2fr_auto_auto] sm:items-center">
+    <li className="grid gap-2 rounded border border-zinc-800 p-3 text-sm sm:grid-cols-[1fr_1fr_1.5fr_1.5fr_auto_auto] sm:items-center">
       <span className="font-medium">{guest.name}</span>
       <code className="text-zinc-400">{guest.slug}</code>
       <span className="truncate text-zinc-400" title={guest.note ?? ''}>{guest.note ?? '—'}</span>
+      <span className="truncate text-zinc-300 italic" title={guest.rsvpWish ?? ''}>{guest.rsvpWish ? `“${guest.rsvpWish}”` : '—'}</span>
       <span className="text-xs">
         {guest.rsvpStatus ? RSVP_LABEL[guest.rsvpStatus] : '—'}
         {guest.rsvpUpdatedAt && (

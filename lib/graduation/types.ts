@@ -70,6 +70,7 @@ export type InvitationGuest = GuestRecord;
 export type GuestListItem = GuestRecord & {
   rsvpStatus: RsvpStatus | null;
   rsvpUpdatedAt: string | null;
+  rsvpWish: string | null;
 };
 
 /** Validated data written by admin create/update. */

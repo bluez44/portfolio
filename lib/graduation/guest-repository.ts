@@ -83,12 +83,13 @@ export const guestRepository = {
   async list(): Promise<GuestListItem[]> {
     const rows = await prisma.guest.findMany({
       orderBy: { createdAt: "desc" },
-      select: { ...recordSelect, rsvp: { select: { status: true, updatedAt: true } } },
+      select: { ...recordSelect, rsvp: { select: { status: true, updatedAt: true, wish: true } } },
     });
     return rows.map(({ rsvp, ...guestRow }) => ({
       ...parseRecord(guestRow),
       rsvpStatus: rsvp?.status ?? null,
       rsvpUpdatedAt: rsvp?.updatedAt.toISOString() ?? null,
+      rsvpWish: rsvp?.wish ?? null,
     }));
   },
 
