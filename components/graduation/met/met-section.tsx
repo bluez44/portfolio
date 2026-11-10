@@ -6,7 +6,6 @@ import { useScrollReveal } from "@/lib/hooks/use-scroll-reveal";
 import { useCopy } from "../i18n/lang-context";
 import { GraduationSection } from "../shared/graduation-section";
 import { SectionHeading } from "../shared/section-heading";
-import { SectionKicker } from "../shared/section-kicker";
 import { BkBadge } from "./components/bk-badge";
 import { MomentCard } from "./components/moment-card";
 import { NoteFinaleStage } from "./components/note-finale-stage";
@@ -27,7 +26,6 @@ export function MetSection({ guestName, note }: { guestName: string; note: strin
         <BkBadge />
 
         <div ref={headRef} className="relative flex flex-col gap-5">
-          <SectionKicker>{t.kicker}</SectionKicker>
           <SectionHeading lead={t.heading.lead} accent={t.heading.accent} />
           <p className="m-0 max-w-[52ch] text-[17px] leading-[1.72] text-pretty text-ink-2">{t.intro}</p>
         </div>
