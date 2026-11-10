@@ -12,7 +12,7 @@ export function MomentCard({ moment: m, side }: { moment: Moment; side: "left" |
     <li
       data-moment
       data-side={side}
-      className={`relative flex min-h-[300px] w-[84%] flex-col justify-end rounded-[14px] border-[1.5px] border-ink bg-paper min-[760px]:w-[60%] ${side === "left" ? "self-start" : "self-end"}`}
+      className={`relative flex min-h-75 w-[84%] flex-col justify-end rounded-[14px] border-[1.5px] border-ink bg-paper min-[760px]:w-[60%] ${side === "left" ? "self-start" : "self-end"}`}
       style={{
         "--a": 0,
         boxShadow: `calc(5px + var(--a) * 4px) calc(5px + var(--a) * 4px) 0 var(--${m.color})`,
@@ -26,12 +26,12 @@ export function MomentCard({ moment: m, side }: { moment: Moment; side: "left" |
         <div className="absolute inset-0 bg-paper" style={{ opacity: "calc((1 - var(--a)) * 0.55)" }} />
         <div className="absolute inset-x-0 bottom-0 h-[72%]" style={{ background: "linear-gradient(to bottom, transparent, var(--paper) 42%)" }} />
       </div>
-      <Tape color={m.color} width={84} height={22} rotate={-4} className="-top-3 z-[1]" />
-      <div className="relative flex flex-col gap-2.5 px-[22px] pt-[26px] pb-[22px]">
+      <Tape color={m.color} width={84} height={22} rotate={-4} className="-top-3 z-1" />
+      <div className="relative flex flex-col gap-2.5 px-5.5 pt-6.5 pb-5.5">
         <span className="font-mono text-[11px] tracking-[0.24em] uppercase" style={{ color: `var(--${m.color})` }}>
           {m.year} · {m.n}
         </span>
-        <h3 className="m-0 font-heading text-2xl leading-[1.05] font-bold tracking-[-0.025em]" style={{ fontVariationSettings: '"wdth" 90, "opsz" 96' }}>
+        <h3 className="m-0 font-heading text-2xl leading-[1.05] font-bold tracking-tight" style={{ fontVariationSettings: '"wdth" 90, "opsz" 96' }}>
           {m.title}
         </h3>
         <p className="m-0 text-[15px] leading-[1.6] text-pretty text-ink-2">{m.body}</p>

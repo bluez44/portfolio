@@ -135,7 +135,7 @@ export function Hero() {
           <span className="relative inline-block">
             <span
               aria-hidden
-              className="absolute -inset-x-2 bottom-[10%] -z-0 h-[38%] bg-canary"
+              className="absolute -inset-x-2 bottom-[10%] z-0 h-[38%] bg-canary"
               style={{ transform: "rotate(-1deg)" }}
             />
             <span className="relative z-10 text-ink">Quang Vinh.</span>
@@ -202,7 +202,7 @@ export function Hero() {
           <a
             href="/vo-le-quang-vinh-resume.pdf"
             download
-            className="ml-1 hidden text-[14px] font-medium text-ink-2 underline decoration-tomato decoration-[2px] underline-offset-[6px] hover:text-ink sm:inline-block"
+            className="ml-1 hidden text-[14px] font-medium text-ink-2 underline decoration-tomato decoration-2 underline-offset-[6px] hover:text-ink sm:inline-block"
           >
             or grab the CV ↓
           </a>

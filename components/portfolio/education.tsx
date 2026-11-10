@@ -43,7 +43,7 @@ export function Education() {
             {education.map((entry, index) => (
               <article
                 key={entry.degree}
-                className="relative rounded-[var(--r-round)] border-[1.5px] border-ink bg-paper p-8"
+                className="relative rounded-(--r-round) border-[1.5px] border-ink bg-paper p-8"
                 style={{ boxShadow: "8px 8px 0 var(--blue)" }}
               >
                 {/* decorative corners */}
@@ -80,7 +80,7 @@ export function Education() {
                 >
                   {entry.degree}
                 </h3>
-                <p className="mt-3 text-center text-[15px] leading-[1.5] text-ink-2">
+                <p className="mt-3 text-center text-[15px] leading-normal text-ink-2">
                   {entry.school}
                 </p>
 
@@ -124,7 +124,7 @@ export function Education() {
 
           {/* receipt column */}
           <div
-            className="relative rounded-[var(--r-round)] border-[1.5px] border-ink bg-paper p-6"
+            className="relative rounded-(--r-round) border-[1.5px] border-ink bg-paper p-6"
             style={{ boxShadow: "6px 6px 0 var(--jade)" }}
           >
             {/* torn edge top */}
@@ -167,7 +167,7 @@ export function Education() {
                   </div>
                   <span className="inline-flex items-center gap-2">
                     <span
-                      className="inline-flex items-center rounded-full border-[1.5px] border-ink px-2.5 py-0.5 font-mono text-[10px] font-bold tracking-[0.1em] text-ink uppercase"
+                      className="inline-flex items-center rounded-full border-[1.5px] border-ink px-2.5 py-0.5 font-mono text-[10px] font-bold tracking-widest text-ink uppercase"
                       style={{ background: "var(--canary)" }}
                     >
                       {cert.year}

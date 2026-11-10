@@ -12,7 +12,7 @@ export function Postmark({
   return (
     <div
       aria-hidden
-      className={`absolute grid h-[92px] w-[92px] place-items-center rounded-full border-[1.5px] text-center ${className}`}
+      className={`absolute grid h-23 w-23 place-items-center rounded-full border-[1.5px] text-center ${className}`}
       style={{ borderColor: `var(--${color})`, transform: `rotate(${rotate}deg)`, ...style }}
     >
       <span className="font-mono text-[9px] leading-normal tracking-[0.18em] uppercase" style={{ color: `var(--${color})` }}>

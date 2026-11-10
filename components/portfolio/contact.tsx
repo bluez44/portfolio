@@ -81,7 +81,7 @@ export function Contact() {
           <form
             onSubmit={handleSubmit(onSubmit)}
             noValidate
-            className="relative rounded-[var(--r-round)] border-[1.5px] border-ink bg-paper p-8 lg:p-10"
+            className="relative rounded-(--r-round) border-[1.5px] border-ink bg-paper p-8 lg:p-10"
             style={{ boxShadow: "8px 8px 0 var(--ink)" }}
           >
             {/* postmark corner */}
@@ -153,7 +153,7 @@ export function Contact() {
                   {...register("message")}
                   rows={5}
                   placeholder="Tell me about the project, the timeline, the vibe…"
-                  className="w-full resize-y rounded-[var(--r-soft)] border-[1.5px] border-ink/40 bg-transparent px-3 py-3 text-[16px] leading-relaxed text-ink placeholder:text-ink-3 focus:border-tomato focus:outline-none"
+                  className="w-full resize-y rounded-(--r-soft) border-[1.5px] border-ink/40 bg-transparent px-3 py-3 text-[16px] leading-relaxed text-ink placeholder:text-ink-3 focus:border-tomato focus:outline-none"
                 />
                 {errors.message && (
                   <span className="mt-1 font-mono text-[11px] text-tomato">
@@ -212,7 +212,7 @@ export function Contact() {
                   rel={
                     social.href.startsWith("http") ? "noreferrer" : undefined
                   }
-                  className="group flex items-center justify-between gap-4 rounded-[var(--r-round)] border-[1.5px] border-ink bg-paper p-5 transition-transform hover:-translate-y-1 hover:-translate-x-1"
+                  className="group flex items-center justify-between gap-4 rounded-(--r-round) border-[1.5px] border-ink bg-paper p-5 transition-transform hover:-translate-y-1 hover:-translate-x-1"
                   style={{ boxShadow: `4px 4px 0 var(--${accent})` }}
                 >
                   <span className="flex items-center gap-4">

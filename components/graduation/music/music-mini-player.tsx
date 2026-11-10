@@ -29,7 +29,7 @@ export function MusicMiniPlayer({
           ×
         </button>
       </div>
-      <div className="h-[200px] w-[200px] overflow-hidden rounded-md border-[1.5px] border-ink">
+      <div className="h-50 w-50 overflow-hidden rounded-md border-[1.5px] border-ink">
         <div ref={mountRef} />
       </div>
     </div>

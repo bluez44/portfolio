@@ -9,7 +9,7 @@ export function LangToggle() {
     <div
       role="group"
       aria-label={copy.header.switchLang}
-      className="flex h-9 items-center gap-0.5 rounded-full border-[1.5px] border-ink bg-paper-2 p-[3px]"
+      className="flex h-9 items-center gap-0.5 rounded-full border-[1.5px] border-ink bg-paper-2 p-0.75"
       style={{ boxShadow: "var(--offset-xs)" }}
     >
       {LANGS.map((l) => (

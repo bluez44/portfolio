@@ -94,7 +94,7 @@ export function Header() {
                 {isActive && (
                   <span
                     aria-hidden
-                    className="absolute inset-x-2 bottom-1 -z-0 h-2 bg-canary/85"
+                    className="absolute inset-x-2 bottom-1 z-0 h-2 bg-canary/85"
                     style={{ borderRadius: "2px" }}
                   />
                 )}
