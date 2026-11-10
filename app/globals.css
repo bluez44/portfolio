@@ -157,6 +157,19 @@
    Inside @layer base, the declared order (theme, base, components,
    utilities) puts utilities last and they win again. */
 @layer base {
+  /* Tailwind v4 dropped the pointer cursor on buttons; restore it for every clickable control. */
+  button:not(:disabled),
+  [role="button"]:not([aria-disabled="true"]),
+  input:is([type="button"], [type="submit"], [type="reset"], [type="checkbox"], [type="radio"], [type="file"]):not(:disabled),
+  select:not(:disabled),
+  summary {
+    cursor: pointer;
+  }
+
+  :is(button, input, select, textarea):disabled {
+    cursor: not-allowed;
+  }
+
   ::-webkit-scrollbar {
     display: none;
   }
