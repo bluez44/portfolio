@@ -9,11 +9,13 @@ import { TourPoster } from "./tour-poster";
 import { GuideTabs, type GuideTabId } from "./guide-tabs";
 import { LazyEmbed } from "./lazy-embed";
 import { ScrollShield } from "./scroll-shield";
+import { SourceCredit } from "./source-credit";
 
 /** Permissions the 3DVista tour uses for full screen and device-orientation look-around. */
 const TOUR_ALLOW = "fullscreen; accelerometer; gyroscope; magnetometer; xr-spatial-tracking";
 
-type Panel = { id: GuideTabId; copy: GuideTab; frame: ReactNode; external?: { href: string; label: string } };
+type Link = { href: string; label: string };
+type Panel = { id: GuideTabId; copy: GuideTab; frame: ReactNode; external?: Link; credit?: Link & { owner: string } };
 
 /**
  * Map and 360° campus tour in one fixed-ratio frame. The map loads by itself once nearby and the
@@ -51,6 +53,7 @@ export function VenueGuide({
         <LazyEmbed src={E.virtualTourUrl} title={t.tour.frameTitle} loadLabel={t.tour.load} allow={TOUR_ALLOW} poster={<TourPoster />} />
       ),
       external: { href: E.virtualTourUrl, label: t.tour.open },
+      credit: { href: E.virtualTourOwnerUrl, ...t.tour.credit },
     },
   ];
 
@@ -71,15 +74,20 @@ export function VenueGuide({
           >
             {p.frame}
           </div>
-          {p.external && (
-            <a
-              href={p.external.href}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="riso-focus self-end font-mono text-[11px] tracking-[0.18em] text-ink-2 uppercase underline underline-offset-4 hover:text-tomato"
-            >
-              {p.external.label} ↗
-            </a>
+          {(p.credit || p.external) && (
+            <div className="flex flex-wrap items-baseline justify-between gap-x-4 gap-y-1.5">
+              {p.credit && <SourceCredit {...p.credit} />}
+              {p.external && (
+                <a
+                  href={p.external.href}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="riso-focus ml-auto font-mono text-[11px] tracking-[0.18em] text-ink-2 uppercase underline underline-offset-4 hover:text-tomato"
+                >
+                  {p.external.label} ↗
+                </a>
+              )}
+            </div>
           )}
         </div>
       ))}
