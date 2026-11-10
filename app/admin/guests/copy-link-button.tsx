@@ -3,11 +3,12 @@
 import { useState } from 'react';
 import { SITE_URL } from '@/lib/site';
 
-export function CopyLinkButton({ slug }: { slug: string }) {
+export function CopyLinkButton({ slug, guestId }: { slug?: string; guestId?: string }) {
   const [state, setState] = useState<'idle' | 'copied' | 'failed'>('idle');
   const copy = async () => {
     try {
-      await navigator.clipboard.writeText(`${SITE_URL}/graduation?to=${slug}`);
+      const target = guestId || slug;
+      await navigator.clipboard.writeText(`${SITE_URL}/graduation/${target}`);
       setState('copied');
     } catch {
       setState('failed');
