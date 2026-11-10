@@ -11,7 +11,7 @@ import { LazyEmbed } from "./lazy-embed";
 /** Permissions the 3DVista tour uses for full screen and device-orientation look-around. */
 const TOUR_ALLOW = "fullscreen; accelerometer; gyroscope; magnetometer; xr-spatial-tracking";
 
-type Panel = { id: GuideTabId; copy: GuideTab; src: string; openHref: string; allow?: string; poster: ReactNode };
+type Panel = { id: GuideTabId; copy: GuideTab; src: string; allow?: string; poster: ReactNode; external?: { href: string; label: string } };
 
 /**
  * Map and 360° campus tour in one fixed-ratio frame. Both panels stay mounted (inactive ones are
@@ -25,8 +25,15 @@ export function VenueGuide() {
   const idFor = (id: GuideTabId) => ({ tab: `${base}-${id}-tab`, panel: `${base}-${id}-panel` });
 
   const panels: Panel[] = [
-    { id: "map", copy: t.map, src: E.mapEmbedUrl, openHref: E.mapsUrl, poster: <MapPoster /> },
-    { id: "tour", copy: t.tour, src: E.virtualTourUrl, openHref: E.virtualTourUrl, allow: TOUR_ALLOW, poster: <TourPoster /> },
+    { id: "map", copy: t.map, src: E.mapEmbedUrl, poster: <MapPoster /> },
+    {
+      id: "tour",
+      copy: t.tour,
+      src: E.virtualTourUrl,
+      allow: TOUR_ALLOW,
+      poster: <TourPoster />,
+      external: { href: E.virtualTourUrl, label: t.tour.open },
+    },
   ];
 
   return (
@@ -46,14 +53,16 @@ export function VenueGuide() {
           >
             <LazyEmbed src={p.src} title={p.copy.frameTitle} loadLabel={p.copy.load} allow={p.allow} poster={p.poster} />
           </div>
-          <a
-            href={p.openHref}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="riso-focus self-end font-mono text-[11px] tracking-[0.18em] text-ink-2 uppercase underline underline-offset-4 hover:text-tomato"
-          >
-            {p.copy.open} ↗
-          </a>
+          {p.external && (
+            <a
+              href={p.external.href}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="riso-focus self-end font-mono text-[11px] tracking-[0.18em] text-ink-2 uppercase underline underline-offset-4 hover:text-tomato"
+            >
+              {p.external.label} ↗
+            </a>
+          )}
         </div>
       ))}
     </div>
