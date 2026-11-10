@@ -1,11 +1,13 @@
 import { GRADUATION_EVENT as E } from "@/lib/graduation/event";
 import { SideRail } from "./side-rail";
+import { useCopy } from "../i18n/lang-context";
 
 export function SideRails() {
+  const { rails } = useCopy();
   return (
     <>
-      <SideRail side="left" label="Thời gian · When" value={E.railWhen} sub={E.railWhenEn} progress />
-      <SideRail side="right" label="Địa điểm · Where" value={E.venueShort} sub={E.addressShort} />
+      <SideRail side="left" label={rails.when} value={rails.whenValue} sub={E.timeRange} progress />
+      <SideRail side="right" label={rails.where} value={rails.whereValue} sub={rails.whereSub} />
     </>
   );
 }

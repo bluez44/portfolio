@@ -1,20 +1,21 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { GraduationInvitation } from "@/components/graduation/invitation";
+import { getGraduationLang } from "@/lib/graduation/i18n/get-lang";
 import { getInvitationGuest } from "@/lib/graduation/get-invitation-guest";
+import { GRADUATION_COPY } from "@/lib/graduation/i18n";
 import { parseGuestSlug } from "@/lib/graduation/slug";
 
 export const dynamic = "force-dynamic";
 
 type Props = { searchParams: Promise<{ to?: string | string[] }> };
 
-const BASE_TITLE = "Graduation Invitation – Võ Lê Quang Vinh";
-
 export async function generateMetadata({ searchParams }: Props): Promise<Metadata> {
   const slug = parseGuestSlug((await searchParams).to);
   const found = slug ? await getInvitationGuest(slug) : null;
-  const title = found ? `Thư mời tốt nghiệp · ${found.guest.name}` : BASE_TITLE;
-  const description = "You're invited to celebrate my graduation.";
+  const { meta } = GRADUATION_COPY[await getGraduationLang()];
+  const title = found ? meta.guestTitle(found.guest.name) : meta.title;
+  const description = meta.description;
   return {
     title,
     description,
@@ -30,5 +31,6 @@ export default async function GraduationPage({ searchParams }: Props) {
   if (!slug) notFound();
   const found = await getInvitationGuest(slug);
   if (!found) notFound();
-  return <GraduationInvitation guest={found.guest} initialRsvp={found.rsvp} />;
+  const lang = await getGraduationLang();
+  return <GraduationInvitation guest={found.guest} initialRsvp={found.rsvp} initialLang={lang} />;
 }

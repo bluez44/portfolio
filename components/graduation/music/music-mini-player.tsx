@@ -1,4 +1,5 @@
 import type { RefObject } from "react";
+import { useCopy } from "../i18n/lang-context";
 
 /** Stays mounted once opened so the iframe keeps playing; hidden via `hidden` when closed. */
 export function MusicMiniPlayer({
@@ -10,6 +11,7 @@ export function MusicMiniPlayer({
   mountRef: RefObject<HTMLDivElement | null>;
   onClose: () => void;
 }) {
+  const { music: t } = useCopy();
   return (
     <div
       hidden={!open}
@@ -17,11 +19,11 @@ export function MusicMiniPlayer({
       style={{ boxShadow: "var(--offset-md)" }}
     >
       <div className="mb-1.5 flex items-center justify-between gap-3 px-1">
-        <span className="font-mono text-[10px] tracking-[0.2em] text-ink-2 uppercase">♪ Now playing</span>
+        <span className="font-mono text-[10px] tracking-[0.2em] text-ink-2 uppercase">{t.nowPlaying}</span>
         <button
           type="button"
           onClick={onClose}
-          aria-label="Tắt nhạc · Close music"
+          aria-label={t.close}
           className="riso-focus cursor-pointer border-0 bg-transparent font-mono text-sm text-ink-2 hover:text-tomato"
         >
           ×
