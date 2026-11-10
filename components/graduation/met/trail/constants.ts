@@ -1,5 +1,12 @@
-/** Where the trail starts: this share of the column width, at the column's top edge. */
-export const START_X = 0.9;
+/** The trail starts this far (px) in from the section's top-right corner, so the badge sits fully inside it. */
+export const START_INSET = 40;
+/** Approach from the corner to the first card: one turn per this many px of vertical travel… */
+export const APPROACH_STEP = 90;
+/** …between this many turns… */
+export const APPROACH_MIN_TURNS = 2;
+export const APPROACH_MAX_TURNS = 6;
+/** …swinging between this share of the column width and the start's x, clear of the heading text. */
+export const APPROACH_LEFT = 0.55;
 /** ScrollTrigger line where the badge sets off. */
 export const START_LINE = "top 70%";
 /** Gap (px) between a card's edge and the point where the trail docks beside it. */

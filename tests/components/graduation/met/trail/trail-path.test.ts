@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { buildTrail } from "@/components/graduation/met/trail/trail-path";
+import { buildTrail, zigzag } from "@/components/graduation/met/trail/trail-path";
 
 describe("buildTrail", () => {
   const knots = [
@@ -31,5 +31,32 @@ describe("buildTrail", () => {
     expect(prefixes).toHaveLength(3);
     expect(prefixes[2]).toBe(d);
     expect(prefixes[2].startsWith(prefixes[1])).toBe(true);
+  });
+});
+
+describe("zigzag", () => {
+  const opts = { left: 100, right: 500, step: 100, min: 2, max: 6 };
+
+  it("adds one turn per step of vertical travel, alternating left and right", () => {
+    // 400px / 100px step = 4 turns, evenly spaced at 1/5 … 4/5 of the way down.
+    expect(zigzag({ x: 500, y: 0 }, { x: 300, y: 400 }, opts)).toEqual([
+      { x: 100, y: 80 },
+      { x: 500, y: 160 },
+      { x: 100, y: 240 },
+      { x: 500, y: 320 },
+    ]);
+  });
+
+  it("clamps the number of turns", () => {
+    expect(zigzag({ x: 0, y: 0 }, { x: 0, y: 50 }, opts)).toHaveLength(2);
+    expect(zigzag({ x: 0, y: 0 }, { x: 0, y: 5000 }, opts)).toHaveLength(6);
+  });
+
+  it("keeps every turn strictly between the endpoints", () => {
+    const turns = zigzag({ x: 0, y: 0 }, { x: 0, y: 1000 }, opts);
+    turns.forEach((p) => {
+      expect(p.y).toBeGreaterThan(0);
+      expect(p.y).toBeLessThan(1000);
+    });
   });
 });
