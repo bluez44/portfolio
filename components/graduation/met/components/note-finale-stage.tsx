@@ -1,0 +1,26 @@
+import { BkBadge } from "./bk-badge";
+import { PersonalNoteCard } from "./personal-note-card";
+
+const outlineStroke = { fill: "none", stroke: "var(--tomato)", strokeWidth: 3, strokeLinecap: "round", strokeLinejoin: "round" } as const;
+
+/**
+ * The trail's last stop. The outer wrapper stays in flow (the trail measures it); the inner element
+ * is what gets pinned, holding the scalable note with its outline and the docked badge.
+ */
+export function NoteFinaleStage({ label, note }: { label: string; note: string }) {
+  return (
+    <div data-trail-end className="relative">
+      <div data-trail-pin className="relative">
+        <div data-note-scale className="relative origin-top">
+          {/* Offset by the outline gap (8px); sized and drawn by `layout-outline`. */}
+          <svg data-note-outline aria-hidden className="pointer-events-none absolute -top-2 -left-2 overflow-visible">
+            <path data-outline-half {...outlineStroke} />
+            <path data-outline-half {...outlineStroke} />
+          </svg>
+          <PersonalNoteCard label={label} note={note} />
+        </div>
+        <BkBadge docked />
+      </div>
+    </div>
+  );
+}
