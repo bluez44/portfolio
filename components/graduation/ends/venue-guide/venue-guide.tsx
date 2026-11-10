@@ -4,7 +4,7 @@ import { useId, type ReactNode, type Ref } from "react";
 import { GRADUATION_EVENT as E } from "@/lib/graduation/event";
 import type { GuideTab } from "@/lib/graduation/i18n";
 import { useCopy } from "../../i18n/lang-context";
-import { EmbedFrame } from "./embed-frame";
+import { DeferredEmbed } from "./deferred-embed";
 import { TourPoster } from "./tour-poster";
 import { GuideTabs, type GuideTabId } from "./guide-tabs";
 import { LazyEmbed } from "./lazy-embed";
@@ -16,8 +16,8 @@ const TOUR_ALLOW = "fullscreen; accelerometer; gyroscope; magnetometer; xr-spati
 type Panel = { id: GuideTabId; copy: GuideTab; frame: ReactNode; external?: { href: string; label: string } };
 
 /**
- * Map and 360° campus tour in one fixed-ratio frame. The map renders straight away (lazy-loaded by
- * the browser); the tour waits for a click. Both panels stay mounted (inactive ones are hidden) so a
+ * Map and 360° campus tour in one fixed-ratio frame. The map loads by itself once nearby and the
+ * visitor pauses scrolling; the tour waits for a click. Both panels stay mounted (inactive ones are hidden) so a
  * loaded embed survives switching tabs, and the fixed ratio means loading never shifts layout.
  */
 export function VenueGuide({
@@ -40,7 +40,7 @@ export function VenueGuide({
       copy: t.map,
       frame: (
         <ScrollShield hint={t.map.hint}>
-          <EmbedFrame src={E.mapEmbedUrl} title={t.map.frameTitle} lazy />
+          <DeferredEmbed src={E.mapEmbedUrl} title={t.map.frameTitle} />
         </ScrollShield>
       ),
     },
