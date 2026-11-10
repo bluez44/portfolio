@@ -1,9 +1,16 @@
 import prisma from "@/lib/prisma";
+import { Prisma } from "@/generated/prisma/client";
 import { SlugTakenError } from "./slug-taken-error";
 import { fromRsvpRow } from "./rsvp-mapper";
-import type { GuestData, GuestListItem, GuestRecord, InvitationGuest, RsvpAnswer } from "./types";
+import type { GuestCustomContent, GuestData, GuestListItem, GuestRecord, InvitationGuest, RsvpAnswer } from "./types";
 
-const recordSelect = { id: true, slug: true, name: true, note: true } as const;
+const recordSelect = {
+  id: true,
+  slug: true,
+  name: true,
+  note: true,
+  customContent: true,
+} as const;
 
 function isUniqueViolation(error: unknown): boolean {
   return typeof error === "object" && error !== null && (error as { code?: string }).code === "P2002";
@@ -18,21 +25,59 @@ async function write<T>(op: () => Promise<T>): Promise<T> {
   }
 }
 
+function parseRecord(row: {
+  id: string;
+  slug: string;
+  name: string;
+  note: string | null;
+  customContent: unknown;
+}): GuestRecord {
+  return {
+    id: row.id,
+    slug: row.slug,
+    name: row.name,
+    note: row.note,
+    customContent: (row.customContent as GuestCustomContent) ?? null,
+  };
+}
+
+const UUID_REGEX = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+
 export const guestRepository = {
-  findBySlug(slug: string): Promise<GuestRecord | null> {
-    return prisma.guest.findUnique({ where: { slug }, select: recordSelect });
+  async findById(id: string): Promise<GuestRecord | null> {
+    const row = await prisma.guest.findUnique({ where: { id }, select: recordSelect });
+    return row ? parseRecord(row) : null;
+  },
+
+  async findBySlug(slug: string): Promise<GuestRecord | null> {
+    const row = await prisma.guest.findUnique({ where: { slug }, select: recordSelect });
+    return row ? parseRecord(row) : null;
   },
 
   async findInvitation(
-    slug: string,
+    identifier: string,
   ): Promise<{ guest: InvitationGuest; rsvp: RsvpAnswer | null } | null> {
-    const row = await prisma.guest.findUnique({
-      where: { slug },
-      select: { slug: true, name: true, note: true, rsvp: { select: { status: true, contact: true, reason: true, wish: true } } },
-    });
+    const isUuid = UUID_REGEX.test(identifier);
+    let row = isUuid
+      ? await prisma.guest.findUnique({
+          where: { id: identifier },
+          select: { ...recordSelect, rsvp: { select: { status: true, contact: true, reason: true, wish: true } } },
+        })
+      : null;
+
+    if (!row) {
+      row = await prisma.guest.findUnique({
+        where: { slug: identifier },
+        select: { ...recordSelect, rsvp: { select: { status: true, contact: true, reason: true, wish: true } } },
+      });
+    }
+
     if (!row) return null;
-    const { rsvp, ...guest } = row;
-    return { guest, rsvp: rsvp ? fromRsvpRow(rsvp) : null };
+    const { rsvp, ...guestRow } = row;
+    return {
+      guest: parseRecord(guestRow),
+      rsvp: rsvp ? fromRsvpRow(rsvp) : null,
+    };
   },
 
   async list(): Promise<GuestListItem[]> {
@@ -40,19 +85,49 @@ export const guestRepository = {
       orderBy: { createdAt: "desc" },
       select: { ...recordSelect, rsvp: { select: { status: true, updatedAt: true } } },
     });
-    return rows.map(({ rsvp, ...guest }) => ({
-      ...guest,
+    return rows.map(({ rsvp, ...guestRow }) => ({
+      ...parseRecord(guestRow),
       rsvpStatus: rsvp?.status ?? null,
       rsvpUpdatedAt: rsvp?.updatedAt.toISOString() ?? null,
     }));
   },
 
-  create(data: GuestData): Promise<GuestRecord> {
-    return write(() => prisma.guest.create({ data, select: recordSelect }));
+  async create(data: GuestData): Promise<GuestRecord> {
+    const row = await write(() =>
+      prisma.guest.create({
+        data: {
+          name: data.name,
+          slug: data.slug,
+          note: data.note,
+          customContent: data.customContent
+            ? (data.customContent as unknown as Prisma.InputJsonValue)
+            : Prisma.DbNull,
+        },
+        select: recordSelect,
+      }),
+    );
+    return parseRecord(row);
   },
 
-  update(id: string, data: GuestData): Promise<GuestRecord> {
-    return write(() => prisma.guest.update({ where: { id }, data, select: recordSelect }));
+  async update(id: string, data: GuestData): Promise<GuestRecord> {
+    const row = await write(() =>
+      prisma.guest.update({
+        where: { id },
+        data: {
+          name: data.name,
+          slug: data.slug,
+          note: data.note,
+          customContent:
+            data.customContent !== undefined
+              ? data.customContent
+                ? (data.customContent as unknown as Prisma.InputJsonValue)
+                : Prisma.DbNull
+              : undefined,
+        },
+        select: recordSelect,
+      }),
+    );
+    return parseRecord(row);
   },
 
   async remove(id: string): Promise<void> {
