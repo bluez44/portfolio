@@ -16,6 +16,7 @@ export function createTrailTimeline(
   keysFor: (trigger: ScrollTrigger) => ScrollKey[],
   onFraction: (fraction: number) => void,
 ): ScrollTrigger {
+
   const ride = gsap
     .timeline({ paused: true, defaults: { ease: "none" } })
     .fromTo(draw, { drawSVG: "0%" }, { drawSVG: "100%" }, 0)

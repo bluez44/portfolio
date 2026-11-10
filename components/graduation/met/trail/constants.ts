@@ -3,7 +3,7 @@ export const START_INSET = 40;
 /** The badge reaches each card as that card's dock crosses this share of the viewport height. */
 export const CARD_FOCUS_AT = 0.5;
 /** ScrollTrigger line where the badge sets off. */
-export const START_LINE = "top 70%";
+export const START_LINE = "top bottom -=100px";
 /** Gap (px) between a card's edge and the point where the trail docks beside it. */
 export const DOCK_GAP = 26;
 /** Path length (px) over which a card wakes up before and fades after the badge passes. */
