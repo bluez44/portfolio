@@ -1,5 +1,5 @@
 import type { Rig } from "./rig";
-import type { PoseTarget } from "./types";
+import type { PoseTarget } from "../types";
 
 export type PoseState = PoseTarget;
 
@@ -14,13 +14,14 @@ export function applyPose(
   { time: T, phase }: { time: number; phase: number },
   view: { halfW: number; halfH: number; scale: number },
 ): void {
-  const { wave, bow, sit, point, toss, walk } = S;
+  const { wave, bow, sit, point, toss, cheer, walk } = S;
+  const hop = Math.abs(Math.sin(T * 5.5)) * cheer;
   const sw = Math.sin(phase) * 0.6 * walk;
 
   R.root.position.set(S.x * (view.halfW - 1.3 * view.scale), -view.halfH + 0.15, 0);
   R.root.scale.setScalar(view.scale);
   R.root.rotation.y = S.ry * (1 - walk) + S.dir * 1.35 * walk;
-  R.hips.position.y = 1.0 - 0.4 * sit + Math.abs(Math.sin(phase)) * 0.05 * walk;
+  R.hips.position.y = 1.0 - 0.4 * sit + Math.abs(Math.sin(phase)) * 0.05 * walk + 0.12 * hop;
 
   R.legs[0].leg.rotation.x = -1.5 * sit + sw;
   R.legs[1].leg.rotation.x = -1.5 * sit - sw;
@@ -28,20 +29,22 @@ export function applyPose(
   R.legs[1].knee.rotation.x = 1.45 * sit + Math.max(0, -Math.sin(phase)) * 0.7 * walk;
   R.skirt.scale.y = 1 - 0.55 * sit;
 
-  R.spine.rotation.x = bow * (0.5 + 0.12 * Math.sin(T * 1.6)) + 0.08 * sit + Math.sin(T * 1.8) * 0.015;
-  R.headG.rotation.x = 0.28 * sit + 0.1 * bow - 0.12 * toss;
+  R.spine.rotation.x = bow * (0.5 + 0.12 * Math.sin(T * 1.6)) + 0.08 * sit + Math.sin(T * 1.8) * 0.015 - 0.08 * cheer;
+  R.spine.rotation.z = Math.sin(T * 2.75) * 0.07 * cheer;
+  R.headG.rotation.x = 0.28 * sit + 0.1 * bow - 0.12 * toss - 0.18 * cheer;
   R.headG.rotation.y = -R.root.rotation.y * 0.45 + Math.sin(T * 0.7) * 0.05;
 
   const lift = toss * (2.45 + 0.25 * Math.sin(T * 2.86));
   const type = Math.sin(T * 16) * 0.08 * sit;
-  R.A.sh.rotation.z = 0.12 + wave * 2.5 + point * 1.45 + lift;
+  // cheer: both arms up in a V, hands shaking.
+  R.A.sh.rotation.z = 0.12 + wave * 2.5 + point * 1.45 + lift + cheer * 2.6;
   R.A.sh.rotation.x = -0.5 * sit - sw * 0.9 - 0.15 * point;
-  R.A.el.rotation.z = wave * (0.35 + Math.sin(T * 7) * 0.45) + 0.1 * point;
+  R.A.el.rotation.z = wave * (0.35 + Math.sin(T * 7) * 0.45) + 0.1 * point + cheer * (0.25 + Math.sin(T * 11) * 0.3);
   R.A.el.rotation.x = -1.0 * sit + type;
-  R.B.sh.rotation.z = -0.12 - lift + 0.05 * bow;
+  R.B.sh.rotation.z = -0.12 - lift + 0.05 * bow - cheer * 2.6;
   R.B.sh.rotation.x = -0.7 * wave - 0.5 * sit - 0.35 * bow + sw * 0.9;
   R.B.el.rotation.x = -1.0 * wave - 1.0 * sit - 1.75 * bow - type;
-  R.B.el.rotation.z = 0.25 * bow;
+  R.B.el.rotation.z = 0.25 * bow - cheer * (0.25 + Math.sin(T * 11 + 1.2) * 0.3);
 
   const p = (T % 2.2) / 2.2;
   R.capG.position.y = 0.2 + toss * Math.max(0, Math.sin(Math.PI * p)) * 2.6;
