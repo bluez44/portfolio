@@ -1,7 +1,7 @@
 import { offsetWithin } from "@/lib/browser/offset-within";
 import type { TrailElements } from "../elements";
-import { APPROACH_LEFT, APPROACH_MAX_TURNS, APPROACH_MIN_TURNS, APPROACH_STEP, DOCK_GAP, START_INSET } from "./constants";
-import { buildTrail, zigzag, type Point } from "./trail-path";
+import { DOCK_GAP, START_INSET } from "./constants";
+import { buildTrail, type Point } from "./trail-path";
 
 /** Path length (px) to each card's dock, and the trail's total length. */
 export type TrailMetrics = { stops: number[]; total: number };
@@ -31,26 +31,16 @@ function noteTop({ root, end }: TrailElements): Point {
 }
 
 /**
- * Lays the trail out from current layout: from the section's top-right corner it zigzags down to
- * the first card, passes beside each card, and ends on the note. Measures where each card sits along it.
+ * Lays the trail out from current layout: from the section's top-right corner it winds past each
+ * card and ends on the note. Measures where each card sits along it.
  */
 export function layoutTrail(els: TrailElements): TrailMetrics {
-  const width = els.root.offsetWidth;
-  const start = sectionCorner(els);
   const docks = cardDocks(els);
-  const approach = zigzag(start, docks[0], {
-    left: width * APPROACH_LEFT,
-    right: start.x,
-    step: APPROACH_STEP,
-    min: APPROACH_MIN_TURNS,
-    max: APPROACH_MAX_TURNS,
-  });
-  const { d, prefixes } = buildTrail([start, ...approach, ...docks, noteTop(els)], width);
+  const { d, prefixes } = buildTrail([sectionCorner(els), ...docks, noteTop(els)], els.root.offsetWidth);
 
   const { base, draw } = els;
-  const firstDock = 1 + approach.length;
   const stops = docks.map((_, i) => {
-    base.setAttribute("d", prefixes[firstDock + i]);
+    base.setAttribute("d", prefixes[i + 1]);
     return base.getTotalLength();
   });
   base.setAttribute("d", d);
