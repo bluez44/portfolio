@@ -34,8 +34,8 @@ export function GraduationInvitation({
   return (
     <LangProvider initialLang={initialLang}>
       <div id="top" className="relative bg-paper font-sans text-ink">
-        <div aria-hidden className="pointer-events-none fixed inset-0 z-[15]" style={{ backgroundImage: "radial-gradient(var(--halftone) 1px, transparent 1px)", backgroundSize: "28px 28px" }} />
-        <div ref={canvasHost} aria-hidden className="pointer-events-none fixed inset-0 z-[25]" />
+        <div aria-hidden className="pointer-events-none fixed inset-0 z-15" style={{ backgroundImage: "radial-gradient(var(--halftone) 1px, transparent 1px)", backgroundSize: "28px 28px" }} />
+        <div ref={canvasHost} aria-hidden className="pointer-events-none fixed inset-0 z-25" />
 
         <InvitationHeader musicPlaying={music.status === "playing"} musicNote={musicNote} onMusic={music.toggle} />
         <SideRails />

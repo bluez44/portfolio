@@ -22,7 +22,7 @@ export function TechFocusPanel({
       className="pointer-events-none absolute top-4 right-4 bottom-4 flex w-[min(320px,calc(100%-32px))] flex-col justify-center"
     >
       <div
-        className="pointer-events-auto rounded-[var(--r-round)] border-[1.5px] border-ink bg-paper p-6"
+        className="pointer-events-auto rounded-(--r-round) border-[1.5px] border-ink bg-paper p-6"
         style={{ boxShadow: `6px 6px 0 var(--${accent})` }}
       >
         <div className="flex items-start justify-between gap-3">

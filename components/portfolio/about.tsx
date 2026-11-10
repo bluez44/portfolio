@@ -35,7 +35,7 @@ export function About() {
             <span className="relative inline-block">
               <span
                 aria-hidden
-                className="absolute -inset-x-1 bottom-[12%] -z-0 h-[36%] bg-canary"
+                className="absolute -inset-x-1 bottom-[12%] z-0 h-[36%] bg-canary"
                 style={{ transform: "rotate(-1deg)" }}
               />
               <span className="relative z-10">the code.</span>
@@ -121,7 +121,7 @@ export function About() {
                       {panel.stats.map((stat) => (
                         <div
                           key={stat.label}
-                          className="relative rounded-[var(--r-round)] border-[1.5px] border-ink bg-paper p-6"
+                          className="relative rounded-(--r-round) border-[1.5px] border-ink bg-paper p-6"
                           style={{ boxShadow: "5px 5px 0 var(--tomato)" }}
                         >
                           <p
@@ -132,7 +132,7 @@ export function About() {
                           >
                             {stat.value}
                           </p>
-                          <p className="mt-3 text-[13px] leading-[1.5] text-ink-2">
+                          <p className="mt-3 text-[13px] leading-normal text-ink-2">
                             {stat.label}
                           </p>
                         </div>
@@ -149,7 +149,7 @@ export function About() {
                     }`}
                   >
                     <div
-                      className="relative overflow-hidden rounded-[var(--r-round)] border-[1.5px] border-ink bg-paper-2"
+                      className="relative overflow-hidden rounded-(--r-round) border-[1.5px] border-ink bg-paper-2"
                       style={{
                         aspectRatio: "4/5",
                         boxShadow: `8px 8px 0 var(--${accent})`,

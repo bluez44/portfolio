@@ -136,7 +136,7 @@ export function Skills() {
         {/* 3D orbit stage */}
         <div
           ref={wrapperRef}
-          className="relative overflow-hidden rounded-[var(--r-round)] border-[1.5px] border-ink bg-paper"
+          className="relative overflow-hidden rounded-(--r-round) border-[1.5px] border-ink bg-paper"
           style={{ boxShadow: "8px 8px 0 var(--ink)" }}
         >
           {/* subtle radial bloom */}

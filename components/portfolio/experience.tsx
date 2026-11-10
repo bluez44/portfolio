@@ -81,7 +81,7 @@ export function Experience() {
                   />
 
                   <article
-                    className="relative w-full max-w-[440px] rounded-[var(--r-round)] border-[1.5px] border-ink bg-paper p-6 pt-8"
+                    className="relative w-full max-w-110 rounded-(--r-round) border-[1.5px] border-ink bg-paper p-6 pt-8"
                     style={{
                       transform: `rotate(${role.rotation * 0.6}deg)`,
                       boxShadow: `6px 6px 0 var(--${accent})`,

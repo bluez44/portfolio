@@ -13,8 +13,8 @@ const ENVELOPE_SIZE = "relative aspect-[1.6/1] w-[min(560px,86vw)] min-[760px]:w
 
 const Glows = () => (
   <>
-    <div aria-hidden className="pointer-events-none absolute -top-[120px] -left-[120px] h-[520px] w-[520px] rounded-full" style={{ background: "radial-gradient(closest-side, color-mix(in oklab, var(--tomato) 18%, transparent), transparent)" }} />
-    <div aria-hidden className="pointer-events-none absolute -right-[140px] -bottom-[160px] h-[600px] w-[600px] rounded-full" style={{ background: "radial-gradient(closest-side, color-mix(in oklab, var(--blue) 14%, transparent), transparent)" }} />
+    <div aria-hidden className="pointer-events-none absolute -top-30 -left-30 h-130 w-130 rounded-full" style={{ background: "radial-gradient(closest-side, color-mix(in oklab, var(--tomato) 18%, transparent), transparent)" }} />
+    <div aria-hidden className="pointer-events-none absolute -right-35 -bottom-40 h-150 w-150 rounded-full" style={{ background: "radial-gradient(closest-side, color-mix(in oklab, var(--blue) 14%, transparent), transparent)" }} />
   </>
 );
 
@@ -25,7 +25,7 @@ export function EnvelopeStage({ guestName }: { guestName: string }) {
 
   return (
     <section id="stage" ref={rootRef} className="relative bg-paper" style={{ height: reduced ? "100vh" : "420vh" }}>
-      <div className="sticky top-0 box-border flex h-screen flex-col items-center justify-center gap-[clamp(20px,3.5vh,40px)] overflow-hidden px-6 pt-[88px] pb-8 [perspective:1600px] min-[760px]:px-[clamp(72px,8vw,128px)]">
+      <div className="sticky top-0 box-border flex h-screen flex-col items-center justify-center gap-[clamp(20px,3.5vh,40px)] overflow-hidden px-6 pt-22 pb-8 perspective-[1600px] min-[760px]:px-[clamp(72px,8vw,128px)]">
         <Glows />
         <StageKickers greetingVisible={reduced} />
         {reduced ? (
@@ -34,8 +34,8 @@ export function EnvelopeStage({ guestName }: { guestName: string }) {
           </div>
         ) : (
           <>
-            <div id="envWrap" className={`${ENVELOPE_SIZE} [transform-style:preserve-3d]`} style={{ transform: "rotateX(14deg) rotateZ(-3deg)" }}>
-              <div id="envFlip" className="absolute inset-0 [transform-style:preserve-3d]">
+            <div id="envWrap" className={`${ENVELOPE_SIZE} transform-3d`} style={{ transform: "rotateX(14deg) rotateZ(-3deg)" }}>
+              <div id="envFlip" className="absolute inset-0 transform-3d">
                 <EnvelopeFront guestName={guestName} />
                 <EnvelopeBack guestName={guestName} />
               </div>

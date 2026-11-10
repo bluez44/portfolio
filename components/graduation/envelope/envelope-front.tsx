@@ -7,13 +7,13 @@ const mono = "font-mono uppercase";
 export function EnvelopeFront({ guestName }: { guestName: string }) {
   const { envelope: t } = useCopy();
   return (
-    <div id="envFront" className="absolute inset-0 box-border rounded-lg border-[1.5px] border-ink p-2.5 [backface-visibility:hidden]" style={{ boxShadow: "var(--offset-lg)", background: airMailStripes(16) }}>
+    <div id="envFront" className="absolute inset-0 box-border rounded-lg border-[1.5px] border-ink p-2.5 backface-hidden" style={{ boxShadow: "var(--offset-lg)", background: airMailStripes(16) }}>
       <div className="relative box-border flex h-full flex-col justify-between rounded border-[1.5px] border-ink bg-paper p-[clamp(16px,2.4vw,28px)]">
         <div className="flex flex-col gap-1.5">
           <span className={`${mono} text-[10px] tracking-[0.28em] text-blue`}>{t.airMail}</span>
           <span className={`${mono} text-[10px] tracking-[0.22em] text-ink-3`}>{t.invitationNo}</span>
         </div>
-        <div aria-hidden className="absolute top-[clamp(14px,2vw,24px)] right-[clamp(14px,2vw,24px)] box-border flex h-[82px] w-[68px] flex-col items-center justify-center gap-0.5 border-[1.5px] border-ink bg-canary outline-[3px] outline-offset-[-7px] outline-paper outline-dotted" style={{ boxShadow: "var(--offset-sm)" }}>
+        <div aria-hidden className="absolute top-[clamp(14px,2vw,24px)] right-[clamp(14px,2vw,24px)] box-border flex h-20.5 w-17 flex-col items-center justify-center gap-0.5 border-[1.5px] border-ink bg-canary outline-[3px] outline-offset-[-7px] outline-paper outline-dotted" style={{ boxShadow: "var(--offset-sm)" }}>
           <span className="font-heading text-2xl leading-none font-bold text-ink">QV</span>
           <span className="font-mono text-[9px] tracking-[0.18em] text-ink">2026</span>
         </div>

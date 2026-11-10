@@ -79,7 +79,7 @@ export function Footer() {
                   rel={s.href.startsWith("http") ? "noreferrer" : undefined}
                   className="group inline-flex flex-wrap items-baseline gap-x-2 self-start text-[15px] font-medium text-paper transition-colors hover:text-canary"
                 >
-                  <span className="underline decoration-tomato decoration-[2px] underline-offset-[5px] group-hover:decoration-canary">
+                  <span className="underline decoration-tomato decoration-2 underline-offset-[5px] group-hover:decoration-canary">
                     {s.label}
                   </span>
                   <span className="text-[13px] text-paper/60">

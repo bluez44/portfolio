@@ -12,7 +12,7 @@ const VARIANT: Record<Variant, string> = {
 const SIZE: Record<Size, { cls: string; off: number }> = {
   lg: { cls: "gap-2.5 px-7 py-3.5 text-[15px]", off: 5 },
   md: { cls: "gap-2 px-5 py-2.5 text-[13px]", off: 4 },
-  sm: { cls: "gap-2 px-[18px] py-2 text-[13px]", off: 3 },
+  sm: { cls: "gap-2 px-4.5 py-2 text-[13px]", off: 3 },
 };
 
 type Common = { variant?: Variant; size?: Size; icon?: ReactNode; offsetColor?: RisoColor | "ink"; children: ReactNode };

@@ -101,7 +101,7 @@ function ProjectSpread({
         style={{ aspectRatio: "4/3" }}
       >
         <div
-          className="relative flex h-full w-full flex-col justify-between overflow-hidden rounded-[var(--r-round)] border-[1.5px] border-ink p-8"
+          className="relative flex h-full w-full flex-col justify-between overflow-hidden rounded-(--r-round) border-[1.5px] border-ink p-8"
           style={{
             background: `var(--${accent})`,
             boxShadow: "8px 8px 0 var(--ink)",
@@ -215,7 +215,7 @@ function ProjectSpread({
                 target="_blank"
                 rel="noopener noreferrer"
                 aria-label={`${secondaryAction.label} — ${project.title} (opens in a new tab)`}
-                className="text-[14px] font-semibold text-ink underline decoration-tomato decoration-[2px] underline-offset-[5px] transition-colors hover:text-tomato"
+                className="text-[14px] font-semibold text-ink underline decoration-tomato decoration-2 underline-offset-[5px] transition-colors hover:text-tomato"
               >
                 {secondaryAction.label}
               </a>
