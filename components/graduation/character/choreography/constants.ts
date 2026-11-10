@@ -3,6 +3,17 @@ import type { Action } from "../types";
 /** Minimum scroll distance (px) between consecutive beats, so transitions never collapse. */
 export const MIN_GAP = 40;
 
+/** Share of a transition spent fading the old action out (start) and the new one in (end); it moves in between. */
+export const FADE = 0.25;
+/** Window of a transition in which the legs walk. */
+export const WALK_FROM = 0.18;
+export const WALK_SPAN = 0.64;
+
+/** The character heads for "How it ends" once How we met's bottom edge is this far (px) into view… */
+export const LEAVE_MET_INSET = 20;
+/** …and arrives when that edge (the top of "How it ends") reaches this share of the viewport height. */
+export const ARRIVE_ENDS_AT = 0.5;
+
 /** Share of the note's grow phase by which the character has stood up, walked over and is cheering. */
 export const CHEER_BY = 0.6;
 
