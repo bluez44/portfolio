@@ -1,15 +1,26 @@
 "use client";
 
-import { createContext, useContext, useEffect, useState, type ReactNode } from "react";
+import { createContext, useContext, useEffect, useState, useMemo, type ReactNode } from "react";
 import { GRADUATION_COPY, type GraduationCopy, type Lang } from "@/lib/graduation/i18n";
+import { GRADUATION_EVENT } from "@/lib/graduation/event";
 import { writeLangCookie } from "@/lib/graduation/i18n/lang-cookie";
+import { resolveInvitationCopy } from "@/lib/graduation/resolve-invitation-copy";
+import type { GuestCustomContent } from "@/lib/graduation/types";
 
 type LangValue = { lang: Lang; copy: GraduationCopy; setLang: (lang: Lang) => void };
 
 const LangContext = createContext<LangValue | null>(null);
 
 /** Cookie (not localStorage) so the server renders the chosen language without a flash. */
-export function LangProvider({ initialLang, children }: { initialLang: Lang; children: ReactNode }) {
+export function LangProvider({
+  initialLang,
+  customContent,
+  children,
+}: {
+  initialLang: Lang;
+  customContent?: GuestCustomContent | null;
+  children: ReactNode;
+}) {
   const [lang, setLangState] = useState(initialLang);
 
   useEffect(() => {
@@ -25,7 +36,12 @@ export function LangProvider({ initialLang, children }: { initialLang: Lang; chi
     setLangState(next);
   };
 
-  return <LangContext.Provider value={{ lang, copy: GRADUATION_COPY[lang], setLang }}>{children}</LangContext.Provider>;
+  const copy = useMemo(() => {
+    const base = GRADUATION_COPY[lang];
+    return resolveInvitationCopy(base, GRADUATION_EVENT, customContent).copy;
+  }, [lang, customContent]);
+
+  return <LangContext.Provider value={{ lang, copy, setLang }}>{children}</LangContext.Provider>;
 }
 
 export function useLang(): LangValue {

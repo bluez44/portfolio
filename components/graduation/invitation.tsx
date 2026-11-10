@@ -31,10 +31,11 @@ export function GraduationInvitation({
   const canvasHost = useRef<HTMLDivElement>(null);
   useGradCharacter(canvasHost);
   const [musicNote, flashMusicNote] = useTransientFlag(2600);
-  const music = useYouTubePlayer(GRADUATION_EVENT.musicYoutubeId, flashMusicNote);
+  const musicId = guest.customContent?.music?.youtubeId || GRADUATION_EVENT.musicYoutubeId;
+  const music = useYouTubePlayer(musicId, flashMusicNote);
 
   return (
-    <LangProvider initialLang={initialLang}>
+    <LangProvider initialLang={initialLang} customContent={guest.customContent}>
       <div id="top" className="relative bg-paper font-sans text-ink">
         <div aria-hidden className="pointer-events-none fixed inset-0 z-15" style={{ backgroundImage: "radial-gradient(var(--halftone) 1px, transparent 1px)", backgroundSize: "28px 28px" }} />
         <div ref={canvasHost} aria-hidden className="pointer-events-none fixed inset-0 z-25" />
@@ -44,7 +45,7 @@ export function GraduationInvitation({
 
         <main>
           <EnvelopeStage guestName={guest.name} />
-          <MetSection guestName={guest.name} note={guest.note} />
+          <MetSection guestName={guest.name} note={guest.customContent?.met?.note ?? guest.note} />
           <EndsSection />
           <RsvpSection slug={guest.slug} guestName={guest.name} initialRsvp={initialRsvp} ownerPhone={ownerPhone} />
         </main>
