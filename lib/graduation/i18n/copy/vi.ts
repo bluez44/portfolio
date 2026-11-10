@@ -63,7 +63,13 @@ export const vi: GraduationCopy = {
     guide: {
       tabsLabel: "Bản đồ và tham quan trường",
       map: { tab: "Bản đồ", frameTitle: "Bản đồ đến hội trường", hint: "Ctrl + cuộn để phóng to · Bấm để dùng bản đồ" },
-      tour: { tab: "Tham quan 360°", load: "Bắt đầu tham quan", open: "Mở toàn màn hình", frameTitle: "Tham quan 360° ĐH Bách Khoa" },
+      tour: {
+        tab: "Tham quan 360°",
+        load: "Bắt đầu tham quan",
+        open: "Mở toàn màn hình",
+        frameTitle: "Tham quan 360° ĐH Bách Khoa",
+        credit: { label: "Nguồn", owner: "Trường Đại học Bách Khoa – ĐHQG-HCM" },
+      },
     },
   },
   rsvp: {

@@ -13,6 +13,8 @@ export type GraduationEvent = {
   mapEmbedUrl: string;
   /** The university's 3DVista campus tour; it allows framing. */
   virtualTourUrl: string;
+  /** The tour's owner, credited under it. */
+  virtualTourOwnerUrl: string;
   musicYoutubeId: string;
 };
 
@@ -27,5 +29,6 @@ export const GRADUATION_EVENT: GraduationEvent = {
   mapEmbedUrl:
     "https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d6655.516643428146!2d106.65938094806978!3d10.774598740997988!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x31752f265219560b%3A0x5c5dd04dfb3977cd!2zxJDhuqFpIGjhu41jIELDoWNoIEtob2EgVFAuSENNIC0gSOG7mWkgVHLGsOG7nW5nIEE1!5e0!3m2!1svi!2s!4v1794283859470!5m2!1svi!2s",
   virtualTourUrl: "https://hcmut.edu.vn/virtual-tour/",
+  virtualTourOwnerUrl: "https://hcmut.edu.vn/",
   musicYoutubeId: "", // owner fills in the YouTube video ID
 };
