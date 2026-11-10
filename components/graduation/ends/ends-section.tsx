@@ -4,6 +4,7 @@ import { useScrollReveal } from "@/lib/hooks/use-scroll-reveal";
 import { GraduationSection } from "../shared/graduation-section";
 import { SectionHeading } from "../shared/section-heading";
 import { TicketCard } from "./ticket-card";
+import { useVenueGuide } from "./venue-guide/use-venue-guide";
 import { VenueGuide } from "./venue-guide/venue-guide";
 import { useCopy } from "../i18n/lang-context";
 
@@ -11,6 +12,7 @@ export function EndsSection() {
   const headRef = useScrollReveal<HTMLDivElement>();
   const cardRef = useScrollReveal<HTMLDivElement>();
   const guideRef = useScrollReveal<HTMLDivElement>();
+  const { ref: mapRef, tab, setTab, showMap } = useVenueGuide();
   const { ends: t } = useCopy();
   return (
     <GraduationSection id="ends" tone="paper" align="right">
@@ -21,10 +23,10 @@ export function EndsSection() {
         </p>
       </div>
       <div ref={cardRef}>
-        <TicketCard />
+        <TicketCard onDirections={showMap} />
       </div>
       <div ref={guideRef}>
-        <VenueGuide />
+        <VenueGuide ref={mapRef} tab={tab} onTabChange={setTab} />
       </div>
     </GraduationSection>
   );

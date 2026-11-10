@@ -1,6 +1,6 @@
 "use client";
 
-import { useId, useState, type ReactNode } from "react";
+import { useId, type ReactNode, type Ref } from "react";
 import { GRADUATION_EVENT as E } from "@/lib/graduation/event";
 import type { GuideTab } from "@/lib/graduation/i18n";
 import { useCopy } from "../../i18n/lang-context";
@@ -19,10 +19,17 @@ type Panel = { id: GuideTabId; copy: GuideTab; frame: ReactNode; external?: { hr
  * the browser); the tour waits for a click. Both panels stay mounted (inactive ones are hidden) so a
  * loaded embed survives switching tabs, and the fixed ratio means loading never shifts layout.
  */
-export function VenueGuide() {
+export function VenueGuide({
+  ref,
+  tab: active,
+  onTabChange,
+}: {
+  ref?: Ref<HTMLDivElement>;
+  tab: GuideTabId;
+  onTabChange: (tab: GuideTabId) => void;
+}) {
   const { ends } = useCopy();
   const t = ends.guide;
-  const [active, setActive] = useState<GuideTabId>("map");
   const base = useId();
   const idFor = (id: GuideTabId) => ({ tab: `${base}-${id}-tab`, panel: `${base}-${id}-panel` });
 
@@ -39,13 +46,13 @@ export function VenueGuide() {
   ];
 
   return (
-    <div className="flex flex-col gap-4">
+    <div ref={ref} className="flex flex-col gap-4">
       <GuideTabs
         tabs={panels.map((p) => ({ id: p.id, label: p.copy.tab }))}
         active={active}
         label={t.tabsLabel}
         idFor={idFor}
-        onSelect={setActive}
+        onSelect={onTabChange}
       />
       {panels.map((p) => (
         <div key={p.id} id={idFor(p.id).panel} role="tabpanel" aria-labelledby={idFor(p.id).tab} hidden={p.id !== active} className="flex flex-col gap-2.5">
