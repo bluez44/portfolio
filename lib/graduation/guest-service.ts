@@ -1,9 +1,10 @@
 import { guestInputSchema } from "./guest-schema";
 import type { GuestWriter } from "./guest-repository";
+import type { GuestData } from "./types";
 import { toSlug } from "./slug";
 import { SlugTakenError } from "./slug-taken-error";
 
-export type GuestField = "name" | "slug" | "note";
+export type GuestField = "name" | "slug" | "note" | "customContent";
 export type SaveGuestResult =
   | { ok: true }
   | { ok: false; fieldErrors: Partial<Record<GuestField, string>> };
@@ -28,13 +29,18 @@ export async function saveGuest(
     return fail(errors);
   }
 
-  const { name, note } = parsed.data;
+  const { name, note, customContent } = parsed.data;
   const slug = parsed.data.slug ?? toSlug(name);
   if (!slug) return fail({ slug: "Không tạo được slug từ tên, hãy nhập tay" });
 
+  const guestData: GuestData = { name, slug, note };
+  if (customContent !== undefined) {
+    guestData.customContent = customContent;
+  }
+
   try {
-    if (id) await repo.update(id, { name, slug, note });
-    else await repo.create({ name, slug, note });
+    if (id) await repo.update(id, guestData);
+    else await repo.create(guestData);
     return { ok: true };
   } catch (error) {
     if (error instanceof SlugTakenError) return fail({ slug: "Slug đã tồn tại" });

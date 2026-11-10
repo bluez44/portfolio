@@ -25,7 +25,7 @@ export type GraduationCopy = {
     returnTo: string;
     faculty: string;
   };
-  card: { label: string; greeting: string; body: string; keepScrolling: string };
+  card: { label: string; greeting: string; body: string; keepScrolling: string; coverImage?: string; author?: string };
   stage: { coverKicker: string; cover: Heading; greetKicker: string; scrollHint: string };
   met: { heading: Heading; intro: string; moments: Moment[]; andYou: (name: string) => string; defaultNote: string };
   ends: {
@@ -38,6 +38,7 @@ export type GraduationCopy = {
     venue: string;
     venueSub: string;
     notes: string[];
+    specialMessage?: string;
     directions: string;
     addToCalendar: string;
     guide: VenueGuideCopy;
