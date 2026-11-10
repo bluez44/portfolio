@@ -2,7 +2,6 @@ import { svgNum as f } from "@/lib/svg/svg-number";
 
 export type Point = { x: number; y: number };
 
-
 /** Cubic from `p` to `q` leaving and arriving vertically, so consecutive curves join smoothly. */
 const curve = (p: Point, q: Point) => {
   const k = (q.y - p.y) * 0.5;
@@ -33,3 +32,17 @@ export function buildTrail(knots: Point[], width: number, wobble = 0.16): { d: s
   return { d, prefixes };
 }
 
+export type ZigzagOptions = { left: number; right: number; step: number; min: number; max: number };
+
+/**
+ * Turning points strictly between `from` and `to` that swing alternately to `left` and `right`,
+ * one per `step` px of vertical travel (clamped to `min`..`max` turns), evenly spaced in y.
+ */
+export function zigzag(from: Point, to: Point, { left, right, step, min, max }: ZigzagOptions): Point[] {
+  const dy = to.y - from.y;
+  const turns = Math.min(max, Math.max(min, Math.round(dy / step)));
+  return Array.from({ length: turns }, (_, i) => ({
+    x: i % 2 === 0 ? left : right,
+    y: from.y + (dy * (i + 1)) / (turns + 1),
+  }));
+}

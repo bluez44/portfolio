@@ -18,6 +18,8 @@ export const SELECTORS = {
 
 export type TrailElements = {
   root: HTMLElement;
+  /** The section the trail lives in; the trail starts at its top-right corner. */
+  section: HTMLElement;
   /** Faint dashed path: the route, also used for MotionPath and length measuring. */
   base: SVGPathElement;
   /** Solid path drawn behind the badge. */
@@ -57,7 +59,7 @@ export function queryMomentTrail(root: HTMLElement): { trail: TrailElements; fin
     return null;
   }
   return {
-    trail: { root, base, draw, rider, end, cards, spinners: all<HTMLElement>(SELECTORS.badgeSpin) },
+    trail: { root, section: root.closest("section") ?? root, base, draw, rider, end, cards, spinners: all<HTMLElement>(SELECTORS.badgeSpin) },
     finale: { pin, note, dock, outline, halves },
   };
 }
