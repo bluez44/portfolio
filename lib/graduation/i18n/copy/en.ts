@@ -60,6 +60,12 @@ export const en: GraduationCopy = {
     notes: ["Dress code · Smart casual", "Parking · Ly Thuong Kiet gate", "Photos after the ceremony"],
     directions: "Directions",
     addToCalendar: "Add to calendar",
+    guide: {
+      title: "Getting there",
+      tabsLabel: "Map and campus tour",
+      map: { tab: "Map", load: "Show the map", open: "Open in Google Maps", frameTitle: "Map to the hall" },
+      tour: { tab: "360° tour", load: "Start the tour", open: "Open full screen", frameTitle: "HCMUT 360° campus tour" },
+    },
   },
   rsvp: {
     heading: { lead: "Will you", accent: "be there?" },
