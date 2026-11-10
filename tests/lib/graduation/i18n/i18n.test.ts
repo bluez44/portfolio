@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { DEFAULT_LANG, GRADUATION_COPY, parseLang } from ".";
+import { DEFAULT_LANG, GRADUATION_COPY, parseLang } from "@/lib/graduation/i18n";
 
 describe("parseLang", () => {
   it("accepts supported languages", () => {

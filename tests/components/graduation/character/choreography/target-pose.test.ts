@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest";
-import type { SectionMetrics } from "../types";
-import { buildBeats } from "./beats";
-import { targetPose } from "./target-pose";
+import type { SectionMetrics } from "@/components/graduation/character/types";
+import { buildBeats } from "@/components/graduation/character/choreography/beats";
+import { targetPose } from "@/components/graduation/character/choreography/target-pose";
 
 const M: SectionMetrics = { vh: 1000, stageTop: 0, stageScroll: 3200, metTop: 4200, metHeight: 1500, endsTop: 5700, endsHeight: 1200, rsvpTop: 6900 };
 

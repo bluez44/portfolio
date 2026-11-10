@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { isValidSlug, parseGuestSlug, toSlug } from "./slug";
+import { isValidSlug, parseGuestSlug, toSlug } from "@/lib/graduation/slug";
 
 describe("toSlug", () => {
   it("strips Vietnamese diacritics and joins with dashes", () => {

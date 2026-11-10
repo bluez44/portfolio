@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { readEmailConfig, sendEmail } from "./send-email";
+import { readEmailConfig, sendEmail } from "@/lib/email/send-email";
 
 describe("readEmailConfig", () => {
   it("returns null when any variable is missing", () => {

@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { buildTrail } from "./trail-path";
+import { buildTrail } from "@/components/graduation/met/trail/trail-path";
 
 describe("buildTrail", () => {
   const knots = [

@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
-import { GROW, HOLD } from "./constants";
-import { noteFinaleScroll, noteScaleFor } from "./note-finale";
+import { GROW, HOLD } from "@/components/graduation/met/finale/constants";
+import { noteFinaleScroll, noteScaleFor } from "@/components/graduation/met/finale/note-finale";
 
 describe("noteScaleFor", () => {
   it("grows toward 30% of the viewport height, capped at 1.25", () => {

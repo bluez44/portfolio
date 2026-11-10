@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { smoothstep } from "./smoothstep";
+import { smoothstep } from "@/lib/math/smoothstep";
 
 describe("smoothstep", () => {
   it("clamps outside 0..1 and eases in between", () => {

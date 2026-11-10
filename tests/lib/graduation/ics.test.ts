@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
-import { GRADUATION_EVENT } from "./event";
-import { buildIcs } from "./ics";
+import { GRADUATION_EVENT } from "@/lib/graduation/event";
+import { buildIcs } from "@/lib/graduation/ics";
 
 describe("buildIcs", () => {
   const ics = buildIcs(GRADUATION_EVENT, new Date("2026-11-08T00:00:00Z"));

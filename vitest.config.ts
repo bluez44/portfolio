@@ -5,6 +5,7 @@ export default defineConfig({
   resolve: { alias: { "@": path.resolve(__dirname) } },
   test: {
     environment: "node",
-    include: ["lib/**/*.test.ts", "components/**/*.test.ts", "app/**/*.test.ts"],
+    // Tests live in tests/, mirroring the source tree, and import code via the "@/" alias.
+    include: ["tests/**/*.test.ts"],
   },
 });

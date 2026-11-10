@@ -1,7 +1,7 @@
 import { describe, expect, it, vi } from "vitest";
-import { saveGuest } from "./guest-service";
-import { SlugTakenError } from "./slug-taken-error";
-import type { GuestData, GuestRecord } from "./types";
+import { saveGuest } from "@/lib/graduation/guest-service";
+import { SlugTakenError } from "@/lib/graduation/slug-taken-error";
+import type { GuestData, GuestRecord } from "@/lib/graduation/types";
 
 function fakeRepo(overrides: Partial<{ fail: Error }> = {}) {
   const record = (data: GuestData): GuestRecord => ({ id: "g1", ...data });

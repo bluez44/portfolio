@@ -1,6 +1,6 @@
 import { describe, expect, it, vi } from "vitest";
-import { buildRsvpEmail } from "./rsvp-email";
-import { submitRsvp, type RsvpDeps } from "./rsvp-service";
+import { buildRsvpEmail } from "@/lib/graduation/rsvp-email";
+import { submitRsvp, type RsvpDeps } from "@/lib/graduation/rsvp-service";
 
 const AT = new Date("2026-11-20T03:04:00Z");
 
