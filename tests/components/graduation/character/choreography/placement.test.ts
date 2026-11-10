@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { besideX, envelopeSideX } from "./placement";
+import { besideX, envelopeSideX } from "@/components/graduation/character/choreography/placement";
 
 describe("envelopeSideX", () => {
   it("never exceeds 1", () => {

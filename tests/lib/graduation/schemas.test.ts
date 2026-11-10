@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
-import { guestInputSchema } from "./guest-schema";
-import { rsvpInputSchema } from "./rsvp-schema";
+import { guestInputSchema } from "@/lib/graduation/guest-schema";
+import { rsvpInputSchema } from "@/lib/graduation/rsvp-schema";
 
 describe("guestInputSchema", () => {
   it("trims, treats blank slug as undefined and blank note as null", () => {

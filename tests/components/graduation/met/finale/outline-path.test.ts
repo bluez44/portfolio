@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { outlineHalves } from "./outline-path";
+import { outlineHalves } from "@/components/graduation/met/finale/outline-path";
 
 describe("outlineHalves", () => {
   it("starts both halves at the top centre and ends them at the bottom centre", () => {

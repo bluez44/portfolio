@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { ADMIN_SESSION_MAX_AGE_MS, signAdminToken, verifyAdminToken } from "./token";
+import { ADMIN_SESSION_MAX_AGE_MS, signAdminToken, verifyAdminToken } from "@/lib/admin-auth/token";
 
 const SECRET = "test-secret";
 const NOW = 1_800_000_000_000;
