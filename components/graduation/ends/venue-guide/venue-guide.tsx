@@ -31,9 +31,6 @@ export function VenueGuide() {
 
   return (
     <div className="flex flex-col gap-4">
-      <h3 className="m-0 font-heading text-2xl leading-[1.05] font-bold tracking-tight" style={{ fontVariationSettings: '"wdth" 90, "opsz" 96' }}>
-        {t.title}
-      </h3>
       <GuideTabs
         tabs={panels.map((p) => ({ id: p.id, label: p.copy.tab }))}
         active={active}
