@@ -112,7 +112,7 @@ export function EndsTab({ ends, onChange }: EndsTabProps) {
               type="text"
               value={ends.venue || ""}
               onChange={(e) => update("venue", e.target.value)}
-              placeholder="Mặc định: Hội trường A4, ĐH Bách Khoa"
+              placeholder="Mặc định: Hội trường A5, ĐH Bách Khoa"
               className={inputClass}
             />
           </div>
