@@ -47,6 +47,11 @@ model Rsvp {
   guestId   String     @unique
   guest     Guest      @relation(fields: [guestId], references: [id], onDelete: Cascade)
   status    RsvpStatus
+  /// Phone or email, when attending.
+  contact   String?
+  /// Reason, when not attending.
+  reason    String?
+  wish      String?
   createdAt DateTime   @default(now())
   updatedAt DateTime   @updatedAt
 }
