@@ -73,15 +73,11 @@ export function HoneycombViewport({
         ))}
       </div>
 
-      <span className="pointer-events-none absolute top-4 left-4 -rotate-3 rounded-full border-[1.5px] border-ink bg-paper px-2.5 py-1 font-mono text-[10px] tracking-[0.22em] text-ink uppercase">
-        Fig · 06 · Tổ ong
-      </span>
-
       <div onPointerDown={(e) => e.stopPropagation()} className="absolute bottom-4 left-4 flex items-center gap-2">
         <RisoIconButton size="md" fill="paper" label="Thu nhỏ · Zoom out" onClick={zoomOut}>
           −
         </RisoIconButton>
-        <span className="min-w-[52px] rounded-full border-[1.5px] border-ink bg-paper px-2 py-1.5 text-center font-mono text-[11px] tracking-[0.12em] text-ink">
+        <span className="min-w-13 rounded-full border-[1.5px] border-ink bg-paper px-2 py-1.5 text-center font-mono text-[11px] tracking-[0.12em] text-ink">
           {zoomPct}%
         </span>
         <RisoIconButton size="md" fill="paper" label="Phóng to · Zoom in" onClick={zoomIn}>

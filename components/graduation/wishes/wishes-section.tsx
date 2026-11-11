@@ -46,9 +46,9 @@ export function WishesSection() {
 
   const [bees, setBees] = useState<WishBee[]>([]);
   const [loadState, setLoadState] = useState<LoadState>("idle");
-  const [cellStyle, setCellStyle] = useState<CellStyle>("ink");
-  const [layout, setLayout] = useState<HoneycombLayout>("ring");
-  const [cardStyle, setCardStyle] = useState<CardStyle>("air");
+  const [cellStyle, setCellStyle] = useState<CellStyle>("tone");
+  const [layout, setLayout] = useState<HoneycombLayout>("organic");
+  const [cardStyle, setCardStyle] = useState<CardStyle>("index");
   const [openIndex, setOpenIndex] = useState<number | null>(null);
 
   const fetchBees = useCallback(async () => {
@@ -134,11 +134,9 @@ export function WishesSection() {
     >
       <div className="mx-auto flex max-w-6xl flex-col gap-10">
         <div ref={headerRef} className="flex flex-col gap-5">
-          <SectionKicker>06 · Lời chúc · Wishes</SectionKicker>
           <SectionHeading lead="Một tổ ong" accent="lời chúc." />
           <p className="m-0 max-w-[52ch] text-[17px] leading-[1.72] text-ink-2" style={{ textWrap: "pretty" }}>
             Mỗi ô là một lời nhắn gửi tới mình. Bấm vào một ô — một chú ong sẽ mang lời chúc đến cho bạn.{" "}
-            <span className="italic text-ink-3">Tap a cell and a bee will deliver it.</span>
           </p>
         </div>
 
@@ -150,7 +148,7 @@ export function WishesSection() {
             onOpen={(i) => setOpenIndex(i)}
             overlay={overlay}
           />
-          <WishOptions groups={groups} />
+          {/* <WishOptions groups={groups} /> */}
         </div>
       </div>
 
