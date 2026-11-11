@@ -13,7 +13,6 @@ import { EndsSection } from "./ends/ends-section";
 import { EnvelopeStage } from "./envelope/envelope-stage";
 import { LangProvider } from "./i18n/lang-context";
 import { MetSection } from "./met/met-section";
-import { MusicMiniPlayer } from "./music/music-mini-player";
 import { useYouTubePlayer } from "./music/use-youtube-player";
 import { RsvpSection } from "./rsvp/rsvp-section";
 
@@ -32,7 +31,7 @@ export function GraduationInvitation({
   useGradCharacter(canvasHost);
   const [musicNote, flashMusicNote] = useTransientFlag(2600);
   const musicId = guest.customContent?.music?.youtubeId || GRADUATION_EVENT.musicYoutubeId;
-  const music = useYouTubePlayer(musicId, flashMusicNote);
+  const { status: musicStatus, mountRef: musicMountRef, toggle: musicToggle } = useYouTubePlayer(musicId, flashMusicNote, true);
 
   return (
     <LangProvider initialLang={initialLang} customContent={guest.customContent}>
@@ -40,7 +39,7 @@ export function GraduationInvitation({
         <div aria-hidden className="pointer-events-none fixed inset-0 z-15" style={{ backgroundImage: "radial-gradient(var(--halftone) 1px, transparent 1px)", backgroundSize: "28px 28px" }} />
         <div ref={canvasHost} aria-hidden className="pointer-events-none fixed inset-0 z-25" />
 
-        <InvitationHeader musicPlaying={music.status === "playing"} musicNote={musicNote} onMusic={music.toggle} />
+        <InvitationHeader musicPlaying={musicStatus === "playing"} musicNote={musicNote} onMusic={musicToggle} />
         <SideRails />
 
         <main>
@@ -51,7 +50,8 @@ export function GraduationInvitation({
         </main>
 
         <InvitationFooter />
-        <MusicMiniPlayer open={music.open} mountRef={music.mountRef} onClose={music.close} />
+        {/* Hidden iframe mount – keeps YouTube player alive without showing the mini-player UI */}
+        <div ref={musicMountRef} aria-hidden className="sr-only" />
       </div>
     </LangProvider>
   );
