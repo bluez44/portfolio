@@ -1,6 +1,8 @@
 export type YTPlayer = {
   playVideo(): void;
   pauseVideo(): void;
+  setVolume(volume: number): void;
+  getVolume(): number;
   destroy(): void;
 };
 

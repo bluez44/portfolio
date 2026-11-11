@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useScrollReveal } from "@/lib/hooks/use-scroll-reveal";
 import { GraduationSection } from "../shared/graduation-section";
 import { SectionHeading } from "../shared/section-heading";
@@ -16,17 +16,48 @@ export function EndsSection({ onTourOpen, onTourClose }: { onTourOpen?: () => vo
   const { ref: mapRef, tab, setTab, showMap } = useVenueGuide();
   const { ends: t } = useCopy();
   // Increments each time the tour is opened so LazyEmbed remounts fresh (unmounts the iframe on close).
-  const tourMountKey = useRef(0);
+  const [tourMountKey, setTourMountKey] = useState(0);
+  // Music only ducks when the visitor actually starts the 3D tour, and comes
+  // back when they leave it — by switching tab or scrolling away.
+  const tourMutedMusic = useRef(false);
+  const onTourCloseRef = useRef(onTourClose);
+  useEffect(() => {
+    onTourCloseRef.current = onTourClose;
+  }, [onTourClose]);
+
+  const resumeMusic = () => {
+    if (!tourMutedMusic.current) return;
+    tourMutedMusic.current = false;
+    onTourCloseRef.current?.();
+  };
+
+  const handleTourStart = () => {
+    tourMutedMusic.current = true;
+    onTourOpen?.();
+  };
 
   const handleTabChange = (next: Parameters<typeof setTab>[0]) => {
     if (next === "tour") {
-      tourMountKey.current += 1;
-      onTourOpen?.();
+      setTourMountKey((k) => k + 1);
     } else if (tab === "tour") {
-      onTourClose?.();
+      resumeMusic();
     }
     setTab(next);
   };
+
+  // Scrolling the section out of view also brings the music back.
+  useEffect(() => {
+    const el = document.getElementById("ends");
+    if (!el) return;
+    const observer = new IntersectionObserver(([entry]) => {
+      if (entry && !entry.isIntersecting && tourMutedMusic.current) {
+        tourMutedMusic.current = false;
+        onTourCloseRef.current?.();
+      }
+    });
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, []);
 
   return (
     <GraduationSection id="ends" tone="paper" align="right">
@@ -40,7 +71,13 @@ export function EndsSection({ onTourOpen, onTourClose }: { onTourOpen?: () => vo
         <TicketCard onDirections={showMap} />
       </div>
       <div ref={guideRef}>
-        <VenueGuide ref={mapRef} tab={tab} onTabChange={handleTabChange} tourKey={tourMountKey.current} />
+        <VenueGuide
+          ref={mapRef}
+          tab={tab}
+          onTabChange={handleTabChange}
+          tourKey={tourMountKey}
+          onTourStart={handleTourStart}
+        />
       </div>
     </GraduationSection>
   );

@@ -27,11 +27,14 @@ export function VenueGuide({
   tab: active,
   onTabChange,
   tourKey,
+  onTourStart,
 }: {
   ref?: Ref<HTMLDivElement>;
   tab: GuideTabId;
   onTabChange: (tab: GuideTabId) => void;
   tourKey?: number;
+  /** the visitor clicked the tour's load button */
+  onTourStart?: () => void;
 }) {
   const { ends } = useCopy();
   const t = ends.guide;
@@ -52,7 +55,7 @@ export function VenueGuide({
       id: "tour",
       copy: t.tour,
       frame: (
-        <LazyEmbed key={tourKey} src={E.virtualTourUrl} title={t.tour.frameTitle} loadLabel={t.tour.load} allow={TOUR_ALLOW} poster={<TourPoster />} />
+        <LazyEmbed key={tourKey} src={E.virtualTourUrl} title={t.tour.frameTitle} loadLabel={t.tour.load} allow={TOUR_ALLOW} poster={<TourPoster />} onLoadClick={onTourStart} />
       ),
       external: { href: E.virtualTourUrl, label: t.tour.open },
       credit: { href: E.virtualTourOwnerUrl, ...t.tour.credit },

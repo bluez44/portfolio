@@ -6,6 +6,10 @@ import type { YTPlayer } from "@/lib/youtube/types";
 
 export type MusicStatus = "idle" | "loading" | "playing" | "paused" | "error";
 
+const FADE_MS = 1200;
+const FULL_VOLUME = 100;
+const GESTURE_EVENTS = ["pointerdown", "keydown", "touchstart", "wheel"] as const;
+
 export function useYouTubePlayer(videoId: string, onError: () => void, autoStart = false, onReady?: () => void) {
   const [status, setStatus] = useState<MusicStatus>("idle");
   const [open, setOpen] = useState(false);
@@ -20,6 +24,51 @@ export function useYouTubePlayer(videoId: string, onError: () => void, autoStart
     onErrorRef.current = onError;
     onReadyRef.current = onReady;
   }, [onError, onReady]);
+
+  // Browsers block unmuted autoplay without a user gesture, so the first
+  // playVideo() attempt usually fails silently. Arm one-shot gesture
+  // listeners that retry on the visitor's first interaction.
+  const disarmGesture = useRef<(() => void) | null>(null);
+  const armGestureStart = useCallback(() => {
+    if (disarmGesture.current) return;
+    const start = () => {
+      disarmGesture.current?.();
+      playerRef.current?.playVideo();
+    };
+    GESTURE_EVENTS.forEach((ev) => window.addEventListener(ev, start, { passive: true }));
+    disarmGesture.current = () => {
+      GESTURE_EVENTS.forEach((ev) => window.removeEventListener(ev, start));
+      disarmGesture.current = null;
+    };
+  }, []);
+  useEffect(() => () => disarmGesture.current?.(), []);
+
+  // Volume fades run on rAF; any new fade/pause/resume cancels the previous one.
+  const fadeFrame = useRef<number | null>(null);
+  const cancelFade = useCallback(() => {
+    if (fadeFrame.current != null) cancelAnimationFrame(fadeFrame.current);
+    fadeFrame.current = null;
+  }, []);
+  useEffect(() => cancelFade, [cancelFade]);
+  const runFade = useCallback(
+    (from: number, to: number, onDone?: () => void) => {
+      const p = playerRef.current;
+      if (!p) return;
+      cancelFade();
+      const start = performance.now();
+      const step = (now: number) => {
+        const k = Math.min(1, (now - start) / FADE_MS);
+        p.setVolume(Math.round(from + (to - from) * k));
+        if (k < 1) fadeFrame.current = requestAnimationFrame(step);
+        else {
+          fadeFrame.current = null;
+          onDone?.();
+        }
+      };
+      fadeFrame.current = requestAnimationFrame(step);
+    },
+    [cancelFade],
+  );
 
   // Auto-start: kick off playback once on mount when autoStart is true.
   const autoStarted = useRef(false);
@@ -58,11 +107,14 @@ export function useYouTubePlayer(videoId: string, onError: () => void, autoStart
             onReady: (e) => {
               playerRef.current = e.target;
               e.target.playVideo();
+              armGestureStart();
               onReadyRef.current?.();
             },
             onStateChange: (e) => {
-              if (e.data === YT.PlayerState.PLAYING) setStatus("playing");
-              else if (e.data === YT.PlayerState.PAUSED) setStatus("paused");
+              if (e.data === YT.PlayerState.PLAYING) {
+                disarmGesture.current?.();
+                setStatus("playing");
+              } else if (e.data === YT.PlayerState.PAUSED) setStatus("paused");
             },
             onError: fail,
           },
@@ -72,7 +124,7 @@ export function useYouTubePlayer(videoId: string, onError: () => void, autoStart
     return () => {
       cancelled = true;
     };
-  }, [open, videoId, fail]);
+  }, [open, videoId, fail, armGestureStart]);
 
   useEffect(() => () => instanceRef.current?.destroy(), []);
 
@@ -105,12 +157,33 @@ export function useYouTubePlayer(videoId: string, onError: () => void, autoStart
   }, []);
 
   const pause = useCallback(() => {
+    cancelFade();
     playerRef.current?.pauseVideo();
-  }, []);
+  }, [cancelFade]);
 
   const resume = useCallback(() => {
+    cancelFade();
     playerRef.current?.playVideo();
-  }, []);
+  }, [cancelFade]);
 
-  return { status, open, mountRef, toggle, close, pause, resume };
+  /** Ramp the volume down, then pause (volume restored for the next play). */
+  const fadePause = useCallback(() => {
+    const p = playerRef.current;
+    if (!p) return;
+    runFade(p.getVolume(), 0, () => {
+      p.pauseVideo();
+      p.setVolume(FULL_VOLUME);
+    });
+  }, [runFade]);
+
+  /** Resume playback from silence and ramp the volume back up. */
+  const fadeResume = useCallback(() => {
+    const p = playerRef.current;
+    if (!p) return;
+    p.setVolume(0);
+    p.playVideo();
+    runFade(0, FULL_VOLUME);
+  }, [runFade]);
+
+  return { status, open, mountRef, toggle, close, pause, resume, fadePause, fadeResume };
 }

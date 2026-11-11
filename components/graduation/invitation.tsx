@@ -43,7 +43,7 @@ function InvitationContent({ guest, initialRsvp, initialLang, ownerPhone }: Invi
   useGradCharacter(canvasHost, { onReady: () => gate?.resolve(GATE.character) });
   const [musicNote, flashMusicNote] = useTransientFlag(2600);
   const musicId = guest.customContent?.music?.youtubeId || GRADUATION_EVENT.musicYoutubeId;
-  const { status: musicStatus, mountRef: musicMountRef, toggle: musicToggle, pause: musicPause, resume: musicResume } =
+  const { status: musicStatus, mountRef: musicMountRef, toggle: musicToggle, fadePause: musicFadePause, fadeResume: musicFadeResume } =
     useYouTubePlayer(musicId, flashMusicNote, true, () => gate?.resolve(GATE.music));
 
   // No track configured means there is no music to wait for.
@@ -63,7 +63,7 @@ function InvitationContent({ guest, initialRsvp, initialLang, ownerPhone }: Invi
         <main>
           <EnvelopeStage guestName={guest.name} />
           <MetSection guestName={guest.name} note={guest.customContent?.met?.note ?? guest.note} />
-          <EndsSection onTourOpen={musicPause} onTourClose={musicResume} />
+          <EndsSection onTourOpen={musicFadePause} onTourClose={musicFadeResume} />
           <RsvpSection slug={guest.slug} guestName={guest.name} initialRsvp={initialRsvp} ownerPhone={ownerPhone} />
           <WishesSection />
         </main>

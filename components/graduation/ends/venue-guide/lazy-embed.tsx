@@ -14,19 +14,31 @@ export function LazyEmbed({
   loadLabel,
   allow,
   poster,
+  onLoadClick,
 }: {
   src: string;
   title: string;
   loadLabel: string;
   allow?: string;
   poster: ReactNode;
+  /** fired when the visitor actually starts the embed */
+  onLoadClick?: () => void;
 }) {
   const [loaded, setLoaded] = useState(false);
   if (loaded) return <EmbedFrame src={src} title={title} allow={allow} />;
   return (
     <div className="absolute inset-0 grid place-items-center">
       <div aria-hidden className="absolute inset-0">{poster}</div>
-      <RisoButton variant="primary" size="md" icon="▶" onClick={() => setLoaded(true)} className="relative">
+      <RisoButton
+        variant="primary"
+        size="md"
+        icon="▶"
+        onClick={() => {
+          onLoadClick?.();
+          setLoaded(true);
+        }}
+        className="relative"
+      >
         {loadLabel}
       </RisoButton>
     </div>
