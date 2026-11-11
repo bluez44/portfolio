@@ -7,7 +7,7 @@ export function GraduationSection({
   className = "",
   children,
 }: { id: string; tone: "paper" | "paper-2"; align: "left" | "right"; className?: string; children: ReactNode }) {
-  const cols = align === "left" ? "min-[760px]:grid-cols-[7fr_5fr]" : "min-[760px]:grid-cols-[5fr_7fr]";
+  const cols = align === "left" ? "min-[760px]:grid-cols-[8fr_4fr]" : "min-[760px]:grid-cols-[4fr_8fr]";
   return (
     <section
       id={id}
