@@ -1,10 +1,12 @@
-import { GRADUATION_EVENT as E } from "@/lib/graduation/event";
-import { useCopy } from "../i18n/lang-context";
+"use client";
+
+import { useCopy, useGradEvent } from "../i18n/lang-context";
 
 const label = "font-mono text-[10px] tracking-[0.22em] text-ink-3 uppercase";
 
 export function TicketWhen() {
   const { ends: t } = useCopy();
+  const E = useGradEvent();
   return (
     <div className="flex flex-col gap-3.5 border-b-[1.5px] border-dashed border-ink px-7 py-8 min-[760px]:border-r-[1.5px] min-[760px]:border-b-0">
       <span className={label}>{t.when}</span>

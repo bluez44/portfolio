@@ -1,13 +1,14 @@
 "use client";
 
-import { useState, useTransition } from "react";
-import { X, User, Mail, Sparkles, Calendar, Music, Save, Loader2 } from "lucide-react";
+import { useEffect, useState, useTransition } from "react";
+import { X, User, Mail, Sparkles, Calendar, MailCheck, Music, Save, Loader2 } from "lucide-react";
 import type { GuestListItem, GuestCustomContent } from "@/lib/graduation/types";
 import { saveGraduationGuestAction, type GuestActionState } from "../actions";
 import { BasicInfoTab } from "./tabs/basic-info-tab";
 import { EnvelopeTab } from "./tabs/envelope-tab";
 import { MomentsTab } from "./tabs/moments-tab";
 import { EndsTab } from "./tabs/ends-tab";
+import { RsvpTab } from "./tabs/rsvp-tab";
 import { MusicTab } from "./tabs/music-tab";
 
 interface GuestEditorDialogProps {
@@ -16,7 +17,7 @@ interface GuestEditorDialogProps {
   onClose: () => void;
 }
 
-type TabKey = "basic" | "envelope" | "met" | "ends" | "music";
+type TabKey = "basic" | "envelope" | "met" | "ends" | "rsvp" | "music";
 
 export function GuestEditorDialog({
   guest,
@@ -34,6 +35,20 @@ export function GuestEditorDialog({
   const [customContent, setCustomContent] = useState<GuestCustomContent>(
     guest?.customContent || {}
   );
+
+  // Lock the page behind the modal so only the dialog body scrolls,
+  // and close on Escape.
+  useEffect(() => {
+    if (!isOpen) return;
+    const previous = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    const onKey = (e: KeyboardEvent) => e.key === "Escape" && onClose();
+    document.addEventListener("keydown", onKey);
+    return () => {
+      document.body.style.overflow = previous;
+      document.removeEventListener("keydown", onKey);
+    };
+  }, [isOpen, onClose]);
 
   if (!isOpen) return null;
 
@@ -60,6 +75,7 @@ export function GuestEditorDialog({
     { key: "envelope", label: "Bìa & Thiệp", icon: <Mail className="h-4 w-4" /> },
     { key: "met", label: "Hành trình & Kỷ niệm", icon: <Sparkles className="h-4 w-4" /> },
     { key: "ends", label: "Buổi lễ & Vé", icon: <Calendar className="h-4 w-4" /> },
+    { key: "rsvp", label: "RSVP", icon: <MailCheck className="h-4 w-4" /> },
     { key: "music", label: "Nhạc nền", icon: <Music className="h-4 w-4" /> },
   ];
 
@@ -68,7 +84,7 @@ export function GuestEditorDialog({
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 p-4 backdrop-blur-xs">
-      <div className="relative flex max-h-[90vh] w-full max-w-3xl flex-col rounded-xl border border-zinc-800 bg-zinc-950 shadow-2xl">
+      <div className="relative flex max-h-[90dvh] w-full max-w-3xl flex-col overflow-hidden rounded-xl border border-zinc-800 bg-zinc-950 shadow-2xl">
         {/* Header */}
         <div className="flex items-center justify-between border-b border-zinc-800 px-6 py-4">
           <div>
@@ -111,7 +127,7 @@ export function GuestEditorDialog({
         </div>
 
         {/* Body content */}
-        <div className="flex-1 overflow-y-auto p-6">
+        <div className="min-h-0 flex-1 overflow-y-auto p-6">
           {globalError && (
             <div className="mb-4 rounded-lg border border-red-500/30 bg-red-950/40 p-3 text-xs text-red-300">
               {globalError}
@@ -148,6 +164,13 @@ export function GuestEditorDialog({
             <EndsTab
               ends={customContent.ends || {}}
               onChange={(end) => setCustomContent({ ...customContent, ends: end })}
+            />
+          )}
+
+          {activeTab === "rsvp" && (
+            <RsvpTab
+              rsvp={customContent.rsvp || {}}
+              onChange={(r) => setCustomContent({ ...customContent, rsvp: r })}
             />
           )}
 

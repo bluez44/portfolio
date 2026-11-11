@@ -2,12 +2,12 @@
 
 import { RisoButton } from "@/components/ui/riso/button";
 import { downloadTextFile } from "@/lib/browser/download-text-file";
-import { GRADUATION_EVENT as E } from "@/lib/graduation/event";
 import { buildIcs } from "@/lib/graduation/ics";
-import { useCopy } from "../i18n/lang-context";
+import { useCopy, useGradEvent } from "../i18n/lang-context";
 
 export function TicketWhere({ onDirections }: { onDirections: () => void }) {
   const { ends: t } = useCopy();
+  const E = useGradEvent();
   const addToCalendar = () =>
     downloadTextFile("tot-nghiep-quang-vinh.ics", "text/calendar", buildIcs(E, new Date()));
 
