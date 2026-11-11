@@ -94,7 +94,7 @@ export const vi: GraduationCopy = {
     },
   },
   music: { nowPlaying: "♪ Đang phát", close: "Tắt nhạc" },
-  footer: "Cảm ơn bạn đã cùng mình ăn mừng",
+  footer: "Cảm ơn bạn đã đồng hành cùng mình trong hành trình này. Hẹn gặp bạn tại lễ tốt nghiệp!",
   notFound: {
     kicker: "404 · Trả lại người gửi",
     heading: { lead: "Thiệp này", accent: "không tồn tại." },
