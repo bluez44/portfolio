@@ -2,12 +2,12 @@
 
 import { createContext, useContext, useEffect, useState, useMemo, type ReactNode } from "react";
 import { GRADUATION_COPY, type GraduationCopy, type Lang } from "@/lib/graduation/i18n";
-import { GRADUATION_EVENT } from "@/lib/graduation/event";
+import { GRADUATION_EVENT, type GraduationEvent } from "@/lib/graduation/event";
 import { writeLangCookie } from "@/lib/graduation/i18n/lang-cookie";
 import { resolveInvitationCopy } from "@/lib/graduation/resolve-invitation-copy";
 import type { GuestCustomContent } from "@/lib/graduation/types";
 
-type LangValue = { lang: Lang; copy: GraduationCopy; setLang: (lang: Lang) => void };
+type LangValue = { lang: Lang; copy: GraduationCopy; event: GraduationEvent; setLang: (lang: Lang) => void };
 
 const LangContext = createContext<LangValue | null>(null);
 
@@ -36,12 +36,12 @@ export function LangProvider({
     setLangState(next);
   };
 
-  const copy = useMemo(() => {
-    const base = GRADUATION_COPY[lang];
-    return resolveInvitationCopy(base, GRADUATION_EVENT, customContent).copy;
-  }, [lang, customContent]);
+  const { copy, event } = useMemo(
+    () => resolveInvitationCopy(GRADUATION_COPY[lang], GRADUATION_EVENT, customContent),
+    [lang, customContent],
+  );
 
-  return <LangContext.Provider value={{ lang, copy, setLang }}>{children}</LangContext.Provider>;
+  return <LangContext.Provider value={{ lang, copy, event, setLang }}>{children}</LangContext.Provider>;
 }
 
 export function useLang(): LangValue {
@@ -52,3 +52,6 @@ export function useLang(): LangValue {
 
 /** Shorthand for components that only read copy. */
 export const useCopy = () => useLang().copy;
+
+/** Event data with the guest's customizations applied. */
+export const useGradEvent = () => useLang().event;

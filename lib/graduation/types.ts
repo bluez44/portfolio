@@ -48,10 +48,18 @@ export type MusicCustomization = {
   youtubeId?: string;
 };
 
+export type RsvpCustomization = {
+  headingLead?: string;
+  headingAccent?: string;
+  /** Replaces the default "name, can you come?" prompt verbatim. */
+  prompt?: string;
+};
+
 export type GuestCustomContent = {
   envelope?: EnvelopeCustomization;
   met?: MetCustomization;
   ends?: EndsCustomization;
+  rsvp?: RsvpCustomization;
   music?: MusicCustomization;
 };
 

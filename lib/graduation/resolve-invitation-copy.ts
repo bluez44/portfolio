@@ -14,6 +14,13 @@ export function resolveInvitationCopy(
 
   const copy: GraduationCopy = {
     ...baseCopy,
+    // Side rails mirror the event basics, so custom date/venue must reach them too.
+    rails: {
+      ...baseCopy.rails,
+      whenValue: custom.ends?.dateShort ? `${custom.ends.dateShort}.2026` : baseCopy.rails.whenValue,
+      whereValue: custom.ends?.venue || baseCopy.rails.whereValue,
+      whereSub: custom.ends?.address || baseCopy.rails.whereSub,
+    },
     card: {
       ...baseCopy.card,
       greeting: custom.envelope?.cardGreeting || baseCopy.card.greeting,
@@ -66,6 +73,14 @@ export function resolveInvitationCopy(
           ? custom.ends.notes
           : baseCopy.ends.notes,
       specialMessage: custom.ends?.specialMessage,
+    },
+    rsvp: {
+      ...baseCopy.rsvp,
+      heading: {
+        lead: custom.rsvp?.headingLead || baseCopy.rsvp.heading.lead,
+        accent: custom.rsvp?.headingAccent || baseCopy.rsvp.heading.accent,
+      },
+      prompt: custom.rsvp?.prompt ? () => custom.rsvp!.prompt! : baseCopy.rsvp.prompt,
     },
   };
 

@@ -45,6 +45,13 @@ export const guestCustomContentSchema = z.object({
       specialMessage: z.string().trim().optional(),
     })
     .optional(),
+  rsvp: z
+    .object({
+      headingLead: z.string().trim().optional(),
+      headingAccent: z.string().trim().optional(),
+      prompt: z.string().trim().optional(),
+    })
+    .optional(),
   music: z
     .object({
       youtubeId: z.string().trim().optional(),
