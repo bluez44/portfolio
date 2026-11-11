@@ -12,7 +12,6 @@ import prisma from "@/lib/prisma";
  * Required env var: BEE_WALL_SECRET
  */
 export async function GET(req: NextRequest) {
-  console.log("GET /api/bee-wall");
   const secret = process.env.BEE_WALL_SECRET;
   if (!secret) {
     return NextResponse.json({ error: "Not configured" }, { status: 503 });
@@ -29,14 +28,14 @@ export async function GET(req: NextRequest) {
     where: { rsvp: { wish: { not: null } } },
     select: {
       id: true,
-      rsvp: { select: { wish: true } },
+      rsvp: { select: { wish: true, updatedAt: true } },
     },
     orderBy: { createdAt: "asc" },
   });
 
-  const bees = rows
-    .map((r) => ({ id: r.id, wish: r.rsvp?.wish ?? null }))
-    .filter((r): r is { id: string; wish: string } => r.wish !== null);
+  const bees = rows.flatMap((r) =>
+    r.rsvp?.wish ? [{ id: r.id, wish: r.rsvp.wish, at: r.rsvp.updatedAt.toISOString() }] : [],
+  );
 
   return NextResponse.json(bees);
 }

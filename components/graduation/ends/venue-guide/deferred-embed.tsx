@@ -1,20 +1,29 @@
 "use client";
 
-import { useRef } from "react";
+import { useRef, useState } from "react";
 import { Loader2 } from "lucide-react";
 import { useReadyWhenSettled } from "@/lib/hooks/use-ready-when-settled";
+import { GRADUATION_GATE_RESOURCES, useResourceGate } from "../../loading/resource-gate";
 import { EMBED_NEAR_MARGIN, EMBED_SETTLE_MS } from "./constants";
 import { EmbedFrame } from "./embed-frame";
 
-/** Mounts the iframe once it is close and the visitor has stopped scrolling, so loading never janks a scroll. */
+/**
+ * Mounts the iframe once it is close and the visitor has stopped scrolling, so
+ * loading never janks a scroll — except while the page-level loading gate is
+ * still up, when it mounts eagerly so the map is ready before the reveal.
+ */
 export function DeferredEmbed({ src, title }: { src: string; title: string }) {
   const ref = useRef<HTMLDivElement>(null);
-  const ready = useReadyWhenSettled(ref, { rootMargin: EMBED_NEAR_MARGIN, settleMs: EMBED_SETTLE_MS });
+  const settled = useReadyWhenSettled(ref, { rootMargin: EMBED_NEAR_MARGIN, settleMs: EMBED_SETTLE_MS });
+  const gate = useResourceGate();
+  // Once mounted, never unmount again (gate.pending flips back to false).
+  const [mounted, setMounted] = useState(false);
+  if (!mounted && (settled || gate?.pending)) setMounted(true);
 
   return (
     <div ref={ref} className="absolute inset-0 bg-paper-2">
-      {ready ? (
-        <EmbedFrame src={src} title={title} />
+      {mounted ? (
+        <EmbedFrame src={src} title={title} onLoad={() => gate?.resolve(GRADUATION_GATE_RESOURCES.map)} />
       ) : (
         <div
           role="status"

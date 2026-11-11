@@ -4,7 +4,17 @@ import { useState } from "react";
 import { Loader2 } from "lucide-react";
 
 /** A full-bleed iframe for the venue guide frame with a loading spinner. */
-export function EmbedFrame({ src, title, allow }: { src: string; title: string; allow?: string }) {
+export function EmbedFrame({
+  src,
+  title,
+  allow,
+  onLoad,
+}: {
+  src: string;
+  title: string;
+  allow?: string;
+  onLoad?: () => void;
+}) {
   const [isLoading, setIsLoading] = useState(true);
 
   return (
@@ -27,7 +37,10 @@ export function EmbedFrame({ src, title, allow }: { src: string; title: string; 
         allow={allow}
         allowFullScreen
         referrerPolicy="strict-origin-when-cross-origin"
-        onLoad={() => setIsLoading(false)}
+        onLoad={() => {
+          setIsLoading(false);
+          onLoad?.();
+        }}
         className={`absolute inset-0 h-full w-full border-0 transition-opacity duration-300 ${
           isLoading ? "opacity-0" : "opacity-100"
         }`}

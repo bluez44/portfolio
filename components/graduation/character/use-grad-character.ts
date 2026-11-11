@@ -10,23 +10,37 @@ import { measureEnvelopeWidth, measureSections } from "./choreography/measure-se
 import { besideX, envelopeSideX } from "./choreography/placement";
 import { createGradCharacter, type GradCharacter } from "./scene/grad-character";
 
-export function useGradCharacter(hostRef: RefObject<HTMLDivElement | null>, { scale = 0.85 } = {}) {
+export function useGradCharacter(
+  hostRef: RefObject<HTMLDivElement | null>,
+  { scale = 0.85, onReady }: { scale?: number; onReady?: () => void } = {},
+) {
   const reduced = useReducedMotion();
   const { dark } = useIsDark();
   const charRef = useRef<GradCharacter | null>(null);
+  const onReadyRef = useRef(onReady);
+  useEffect(() => {
+    onReadyRef.current = onReady;
+  }, [onReady]);
 
   useEffect(() => {
     const host = hostRef.current;
-    if (reduced || !host) return;
+    // Bailing out (no motion / no WebGL) still counts as ready — there is
+    // nothing left to wait for.
+    if (reduced || !host) {
+      onReadyRef.current?.();
+      return;
+    }
     gsap.registerPlugin(ScrollTrigger);
     let character: GradCharacter;
     try {
       character = createGradCharacter(host, { scale });
     } catch (error) {
       console.error("Graduation character disabled (WebGL unavailable):", error);
+      onReadyRef.current?.();
       return;
     }
     charRef.current = character;
+    onReadyRef.current?.();
 
     const relayout = () => {
       character.resize(null);

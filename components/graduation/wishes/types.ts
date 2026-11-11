@@ -1,0 +1,20 @@
+export type WishBee = {
+  id: string;
+  /** alias shown instead of the guest's real name */
+  name: string;
+  init: string;
+  /** dd.MM of the RSVP */
+  date: string;
+  msg: string;
+  color: string;
+  onColor: string;
+};
+
+export type CellStyle = "ink" | "tone";
+export type CardStyle = "air" | "index";
+
+const ACCENTS = ["var(--tomato)", "var(--blue)", "var(--jade)", "var(--canary)"] as const;
+
+export function wishAccent(i: number): { color: string; onColor: string } {
+  return { color: ACCENTS[i % 4], onColor: i % 4 === 3 ? "#1c1b1f" : "var(--paper)" };
+}

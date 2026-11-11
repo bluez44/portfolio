@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef } from "react";
+import { useEffect, useRef } from "react";
 import { GRADUATION_EVENT } from "@/lib/graduation/event";
 import type { Lang } from "@/lib/graduation/i18n";
 import type { InvitationGuest, RsvpAnswer } from "@/lib/graduation/types";
@@ -12,27 +12,44 @@ import { SideRails } from "./chrome/side-rails";
 import { EndsSection } from "./ends/ends-section";
 import { EnvelopeStage } from "./envelope/envelope-stage";
 import { LangProvider } from "./i18n/lang-context";
+import {
+  GRADUATION_GATE_RESOURCES as GATE,
+  ResourceGateProvider,
+  useResourceGate,
+} from "./loading/resource-gate";
 import { MetSection } from "./met/met-section";
 import { useYouTubePlayer } from "./music/use-youtube-player";
 import { RsvpSection } from "./rsvp/rsvp-section";
-import { BeeWall } from "@/components/portfolio/bee-wall";
+import { WishesSection } from "./wishes/wishes-section";
 
-export function GraduationInvitation({
-  guest,
-  initialRsvp,
-  initialLang,
-  ownerPhone,
-}: {
+type InvitationProps = {
   guest: InvitationGuest;
   initialRsvp: RsvpAnswer | null;
   initialLang: Lang;
   ownerPhone: string | null;
-}) {
+};
+
+export function GraduationInvitation(props: InvitationProps) {
+  return (
+    <ResourceGateProvider resources={Object.values(GATE)}>
+      <InvitationContent {...props} />
+    </ResourceGateProvider>
+  );
+}
+
+function InvitationContent({ guest, initialRsvp, initialLang, ownerPhone }: InvitationProps) {
+  const gate = useResourceGate();
   const canvasHost = useRef<HTMLDivElement>(null);
-  useGradCharacter(canvasHost);
+  useGradCharacter(canvasHost, { onReady: () => gate?.resolve(GATE.character) });
   const [musicNote, flashMusicNote] = useTransientFlag(2600);
   const musicId = guest.customContent?.music?.youtubeId || GRADUATION_EVENT.musicYoutubeId;
-  const { status: musicStatus, mountRef: musicMountRef, toggle: musicToggle, pause: musicPause, resume: musicResume } = useYouTubePlayer(musicId, flashMusicNote, true);
+  const { status: musicStatus, mountRef: musicMountRef, toggle: musicToggle, pause: musicPause, resume: musicResume } =
+    useYouTubePlayer(musicId, flashMusicNote, true, () => gate?.resolve(GATE.music));
+
+  // No track configured means there is no music to wait for.
+  useEffect(() => {
+    if (!musicId) gate?.resolve(GATE.music);
+  }, [musicId, gate]);
 
   return (
     <LangProvider initialLang={initialLang} customContent={guest.customContent}>
@@ -48,7 +65,7 @@ export function GraduationInvitation({
           <MetSection guestName={guest.name} note={guest.customContent?.met?.note ?? guest.note} />
           <EndsSection onTourOpen={musicPause} onTourClose={musicResume} />
           <RsvpSection slug={guest.slug} guestName={guest.name} initialRsvp={initialRsvp} ownerPhone={ownerPhone} />
-          <BeeWall />
+          <WishesSection />
         </main>
 
         <InvitationFooter />

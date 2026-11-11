@@ -6,7 +6,7 @@ import type { YTPlayer } from "@/lib/youtube/types";
 
 export type MusicStatus = "idle" | "loading" | "playing" | "paused" | "error";
 
-export function useYouTubePlayer(videoId: string, onError: () => void, autoStart = false) {
+export function useYouTubePlayer(videoId: string, onError: () => void, autoStart = false, onReady?: () => void) {
   const [status, setStatus] = useState<MusicStatus>("idle");
   const [open, setOpen] = useState(false);
   const mountRef = useRef<HTMLDivElement | null>(null);
@@ -15,9 +15,11 @@ export function useYouTubePlayer(videoId: string, onError: () => void, autoStart
   // instanceRef tracks the raw (possibly-not-ready) instance, so it can still be destroyed on unmount/retry.
   const instanceRef = useRef<YTPlayer | null>(null);
   const onErrorRef = useRef(onError);
+  const onReadyRef = useRef(onReady);
   useEffect(() => {
     onErrorRef.current = onError;
-  }, [onError]);
+    onReadyRef.current = onReady;
+  }, [onError, onReady]);
 
   // Auto-start: kick off playback once on mount when autoStart is true.
   const autoStarted = useRef(false);
@@ -35,6 +37,8 @@ export function useYouTubePlayer(videoId: string, onError: () => void, autoStart
     setStatus("error");
     setOpen(false);
     onErrorRef.current();
+    // A failed player is still "done loading" for anyone awaiting readiness.
+    onReadyRef.current?.();
   }, []);
 
   useEffect(() => {
@@ -54,6 +58,7 @@ export function useYouTubePlayer(videoId: string, onError: () => void, autoStart
             onReady: (e) => {
               playerRef.current = e.target;
               e.target.playVideo();
+              onReadyRef.current?.();
             },
             onStateChange: (e) => {
               if (e.data === YT.PlayerState.PLAYING) setStatus("playing");
