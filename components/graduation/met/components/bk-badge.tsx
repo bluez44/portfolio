@@ -11,12 +11,12 @@ export function BkBadge({ docked = false }: { docked?: boolean }) {
     <div
       {...(docked ? { "data-trail-dock": "" } : { "data-trail-badge": "" })}
       aria-hidden
-      className={`pointer-events-none absolute top-0 z-20 grid h-20 w-20 place-items-center rounded-full border-[1.5px] border-ink bg-blue invisible ${docked ? "left-1/2 -mt-6 -ml-6" : "left-0"}`}
+      className={`pointer-events-none absolute top-0 z-16 grid h-14 w-14 place-items-center rounded-full border-[1.5px] border-ink bg-blue invisible ${docked ? "left-1/2 -mt-10 -ml-8" : "left-0"}`}
       style={{ boxShadow: "var(--offset-sm)" }}
     >
       <div
         data-badge-spin
-        className="grid h-12 w-12 place-items-center rounded-full"
+        className="grid h-10 w-10 place-items-center rounded-full"
       >
         <Image
           src="/01_logobachkhoatoi.webp"
