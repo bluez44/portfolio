@@ -12,7 +12,7 @@ export function MomentCard({ moment: m, side }: { moment: Moment; side: "left" |
     <li
       data-moment
       data-side={side}
-      className={`relative flex min-h-75 w-[84%] flex-col justify-end rounded-[14px] border-[1.5px] border-ink bg-paper min-[760px]:w-[60%] ${side === "left" ? "self-start" : "self-end"}`}
+      className={`relative flex min-h-140 w-[84%] flex-col justify-end rounded-[14px] border-[1.5px] border-ink bg-paper  ${side === "left" ? "self-start" : "self-end"}`}
       style={{
         "--a": 0,
         boxShadow: `calc(5px + var(--a) * 4px) calc(5px + var(--a) * 4px) 0 var(--${m.color})`,
