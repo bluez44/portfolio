@@ -1,3 +1,5 @@
+import Image from "next/image";
+
 /**
  * Riso "BK" roundel. Stand-in until a real HCMUT logo is added.
  * - rider: travels the trail (MotionPath owns its transform); hidden until placed on the path.
@@ -9,11 +11,20 @@ export function BkBadge({ docked = false }: { docked?: boolean }) {
     <div
       {...(docked ? { "data-trail-dock": "" } : { "data-trail-badge": "" })}
       aria-hidden
-      className={`pointer-events-none absolute top-0 z-20 grid h-12 w-12 place-items-center rounded-full border-[1.5px] border-ink bg-blue invisible ${docked ? "left-1/2 -mt-6 -ml-6" : "left-0"}`}
+      className={`pointer-events-none absolute top-0 z-20 grid h-20 w-20 place-items-center rounded-full border-[1.5px] border-ink bg-blue invisible ${docked ? "left-1/2 -mt-6 -ml-6" : "left-0"}`}
       style={{ boxShadow: "var(--offset-sm)" }}
     >
-      <div data-badge-spin className="grid h-9.5 w-9.5 place-items-center rounded-full border-[1.5px] border-dashed border-paper">
-        <span className="font-heading text-[15px] leading-none font-bold tracking-[-0.02em] text-paper">BK</span>
+      <div
+        data-badge-spin
+        className="grid h-12 w-12 place-items-center rounded-full"
+      >
+        <Image
+          src="/01_logobachkhoatoi.webp"
+          alt=""
+          width={1822}
+          height={1822}
+          className="-translate-y-1 aspect-square"
+        />
       </div>
     </div>
   );
