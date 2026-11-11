@@ -24,7 +24,7 @@ export function MomentCard({ moment: m, side }: { moment: Moment; side: "left" |
           <Image src={m.image} alt="" fill sizes="(min-width: 760px) 400px, 84vw" className="object-cover" />
         </div>
         <div className="absolute inset-0 bg-paper" style={{ opacity: "calc((1 - var(--a)) * 0.55)" }} />
-        <div className="absolute inset-x-0 bottom-0 h-[72%]" style={{ background: "linear-gradient(to bottom, transparent, var(--paper) 42%)" }} />
+        <div className="absolute inset-x-0 bottom-0 h-[72%]" style={{ background: "linear-gradient(to bottom, transparent, var(--paper) )" }} />
       </div>
       <Tape color={m.color} width={84} height={22} rotate={-4} className="-top-3 z-1" />
       <div className="relative flex flex-col gap-2.5 px-5.5 pt-6.5 pb-5.5">
