@@ -53,6 +53,7 @@
   --offset-canary: 5px 5px 0 var(--canary);
   --offset-jade: 5px 5px 0 var(--jade);
   --offset-xs: 2px 2px 0 var(--ink);
+  --offset-rounded: 0 0 4px var(--ink);
   --stripes-tape: repeating-linear-gradient(-45deg, rgba(255, 255, 255, 0.28) 0 2px, transparent 2px 8px);
 
   /* radius */
