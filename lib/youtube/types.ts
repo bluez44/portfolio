@@ -3,6 +3,10 @@ export type YTPlayer = {
   pauseVideo(): void;
   setVolume(volume: number): void;
   getVolume(): number;
+  mute(): void;
+  unMute(): void;
+  isMuted(): boolean;
+  getPlayerState(): number;
   destroy(): void;
 };
 

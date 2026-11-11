@@ -25,15 +25,45 @@ export function useYouTubePlayer(videoId: string, onError: () => void, autoStart
     onReadyRef.current = onReady;
   }, [onError, onReady]);
 
-  // Browsers block unmuted autoplay without a user gesture, so the first
-  // playVideo() attempt usually fails silently. Arm one-shot gesture
-  // listeners that retry on the visitor's first interaction.
+  // Browsers block unmuted autoplay without a user gesture, and only
+  // clicks/keys/taps grant one — a wheel scroll never does (Chrome even
+  // pauses a muted-autoplaying video that unmutes without activation).
+  // Strategy: try unmuted; if blocked, play muted (always allowed); on every
+  // interaction attempt an unmute and verify 400ms later — a scroll attempt
+  // that got policy-paused falls back to muted playback and keeps waiting
+  // for a real activation gesture.
+  const isPlaying = useRef(false);
+  const mutedFallback = useRef(false);
+  const mutedStartTimer = useRef<number | null>(null);
+  const verifyTimer = useRef<number | null>(null);
   const disarmGesture = useRef<(() => void) | null>(null);
+
+  const unmuteIfNeeded = useCallback(() => {
+    if (!mutedFallback.current) return;
+    mutedFallback.current = false;
+    disarmGesture.current?.();
+    playerRef.current?.unMute();
+  }, []);
+
   const armGestureStart = useCallback(() => {
     if (disarmGesture.current) return;
     const start = () => {
-      disarmGesture.current?.();
-      playerRef.current?.playVideo();
+      const p = playerRef.current;
+      if (!p || verifyTimer.current != null) return;
+      p.unMute();
+      p.playVideo();
+      verifyTimer.current = window.setTimeout(() => {
+        verifyTimer.current = null;
+        if (p.getPlayerState() === 1 && !p.isMuted()) {
+          mutedFallback.current = false;
+          disarmGesture.current?.();
+        } else {
+          // Policy rejected the unmute — keep the music rolling silently.
+          mutedFallback.current = true;
+          p.mute();
+          p.playVideo();
+        }
+      }, 400);
     };
     GESTURE_EVENTS.forEach((ev) => window.addEventListener(ev, start, { passive: true }));
     disarmGesture.current = () => {
@@ -41,7 +71,14 @@ export function useYouTubePlayer(videoId: string, onError: () => void, autoStart
       disarmGesture.current = null;
     };
   }, []);
-  useEffect(() => () => disarmGesture.current?.(), []);
+  useEffect(
+    () => () => {
+      disarmGesture.current?.();
+      if (mutedStartTimer.current != null) window.clearTimeout(mutedStartTimer.current);
+      if (verifyTimer.current != null) window.clearTimeout(verifyTimer.current);
+    },
+    [],
+  );
 
   // Volume fades run on rAF; any new fade/pause/resume cancels the previous one.
   const fadeFrame = useRef<number | null>(null);
@@ -108,13 +145,25 @@ export function useYouTubePlayer(videoId: string, onError: () => void, autoStart
               playerRef.current = e.target;
               e.target.playVideo();
               armGestureStart();
+              // If the unmuted attempt was blocked, restart muted shortly after.
+              mutedStartTimer.current = window.setTimeout(() => {
+                if (isPlaying.current) return;
+                mutedFallback.current = true;
+                e.target.mute();
+                e.target.playVideo();
+              }, 800);
               onReadyRef.current?.();
             },
             onStateChange: (e) => {
               if (e.data === YT.PlayerState.PLAYING) {
-                disarmGesture.current?.();
+                isPlaying.current = true;
+                // Keep the gesture listeners while muted: they still need to unmute.
+                if (!mutedFallback.current) disarmGesture.current?.();
                 setStatus("playing");
-              } else if (e.data === YT.PlayerState.PAUSED) setStatus("paused");
+              } else if (e.data === YT.PlayerState.PAUSED) {
+                isPlaying.current = false;
+                setStatus("paused");
+              }
             },
             onError: fail,
           },
@@ -147,9 +196,10 @@ export function useYouTubePlayer(videoId: string, onError: () => void, autoStart
       return;
     }
     setOpen(true);
+    unmuteIfNeeded();
     if (status === "playing") playerRef.current.pauseVideo();
     else playerRef.current.playVideo();
-  }, [videoId, status, fail]);
+  }, [videoId, status, fail, unmuteIfNeeded]);
 
   const close = useCallback(() => {
     playerRef.current?.pauseVideo();
@@ -163,8 +213,9 @@ export function useYouTubePlayer(videoId: string, onError: () => void, autoStart
 
   const resume = useCallback(() => {
     cancelFade();
+    unmuteIfNeeded();
     playerRef.current?.playVideo();
-  }, [cancelFade]);
+  }, [cancelFade, unmuteIfNeeded]);
 
   /** Ramp the volume down, then pause (volume restored for the next play). */
   const fadePause = useCallback(() => {
@@ -180,10 +231,11 @@ export function useYouTubePlayer(videoId: string, onError: () => void, autoStart
   const fadeResume = useCallback(() => {
     const p = playerRef.current;
     if (!p) return;
+    unmuteIfNeeded();
     p.setVolume(0);
     p.playVideo();
     runFade(0, FULL_VOLUME);
-  }, [runFade]);
+  }, [runFade, unmuteIfNeeded]);
 
   return { status, open, mountRef, toggle, close, pause, resume, fadePause, fadeResume };
 }
