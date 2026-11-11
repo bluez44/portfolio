@@ -1,5 +1,5 @@
-export type Action = "wave" | "bow" | "sit" | "point" | "toss" | "cheer";
-export const ACTIONS: readonly Action[] = ["wave", "bow", "sit", "point", "toss", "cheer"];
+export type Action = "wave" | "bow" | "sit" | "point" | "toss" | "cheer" | "read";
+export const ACTIONS: readonly Action[] = ["wave", "bow", "sit", "point", "toss", "cheer", "read"];
 
 export type Beat = { s: number; x: number; ry: number; act: Action };
 
@@ -14,6 +14,8 @@ export type SectionMetrics = {
   endsTop: number;
   endsHeight: number;
   rsvpTop: number;
+  /** Top of the bee-wall wishes section, where the character reads the honeycomb. */
+  wishesTop: number;
   /** The pinned personal-note finale (scroll px) and the grown card's width (px), when present. */
   noteFinale?: { start: number; grown: number; end: number; width: number } | null;
 };

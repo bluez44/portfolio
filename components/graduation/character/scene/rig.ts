@@ -6,7 +6,7 @@ export type Arm = { sh: THREE.Group; el: THREE.Group };
 export type Rig = {
   root: THREE.Group; hips: THREE.Group; legs: { leg: THREE.Group; knee: THREE.Group }[];
   skirt: THREE.Mesh; spine: THREE.Group; headG: THREE.Group; capG: THREE.Group; tassel: THREE.Group;
-  A: Arm; B: Arm; cardProp: THREE.Group; books: THREE.Group; laptop: THREE.Group; shadow: THREE.Mesh;
+  A: Arm; B: Arm; cardProp: THREE.Group; books: THREE.Group; laptop: THREE.Group; hexProp: THREE.Group; shadow: THREE.Mesh;
 };
 
 function buildHead(k: MeshKit, M: Materials, spine: THREE.Group) {
@@ -37,7 +37,7 @@ function buildArm(k: MeshKit, M: Materials, spine: THREE.Group, side: 1 | -1): A
   return { sh, el };
 }
 
-function buildProps(k: MeshKit, M: Materials, root: THREE.Group, hips: THREE.Group, hand: THREE.Group) {
+function buildProps(k: MeshKit, M: Materials, root: THREE.Group, hips: THREE.Group, spine: THREE.Group, hand: THREE.Group) {
   const cardProp = k.group(hand, [0, -0.46, 0.08]);
   k.add(cardProp, new THREE.BoxGeometry(0.42, 0.28, 0.015), M.paper, [0, -0.06, 0.04], [0.2, 0, 0.1], 0.015);
   k.add(cardProp, new THREE.CircleGeometry(0.045, 14), M.stole, [0, -0.06, 0.06], [0.2, 0, 0], 0);
@@ -51,7 +51,12 @@ function buildProps(k: MeshKit, M: Materials, root: THREE.Group, hips: THREE.Gro
   lid.rotation.x = -1.85;
   k.add(lid, new THREE.BoxGeometry(0.62, 0.03, 0.42), M.laptop, [0, 0, 0.21], null, 0.015);
   k.add(lid, new THREE.PlaneGeometry(0.54, 0.34), M.screen, [0, 0.017, 0.21], [-Math.PI / 2, 0, 0], 0);
-  return { cardProp, books, laptop };
+  // Honeycomb held in both hands while reading the wishes wall.
+  const hexProp = k.group(spine, [0, 0.36, 0.56]);
+  hexProp.rotation.x = 0.95;
+  k.add(hexProp, new THREE.CylinderGeometry(0.24, 0.24, 0.05, 6), M.tassel, null, null, 0.015);
+  k.add(hexProp, new THREE.CylinderGeometry(0.1, 0.1, 0.07, 6), M.stole, null, null, 0);
+  return { cardProp, books, laptop, hexProp };
 }
 
 export function buildRig(scene: THREE.Scene, k: MeshKit, M: Materials): Rig {
@@ -80,6 +85,6 @@ export function buildRig(scene: THREE.Scene, k: MeshKit, M: Materials): Rig {
   const head = buildHead(k, M, spine);
   const A = buildArm(k, M, spine, 1);
   const B = buildArm(k, M, spine, -1);
-  const props = buildProps(k, M, root, hips, B.el);
+  const props = buildProps(k, M, root, hips, spine, B.el);
   return { root, hips, legs, skirt, spine, ...head, A, B, ...props, shadow };
 }

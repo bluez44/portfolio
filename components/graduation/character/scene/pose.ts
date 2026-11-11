@@ -14,7 +14,7 @@ export function applyPose(
   { time: T, phase }: { time: number; phase: number },
   view: { halfW: number; halfH: number; scale: number },
 ): void {
-  const { wave, bow, sit, point, toss, cheer, walk } = S;
+  const { wave, bow, sit, point, toss, cheer, read, walk } = S;
   const hop = Math.abs(Math.sin(T * 5.5)) * cheer;
   const sw = Math.sin(phase) * 0.6 * walk;
 
@@ -46,6 +46,16 @@ export function applyPose(
   R.B.el.rotation.x = -1.0 * wave - 1.0 * sit - 1.75 * bow - type;
   R.B.el.rotation.z = 0.25 * bow - cheer * (0.25 + Math.sin(T * 11 + 1.2) * 0.3);
 
+  // read: both arms forward cradling the honeycomb, head tipped down toward it.
+  R.A.sh.rotation.x -= 1.05 * read;
+  R.A.el.rotation.x -= 0.75 * read;
+  R.A.sh.rotation.z -= 0.3 * read;
+  R.B.sh.rotation.x -= 1.05 * read;
+  R.B.el.rotation.x -= 0.75 * read;
+  R.B.sh.rotation.z += 0.3 * read;
+  R.headG.rotation.x += 0.32 * read;
+  R.spine.rotation.x += 0.06 * read;
+
   const p = (T % 2.2) / 2.2;
   R.capG.position.y = 0.2 + toss * Math.max(0, Math.sin(Math.PI * p)) * 2.6;
   R.capG.rotation.y = toss * p * Math.PI * 4;
@@ -55,5 +65,6 @@ export function applyPose(
   show(R.cardProp, wave);
   show(R.books, sit);
   show(R.laptop, sit);
+  show(R.hexProp, read);
   R.shadow.scale.set(1 + 0.4 * sit, 1, 1);
 }
