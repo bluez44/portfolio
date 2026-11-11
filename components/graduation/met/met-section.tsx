@@ -30,7 +30,7 @@ export function MetSection({ guestName, note }: { guestName: string; note: strin
           <p className="m-0 max-w-[52ch] text-[17px] leading-[1.72] text-pretty text-ink-2">{t.intro}</p>
         </div>
 
-        <ol className="m-0 flex list-none flex-col gap-16 p-0">
+        <ol className="m-0 flex list-none flex-col gap-32 p-0">
           {t.moments.map((m, i) => (
             <MomentCard key={m.n} moment={m} side={i % 2 === 0 ? "left" : "right"} />
           ))}
