@@ -119,16 +119,21 @@ function IndexCard({ bee, n }: { bee: WishBee; n: string }) {
   );
 }
 
+export const WISH_CARD_ID = "wish-postcard";
+
 export function WishPostcard({
   bee,
   index,
   cardStyle,
   onClose,
+  entranceDelayMs = 0,
 }: {
   bee: WishBee;
   index: number;
   cardStyle: CardStyle;
   onClose: () => void;
+  /** holds the card clipped shut while the courier bee flies in */
+  entranceDelayMs?: number;
 }) {
   const n = String(index + 1).padStart(2, "0");
   const cardRef = useRef<HTMLDivElement>(null);
@@ -149,10 +154,12 @@ export function WishPostcard({
       <div className="pointer-events-none fixed inset-0 z-61 grid place-items-center p-6">
         <div
           ref={cardRef}
+          id={WISH_CARD_ID}
           role="dialog"
           aria-modal="true"
           aria-label={`Lời chúc từ ${bee.name}`}
           className="pointer-events-auto relative w-[min(620px,100%)] animate-[wish-pop_0.75s_cubic-bezier(0.22,1,0.36,1)_both]"
+          style={{ animationDelay: `${entranceDelayMs}ms` }}
         >
           <div className="absolute -top-3.5 -right-3.5 z-2">
             <RisoIconButton size="md" fill="paper" label="Đóng · Close" onClick={onClose}>

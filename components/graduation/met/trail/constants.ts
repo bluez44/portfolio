@@ -7,7 +7,7 @@ export const START_LINE = "top bottom -=100px";
 /** Gap (px) between a card's edge and the point where the trail docks beside it. */
 export const DOCK_GAP = 26;
 /** Path length (px) over which a card wakes up before and fades after the badge passes. */
-export const REACH = 170;
+export const REACH = 650;
 /** z-index for a card the badge is near, so it lifts above its neighbours. */
 export const ACTIVE_Z = "10";
 /** Trail progress treated as "arrived" (handover to the docked badge). */
