@@ -15,6 +15,7 @@ import { LangProvider } from "./i18n/lang-context";
 import { MetSection } from "./met/met-section";
 import { useYouTubePlayer } from "./music/use-youtube-player";
 import { RsvpSection } from "./rsvp/rsvp-section";
+import { BeeWall } from "@/components/portfolio/bee-wall";
 
 export function GraduationInvitation({
   guest,
@@ -47,6 +48,7 @@ export function GraduationInvitation({
           <MetSection guestName={guest.name} note={guest.customContent?.met?.note ?? guest.note} />
           <EndsSection onTourOpen={musicPause} onTourClose={musicResume} />
           <RsvpSection slug={guest.slug} guestName={guest.name} initialRsvp={initialRsvp} ownerPhone={ownerPhone} />
+          <BeeWall />
         </main>
 
         <InvitationFooter />
