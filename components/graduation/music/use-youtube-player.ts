@@ -6,7 +6,7 @@ import type { YTPlayer } from "@/lib/youtube/types";
 
 export type MusicStatus = "idle" | "loading" | "playing" | "paused" | "error";
 
-export function useYouTubePlayer(videoId: string, onError: () => void) {
+export function useYouTubePlayer(videoId: string, onError: () => void, autoStart = false) {
   const [status, setStatus] = useState<MusicStatus>("idle");
   const [open, setOpen] = useState(false);
   const mountRef = useRef<HTMLDivElement | null>(null);
@@ -18,6 +18,15 @@ export function useYouTubePlayer(videoId: string, onError: () => void) {
   useEffect(() => {
     onErrorRef.current = onError;
   }, [onError]);
+
+  // Auto-start: kick off playback once on mount when autoStart is true.
+  const autoStarted = useRef(false);
+  useEffect(() => {
+    if (!autoStart || autoStarted.current || !videoId) return;
+    autoStarted.current = true;
+    setStatus("loading");
+    setOpen(true);
+  }, [autoStart, videoId]);
 
   const fail = useCallback(() => {
     instanceRef.current?.destroy();
