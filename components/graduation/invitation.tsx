@@ -31,7 +31,7 @@ export function GraduationInvitation({
   useGradCharacter(canvasHost);
   const [musicNote, flashMusicNote] = useTransientFlag(2600);
   const musicId = guest.customContent?.music?.youtubeId || GRADUATION_EVENT.musicYoutubeId;
-  const { status: musicStatus, mountRef: musicMountRef, toggle: musicToggle } = useYouTubePlayer(musicId, flashMusicNote, true);
+  const { status: musicStatus, mountRef: musicMountRef, toggle: musicToggle, pause: musicPause, resume: musicResume } = useYouTubePlayer(musicId, flashMusicNote, true);
 
   return (
     <LangProvider initialLang={initialLang} customContent={guest.customContent}>
@@ -45,7 +45,7 @@ export function GraduationInvitation({
         <main>
           <EnvelopeStage guestName={guest.name} />
           <MetSection guestName={guest.name} note={guest.customContent?.met?.note ?? guest.note} />
-          <EndsSection />
+          <EndsSection onTourOpen={musicPause} onTourClose={musicResume} />
           <RsvpSection slug={guest.slug} guestName={guest.name} initialRsvp={initialRsvp} ownerPhone={ownerPhone} />
         </main>
 
