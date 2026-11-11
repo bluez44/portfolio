@@ -71,6 +71,17 @@ export function useYouTubePlayer(videoId: string, onError: () => void, autoStart
 
   useEffect(() => () => instanceRef.current?.destroy(), []);
 
+  // Pause when the tab becomes hidden; resume when it becomes visible again.
+  useEffect(() => {
+    const handleVisibility = () => {
+      if (!playerRef.current) return;
+      if (document.hidden) playerRef.current.pauseVideo();
+      else playerRef.current.playVideo();
+    };
+    document.addEventListener("visibilitychange", handleVisibility);
+    return () => document.removeEventListener("visibilitychange", handleVisibility);
+  }, []);
+
   const toggle = useCallback(() => {
     if (!videoId) return fail();
     if (!playerRef.current) {
@@ -88,5 +99,13 @@ export function useYouTubePlayer(videoId: string, onError: () => void, autoStart
     setOpen(false);
   }, []);
 
-  return { status, open, mountRef, toggle, close };
+  const pause = useCallback(() => {
+    playerRef.current?.pauseVideo();
+  }, []);
+
+  const resume = useCallback(() => {
+    playerRef.current?.playVideo();
+  }, []);
+
+  return { status, open, mountRef, toggle, close, pause, resume };
 }
