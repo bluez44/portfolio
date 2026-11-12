@@ -92,10 +92,10 @@ export function BeeIntro({ guestName, phase, musicPlaying, onEnter, onExited }: 
             className="m-0 font-heading text-[clamp(56px,11.5vw,184px)] leading-[0.86] font-bold tracking-[-0.045em] text-ink"
             style={{ fontVariationSettings: '"wdth" 82, "opsz" 96' }}
           >
-            <span aria-hidden className="block overflow-hidden pb-[0.05em]">
+            <span aria-hidden className="-mt-[0.3em] block overflow-hidden pt-[0.3em] pb-[0.05em]">
               <Chars text={stage.cover.lead} />
             </span>
-            <span aria-hidden className="block overflow-hidden pb-[0.1em] text-tomato italic" style={{ fontVariationSettings: '"wdth" 78, "opsz" 96' }}>
+            <span aria-hidden className="-mt-[0.3em] block overflow-hidden pt-[0.3em] pb-[0.1em] text-tomato italic" style={{ fontVariationSettings: '"wdth" 78, "opsz" 96' }}>
               <Chars text={stage.cover.accent} />
             </span>
           </h1>
