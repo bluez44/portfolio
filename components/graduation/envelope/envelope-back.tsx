@@ -1,3 +1,4 @@
+import { EnvelopeBody } from "./envelope-body";
 import { EnvelopeFlap } from "./envelope-flap";
 import { EnvelopePocket } from "./envelope-pocket";
 import { InvitationCard } from "./invitation-card";
@@ -8,7 +9,7 @@ export function EnvelopeBack({ guestName }: { guestName: string }) {
       {/* Body, pocket and flap leave together as one piece. Until the shell is animated it is not a
           stacking context, so the card can still sit between the body and the pocket. */}
       <div id="envShell" className="absolute inset-0">
-        <div id="envBody" aria-hidden className="absolute inset-0 box-border rounded-lg border-[1.5px] border-ink bg-paper-2" style={{ boxShadow: "var(--offset-lg)", backgroundImage: "radial-gradient(color-mix(in oklab, var(--tomato) 55%, transparent) 1.3px, transparent 1.6px)", backgroundSize: "11px 11px" }} />
+        <EnvelopeBody id="envBody" />
         <EnvelopePocket />
         <EnvelopeFlap />
       </div>
