@@ -112,51 +112,54 @@ export function Contact() {
 
             <div className="flex flex-col gap-6">
               <label className="flex flex-col gap-1">
-                <span className="font-mono text-[10px] tracking-[0.2em] text-ink-2 uppercase">
+                <span className="font-mono text-[12px] tracking-[0.2em] text-ink-2 uppercase">
                   Your name
                 </span>
                 <input
                   {...register("name")}
                   type="text"
+                  autoComplete="name"
                   placeholder="Type here…"
                   className={inputClass}
                 />
                 {errors.name && (
-                  <span className="mt-1 font-mono text-[11px] text-tomato">
+                  <span className="mt-1 font-mono text-[12px] text-tomato">
                     ✗ {errors.name.message}
                   </span>
                 )}
               </label>
 
               <label className="flex flex-col gap-1">
-                <span className="font-mono text-[10px] tracking-[0.2em] text-ink-2 uppercase">
+                <span className="font-mono text-[12px] tracking-[0.2em] text-ink-2 uppercase">
                   Return address (email)
                 </span>
                 <input
                   {...register("email")}
                   type="email"
+                  autoComplete="email"
                   placeholder="you@somewhere.com"
                   className={inputClass}
                 />
                 {errors.email && (
-                  <span className="mt-1 font-mono text-[11px] text-tomato">
+                  <span className="mt-1 font-mono text-[12px] text-tomato">
                     ✗ {errors.email.message}
                   </span>
                 )}
               </label>
 
               <label className="flex flex-col gap-1">
-                <span className="font-mono text-[10px] tracking-[0.2em] text-ink-2 uppercase">
+                <span className="font-mono text-[12px] tracking-[0.2em] text-ink-2 uppercase">
                   Message
                 </span>
                 <textarea
                   {...register("message")}
                   rows={5}
+                  enterKeyHint="send"
                   placeholder="Tell me about the project, the timeline, the vibe…"
                   className="w-full resize-y rounded-(--r-soft) border-[1.5px] border-ink/40 bg-transparent px-3 py-3 text-[16px] leading-relaxed text-ink placeholder:text-ink-3 focus:border-tomato focus:outline-none"
                 />
                 {errors.message && (
-                  <span className="mt-1 font-mono text-[11px] text-tomato">
+                  <span className="mt-1 font-mono text-[12px] text-tomato">
                     ✗ {errors.message.message}
                   </span>
                 )}
