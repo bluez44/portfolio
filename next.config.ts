@@ -8,7 +8,14 @@ const nextConfig: NextConfig = {
     // Turbopack doesn't infer the wrong workspace root.
     root: path.resolve(__dirname),
   },
-  output: "standalone"
+  output: "standalone",
+  images: {
+    localPatterns: [
+      // Uploaded graduation photos are proxied with the blob pathname in the query string.
+      { pathname: "/api/graduation/image" },
+      { pathname: "/**", search: "" },
+    ],
+  },
 };
 
 export default nextConfig;
