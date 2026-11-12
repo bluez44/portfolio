@@ -1,6 +1,6 @@
-import type { GraduationEvent } from "./event";
+import { eventLocation, type GraduationEvent } from "./event";
 
-const toIcsDate = (d: Date) => d.toISOString().replace(/[-:]/g, "").replace(/\.\d{3}/, "");
+export const toIcsDate = (d: Date) => d.toISOString().replace(/[-:]/g, "").replace(/\.\d{3}/, "");
 const escapeText = (s: string) => s.replace(/\\/g, "\\\\").replace(/([,;])/g, "\\$1").replace(/\n/g, "\\n");
 
 export function buildIcs(event: GraduationEvent, stamp: Date): string {
@@ -14,7 +14,7 @@ export function buildIcs(event: GraduationEvent, stamp: Date): string {
     `DTSTART:${toIcsDate(new Date(event.startUtc))}`,
     `DTEND:${toIcsDate(new Date(event.endUtc))}`,
     `SUMMARY:${escapeText(event.title)}`,
-    `LOCATION:${escapeText(`${event.venue}, ${event.address}`)}`,
+    `LOCATION:${escapeText(eventLocation(event))}`,
     "END:VEVENT",
     "END:VCALENDAR",
   ].join("\r\n");

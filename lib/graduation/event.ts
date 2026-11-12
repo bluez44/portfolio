@@ -18,6 +18,8 @@ export type GraduationEvent = {
   musicYoutubeId: string;
 };
 
+export const eventLocation = (event: GraduationEvent) => `${event.venue}, ${event.address}`;
+
 export const GRADUATION_EVENT: GraduationEvent = {
   title: "Lễ tốt nghiệp — Võ Lê Quang Vinh",
   startUtc: "2026-11-28T16:30:00Z",
