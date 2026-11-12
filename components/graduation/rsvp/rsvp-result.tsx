@@ -1,6 +1,7 @@
 import { RisoPill } from "@/components/ui/riso/pill";
 import type { RsvpStatus } from "@/lib/graduation/types";
 import { useCopy } from "../i18n/lang-context";
+import { AddToCalendar } from "../shared/add-to-calendar";
 
 export function RsvpResult({ status, onReset }: { status: RsvpStatus; onReset: () => void }) {
   const { rsvp: t } = useCopy();
@@ -9,13 +10,16 @@ export function RsvpResult({ status, onReset }: { status: RsvpStatus; onReset: (
       <RisoPill color={status === "no" ? "tomato" : "jade"} tilt={-2} wrap>
         {t.result[status]}
       </RisoPill>
-      <button
-        type="button"
-        onClick={onReset}
-        className="riso-focus hit-area relative cursor-pointer border-0 bg-transparent p-0 font-mono text-[11px] tracking-[0.2em] text-ink-3 uppercase underline underline-offset-[5px] hover:text-tomato"
-      >
-        {t.change}
-      </button>
+      <div className="flex flex-wrap items-start gap-x-6 gap-y-3">
+        {status === "yes" && <AddToCalendar />}
+        <button
+          type="button"
+          onClick={onReset}
+          className="riso-focus hit-area relative cursor-pointer border-0 bg-transparent p-0 font-mono text-[11px] tracking-[0.2em] text-ink-3 uppercase underline underline-offset-[5px] hover:text-tomato"
+        >
+          {t.change}
+        </button>
+      </div>
     </div>
   );
 }
