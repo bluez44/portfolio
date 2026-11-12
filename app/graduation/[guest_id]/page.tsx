@@ -13,14 +13,23 @@ type Props = { params: Promise<{ guest_id: string }> };
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { guest_id } = await params;
   const found = guest_id ? await getInvitationGuest(guest_id) : null;
-  const { meta } = GRADUATION_COPY[await getGraduationLang()];
+  const lang = await getGraduationLang();
+  const { meta } = GRADUATION_COPY[lang];
   const title = found ? meta.guestTitle(found.guest.name) : meta.title;
   const description = meta.description;
   return {
     title,
     description,
     robots: { index: false, follow: false },
-    openGraph: { title, description, url: `/graduation/${guest_id}` },
+    // og:image / twitter:image come from the colocated opengraph-image.tsx.
+    openGraph: {
+      title,
+      description,
+      url: `/graduation/${guest_id}`,
+      type: "website",
+      siteName: "Võ Lê Quang Vinh",
+      locale: lang === "vi" ? "vi_VN" : "en_US",
+    },
     twitter: { card: "summary_large_image", title, description },
     alternates: { canonical: `/graduation/${guest_id}` },
   };
