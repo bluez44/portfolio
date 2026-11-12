@@ -4,7 +4,7 @@
  * animation and the graduation character so the character moves in step with the card.
  */
 export const ARRIVE_AT = 0.4;
-export const PIN_VH = 1.4;
+export const PIN_VH = 2.8;
 /** ScrollTrigger line where the badge reaches the note and the note pins. */
 export const ARRIVE_LINE = `top ${ARRIVE_AT * 100}%`;
 export const PIN_END = `+=${PIN_VH * 100}%`;
@@ -40,4 +40,4 @@ export const PARALLAX_PHOTOS = [
 ] as const;
 
 /** Vertical distance from the note's centre, as a share of the viewport height, at which a drifting photo has fully faded. */
-export const MEMORY_RANGE = 0.85;
+export const MEMORY_RANGE = 1;

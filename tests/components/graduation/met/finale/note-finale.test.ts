@@ -16,10 +16,10 @@ describe("noteScaleFor", () => {
 });
 
 describe("noteFinaleScroll", () => {
-  it("pins at 40% of the viewport and lasts 1.4 viewports", () => {
+  it("pins at 40% of the viewport and lasts 2.8 viewports", () => {
     const f = noteFinaleScroll(5000, 1000);
     expect(f.start).toBe(4600);
-    expect(f.end).toBe(6000);
-    expect(f.grown).toBeCloseTo(4600 + (1400 * GROW) / (GROW + HOLD));
+    expect(f.end).toBe(7400);
+    expect(f.grown).toBeCloseTo(4600 + (2800 * GROW) / (GROW + HOLD));
   });
 });
