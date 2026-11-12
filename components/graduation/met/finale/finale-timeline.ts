@@ -1,7 +1,7 @@
 import gsap from "gsap";
 import { MOBILE_BREAKPOINT } from "../../character/scene/constants";
 import type { FinaleElements } from "../elements";
-import { ARRIVE_LINE, GROW, GROW_EASE, HOLD, MEMORY_ENTER_FROM, MEMORY_LOOK, MEMORY_PHOTOS, PIN_END } from "./constants";
+import { ARRIVE_LINE, GROW, GROW_EASE, HOLD, MEMORY_ENTER_FROM, MEMORY_LOOK, PIN_END, memorySlot } from "./constants";
 import { noteScaleFor } from "./note-finale";
 
 /**
@@ -76,7 +76,7 @@ export function createFinaleTimeline({ pin, note, dock, halves, photo, memoryLay
     const span = tl.duration();
     const wide = () => window.innerWidth >= MOBILE_BREAKPOINT;
     memoryPhotos.forEach((el, i) => {
-      const p = MEMORY_PHOTOS[i % MEMORY_PHOTOS.length];
+      const p = memorySlot(i);
       const [from, to] = p.enter;
       tl.fromTo(
         el,
