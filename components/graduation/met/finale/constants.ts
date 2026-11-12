@@ -35,10 +35,10 @@ export const NOTE_MAX_SCALE = 1.25;
  * by `drift` (vw) and turning by `spin` (deg) before it settles at `rot`.
  */
 export const MEMORY_PHOTOS = [
-  { width: "clamp(130px, min(36vw, 34vh), 300px)", rot: -5, phone: { x: -22, rest: 0.1 }, wide: { x: -33, rest: 0.08 }, drift: -14, spin: -10, enter: [0.02, 0.3] },
-  { width: "clamp(110px, min(30vw, 30vh), 240px)", rot: 4, phone: { x: 21, rest: 0.18 }, wide: { x: 36, rest: 0.12 }, drift: 18, spin: 12, enter: [0.14, 0.48] },
-  { width: "clamp(100px, min(26vw, 26vh), 220px)", rot: 3, phone: { x: 3, rest: 0.1 }, wide: { x: -40, rest: 0.55 }, drift: 8, spin: -6, enter: [0.36, 0.62] },
-  { width: "clamp(130px, min(38vw, 34vh), 320px)", rot: -3, phone: { x: -18, rest: 0.76 }, wide: { x: 36, rest: 0.56 }, drift: -10, spin: 8, enter: [0.46, 0.84] },
+  { width: "clamp(130px, min(36vw, 34vh), 300px)", rot: -5, phone: { x: -17, rest: 0.09 }, wide: { x: -24, rest: 0.08 }, drift: -14, spin: -10, enter: [0.02, 0.3] },
+  { width: "clamp(110px, min(30vw, 30vh), 240px)", rot: 4, phone: { x: 17, rest: 0.12 }, wide: { x: 26, rest: 0.12 }, drift: 18, spin: 12, enter: [0.14, 0.48] },
+  { width: "clamp(100px, min(26vw, 26vh), 220px)", rot: 3, phone: { x: 0, rest: 0.2 }, wide: { x: -27, rest: 0.55 }, drift: 8, spin: -6, enter: [0.36, 0.62] },
+  { width: "clamp(130px, min(38vw, 34vh), 320px)", rot: -3, phone: { x: -10, rest: 0.76 }, wide: { x: 26, rest: 0.56 }, drift: -10, spin: 8, enter: [0.46, 0.84] },
 ] as const;
 
 /** Top of a memory photo before it rises, as a share of the viewport height (just below it). */
