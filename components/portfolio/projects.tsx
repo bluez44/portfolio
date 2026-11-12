@@ -215,7 +215,7 @@ function ProjectSpread({
                 target="_blank"
                 rel="noopener noreferrer"
                 aria-label={`${secondaryAction.label} — ${project.title} (opens in a new tab)`}
-                className="text-[14px] font-semibold text-ink underline decoration-tomato decoration-2 underline-offset-[5px] transition-colors hover:text-tomato"
+                className="hit-area relative text-[14px] font-semibold text-ink underline decoration-tomato decoration-2 underline-offset-[5px] transition-colors hover:text-tomato"
               >
                 {secondaryAction.label}
               </a>

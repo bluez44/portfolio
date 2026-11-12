@@ -182,7 +182,7 @@ export function Education() {
                         rel="noopener noreferrer"
                         title={`Verify: ${cert.name}`}
                         aria-label={`Verify ${cert.name} (opens in a new tab)`}
-                        className="grid h-6 w-6 flex-none place-items-center rounded-full border-[1.5px] border-ink bg-paper text-ink transition-all hover:-translate-y-0.5 hover:bg-jade hover:text-paper"
+                        className="hit-area relative grid h-6 w-6 flex-none place-items-center rounded-full border-[1.5px] border-ink bg-paper text-ink transition-all hover:-translate-y-0.5 hover:bg-jade hover:text-paper"
                         style={{ boxShadow: "2px 2px 0 var(--ink)" }}
                       >
                         <ShieldCheck size={14} strokeWidth={2} />

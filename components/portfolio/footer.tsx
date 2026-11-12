@@ -57,7 +57,7 @@ export function Footer() {
                 <a
                   key={link.href}
                   href={link.href}
-                  className="group inline-flex items-center gap-2.5 self-start text-[15px] font-medium text-paper transition-colors hover:text-canary"
+                  className="group inline-flex items-center gap-2.5 self-start py-2.5 text-[15px] font-medium text-paper transition-colors hover:text-canary"
                 >
                   <span
                     aria-hidden
@@ -77,7 +77,7 @@ export function Footer() {
                   href={s.href}
                   target={s.href.startsWith("http") ? "_blank" : undefined}
                   rel={s.href.startsWith("http") ? "noreferrer" : undefined}
-                  className="group inline-flex flex-wrap items-baseline gap-x-2 self-start text-[15px] font-medium text-paper transition-colors hover:text-canary"
+                  className="group inline-flex flex-wrap items-baseline gap-x-2 self-start py-2.5 text-[15px] font-medium text-paper transition-colors hover:text-canary"
                 >
                   <span className="underline decoration-tomato decoration-2 underline-offset-[5px] group-hover:decoration-canary">
                     {s.label}
