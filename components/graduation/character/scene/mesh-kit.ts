@@ -10,7 +10,7 @@ export type MeshKit = {
 };
 
 /** Inflates a geometry along its normals for the inverted-hull outline. */
-function outlineGeometry(geo: THREE.BufferGeometry, t: number): THREE.BufferGeometry {
+export function outlineGeometry(geo: THREE.BufferGeometry, t: number): THREE.BufferGeometry {
   const o = geo.clone();
   const p = o.attributes.position;
   const n = o.attributes.normal;

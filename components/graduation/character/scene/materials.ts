@@ -1,4 +1,5 @@
 import * as THREE from "three";
+import { toonGradient } from "../../shared/three/toon";
 
 const TOON_KEYS = ["gown", "stole", "tassel", "skin", "blush", "hair", "cap", "pants", "shoe", "b1", "b2", "b3", "laptop", "paper"] as const;
 type ToonKey = (typeof TOON_KEYS)[number];
@@ -17,9 +18,7 @@ const DEFAULTS: Record<ToonKey, string> = {
 };
 
 export function createMaterials(): Materials {
-  const gradient = new THREE.DataTexture(new Uint8Array([110, 110, 110, 255, 190, 190, 190, 255, 255, 255, 255, 255]), 3, 1, THREE.RGBAFormat);
-  gradient.minFilter = gradient.magFilter = THREE.NearestFilter;
-  gradient.needsUpdate = true;
+  const gradient = toonGradient([110, 190, 255]);
   const toon = Object.fromEntries(
     TOON_KEYS.map((k) => [k, new THREE.MeshToonMaterial({ color: DEFAULTS[k], gradientMap: gradient })]),
   ) as Record<ToonKey, THREE.MeshToonMaterial>;
