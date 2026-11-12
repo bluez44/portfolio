@@ -47,6 +47,7 @@
   --vignette: color-mix(in oklab, var(--ink) 12%, transparent);
   --halo: var(--paper);
   --on-canary: var(--ink);
+  --highlight: var(--canary);
   --memory-brightness: 1;
 
   /* elevation — riso offset shadows (no blur, no glow) */
@@ -112,6 +113,7 @@
   --vignette: rgb(0 0 0 / 0.35);
   --halo: color-mix(in oklab, var(--canary) 55%, transparent);
   --on-canary: var(--paper);
+  --highlight: color-mix(in oklab, var(--canary) 40%, transparent);
   --memory-brightness: 0.9;
 
   --offset-sm: 3px 3px 0 var(--ink-3);
