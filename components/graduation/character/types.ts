@@ -18,6 +18,8 @@ export type SectionMetrics = {
   rsvpTop: number;
   /** Top of the bee-wall wishes section, where the character reads the honeycomb. */
   wishesTop: number;
+  /** Height of the bee-wall section; the character reads until its bottom edge enters the viewport. */
+  wishesHeight?: number;
   /** Top of the finale section, where the character says farewell. */
   finaleTop?: number;
   /** The pinned personal-note finale (scroll px) and the grown card's width (px), when present. */

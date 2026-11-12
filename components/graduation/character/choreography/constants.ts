@@ -14,9 +14,6 @@ export const LEAVE_MET_INSET = 20;
 /** …and arrives when that edge (the top of "How it ends") reaches this share of the viewport height. */
 export const ARRIVE_ENDS_AT = 0.5;
 
-/** The character keeps reading the honeycomb until the finale's top is this share of the viewport away, then turns to wave. */
-export const FAREWELL_LEAD = 0.45;
-
 /** Share of the note's grow phase by which the character has stood up, walked over and is cheering. */
 export const CHEER_BY = 0.6;
 

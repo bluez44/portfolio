@@ -1,5 +1,5 @@
 import type { Action, Beat, NarrationKey, SectionMetrics } from "../types";
-import { ARRIVE_ENDS_AT, CHEER_BY, CHEER_RY, DESK, FADE, FAREWELL_LEAD, LEAVE_MET_INSET, MIN_GAP, POINTING, READING, TOSSING } from "./constants";
+import { ARRIVE_ENDS_AT, CHEER_BY, CHEER_RY, DESK, FADE, LEAVE_MET_INSET, MIN_GAP, POINTING, READING, TOSSING } from "./constants";
 
 type RawBeat = [scroll: number, x: number, ry: number, act: Action, say?: NarrationKey];
 
@@ -32,6 +32,12 @@ function metEndBeats(m: SectionMetrics, cheerX: number, leave: number): RawBeat[
   ];
 }
 
+/** Scroll where the bee wall's bottom edge enters the viewport: the character reads until then. */
+function wishesEnd(m: SectionMetrics, finaleTop: number): number {
+  const bottom = m.wishesHeight != null ? m.wishesTop + m.wishesHeight : finaleTop;
+  return bottom - m.vh;
+}
+
 /** Scroll-keyed poses for the whole invitation; `sx` is the slot beside the opened envelope card. */
 export function buildBeats(m: SectionMetrics, sx: number, cheerX = DESK.x): Beat[] {
   const { vh, stageTop: s0, stageScroll: sl } = m;
@@ -50,7 +56,7 @@ export function buildBeats(m: SectionMetrics, sx: number, cheerX = DESK.x): Beat
     [m.wishesTop - vh * 0.2, READING.x, READING.ry, READING.act, "read"],
     ...(m.finaleTop != null
       ? ([
-          [m.finaleTop - vh * FAREWELL_LEAD, READING.x, READING.ry, READING.act, "read"],
+          [wishesEnd(m, m.finaleTop), READING.x, READING.ry, READING.act, "read"],
           [m.finaleTop, sx, -0.5, "wave", "farewell"],
         ] as RawBeat[])
       : []),
