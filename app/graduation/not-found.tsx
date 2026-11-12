@@ -10,7 +10,7 @@ export default async function GraduationNotFound() {
   return (
     <main lang={lang} className="grid min-h-screen place-items-center bg-paper px-6 text-center text-ink">
       <div className="flex flex-col items-center gap-6">
-        <SectionKicker centered>{t.kicker}</SectionKicker>
+        <SectionKicker align="center">{t.kicker}</SectionKicker>
         <SectionHeading as="h1" size="cover" lead={t.heading.lead} accent={t.heading.accent} />
         <p className="m-0 max-w-[40ch] text-ink-2">{t.body}</p>
         <RisoButton variant="secondary" size="md" href="/">← Portfolio</RisoButton>
