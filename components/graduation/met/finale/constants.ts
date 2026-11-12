@@ -27,16 +27,17 @@ export const NOTE_SIDE_GUTTER = 16;
 export const NOTE_MAX_SCALE = 1.25;
 
 /**
- * Photos drifting up behind the pinned note, scattered unevenly. `inset` is vw from their side
- * (negative peeks off-screen); `from`/`to` are vh offsets from the pin's top over the whole pin, so
- * each starts below the viewport, ends above it, and its travel (from − to) sets its parallax speed.
+ * Photos drifting up behind the pinned note, scattered unevenly around the middle. `x` is the
+ * photo centre's offset (vw) from the viewport centre; `from`/`to` are vh offsets from the pin's top
+ * over the whole pin, so each starts below the viewport, ends above it, and its travel (from − to)
+ * sets its parallax speed.
  */
 export const PARALLAX_PHOTOS = [
-  { side: "left", inset: -4, width: "clamp(130px, 36vw, 300px)", from: 0.75, to: -0.9, rot: -5 },
-  { side: "right", inset: 3, width: "clamp(110px, 30vw, 240px)", from: 1.15, to: -0.95, rot: 4 },
-  { side: "left", inset: 9, width: "clamp(100px, 26vw, 220px)", from: 1.6, to: -0.9, rot: 3 },
-  { side: "right", inset: -6, width: "clamp(130px, 38vw, 320px)", from: 2.0, to: -1.0, rot: -3 },
+  { x: -17, width: "clamp(130px, 36vw, 300px)", from: 0.75, to: -0.9, rot: -5 },
+  { x: 15, width: "clamp(110px, 30vw, 240px)", from: 1.15, to: -0.95, rot: 4 },
+  { x: -8, width: "clamp(100px, 26vw, 220px)", from: 1.6, to: -0.9, rot: 3 },
+  { x: 20, width: "clamp(130px, 38vw, 320px)", from: 2.0, to: -1.0, rot: -3 },
 ] as const;
 
 /** Vertical distance from the note's centre, as a share of the viewport height, at which a drifting photo has fully faded. */
-export const MEMORY_RANGE = 0.55;
+export const MEMORY_RANGE = 0.85;

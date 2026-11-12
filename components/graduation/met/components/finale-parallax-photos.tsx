@@ -14,7 +14,7 @@ export function FinaleParallaxPhotos({ images }: { images: string[] }) {
           key={i}
           data-parallax-photo
           className="absolute m-0 rounded-[10px] opacity-0 border-[1.5px] border-ink bg-paper p-1.5 shadow-(--offset-sm)"
-          style={{ [p.side]: `${p.inset}vw`, width: p.width, rotate: `${p.rot}deg`, top: `${p.from * 100}vh` }}
+          style={{ left: `calc(50% + ${p.x}vw)`, translate: "-50% 0", width: p.width, rotate: `${p.rot}deg`, top: `${p.from * 100}vh` }}
         >
           <div className="relative aspect-4/5 overflow-hidden rounded-[6px]">
             <Image src={images[i % images.length]} alt="" fill sizes="(min-width: 760px) 300px, 38vw" className="object-cover" />
