@@ -38,18 +38,18 @@ type Spot = { x: number; rest: number };
 export type MemorySlot = { width: string; rot: number; phone: Spot; wide: Spot; drift: number; spin: number; enter: readonly [number, number] };
 
 export const MEMORY_PHOTOS: readonly MemorySlot[] = [
-  { width: "clamp(130px, min(36vw, 34vh), 300px)", rot: -5, phone: { x: -15, rest: 0.09 }, wide: { x: -16, rest: 0.09 }, drift: -14, spin: -10, enter: [0.02, 0.3] },
-  { width: "clamp(110px, min(30vw, 30vh), 240px)", rot: 4, phone: { x: 14, rest: 0.13 }, wide: { x: 17, rest: 0.1 }, drift: 18, spin: 12, enter: [0.14, 0.48] },
-  { width: "clamp(100px, min(26vw, 26vh), 220px)", rot: 3, phone: { x: 0, rest: 0.24 }, wide: { x: -22, rest: 0.58 }, drift: 8, spin: -6, enter: [0.36, 0.62] },
-  { width: "clamp(130px, min(38vw, 34vh), 320px)", rot: -3, phone: { x: -8, rest: 0.76 }, wide: { x: 8, rest: 0.6 }, drift: -10, spin: 8, enter: [0.46, 0.84] },
+  { width: "clamp(100px, min(30vw, 20vh), 260px)", rot: -5, phone: { x: 25, rest: 0.105 }, wide: { x: -32, rest: 0.1 }, drift: -14, spin: -10, enter: [0.02, 0.3] },
+  { width: "clamp(95px, min(28vw, 20vh), 240px)", rot: 4, phone: { x: 2, rest: 0.1 }, wide: { x: 16, rest: 0.1 }, drift: 18, spin: 12, enter: [0.14, 0.48] },
+  { width: "clamp(88px, min(26vw, 19vh), 220px)", rot: 3, phone: { x: -28, rest: 0.77 }, wide: { x: -26, rest: 0.71 }, drift: 8, spin: -6, enter: [0.36, 0.62] },
+  { width: "clamp(100px, min(30vw, 19vh), 260px)", rot: -3, phone: { x: 2, rest: 0.78 }, wide: { x: 4, rest: 0.71 }, drift: -10, spin: 8, enter: [0.46, 0.84] },
 ];
 
 /** The guest's photo with the owner: last in, a touch larger, resting just above the note's top edge. */
 export const TOGETHER_PHOTO: MemorySlot = {
-  width: "clamp(120px, min(34vw, 22vh), 260px)",
+  width: "clamp(100px, min(34vw, 22vh), 260px)",
   rot: -2,
-  phone: { x: 0, rest: 0.16 },
-  wide: { x: 0, rest: 0.09 },
+  phone: { x: -20, rest: 0.146 },
+  wide: { x: -12, rest: 0.095 },
   drift: 6,
   spin: -8,
   enter: [0.72, 0.96],
