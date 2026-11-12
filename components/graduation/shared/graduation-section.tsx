@@ -1,4 +1,5 @@
 import type { ReactNode } from "react";
+import type { Tone } from "./halftone-seam";
 
 export function GraduationSection({
   id,
@@ -6,7 +7,7 @@ export function GraduationSection({
   align,
   className = "",
   children,
-}: { id: string; tone: "paper" | "paper-2"; align: "left" | "right"; className?: string; children: ReactNode }) {
+}: { id: string; tone: Tone; align: "left" | "right"; className?: string; children: ReactNode }) {
   const cols = align === "left" ? "min-[760px]:grid-cols-[8fr_4fr]" : "min-[760px]:grid-cols-[4fr_8fr]";
   return (
     <section
