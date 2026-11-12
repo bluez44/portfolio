@@ -1,8 +1,10 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { useTheme } from "next-themes";
 import { RisoThemeToggle } from "@/components/ui/riso/theme-toggle";
+import { useDismiss } from "@/lib/hooks/use-dismiss";
+import { useScrollLock } from "@/lib/hooks/use-scroll-lock";
 import { navLinks } from "@/lib/portfolio-data";
 
 export function Header() {
@@ -42,6 +44,10 @@ export function Header() {
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
+  const closeMenu = useCallback(() => setMenuOpen(false), []);
+  useDismiss(menuOpen, closeMenu);
+  useScrollLock(menuOpen);
+
   const isLight = !mounted || theme === "light";
   const toggleTheme = () => setTheme(isLight ? "dark" : "light");
 
@@ -54,7 +60,7 @@ export function Header() {
           ? "1.5px solid var(--ink)"
           : "1.5px solid transparent",
         backdropFilter: scrolled ? "blur(14px) saturate(1.2)" : "none",
-        transform: hidden ? "translateY(-110%)" : "translateY(0)",
+        transform: hidden && !menuOpen ? "translateY(-110%)" : "translateY(0)",
         top: scrolled ? "0" : "1rem",
       }}
     >
@@ -120,17 +126,18 @@ export function Header() {
 
           <button
             onClick={() => setMenuOpen((open) => !open)}
-            aria-label="Open menu"
+            aria-label={menuOpen ? "Close menu" : "Open menu"}
             aria-expanded={menuOpen}
-            className="flex flex-col items-center justify-center gap-1 rounded-full border-[1.5px] border-ink bg-paper h-9 w-9 md:hidden"
+            className="hit-area relative flex h-9 w-9 flex-col items-center justify-center gap-1 rounded-full border-[1.5px] border-ink bg-paper md:hidden"
             style={{ boxShadow: "2px 2px 0 var(--ink)" }}
           >
-            <span className="block h-[1.5px] w-4 bg-ink" />
-            <span className="block h-[1.5px] w-4 bg-ink" />
+            <span className={`block h-[1.5px] w-4 bg-ink transition-transform duration-200 ${menuOpen ? "translate-y-[3.25px] rotate-45" : ""}`} />
+            <span className={`block h-[1.5px] w-4 bg-ink transition-transform duration-200 ${menuOpen ? "-translate-y-[3.25px] -rotate-45" : ""}`} />
           </button>
         </div>
       </div>
 
+      {menuOpen && <div aria-hidden onClick={closeMenu} className="fixed inset-x-0 top-full h-screen bg-ink/30" />}
       {menuOpen && (
         <nav
           aria-label="Mobile"
@@ -141,7 +148,7 @@ export function Header() {
             <a
               key={link.href}
               href={link.href}
-              onClick={() => setMenuOpen(false)}
+              onClick={closeMenu}
               className="border-b border-line py-3 font-heading text-lg font-semibold text-ink"
             >
               {link.label}
