@@ -69,6 +69,23 @@ export type GraduationCopy = {
   wishes: {
     mine: string;
   };
+  finale: {
+    heading: Heading;
+    countdown: {
+      days: string;
+      hours: string;
+      minutes: string;
+      during: string;
+      after: string;
+    };
+    replyOf: (name: string) => string;
+    status: {
+      yes: string;
+      no: string;
+    };
+    noReply: string;
+    replyNow: string;
+  };
   gate: { dialogLabel: string; wake: string; tapHint: string; silent: string; soundHint: string; nowPlaying: string; preparing: string };
   narrator: Record<NarrationKey, (name: string) => string>;
   footer: string;

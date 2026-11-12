@@ -25,6 +25,7 @@ import { useYouTubePlayer } from "./music/use-youtube-player";
 import { useMusicCues } from "./music/use-music-cues";
 import { RsvpSection } from "./rsvp/rsvp-section";
 import { WishesSection } from "./wishes/wishes-section";
+import { FinaleSection } from "./finale/finale-section";
 
 type InvitationProps = {
   guest: InvitationGuest;
@@ -73,7 +74,9 @@ function InvitationContent({ guest, initialRsvp, ownerPhone }: InvitationProps) 
   }, [letterOpened]);
 
   const [wishRefreshKey, setWishRefreshKey] = useState(0);
-  const handleRsvpSaved = useCallback(() => {
+  const [currentRsvp, setCurrentRsvp] = useState<RsvpAnswer | null>(initialRsvp);
+  const handleRsvpSaved = useCallback((answer: RsvpAnswer) => {
+    setCurrentRsvp(answer);
     setWishRefreshKey((k) => k + 1);
   }, []);
 
@@ -100,6 +103,7 @@ function InvitationContent({ guest, initialRsvp, ownerPhone }: InvitationProps) 
             onSaved={handleRsvpSaved}
           />
           <WishesSection guestId={guest.id} refreshKey={wishRefreshKey} />
+          <FinaleSection guestName={guest.name} rsvp={currentRsvp} />
         </main>
 
         <InvitationFooter />

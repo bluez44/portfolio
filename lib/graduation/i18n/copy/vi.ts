@@ -78,7 +78,7 @@ export const vi: GraduationCopy = {
     yes: "Mình sẽ đến",
     no: "Tiếc quá, không kịp",
     error: "Không gửi được, thử lại nhé",
-    result: { yes: "✓ Đã nhận — hẹn gặp bạn ngày 19.12!", no: "✓ Đã nhận — cảm ơn bạn đã báo" },
+    result: { yes: "✓ Đã nhận — hẹn gặp bạn ngày 28.11!", no: "✓ Đã nhận — cảm ơn bạn đã báo" },
     change: "Đổi ý",
     contact: { label: "Số điện thoại hoặc email", placeholder: "0901 234 567 hoặc ban@email.com" },
     reason: { label: "Lý do", placeholder: "Hôm đó mình bận…" },
@@ -100,6 +100,23 @@ export const vi: GraduationCopy = {
   },
   wishes: {
     mine: "Của bạn",
+  },
+  finale: {
+    heading: { lead: "Hẹn gặp", accent: "bạn." },
+    countdown: {
+      days: "ngày",
+      hours: "giờ",
+      minutes: "phút",
+      during: "Hôm nay là ngày ấy!",
+      after: "Cảm ơn bạn đã đến chung vui!",
+    },
+    replyOf: (name) => `Thư hồi âm của ${name}`,
+    status: {
+      yes: "Sẽ đến chung vui",
+      no: "Tiếc quá, vắng mặt",
+    },
+    noReply: "Bạn chưa gửi thư hồi âm",
+    replyNow: "Viết hồi âm ngay ↑",
   },
   gate: {
     dialogLabel: "Mở thiệp",

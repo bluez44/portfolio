@@ -53,7 +53,7 @@ export const en: GraduationCopy = {
     intro: "This chapter closes with a ceremony — and it would mean a lot to share it with you.",
     stamp: ["Admit", "· One ·", "Guest"],
     when: "When",
-    day: "Saturday, 2026",
+    day: "Saturday, Nov 28, 2026",
     where: "Where",
     venue: "Hall A5, HCMUT",
     venueSub: "Ho Chi Minh City University of Technology",
@@ -78,7 +78,7 @@ export const en: GraduationCopy = {
     yes: "I'll be there",
     no: "Sorry, can't make it",
     error: "Couldn't send, please try again",
-    result: { yes: "✓ Postmarked — see you on Dec 19!", no: "✓ Noted — thanks for letting me know" },
+    result: { yes: "✓ Postmarked — see you on Nov 28!", no: "✓ Noted — thanks for letting me know" },
     change: "Change answer",
     contact: { label: "Phone or email", placeholder: "+84 901 234 567 or you@email.com" },
     reason: { label: "Reason", placeholder: "I'm busy that day…" },
@@ -100,6 +100,23 @@ export const en: GraduationCopy = {
   },
   wishes: {
     mine: "Yours",
+  },
+  finale: {
+    heading: { lead: "See you", accent: "soon." },
+    countdown: {
+      days: "days",
+      hours: "hours",
+      minutes: "mins",
+      during: "Today is the day!",
+      after: "Thank you for celebrating with me!",
+    },
+    replyOf: (name) => `Reply from ${name}`,
+    status: {
+      yes: "Attending",
+      no: "Can't make it",
+    },
+    noReply: "You haven't replied yet",
+    replyNow: "Send reply now ↑",
   },
   gate: {
     dialogLabel: "Open invitation",
