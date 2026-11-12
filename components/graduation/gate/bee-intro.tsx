@@ -101,7 +101,7 @@ export function BeeIntro({ guestName, phase, musicPlaying, onEnter, onExited }: 
           </h1>
           <div data-intro-fade className="flex flex-wrap items-baseline gap-3">
             <span className={`${mono} text-ink-3`}>{envelope.to}</span>
-            <span className="font-heading text-[clamp(20px,2.4vw,30px)] font-semibold tracking-[-0.02em] whitespace-nowrap text-ink">{guestName}</span>
+            <span className="font-heading text-[clamp(20px,2.4vw,30px)] font-semibold min-w-0 tracking-[-0.02em] text-ink [overflow-wrap:anywhere]">{guestName}</span>
           </div>
         </div>
         <div data-intro-fade className="pointer-events-auto flex flex-col items-end gap-2.5">
