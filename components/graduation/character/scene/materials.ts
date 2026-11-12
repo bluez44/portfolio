@@ -12,7 +12,7 @@ export type Materials = Record<ToonKey, THREE.MeshToonMaterial> & {
 };
 
 const DEFAULTS: Record<ToonKey, string> = {
-  gown: "#1240e5", stole: "#ef4e2b", tassel: "#f5c518", skin: "#e8b991", blush: "#ef4e2b",
+  gown: "#1240e5", stole: "#ef4e2b", tassel: "#f5c518", skin: "#f4cfb2", blush: "#ef4e2b",
   hair: "#1c1b1f", cap: "#1c1b1f", pants: "#4a4a52", shoe: "#1c1b1f",
   b1: "#ef4e2b", b2: "#f5c518", b3: "#0f8f65", laptop: "#7a7a83", paper: "#fbf8f2",
 };
