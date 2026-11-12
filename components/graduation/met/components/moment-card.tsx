@@ -3,8 +3,18 @@ import type { CSSProperties } from "react";
 import type { Moment } from "@/lib/graduation/i18n";
 import { Tape } from "../../shared/tape";
 
-/** Phones: 90vw wide, breaking out of the section's 24px gutter so each card sits 2.5vw from its edge. */
-const MOBILE = { left: "max-[759px]:ml-[calc(2.5vw-24px)]", right: "max-[759px]:mr-[calc(2.5vw-24px)]" };
+/** Extra scale a card gains when the badge reaches it. */
+const LIFT = 0.07;
+/**
+ * Phones: at full lift a card spans 90vw and sits 2.5vw from its edge, breaking out of the
+ * section's 24px gutter; its resting width and margin are worked back from the lift.
+ */
+const MOBILE_WIDTH = `calc(90vw / ${1 + LIFT})`;
+const MOBILE_SIZE = {
+  "--card-w": MOBILE_WIDTH,
+  "--card-edge": `calc(2.5vw + ${MOBILE_WIDTH} * ${LIFT / 2} - 24px)`,
+} as CSSProperties;
+const MOBILE = { left: "max-[759px]:ml-(--card-edge)", right: "max-[759px]:mr-(--card-edge)" };
 
 /**
  * `--a` (0..1) is driven by the BK badge's distance along the trail (see use-moment-trail):
@@ -15,11 +25,12 @@ export function MomentCard({ moment: m, side }: { moment: Moment; side: "left" |
     <li
       data-moment
       data-side={side}
-      className={`relative flex min-h-140 w-[84%] flex-col justify-end rounded-[14px] border-[1.5px] border-ink bg-paper max-[759px]:w-[90vw] ${side === "left" ? "self-start" : "self-end"} ${MOBILE[side]}`}
+      className={`relative flex min-h-140 w-[84%] flex-col justify-end rounded-[14px] border-[1.5px] border-ink bg-paper max-[759px]:w-(--card-w) ${side === "left" ? "self-start" : "self-end"} ${MOBILE[side]}`}
       style={{
+        ...MOBILE_SIZE,
         "--a": 0,
         boxShadow: `calc(5px + var(--a) * 4px) calc(5px + var(--a) * 4px) 0 var(--${m.color})`,
-        transform: `rotate(calc(${m.rot}deg * (1 - var(--a)))) scale(calc(1 + var(--a) * 0.07))`,
+        transform: `rotate(calc(${m.rot}deg * (1 - var(--a)))) scale(calc(1 + var(--a) * ${LIFT}))`,
       } as CSSProperties}
     >
       <div aria-hidden className="absolute inset-0 overflow-hidden rounded-[13px]">
