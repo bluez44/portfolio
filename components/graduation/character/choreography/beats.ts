@@ -1,5 +1,5 @@
 import type { Action, Beat, NarrationKey, SectionMetrics } from "../types";
-import { ARRIVE_ENDS_AT, CHEER_BY, CHEER_RY, DESK, FADE, LEAVE_MET_INSET, MIN_GAP, POINTING, READING, TOSSING } from "./constants";
+import { ARRIVE_ENDS_AT, CHEER_BY, CHEER_RY, DESK, FADE, FAREWELL_LEAD, LEAVE_MET_INSET, MIN_GAP, POINTING, READING, TOSSING } from "./constants";
 
 type RawBeat = [scroll: number, x: number, ry: number, act: Action, say?: NarrationKey];
 
@@ -48,7 +48,12 @@ export function buildBeats(m: SectionMetrics, sx: number, cheerX = DESK.x): Beat
     [m.rsvpTop - vh * 0.25, TOSSING.x, TOSSING.ry, TOSSING.act, "toss"],
     [m.wishesTop - vh * 0.75, TOSSING.x, TOSSING.ry, TOSSING.act, "toss"],
     [m.wishesTop - vh * 0.2, READING.x, READING.ry, READING.act, "read"],
-    ...(m.finaleTop != null ? ([[m.finaleTop, sx, -0.5, "wave", "farewell"]] as RawBeat[]) : []),
+    ...(m.finaleTop != null
+      ? ([
+          [m.finaleTop - vh * FAREWELL_LEAD, READING.x, READING.ry, READING.act, "read"],
+          [m.finaleTop, sx, -0.5, "wave", "farewell"],
+        ] as RawBeat[])
+      : []),
   ];
   let prev = -Infinity;
   return raw.map(([s, x, ry, act, say]) => {
