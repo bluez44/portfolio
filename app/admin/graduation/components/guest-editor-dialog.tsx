@@ -1,9 +1,9 @@
 "use client";
 
 import { useEffect, useState, useTransition } from "react";
-import { useLenis } from "@/components/providers/lenis-context";
 import { X, User, Mail, Sparkles, Calendar, MailCheck, Music, Save, Loader2 } from "lucide-react";
 import type { GuestListItem, GuestCustomContent } from "@/lib/graduation/types";
+import { useScrollLock } from "@/lib/hooks/use-scroll-lock";
 import { saveGraduationGuestAction, type GuestActionState } from "../actions";
 import { BasicInfoTab } from "./tabs/basic-info-tab";
 import { EnvelopeTab } from "./tabs/envelope-tab";
@@ -37,22 +37,13 @@ export function GuestEditorDialog({
     guest?.customContent || {}
   );
 
-  // Lock the page behind the modal (both native scroll and Lenis smooth
-  // scroll) so only the dialog body scrolls, and close on Escape.
-  const lenis = useLenis();
+  useScrollLock(isOpen);
   useEffect(() => {
     if (!isOpen) return;
-    const previous = document.body.style.overflow;
-    document.body.style.overflow = "hidden";
-    lenis?.stop();
     const onKey = (e: KeyboardEvent) => e.key === "Escape" && onClose();
     document.addEventListener("keydown", onKey);
-    return () => {
-      document.body.style.overflow = previous;
-      lenis?.start();
-      document.removeEventListener("keydown", onKey);
-    };
-  }, [isOpen, onClose, lenis]);
+    return () => document.removeEventListener("keydown", onKey);
+  }, [isOpen, onClose]);
 
   if (!isOpen) return null;
 
