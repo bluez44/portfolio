@@ -1,7 +1,8 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import { useRef } from "react";
 import { RisoIconButton } from "@/components/ui/riso/icon-button";
+import { useDismiss } from "@/lib/hooks/use-dismiss";
 import { useCopy } from "../i18n/lang-context";
 import type { CardStyle, WishBee } from "./types";
 
@@ -142,11 +143,7 @@ export function WishPostcard({
   const n = String(index + 1).padStart(2, "0");
   const cardRef = useRef<HTMLDivElement>(null);
 
-  useEffect(() => {
-    const onKey = (e: KeyboardEvent) => e.key === "Escape" && onClose();
-    document.addEventListener("keydown", onKey);
-    return () => document.removeEventListener("keydown", onKey);
-  }, [onClose]);
+  useDismiss(true, onClose);
 
   return (
     <>
