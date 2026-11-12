@@ -22,7 +22,7 @@ export function TicketWhere({ onDirections }: { onDirections: () => void }) {
         <br />
         <span className="text-ink-3 italic">{t.venueSub}</span>
       </span>
-      <div className="mt-1.5 flex flex-wrap gap-3">
+      <div data-character-avoid className="mt-1.5 flex flex-wrap gap-3">
         <RisoButton variant="primary" size="md" onClick={onDirections} icon="↓">
           {t.directions}
         </RisoButton>

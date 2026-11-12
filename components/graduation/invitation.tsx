@@ -7,6 +7,7 @@ import type { InvitationGuest, RsvpAnswer } from "@/lib/graduation/types";
 import { useTransientFlag } from "@/lib/hooks/use-transient-flag";
 import { useGradCharacter } from "./character/use-grad-character";
 import { NarratorBubble, type NarratorBubbleHandle } from "./character/narrator-bubble";
+import { useCharacterAvoid } from "./character/use-character-avoid";
 import { CourierBeeProvider } from "./courier/courier-bee-provider";
 import { InvitationHeader } from "./chrome/invitation-header";
 import { SideRails } from "./chrome/side-rails";
@@ -51,10 +52,12 @@ function InvitationContent({ guest, initialRsvp, ownerPhone }: InvitationProps) 
   const gate = useResourceGate();
   const canvasHost = useRef<HTMLDivElement>(null);
   const bubbleRef = useRef<NarratorBubbleHandle>(null);
+  const characterLayer = useRef<HTMLDivElement>(null);
   useGradCharacter(canvasHost, {
     onReady: () => gate?.resolve(GATE.character),
     onFrame: (head, line) => bubbleRef.current?.update(head, line),
   });
+  useCharacterAvoid(characterLayer);
   const [musicNote, flashMusicNote] = useTransientFlag(2600);
   const musicId = guest.customContent?.music?.youtubeId || GRADUATION_EVENT.musicYoutubeId;
   const music = useYouTubePlayer(musicId, flashMusicNote, () => gate?.resolve(GATE.music));
@@ -82,8 +85,10 @@ function InvitationContent({ guest, initialRsvp, ownerPhone }: InvitationProps) 
   return (
     <div id="top" className="relative bg-paper font-sans text-ink">
       <div aria-hidden className="pointer-events-none fixed inset-0 z-15" style={{ backgroundImage: "radial-gradient(var(--halftone) 1px, transparent 1px)", backgroundSize: "28px 28px" }} />
-      <div ref={canvasHost} aria-hidden className="pointer-events-none fixed inset-0 z-25" />
-      <NarratorBubble ref={bubbleRef} guestName={guest.name} />
+      <div ref={characterLayer} className="transition-opacity duration-300">
+        <div ref={canvasHost} aria-hidden className="pointer-events-none fixed inset-0 z-25" />
+        <NarratorBubble ref={bubbleRef} guestName={guest.name} />
+      </div>
 
       <LetterGate ready={!gate?.pending} guestName={guest.name} musicPlaying={musicStatus === "playing"} onOpen={startMusic} onOpened={onLetterOpened} />
       <div inert={!letterOpened}>

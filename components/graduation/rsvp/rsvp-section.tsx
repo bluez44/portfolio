@@ -44,7 +44,7 @@ export function RsvpSection({
           {t.prompt(guestName)}
         </p>
         <div className="perspective-distant">
-          <div ref={cardRef} className="transform-3d">
+          <div ref={cardRef} data-character-avoid className="transform-3d">
             <ReplyPostcard guestName={guestName} postmarked={postmarked}>
               {rsvp.saved && !rsvp.editing && showResult ? (
                 <RsvpResult status={rsvp.saved.status} onReset={rsvp.edit} />
