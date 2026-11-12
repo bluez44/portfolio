@@ -8,16 +8,24 @@ export type MusicStatus = "idle" | "loading" | "playing" | "paused" | "error";
 
 const FADE_MS = 1200;
 const FULL_VOLUME = 100;
-const GESTURE_EVENTS = ["pointerdown", "keydown", "touchstart", "wheel"] as const;
+/** Still not playing this long after a gesture means the browser refused it (iOS Safari can). */
+const START_CHECK_MS = 1500;
+const YT_PLAYING = 1;
 
-export function useYouTubePlayer(videoId: string, onError: () => void, autoStart = false, onReady?: () => void) {
-  const [status, setStatus] = useState<MusicStatus>("idle");
-  const [open, setOpen] = useState(false);
+/**
+ * Background track in a hidden YouTube iframe. Browsers only allow audible playback from a user
+ * activation, so `start` and `toggle` must run synchronously inside a click or key handler.
+ */
+export function useYouTubePlayer(videoId: string, onError: () => void, onReady?: () => void) {
+  const [status, setStatus] = useState<MusicStatus>(videoId ? "loading" : "idle");
   const mountRef = useRef<HTMLDivElement | null>(null);
-  // playerRef is only set once the player fires onReady, so its methods are safe to call.
   const playerRef = useRef<YTPlayer | null>(null);
-  // instanceRef tracks the raw (possibly-not-ready) instance, so it can still be destroyed on unmount/retry.
-  const instanceRef = useRef<YTPlayer | null>(null);
+  // getVolume() lags behind setVolume() over postMessage, so fades track the level themselves.
+  const volume = useRef(FULL_VOLUME);
+  const wantsPlay = useRef(false);
+  const resumeAfterDuck = useRef(false);
+  const fadeFrame = useRef<number | null>(null);
+  const startCheck = useRef<number | undefined>(undefined);
   const onErrorRef = useRef(onError);
   const onReadyRef = useRef(onReady);
   useEffect(() => {
@@ -25,77 +33,27 @@ export function useYouTubePlayer(videoId: string, onError: () => void, autoStart
     onReadyRef.current = onReady;
   }, [onError, onReady]);
 
-  // Browsers block unmuted autoplay without a user gesture, and only
-  // clicks/keys/taps grant one — a wheel scroll never does (Chrome even
-  // pauses a muted-autoplaying video that unmutes without activation).
-  // Strategy: try unmuted; if blocked, play muted (always allowed); on every
-  // interaction attempt an unmute and verify 400ms later — a scroll attempt
-  // that got policy-paused falls back to muted playback and keeps waiting
-  // for a real activation gesture.
-  const isPlaying = useRef(false);
-  const mutedFallback = useRef(false);
-  const mutedStartTimer = useRef<number | null>(null);
-  const verifyTimer = useRef<number | null>(null);
-  const disarmGesture = useRef<(() => void) | null>(null);
-
-  const unmuteIfNeeded = useCallback(() => {
-    if (!mutedFallback.current) return;
-    mutedFallback.current = false;
-    disarmGesture.current?.();
-    playerRef.current?.unMute();
-  }, []);
-
-  const armGestureStart = useCallback(() => {
-    if (disarmGesture.current) return;
-    const start = () => {
-      const p = playerRef.current;
-      if (!p || verifyTimer.current != null) return;
-      p.unMute();
-      p.playVideo();
-      verifyTimer.current = window.setTimeout(() => {
-        verifyTimer.current = null;
-        if (p.getPlayerState() === 1 && !p.isMuted()) {
-          mutedFallback.current = false;
-          disarmGesture.current?.();
-        } else {
-          // Policy rejected the unmute — keep the music rolling silently.
-          mutedFallback.current = true;
-          p.mute();
-          p.playVideo();
-        }
-      }, 400);
-    };
-    GESTURE_EVENTS.forEach((ev) => window.addEventListener(ev, start, { passive: true }));
-    disarmGesture.current = () => {
-      GESTURE_EVENTS.forEach((ev) => window.removeEventListener(ev, start));
-      disarmGesture.current = null;
-    };
-  }, []);
-  useEffect(
-    () => () => {
-      disarmGesture.current?.();
-      if (mutedStartTimer.current != null) window.clearTimeout(mutedStartTimer.current);
-      if (verifyTimer.current != null) window.clearTimeout(verifyTimer.current);
-    },
-    [],
-  );
-
-  // Volume fades run on rAF; any new fade/pause/resume cancels the previous one.
-  const fadeFrame = useRef<number | null>(null);
   const cancelFade = useCallback(() => {
     if (fadeFrame.current != null) cancelAnimationFrame(fadeFrame.current);
     fadeFrame.current = null;
   }, []);
-  useEffect(() => cancelFade, [cancelFade]);
-  const runFade = useCallback(
-    (from: number, to: number, onDone?: () => void) => {
+
+  const setVolume = useCallback((p: YTPlayer, v: number) => {
+    volume.current = v;
+    p.setVolume(v);
+  }, []);
+
+  /** Ramp the volume to `to` (0–100); a later fade cancels this one. */
+  const fadeTo = useCallback(
+    (to: number, ms = FADE_MS, onDone?: () => void) => {
       const p = playerRef.current;
       if (!p) return;
       cancelFade();
-      const start = performance.now();
+      const from = volume.current;
+      const t0 = performance.now();
       const step = (now: number) => {
-        const k = Math.min(1, (now - start) / FADE_MS);
-        p.setVolume(Math.round(from + (to - from) * k));
+        const k = Math.min(1, (now - t0) / ms);
+        setVolume(p, Math.round(from + (to - from) * k));
         if (k < 1) fadeFrame.current = requestAnimationFrame(step);
         else {
           fadeFrame.current = null;
@@ -104,66 +62,56 @@ export function useYouTubePlayer(videoId: string, onError: () => void, autoStart
       };
       fadeFrame.current = requestAnimationFrame(step);
     },
-    [cancelFade],
+    [cancelFade, setVolume],
   );
 
-  // Auto-start: kick off playback once on mount when autoStart is true.
-  const autoStarted = useRef(false);
-  useEffect(() => {
-    if (!autoStart || autoStarted.current || !videoId) return;
-    autoStarted.current = true;
-    setStatus("loading");
-    setOpen(true);
-  }, [autoStart, videoId]);
+  const begin = useCallback(
+    (p: YTPlayer) => {
+      wantsPlay.current = false;
+      p.unMute();
+      setVolume(p, 0);
+      p.playVideo();
+      fadeTo(FULL_VOLUME);
+      window.clearTimeout(startCheck.current);
+      startCheck.current = window.setTimeout(() => {
+        if (p.getPlayerState() !== YT_PLAYING) onErrorRef.current();
+      }, START_CHECK_MS);
+    },
+    [fadeTo, setVolume],
+  );
 
   const fail = useCallback(() => {
-    instanceRef.current?.destroy();
-    instanceRef.current = null;
     playerRef.current = null;
     setStatus("error");
-    setOpen(false);
     onErrorRef.current();
     // A failed player is still "done loading" for anyone awaiting readiness.
     onReadyRef.current?.();
   }, []);
 
   useEffect(() => {
-    if (!open || instanceRef.current || !mountRef.current) return;
-    let cancelled = false;
     const mount = mountRef.current;
+    if (!videoId || !mount) return;
+    let cancelled = false;
+    let instance: YTPlayer | null = null;
     loadYouTubeIframeApi()
       .then((YT) => {
         if (cancelled) return;
-        instanceRef.current = new YT.Player(mount, {
+        instance = new YT.Player(mount, {
           host: "https://www.youtube-nocookie.com",
           videoId,
           width: 200,
           height: 200,
-          playerVars: { autoplay: 1, loop: 1, playlist: videoId, controls: 0, playsinline: 1, modestbranding: 1, rel: 0 },
+          playerVars: { autoplay: 0, loop: 1, playlist: videoId, controls: 0, playsinline: 1, modestbranding: 1, rel: 0 },
           events: {
             onReady: (e) => {
               playerRef.current = e.target;
-              e.target.playVideo();
-              armGestureStart();
-              // If the unmuted attempt was blocked, restart muted shortly after.
-              mutedStartTimer.current = window.setTimeout(() => {
-                if (isPlaying.current) return;
-                mutedFallback.current = true;
-                e.target.mute();
-                e.target.playVideo();
-              }, 800);
+              setStatus("paused");
+              if (wantsPlay.current) begin(e.target);
               onReadyRef.current?.();
             },
             onStateChange: (e) => {
-              if (e.data === YT.PlayerState.PLAYING) {
-                isPlaying.current = true;
-                // Keep the gesture listeners while muted: they still need to unmute.
-                if (!mutedFallback.current) disarmGesture.current?.();
-                setStatus("playing");
-              } else if (e.data === YT.PlayerState.PAUSED) {
-                isPlaying.current = false;
-                setStatus("paused");
-              }
+              if (e.data === YT.PlayerState.PLAYING) setStatus("playing");
+              else if (e.data === YT.PlayerState.PAUSED) setStatus("paused");
             },
             onError: fail,
           },
@@ -172,70 +120,59 @@ export function useYouTubePlayer(videoId: string, onError: () => void, autoStart
       .catch(() => !cancelled && fail());
     return () => {
       cancelled = true;
+      cancelFade();
+      window.clearTimeout(startCheck.current);
+      instance?.destroy();
+      playerRef.current = null;
     };
-  }, [open, videoId, fail, armGestureStart]);
+  }, [videoId, begin, fail, cancelFade]);
 
-  useEffect(() => () => instanceRef.current?.destroy(), []);
-
-  // Pause when the tab becomes hidden; resume when it becomes visible again.
   useEffect(() => {
-    const handleVisibility = () => {
-      if (!playerRef.current) return;
-      if (document.hidden) playerRef.current.pauseVideo();
-      else playerRef.current.playVideo();
+    let resume = false;
+    const onVisibility = () => {
+      const p = playerRef.current;
+      if (!p) return;
+      if (document.hidden) {
+        resume = p.getPlayerState() === YT_PLAYING;
+        if (resume) p.pauseVideo();
+      } else if (resume) p.playVideo();
     };
-    document.addEventListener("visibilitychange", handleVisibility);
-    return () => document.removeEventListener("visibilitychange", handleVisibility);
+    document.addEventListener("visibilitychange", onVisibility);
+    return () => document.removeEventListener("visibilitychange", onVisibility);
   }, []);
+
+  const start = useCallback(() => {
+    const p = playerRef.current;
+    if (p) begin(p);
+    else wantsPlay.current = true;
+  }, [begin]);
 
   const toggle = useCallback(() => {
-    if (!videoId) return fail();
-    if (!playerRef.current) {
-      setStatus("loading");
-      setOpen(true);
+    const p = playerRef.current;
+    if (!p) {
+      if (status === "loading") wantsPlay.current = true;
+      else onErrorRef.current();
       return;
     }
-    setOpen(true);
-    unmuteIfNeeded();
-    if (status === "playing") playerRef.current.pauseVideo();
-    else playerRef.current.playVideo();
-  }, [videoId, status, fail, unmuteIfNeeded]);
+    if (status === "playing") {
+      cancelFade();
+      p.pauseVideo();
+    } else begin(p);
+  }, [status, begin, cancelFade]);
 
-  const close = useCallback(() => {
-    playerRef.current?.pauseVideo();
-    setOpen(false);
-  }, []);
-
-  const pause = useCallback(() => {
-    cancelFade();
-    playerRef.current?.pauseVideo();
-  }, [cancelFade]);
-
-  const resume = useCallback(() => {
-    cancelFade();
-    unmuteIfNeeded();
-    playerRef.current?.playVideo();
-  }, [cancelFade, unmuteIfNeeded]);
-
-  /** Ramp the volume down, then pause (volume restored for the next play). */
   const fadePause = useCallback(() => {
     const p = playerRef.current;
-    if (!p) return;
-    runFade(p.getVolume(), 0, () => {
-      p.pauseVideo();
-      p.setVolume(FULL_VOLUME);
-    });
-  }, [runFade]);
+    resumeAfterDuck.current = p?.getPlayerState() === YT_PLAYING;
+    if (resumeAfterDuck.current) fadeTo(0, FADE_MS, () => p?.pauseVideo());
+  }, [fadeTo]);
 
-  /** Resume playback from silence and ramp the volume back up. */
   const fadeResume = useCallback(() => {
     const p = playerRef.current;
-    if (!p) return;
-    unmuteIfNeeded();
-    p.setVolume(0);
+    if (!p || !resumeAfterDuck.current) return;
+    resumeAfterDuck.current = false;
     p.playVideo();
-    runFade(0, FULL_VOLUME);
-  }, [runFade, unmuteIfNeeded]);
+    fadeTo(FULL_VOLUME);
+  }, [fadeTo]);
 
-  return { status, open, mountRef, toggle, close, pause, resume, fadePause, fadeResume };
+  return { status, mountRef, start, toggle, fadeTo, fadePause, fadeResume };
 }
