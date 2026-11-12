@@ -1,7 +1,9 @@
-type Sfx = "buzz" | "rustle";
+type Sfx = "buzz" | "rustle" | "stamp";
+type Player = (ac: AudioContext, at: number) => void;
 
 const BUZZ = { duration: 2.6, freq: 190, rise: 1.12, flutter: 28, cutoff: 1200, gain: 0.22 };
 const RUSTLE = { duration: 0.6, freq: 3200, q: 0.4, gain: 0.18 };
+const STAMP = { duration: 0.12, from: 140, to: 60, gain: 0.55, click: 0.025, clickCutoff: 2500, clickGain: 0.3 };
 const BUZZ_ATTACK = 0.15;
 
 let ctx: AudioContext | null = null;
@@ -38,13 +40,19 @@ function buzz(ac: AudioContext, at: number) {
   lfo.stop(at + BUZZ.duration);
 }
 
-function rustle(ac: AudioContext, at: number) {
-  const length = Math.ceil(ac.sampleRate * RUSTLE.duration);
+/** White noise that dies away over `duration`. */
+function noiseBurst(ac: AudioContext, duration: number) {
+  const length = Math.ceil(ac.sampleRate * duration);
   const buffer = ac.createBuffer(1, length, ac.sampleRate);
   const data = buffer.getChannelData(0);
   for (let i = 0; i < length; i++) data[i] = (Math.random() * 2 - 1) * (1 - i / length) ** 2;
   const source = ac.createBufferSource();
   source.buffer = buffer;
+  return source;
+}
+
+function rustle(ac: AudioContext, at: number) {
+  const source = noiseBurst(ac, RUSTLE.duration);
   const filter = ac.createBiquadFilter();
   filter.type = "bandpass";
   filter.frequency.value = RUSTLE.freq;
@@ -54,6 +62,31 @@ function rustle(ac: AudioContext, at: number) {
   source.connect(filter).connect(amp).connect(ac.destination);
   source.start(at);
 }
+
+/** A rubber stamp: a low falling thud with a short paper click on top. */
+function stamp(ac: AudioContext, at: number) {
+  const thud = ac.createOscillator();
+  thud.type = "sine";
+  thud.frequency.setValueAtTime(STAMP.from, at);
+  thud.frequency.exponentialRampToValueAtTime(STAMP.to, at + STAMP.duration);
+  const thudAmp = ac.createGain();
+  thudAmp.gain.setValueAtTime(STAMP.gain, at);
+  thudAmp.gain.exponentialRampToValueAtTime(0.001, at + STAMP.duration);
+  thud.connect(thudAmp).connect(ac.destination);
+  thud.start(at);
+  thud.stop(at + STAMP.duration);
+
+  const click = noiseBurst(ac, STAMP.click);
+  const filter = ac.createBiquadFilter();
+  filter.type = "highpass";
+  filter.frequency.value = STAMP.clickCutoff;
+  const clickAmp = ac.createGain();
+  clickAmp.gain.value = STAMP.clickGain;
+  click.connect(filter).connect(clickAmp).connect(ac.destination);
+  click.start(at);
+}
+
+const PLAYERS: Record<Sfx, Player> = { buzz, rustle, stamp };
 
 /** Call inside the user gesture: effects played later from timers are otherwise left suspended on WebKit. */
 export function unlockSfx() {
@@ -69,7 +102,7 @@ export function unlockSfx() {
 export function playSfx(name: Sfx) {
   try {
     ctx ??= new AudioContext();
-    (name === "buzz" ? buzz : rustle)(ctx, ctx.currentTime);
+    PLAYERS[name](ctx, ctx.currentTime);
   } catch {
     return;
   }
