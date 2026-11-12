@@ -1,7 +1,7 @@
 "use client";
 
 import gsap from "gsap";
-import { useCallback, useEffect, useRef, useState, type RefObject } from "react";
+import { useCallback, useRef, useState, type RefObject } from "react";
 import { useReducedMotion } from "@/lib/hooks/use-reduced-motion";
 import { useCourierBee } from "../courier/courier-bee-provider";
 
@@ -48,13 +48,6 @@ export function useReplySendoff(cardRef: RefObject<HTMLElement | null>, hasIniti
     );
     sendoffActive.current = false;
   }, [cardRef, carryOff, reduced]);
-
-  useEffect(() => {
-    if (hasInitialSaved) {
-      setShowResult(true);
-      setPostmarked(true);
-    }
-  }, [hasInitialSaved]);
 
   return { showResult, postmarked, startSendoff };
 }
