@@ -14,6 +14,7 @@ export const SELECTORS = {
   outlineHalf: "[data-outline-half]",
   moment: "[data-moment]",
   badgeSpin: "[data-badge-spin]",
+  polaroidPhoto: "[data-polaroid-photo]",
 } as const;
 
 export type TrailElements = {
@@ -40,6 +41,7 @@ export type FinaleElements = {
   dock: HTMLElement;
   outline: SVGSVGElement;
   halves: SVGPathElement[];
+  photo: HTMLElement | null;
 };
 
 export function queryMomentTrail(root: HTMLElement): { trail: TrailElements; finale: FinaleElements } | null {
@@ -55,11 +57,12 @@ export function queryMomentTrail(root: HTMLElement): { trail: TrailElements; fin
   const outline = one<SVGSVGElement>(SELECTORS.outline);
   const halves = all<SVGPathElement>(SELECTORS.outlineHalf);
   const cards = all<HTMLElement>(SELECTORS.moment);
+  const photo = one<HTMLElement>(SELECTORS.polaroidPhoto);
   if (!base || !draw || !rider || !end || !pin || !note || !dock || !outline || halves.length !== 2 || cards.length === 0) {
     return null;
   }
   return {
     trail: { root, section: root.closest("section") ?? root, base, draw, rider, end, cards, spinners: all<HTMLElement>(SELECTORS.badgeSpin) },
-    finale: { pin, note, dock, outline, halves },
+    finale: { pin, note, dock, outline, halves, photo },
   };
 }
