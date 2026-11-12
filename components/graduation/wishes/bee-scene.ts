@@ -1,6 +1,6 @@
 import * as THREE from "three";
 import { createBeeModel } from "../shared/three/bee-model";
-import { readRisoPalette } from "../shared/three/palette";
+import type { RisoPalette } from "../shared/three/palette";
 import { toonGradient } from "../shared/three/toon";
 
 /** Screen-space position/state of the courier bee, mutated by the flight timeline. */
@@ -17,11 +17,12 @@ export type BeeScene = {
   resize: () => void;
   /** @param t seconds (gsap ticker time) */
   frame: (t: number, bee: BeeState | null) => void;
+  applyPalette: (p: RisoPalette) => void;
   dispose: () => void;
 };
 
 /** Toon-shaded 3D courier bee rendered full-screen in an orthographic camera (1 unit = 1 css px). */
-export function createBeeScene(host: HTMLElement): BeeScene {
+export function createBeeScene(host: HTMLElement, palette: RisoPalette): BeeScene {
   const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
   renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
   host.appendChild(renderer.domElement);
@@ -34,8 +35,8 @@ export function createBeeScene(host: HTMLElement): BeeScene {
   scene.add(dl);
 
   const grad = toonGradient([120, 200, 255]);
-  const outM = new THREE.MeshBasicMaterial({ color: "#1c1b1f", side: THREE.BackSide });
-  const model = createBeeModel(grad, outM, readRisoPalette());
+  const outM = new THREE.MeshBasicMaterial({ color: palette.ink, side: THREE.BackSide });
+  const model = createBeeModel(grad, outM, palette);
   const g = model.group;
   const wings = model.wings.map((w) => w.pivot);
   scene.add(g);
@@ -84,6 +85,11 @@ export function createBeeScene(host: HTMLElement): BeeScene {
     renderer.render(scene, camera);
   };
 
+  const applyPalette = (p: RisoPalette) => {
+    outM.color.set(p.ink);
+    model.applyPalette(p);
+  };
+
   const dispose = () => {
     model.dispose();
     outM.dispose();
@@ -94,5 +100,5 @@ export function createBeeScene(host: HTMLElement): BeeScene {
     renderer.domElement.remove();
   };
 
-  return { resize, frame, dispose };
+  return { resize, frame, applyPalette, dispose };
 }

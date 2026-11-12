@@ -3,6 +3,8 @@
 import gsap from "gsap";
 import { createContext, useCallback, useContext, useEffect, useRef, type ReactNode } from "react";
 import { useReducedMotion } from "@/lib/hooks/use-reduced-motion";
+import { readRisoPalette } from "../shared/three/palette";
+import { usePaletteSync } from "../shared/three/use-palette-sync";
 import { createBeeScene, type BeeScene, type BeeState } from "../wishes/bee-scene";
 import { cubicBezier, quadraticBezier, type Point } from "./flight-path";
 
@@ -45,7 +47,7 @@ export function CourierBeeProvider({ children }: { children: ReactNode }) {
     if (reduced || !host) return;
     let scene: BeeScene;
     try {
-      scene = createBeeScene(host);
+      scene = createBeeScene(host, readRisoPalette());
     } catch {
       return;
     }
@@ -63,6 +65,7 @@ export function CourierBeeProvider({ children }: { children: ReactNode }) {
       sceneRef.current = null;
     };
   }, [reduced]);
+  usePaletteSync(sceneRef);
 
   const canFly = useCallback(() => sceneRef.current !== null, []);
 
