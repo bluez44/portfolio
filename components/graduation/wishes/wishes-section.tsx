@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { beeAlias } from "@/lib/bee-alias";
 import { useScrollReveal } from "@/lib/hooks/use-scroll-reveal";
 import { useCourierBee } from "../courier/courier-bee-provider";
@@ -14,7 +14,8 @@ import { WishPostcard, WISH_CARD_ID } from "./wish-postcard";
 import { wishAccent, type CardStyle, type CellStyle, type WishBee } from "./types";
 
 type ApiBee = { id: string; wish: string; at: string };
-type LoadState = "idle" | "loading" | "done" | "error";
+/** "idle" until the first answer arrives; a refetch keeps showing the current bees meanwhile. */
+type LoadState = "idle" | "done" | "error";
 
 function toWishBee(row: ApiBee, index: number): WishBee {
   const name = beeAlias(row.id);
@@ -28,6 +29,16 @@ function toWishBee(row: ApiBee, index: number): WishBee {
     msg: row.wish,
     ...wishAccent(index),
   };
+}
+
+/** The bee wall's wishes; `null` when the wall is not configured on this deployment. */
+async function requestBees(): Promise<WishBee[] | null> {
+  const secret = process.env.NEXT_PUBLIC_BEE_WALL_SECRET;
+  if (!secret) return null;
+  const res = await fetch("/api/bee-wall", { headers: { Authorization: `Bearer ${secret}` } });
+  if (!res.ok) throw new Error("fetch failed");
+  const data: ApiBee[] = await res.json();
+  return data.map(toWishBee);
 }
 
 function StatusNote({ tone, children }: { tone?: "error"; children: string }) {
@@ -71,20 +82,7 @@ export function WishesSection({
     flyOpen(from, WISH_CARD_ID);
   }, [openIndex, flyOpen]);
 
-  const fetchBees = useCallback(async () => {
-    const secret = process.env.NEXT_PUBLIC_BEE_WALL_SECRET;
-    if (!secret) return;
-    setLoadState("loading");
-    try {
-      const res = await fetch("/api/bee-wall", { headers: { Authorization: `Bearer ${secret}` } });
-      if (!res.ok) throw new Error("fetch failed");
-      const data: ApiBee[] = await res.json();
-      setBees(data.map(toWishBee));
-      setLoadState("done");
-    } catch {
-      setLoadState("error");
-    }
-  }, []);
+  const [visible, setVisible] = useState(false);
 
   useEffect(() => {
     const el = sectionRef.current;
@@ -93,23 +91,36 @@ export function WishesSection({
       ([entry]) => {
         if (entry.isIntersecting) {
           observer.disconnect();
-          fetchBees();
+          setVisible(true);
         }
       },
       { threshold: 0.05 },
     );
     observer.observe(el);
     return () => observer.disconnect();
-  }, [fetchBees]);
+  }, []);
 
+  // Fetch once the wall scrolls into view, and again whenever a new RSVP bumps `refreshKey`.
   useEffect(() => {
-    if (refreshKey) {
-      void fetchBees();
-    }
-  }, [fetchBees, refreshKey]);
+    if (!visible) return;
+    let stale = false;
+    requestBees().then(
+      (next) => {
+        if (stale || !next) return;
+        setBees(next);
+        setLoadState("done");
+      },
+      () => {
+        if (!stale) setLoadState("error");
+      },
+    );
+    return () => {
+      stale = true;
+    };
+  }, [visible, refreshKey]);
 
   const overlay = useMemo(() => {
-    if (loadState === "loading" || loadState === "idle")
+    if (loadState === "idle")
       return <StatusNote>[ đàn ong đang mang mật về tổ… ]</StatusNote>;
     if (loadState === "error") return <StatusNote tone="error">[ không thể kết nối tới tổ ong lúc này ]</StatusNote>;
     if (bees.length === 0)
