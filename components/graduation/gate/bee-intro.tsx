@@ -79,7 +79,7 @@ export function BeeIntro({ guestName, phase, musicPlaying, onEnter, onExited }: 
   return (
     <div ref={rootRef} {...{ [PENDING]: "" }} role="dialog" aria-modal="true" aria-label={t.dialogLabel}
       // Children opt back in with pointer-events-auto, so the whole subtree is switched off once the exit runs.
-      className={`fixed inset-0 z-100 overflow-hidden bg-paper ${phase === "opening" ? "pointer-events-none [&_*]:pointer-events-none" : ""}`}
+      className={`fixed inset-0 z-100 overflow-hidden bg-paper ${phase === "opening" ? "pointer-events-none **:pointer-events-none" : ""}`}
     >
       <div data-intro-backdrop aria-hidden className="pointer-events-none absolute inset-0" style={{ backgroundImage: "radial-gradient(var(--halftone) 1px, transparent 1px)", backgroundSize: "28px 28px" }} />
       <div data-intro-backdrop aria-hidden className="pointer-events-none absolute inset-0">
@@ -103,16 +103,16 @@ export function BeeIntro({ guestName, phase, musicPlaying, onEnter, onExited }: 
             className="m-0 font-heading text-[clamp(56px,11.5vw,184px)] leading-[0.86] font-bold tracking-[-0.045em] text-ink"
             style={{ fontVariationSettings: '"wdth" 82, "opsz" 96' }}
           >
-            <span aria-hidden className="relative z-1 -mt-[0.3em] block overflow-hidden pt-[0.3em] pb-[0.05em]">
+            <span aria-hidden className="relative z-1 mt-[-0.3em] block overflow-hidden pt-[0.3em] pb-[0.05em]">
               <Chars text={stage.cover.lead} />
             </span>
-            <span aria-hidden className="-mt-[0.3em] block overflow-hidden pt-[0.3em] pb-[0.1em] text-tomato italic" style={{ fontVariationSettings: '"wdth" 78, "opsz" 96' }}>
+            <span aria-hidden className="mt-[-0.3em] block overflow-hidden pt-[0.3em] pb-[0.1em] text-tomato italic" style={{ fontVariationSettings: '"wdth" 78, "opsz" 96' }}>
               <Chars text={stage.cover.accent} />
             </span>
           </h1>
           <div data-intro-fade className="flex flex-wrap items-baseline gap-3">
             <span className={`${mono} text-ink-3`}>{envelope.to}</span>
-            <span className="font-heading text-[clamp(20px,2.4vw,30px)] font-semibold min-w-0 tracking-[-0.02em] text-ink [overflow-wrap:anywhere]">{guestName}</span>
+            <span className="font-heading text-[clamp(20px,2.4vw,30px)] font-semibold min-w-0 tracking-[-0.02em] text-ink wrap-anywhere">{guestName}</span>
           </div>
         </div>
         <div data-intro-fade className="pointer-events-auto flex flex-col items-end gap-2.5">
@@ -124,7 +124,7 @@ export function BeeIntro({ guestName, phase, musicPlaying, onEnter, onExited }: 
       </div>
 
       <div data-intro-bar="top" className={`${bar} top-0`}>
-        <span className={`${mono} whitespace-nowrap text-paper`}>QV — {header.title}</span>
+        <span className={`${mono} whitespace-nowrap text-paper`}>{header.title}</span>
         <div className="flex items-center gap-4">
           <span aria-hidden className={`${mono} hidden items-center gap-2 text-paper sm:flex`}>
             <span className="h-1.75 w-1.75 rounded-full bg-tomato" />
