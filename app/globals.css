@@ -190,6 +190,13 @@
     display: none;
   }
 
+  /* clip, not hidden: hidden still scrolls programmatically and makes a scroll container that breaks
+     sticky / ScrollTrigger pins. It must be on both, or the root's value propagates to the viewport. */
+  html,
+  body {
+    overflow-x: clip;
+  }
+
   body {
     background: var(--paper);
     color: var(--ink);
