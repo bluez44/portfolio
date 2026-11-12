@@ -87,6 +87,8 @@ export function createBeeScene(host: HTMLElement): BeeScene {
     model.dispose();
     outM.dispose();
     grad.dispose();
+    // Release the GL context now; otherwise it lingers until GC (StrictMode remounts would pile them up).
+    renderer.forceContextLoss();
     renderer.dispose();
     renderer.domElement.remove();
   };

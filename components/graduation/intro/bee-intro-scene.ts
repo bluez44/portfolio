@@ -194,6 +194,8 @@ export function createBeeIntroScene(host: HTMLElement, opts: Options): BeeIntroS
       });
       [sideM, ...tops, outM, trailM].forEach((m) => m.dispose());
       gradient.dispose();
+      // Release the GL context now; otherwise it lingers until GC (StrictMode remounts would pile them up).
+      renderer.forceContextLoss();
       renderer.dispose();
       renderer.domElement.remove();
     },

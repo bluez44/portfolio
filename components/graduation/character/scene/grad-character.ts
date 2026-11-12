@@ -85,6 +85,8 @@ export function createGradCharacter(host: HTMLElement, opts: { scale: number }):
       dispose() {
         scene.traverse((o) => (o as THREE.Mesh).geometry?.dispose());
         disposeMaterials(M);
+        // Release the GL context now; otherwise it lingers until GC (StrictMode remounts would pile them up).
+        renderer.forceContextLoss();
         renderer.dispose();
         renderer.domElement.remove();
       },
@@ -92,6 +94,7 @@ export function createGradCharacter(host: HTMLElement, opts: { scale: number }):
   } catch (error) {
     // Later steps (materials, rig) may have partially allocated GPU resources; dispose what exists.
     if (materials) disposeMaterials(materials);
+    renderer.forceContextLoss();
     renderer.dispose();
     renderer.domElement.remove();
     throw error;
