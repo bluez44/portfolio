@@ -11,6 +11,7 @@ import { InvitationHeader } from "./chrome/invitation-header";
 import { SideRails } from "./chrome/side-rails";
 import { EndsSection } from "./ends/ends-section";
 import { EnvelopeStage } from "./envelope/envelope-stage";
+import { LetterGate } from "./gate/letter-gate";
 import { LangProvider } from "./i18n/lang-context";
 import {
   GRADUATION_GATE_RESOURCES as GATE,
@@ -29,22 +30,26 @@ type InvitationProps = {
   ownerPhone: string | null;
 };
 
+const NO_OVERLAY = () => null;
+
 export function GraduationInvitation(props: InvitationProps) {
   return (
-    <ResourceGateProvider resources={Object.values(GATE)}>
-      <InvitationContent {...props} />
-    </ResourceGateProvider>
+    <LangProvider initialLang={props.initialLang} customContent={props.guest.customContent}>
+      <ResourceGateProvider resources={Object.values(GATE)} overlay={NO_OVERLAY}>
+        <InvitationContent {...props} />
+      </ResourceGateProvider>
+    </LangProvider>
   );
 }
 
-function InvitationContent({ guest, initialRsvp, initialLang, ownerPhone }: InvitationProps) {
+function InvitationContent({ guest, initialRsvp, ownerPhone }: InvitationProps) {
   const gate = useResourceGate();
   const canvasHost = useRef<HTMLDivElement>(null);
   useGradCharacter(canvasHost, { onReady: () => gate?.resolve(GATE.character) });
   const [musicNote, flashMusicNote] = useTransientFlag(2600);
   const musicId = guest.customContent?.music?.youtubeId || GRADUATION_EVENT.musicYoutubeId;
-  const { status: musicStatus, mountRef: musicMountRef, toggle: musicToggle, fadePause: musicFadePause, fadeResume: musicFadeResume } =
-    useYouTubePlayer(musicId, flashMusicNote, true, () => gate?.resolve(GATE.music));
+  const { status: musicStatus, mountRef: musicMountRef, start: startMusic, toggle: toggleMusic, fadePause, fadeResume } =
+    useYouTubePlayer(musicId, flashMusicNote, () => gate?.resolve(GATE.music));
 
   // No track configured means there is no music to wait for.
   useEffect(() => {
@@ -52,26 +57,26 @@ function InvitationContent({ guest, initialRsvp, initialLang, ownerPhone }: Invi
   }, [musicId, gate]);
 
   return (
-    <LangProvider initialLang={initialLang} customContent={guest.customContent}>
-      <div id="top" className="relative bg-paper font-sans text-ink">
-        <div aria-hidden className="pointer-events-none fixed inset-0 z-15" style={{ backgroundImage: "radial-gradient(var(--halftone) 1px, transparent 1px)", backgroundSize: "28px 28px" }} />
-        <div ref={canvasHost} aria-hidden className="pointer-events-none fixed inset-0 z-25" />
+    <div id="top" className="relative bg-paper font-sans text-ink">
+      <div aria-hidden className="pointer-events-none fixed inset-0 z-15" style={{ backgroundImage: "radial-gradient(var(--halftone) 1px, transparent 1px)", backgroundSize: "28px 28px" }} />
+      <div ref={canvasHost} aria-hidden className="pointer-events-none fixed inset-0 z-25" />
 
-        <InvitationHeader musicPlaying={musicStatus === "playing"} musicNote={musicNote} onMusic={musicToggle} />
-        <SideRails />
+      <LetterGate ready={!gate?.pending} onOpen={startMusic} />
+      <InvitationHeader musicPlaying={musicStatus === "playing"} musicNote={musicNote} onMusic={toggleMusic} />
+      <SideRails />
 
-        <main>
-          <EnvelopeStage guestName={guest.name} />
-          <MetSection guestName={guest.name} note={guest.customContent?.met?.note ?? guest.note} />
-          <EndsSection onTourOpen={musicFadePause} onTourClose={musicFadeResume} />
-          <RsvpSection slug={guest.slug} guestName={guest.name} initialRsvp={initialRsvp} ownerPhone={ownerPhone} />
-          <WishesSection />
-        </main>
+      <main>
+        <EnvelopeStage guestName={guest.name} />
+        <MetSection guestName={guest.name} note={guest.customContent?.met?.note ?? guest.note} />
+        <EndsSection onTourOpen={fadePause} onTourClose={fadeResume} />
+        <RsvpSection slug={guest.slug} guestName={guest.name} initialRsvp={initialRsvp} ownerPhone={ownerPhone} />
+        <WishesSection />
+      </main>
 
-        <InvitationFooter />
-        {/* Hidden iframe mount – keeps YouTube player alive without showing the mini-player UI */}
-        <div ref={musicMountRef} aria-hidden className="sr-only" />
+      <InvitationFooter />
+      <div aria-hidden className="sr-only">
+        <div ref={musicMountRef} />
       </div>
-    </LangProvider>
+    </div>
   );
 }

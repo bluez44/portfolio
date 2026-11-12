@@ -16,8 +16,8 @@ export const vi: GraduationCopy = {
     whereSub: "268 Lý Thường Kiệt · Q.10",
   },
   envelope: {
-    airMail: "Thư hàng không",
-    invitationNo: "Thư mời · Nº 2026",
+    airMail: "Thư mời",
+    invitationNo: "Lễ tốt nghiệp 2026",
     to: "Gửi",
     cordially: "Trân trọng kính mời",
     from: "Từ: Võ Lê Quang Vinh",
@@ -93,7 +93,7 @@ export const vi: GraduationCopy = {
       too_long: "Hơi dài, rút gọn giúp mình nhé",
     },
   },
-  music: { nowPlaying: "♪ Đang phát", close: "Tắt nhạc" },
+  gate: { youHaveMail: "Bạn có thư", preparing: "Đang chuẩn bị lá thư…", tapToOpen: "Chạm vào con dấu để mở thư" },
   footer: "Cảm ơn bạn đã đồng hành cùng mình trong hành trình này. Hẹn gặp bạn tại lễ tốt nghiệp!",
   notFound: {
     kicker: "404 · Trả lại người gửi",

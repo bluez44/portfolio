@@ -16,8 +16,8 @@ export const en: GraduationCopy = {
     whereSub: "268 Ly Thuong Kiet · D.10",
   },
   envelope: {
-    airMail: "Air Mail",
-    invitationNo: "Invitation · Nº 2026",
+    airMail: "Invitation",
+    invitationNo: "Graduation 2026",
     to: "To",
     cordially: "Cordially invited",
     from: "From: Võ Lê Quang Vinh",
@@ -93,7 +93,7 @@ export const en: GraduationCopy = {
       too_long: "That's a bit long, please shorten it",
     },
   },
-  music: { nowPlaying: "♪ Now playing", close: "Close music" },
+  gate: { youHaveMail: "You've got mail", preparing: "Preparing your letter…", tapToOpen: "Tap the seal to open" },
   footer: "Thanks for celebrating with me",
   notFound: {
     kicker: "404 · Return to sender",
