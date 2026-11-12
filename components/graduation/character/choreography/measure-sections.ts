@@ -31,6 +31,7 @@ export function measureSections(): SectionMetrics | null {
     endsTop: top(ends),
     endsHeight: ends.offsetHeight,
     rsvpTop: top(rsvp),
+    rsvpHeight: rsvp.offsetHeight,
     wishesTop: (() => {
       const wishes = get("bee-wall");
       return wishes ? top(wishes) : top(rsvp) + rsvp.offsetHeight;

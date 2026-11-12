@@ -16,6 +16,8 @@ export type SectionMetrics = {
   endsTop: number;
   endsHeight: number;
   rsvpTop: number;
+  /** Height of the RSVP section, which bounds the toss hold. */
+  rsvpHeight?: number;
   /** Top of the bee-wall wishes section, where the character reads the honeycomb. */
   wishesTop: number;
   /** Height of the bee-wall section; the character reads until its bottom edge enters the viewport. */
