@@ -12,14 +12,12 @@ export function HoneycombViewport({
   bees,
   layout,
   cellStyle,
-  guestId,
   onOpen,
   overlay,
 }: {
   bees: WishBee[];
   layout: HoneycombLayout;
   cellStyle: CellStyle;
-  guestId?: string;
   onOpen: (index: number, e: MouseEvent<HTMLButtonElement>) => void;
   /** status content (loading / error / empty) rendered above the comb */
   overlay?: ReactNode;
@@ -74,7 +72,7 @@ export function HoneycombViewport({
               <WishHex
                 bee={bees[s.wishIndex]}
                 style={cellStyle}
-                isMine={Boolean(guestId && bees[s.wishIndex].id === guestId)}
+                isMine={bees[s.wishIndex].mine}
                 mineLabel={t.mine}
                 onOpen={(e) => open(s.wishIndex, e)}
               />

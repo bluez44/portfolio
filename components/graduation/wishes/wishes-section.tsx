@@ -1,7 +1,6 @@
 "use client";
 
 import { useEffect, useMemo, useRef, useState } from "react";
-import { beeAlias } from "@/lib/bee-alias";
 import { useScrollReveal } from "@/lib/hooks/use-scroll-reveal";
 import { BEE_CARD_REVEAL_DELAY_MS, useCourierBee } from "../courier/courier-bee-provider";
 import { SectionHeading } from "../shared/section-heading";
@@ -9,8 +8,8 @@ import { HoneycombViewport } from "./honeycomb-viewport";
 import type { HoneycombLayout } from "./honeycomb-layout";
 import { WishPostcard, WISH_CARD_ID } from "./wish-postcard";
 import { wishAccent, type CardStyle, type CellStyle, type WishBee } from "./types";
+import type { BeeWallEntry } from "@/app/api/bee-wall/route";
 
-type ApiBee = { id: string; wish: string; at: string };
 /** "idle" until the first answer arrives; a refetch keeps showing the current bees meanwhile. */
 type LoadState = "idle" | "done" | "error";
 
@@ -18,12 +17,13 @@ const CELL_STYLE: CellStyle = "tone";
 const LAYOUT: HoneycombLayout = "organic";
 const CARD_STYLE: CardStyle = "index";
 
-function toWishBee(row: ApiBee, index: number): WishBee {
-  const name = beeAlias(row.id);
+function toWishBee(row: BeeWallEntry, index: number): WishBee {
+  const { name } = row;
   const d = new Date(row.at);
   const pad = (v: number) => String(v).padStart(2, "0");
   return {
-    id: row.id,
+    key: row.key,
+    mine: row.mine,
     name,
     init: (name.split(" ")[1]?.[0] ?? name[0]).toUpperCase(),
     date: Number.isNaN(d.getTime()) ? "··.··" : `${pad(d.getDate())}.${pad(d.getMonth() + 1)}`,
@@ -32,13 +32,12 @@ function toWishBee(row: ApiBee, index: number): WishBee {
   };
 }
 
-/** The bee wall's wishes; `null` when the wall is not configured on this deployment. */
-async function requestBees(): Promise<WishBee[] | null> {
-  const secret = process.env.NEXT_PUBLIC_BEE_WALL_SECRET;
-  if (!secret) return null;
-  const res = await fetch("/api/bee-wall", { headers: { Authorization: `Bearer ${secret}` } });
+/** The bee wall's wishes; `null` without a guest, since only invited guests may read the wall. */
+async function requestBees(guestId?: string): Promise<WishBee[] | null> {
+  if (!guestId) return null;
+  const res = await fetch("/api/bee-wall", { headers: { Authorization: `Bearer ${guestId}` } });
   if (!res.ok) throw new Error("fetch failed");
-  const data: ApiBee[] = await res.json();
+  const data: BeeWallEntry[] = await res.json();
   return data.map(toWishBee);
 }
 
@@ -102,7 +101,7 @@ export function WishesSection({
   useEffect(() => {
     if (!visible) return;
     let stale = false;
-    requestBees().then(
+    requestBees(guestId).then(
       (next) => {
         if (stale || !next) return;
         setBees(next);
@@ -115,7 +114,7 @@ export function WishesSection({
     return () => {
       stale = true;
     };
-  }, [visible, refreshKey]);
+  }, [visible, refreshKey, guestId]);
 
   const overlay = useMemo(() => {
     if (loadState === "idle")
@@ -150,7 +149,6 @@ export function WishesSection({
             bees={bees}
             layout={LAYOUT}
             cellStyle={CELL_STYLE}
-            guestId={guestId}
             onOpen={(i, e) => {
               const r = e.currentTarget.getBoundingClientRect();
               flightOrigin.current = { x: r.left + r.width / 2, y: r.top + r.height / 2 };

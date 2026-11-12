@@ -1,5 +1,8 @@
 export type WishBee = {
-  id: string;
+  /** opaque per-guest key; the real guest id never reaches the wall */
+  key: string;
+  /** the viewing guest's own wish */
+  mine: boolean;
   /** alias shown instead of the guest's real name */
   name: string;
   init: string;
