@@ -138,8 +138,7 @@ export const vi: GraduationCopy = {
   },
   gate: {
     dialogLabel: "Mở thiệp",
-    wake: "Đánh thức",
-    tapHint: "hoặc chạm vào khung hình",
+    wake: "Đánh thức chú ong để mở thiệp",
     silent: "Vào không nhạc →",
     soundHint: "♪ Nên bật âm thanh",
     nowPlaying: "♪ Đang phát",

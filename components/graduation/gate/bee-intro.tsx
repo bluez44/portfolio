@@ -1,13 +1,13 @@
 "use client";
 
 import { Fragment, useEffect, useRef } from "react";
-import { RisoButton } from "@/components/ui/riso/button";
 import { playSfx, unlockSfx } from "@/lib/graduation/sfx";
 import { useReducedMotion } from "@/lib/hooks/use-reduced-motion";
 import { LangToggle } from "../i18n/lang-toggle";
 import { useCopy } from "../i18n/lang-context";
 import { useBeeIntroScene } from "../intro/use-bee-intro-scene";
 import { BeeBubble, type BeeBubbleHandle } from "./bee-bubble";
+import { BeePulse, type BeePulseHandle } from "./bee-pulse";
 import type { GatePhase } from "./gate-phase";
 import { PENDING, useIntroTimeline } from "./use-intro-timeline";
 
@@ -54,22 +54,30 @@ export function BeeIntro({ guestName, phase, musicPlaying, onEnter, onExited }: 
   const timecodeRef = useRef<HTMLSpanElement>(null);
   const grainRef = useRef<HTMLDivElement>(null);
   const bubbleRef = useRef<BeeBubbleHandle>(null);
+  const pulseRef = useRef<BeePulseHandle>(null);
   const sceneRef = useBeeIntroScene(hostRef, {
     reduced,
     timecodeRef,
     grainRef,
     onFlap: () => playSfx("buzz"),
-    onPosition: (pos) => bubbleRef.current?.update(pos, phase !== "opening"),
+    onPosition: (pos) => {
+      bubbleRef.current?.update(pos, phase !== "opening");
+      pulseRef.current?.update(pos, phase === "ready");
+    },
   });
   const { exit, entered } = useIntroTimeline(rootRef, reduced);
 
   useEffect(() => {
-    if (phase === "ready" && (entered || reduced)) rootRef.current?.querySelector<HTMLButtonElement>("[data-intro-wake]")?.focus({ preventScroll: true });
-  }, [phase, entered, reduced]);
+    if (phase !== "ready" || !(entered || reduced)) return;
+    // Without WebGL there is no bee to follow, so the tap target waits in the middle of the frame.
+    if (!sceneRef.current) pulseRef.current?.update({ x: innerWidth / 2, y: innerHeight / 2 }, true);
+    rootRef.current?.querySelector<HTMLButtonElement>("[data-intro-wake]")?.focus({ preventScroll: true });
+  }, [phase, entered, reduced, sceneRef]);
 
   const enter = (withMusic: boolean) => {
     if (!onEnter(withMusic)) return;
     bubbleRef.current?.update({ x: 0, y: 0 }, false);
+    pulseRef.current?.update({ x: 0, y: 0 }, false);
     const audible = withMusic && !reduced;
     if (audible) unlockSfx();
     exit(withMusic ? sceneRef.current : null, onExited, () => audible && playSfx("rustle"));
@@ -95,8 +103,18 @@ export function BeeIntro({ guestName, phase, musicPlaying, onEnter, onExited }: 
       </span>
 
       <BeeBubble ref={bubbleRef} guestName={guestName} />
+      <BeePulse ref={pulseRef} label={t.wake} onPress={() => enter(true)} />
 
-      <div className="pointer-events-none absolute inset-x-[clamp(20px,5vw,72px)] bottom-[calc(clamp(44px,8vh,72px)+clamp(20px,5vh,56px))] z-5 flex flex-wrap items-end justify-between gap-x-8 gap-y-5">
+      {phase === "arriving" && (
+        <p
+          role="status"
+          className="pointer-events-none absolute inset-x-0 bottom-[calc(clamp(44px,8vh,72px)+env(safe-area-inset-bottom)+clamp(10px,2vh,18px))] z-7 m-0 text-center font-mono text-[11px] tracking-[0.22em] text-ink-3 uppercase motion-safe:animate-pulse"
+        >
+          {t.preparing}
+        </p>
+      )}
+
+      <div className="pointer-events-none absolute inset-x-[clamp(20px,5vw,72px)] bottom-[calc(clamp(44px,8vh,72px)+clamp(36px,7vh,72px))] z-5 flex flex-wrap items-end justify-between gap-x-8 gap-y-5">
         <div className="flex min-w-0 flex-col gap-[clamp(10px,2vh,18px)] max-sm:w-full">
           <h1
             aria-label={`${stage.cover.lead} ${stage.cover.accent}`}
@@ -114,12 +132,6 @@ export function BeeIntro({ guestName, phase, musicPlaying, onEnter, onExited }: 
             <span className={`${mono} text-ink-3`}>{envelope.to}</span>
             <span className="font-heading text-[clamp(20px,2.4vw,30px)] font-semibold min-w-0 tracking-[-0.02em] text-ink wrap-anywhere">{guestName}</span>
           </div>
-        </div>
-        <div data-intro-fade className="pointer-events-auto flex flex-col items-end gap-2.5">
-          <RisoButton data-intro-wake variant="primary" size="lg" icon="→" disabled={waiting} onClick={() => enter(true)}>
-            {phase === "arriving" ? t.preparing : t.wake}
-          </RisoButton>
-          <span className={`${mono} tracking-[0.16em] text-ink-3`}>{t.tapHint}</span>
         </div>
       </div>
 

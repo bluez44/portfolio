@@ -109,7 +109,6 @@ export type GraduationCopy = {
   gate: {
     dialogLabel: string;
     wake: string;
-    tapHint: string;
     silent: string;
     soundHint: string;
     nowPlaying: string;
