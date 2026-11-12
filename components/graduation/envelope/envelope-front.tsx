@@ -1,4 +1,5 @@
 import { Postmark } from "../shared/postmark";
+import { Stamp } from "../shared/stamp";
 import { airMailStripes } from "../shared/riso-stripes";
 import { useCopy } from "../i18n/lang-context";
 
@@ -13,10 +14,7 @@ export function EnvelopeFront({ guestName }: { guestName: string }) {
           <span className={`${mono} text-[10px] tracking-[0.28em] text-blue`}>{t.airMail}</span>
           <span className={`${mono} text-[10px] tracking-[0.22em] text-ink-3`}>{t.invitationNo}</span>
         </div>
-        <div aria-hidden className="absolute top-[clamp(14px,2vw,24px)] right-[clamp(14px,2vw,24px)] box-border flex h-20.5 w-17 flex-col items-center justify-center gap-0.5 border-[1.5px] border-ink bg-canary outline-[3px] outline-offset-[-7px] outline-paper outline-dotted" style={{ boxShadow: "var(--offset-sm)" }}>
-          <span className="font-heading text-2xl leading-none font-bold text-ink">QV</span>
-          <span className="font-mono text-[9px] tracking-[0.18em] text-ink">2026</span>
-        </div>
+        <Stamp className="absolute top-[clamp(14px,2vw,24px)] right-[clamp(14px,2vw,24px)]" />
         <Postmark color="tomato" lines={["HCMUT", "· 2026 ·", "TP.HCM"]} rotate={-14} className="top-[clamp(40px,5vw,56px)] right-[clamp(64px,8vw,92px)]" />
         <div className="flex max-w-[78%] flex-col gap-2">
           <span className={`${mono} text-[11px] tracking-[0.24em] text-ink-3`}>{t.to}</span>

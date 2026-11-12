@@ -92,6 +92,14 @@ export const vi: GraduationCopy = {
       invalid_contact: "Số điện thoại hoặc email chưa đúng",
       too_long: "Hơi dài, rút gọn giúp mình nhé",
     },
+    letter: {
+      to: "Gửi: Võ Lê Quang Vinh",
+      from: (name) => `Từ: ${name}`,
+      sent: "Đã gửi thư hồi âm",
+    },
+  },
+  wishes: {
+    mine: "Của bạn",
   },
   gate: {
     dialogLabel: "Mở thiệp",

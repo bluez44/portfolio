@@ -1,24 +1,38 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import { Fragment, useEffect, useRef } from "react";
 import { RisoButton } from "@/components/ui/riso/button";
-import { playSfx } from "@/lib/graduation/sfx";
+import { playSfx, unlockSfx } from "@/lib/graduation/sfx";
 import { useReducedMotion } from "@/lib/hooks/use-reduced-motion";
 import { LangToggle } from "../i18n/lang-toggle";
 import { useCopy } from "../i18n/lang-context";
 import { useBeeIntroScene } from "../intro/use-bee-intro-scene";
 import type { GatePhase } from "./gate-phase";
-import { useIntroTimeline } from "./use-intro-timeline";
+import { PENDING, useIntroTimeline } from "./use-intro-timeline";
 
 const mono = "font-mono text-[10px] tracking-[0.22em] uppercase";
 const bar = "absolute inset-x-0 z-8 box-border flex h-[clamp(44px,8vh,72px)] items-center justify-between gap-4 overflow-hidden bg-ink px-[clamp(16px,3vw,32px)]";
 
+const segmenter = typeof Intl.Segmenter === "function" ? new Intl.Segmenter(undefined, { granularity: "grapheme" }) : null;
+const graphemes = (word: string) => (segmenter ? [...segmenter.segment(word)].map((s) => s.segment) : [...word]);
+
+/** One span per letter for the entrance, grouped per word so a line can only wrap between words. */
 const Chars = ({ text }: { text: string }) =>
-  [...text].map((ch, i) => (
-    <span key={i} data-intro-char className="inline-block whitespace-pre">
-      {ch}
-    </span>
-  ));
+  text
+    .normalize("NFC")
+    .split(" ")
+    .map((word, w) => (
+      <Fragment key={w}>
+        {w > 0 && " "}
+        <span className="inline-block whitespace-nowrap">
+          {graphemes(word).map((ch, i) => (
+            <span key={i} data-intro-char className="inline-block">
+              {ch}
+            </span>
+          ))}
+        </span>
+      </Fragment>
+    ));
 
 type Props = {
   guestName: string;
@@ -46,12 +60,13 @@ export function BeeIntro({ guestName, phase, onEnter, onExited }: Props) {
   const enter = (withMusic: boolean) => {
     if (!onEnter(withMusic)) return;
     const audible = withMusic && !reduced;
+    if (audible) unlockSfx();
     exit(withMusic ? sceneRef.current : null, onExited, () => audible && playSfx("rustle"));
   };
   const waiting = phase !== "ready";
 
   return (
-    <div ref={rootRef} role="dialog" aria-modal="true" aria-label={t.dialogLabel} className="fixed inset-0 z-100 overflow-hidden bg-paper">
+    <div ref={rootRef} {...{ [PENDING]: "" }} role="dialog" aria-modal="true" aria-label={t.dialogLabel} className="fixed inset-0 z-100 overflow-hidden bg-paper">
       <div data-intro-backdrop aria-hidden className="pointer-events-none absolute inset-0" style={{ backgroundImage: "radial-gradient(var(--halftone) 1px, transparent 1px)", backgroundSize: "28px 28px" }} />
       <div data-intro-backdrop aria-hidden className="pointer-events-none absolute inset-0">
         <div className="absolute -top-40 -left-40 h-155 w-155 rounded-full" style={{ background: "radial-gradient(closest-side, color-mix(in oklab, var(--tomato) 15%, transparent), transparent)" }} />

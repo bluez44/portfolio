@@ -8,7 +8,7 @@ const NO = { slug: "minh-anh", status: "no", reason: "Đi công tác" };
 
 function deps(overrides: Partial<RsvpDeps> = {}): RsvpDeps {
   return {
-    findGuest: vi.fn(async () => ({ id: "g1", slug: "minh-anh", name: "Minh Anh", note: null })),
+    findGuest: vi.fn(async () => ({ id: "g1", slug: "minh-anh", name: "Minh Anh", note: null, customContent: null })),
     saveRsvp: vi.fn(async () => ({ previous: null })),
     notify: vi.fn(async () => ({ ok: true as const })),
     now: () => AT,

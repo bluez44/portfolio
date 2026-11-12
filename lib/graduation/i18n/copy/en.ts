@@ -92,6 +92,14 @@ export const en: GraduationCopy = {
       invalid_contact: "That doesn't look like a phone number or email",
       too_long: "That's a bit long, please shorten it",
     },
+    letter: {
+      to: "To: Vo Le Quang Vinh",
+      from: (name) => `From: ${name}`,
+      sent: "Reply letter sent",
+    },
+  },
+  wishes: {
+    mine: "Yours",
   },
   gate: {
     dialogLabel: "Open invitation",

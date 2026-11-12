@@ -11,7 +11,7 @@ const hasErrors = (errors: RsvpFieldErrors) => Object.keys(errors).length > 0;
  * RSVP flow: pick attend/decline, fill that form, submit. Validates on the client first (same
  * schema as the server) so field errors show without a round trip.
  */
-export function useRsvp(slug: string, initial: RsvpAnswer | null) {
+export function useRsvp(slug: string, initial: RsvpAnswer | null, opts: { onSaved?: (answer: RsvpAnswer) => void } = {}) {
   const [saved, setSaved] = useState(initial);
   const [editing, setEditing] = useState(initial === null);
   const [choice, setChoice] = useState<RsvpStatus | null>(initial?.status ?? null);
@@ -42,6 +42,7 @@ export function useRsvp(slug: string, initial: RsvpAnswer | null) {
           setSaved(result.answer);
           setEditing(false);
           setFieldErrors({});
+          opts.onSaved?.(result.answer);
         } else if (result.error === "invalid" && hasErrors(result.fieldErrors)) {
           setFieldErrors(result.fieldErrors);
         } else {

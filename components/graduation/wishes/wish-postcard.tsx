@@ -91,10 +91,10 @@ function IndexCard({ bee, n }: { bee: WishBee; n: string }) {
         }}
       />
       <div
-        className="box-border flex h-[72px] items-end justify-between rounded-t-[14px] border-b-[1.5px] border-tomato bg-paper pb-3"
+        className="box-border flex h-[72px] items-end justify-end rounded-t-[14px] border-b-[1.5px] border-tomato bg-paper pb-3"
         style={{ margin: `0 calc(-1 * ${padX})`, paddingLeft: padX, paddingRight: padX }}
       >
-        <span className="font-mono text-[11px] tracking-[0.24em] text-ink uppercase">Card · {n}</span>
+        {/* <span className="font-mono text-[11px] tracking-[0.24em] text-ink uppercase">Card · {n}</span> */}
         <span className="font-mono text-[11px] tracking-[0.18em] text-ink-2">{bee.date}.2026</span>
       </div>
       <p

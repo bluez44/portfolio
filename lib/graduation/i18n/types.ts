@@ -60,6 +60,14 @@ export type GraduationCopy = {
     sending: string;
     ownerPhone: string;
     fieldErrors: Record<RsvpFieldError, string>;
+    letter: {
+      to: string;
+      from: (name: string) => string;
+      sent: string;
+    };
+  };
+  wishes: {
+    mine: string;
   };
   gate: { dialogLabel: string; wake: string; tapHint: string; silent: string; soundHint: string; nowPlaying: string; preparing: string };
   narrator: Record<NarrationKey, (name: string) => string>;

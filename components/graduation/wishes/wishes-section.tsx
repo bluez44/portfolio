@@ -3,11 +3,12 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { beeAlias } from "@/lib/bee-alias";
 import { useScrollReveal } from "@/lib/hooks/use-scroll-reveal";
+import { useCourierBee } from "../courier/courier-bee-provider";
 import { SectionHeading } from "../shared/section-heading";
 import { SectionKicker } from "../shared/section-kicker";
 import { HoneycombViewport } from "./honeycomb-viewport";
 import type { HoneycombLayout } from "./honeycomb-layout";
-import { BEE_CARD_REVEAL_DELAY_MS, useBeeFlight } from "./use-bee-flight";
+import { BEE_CARD_REVEAL_DELAY_MS } from "./use-bee-flight";
 import { WishOptions, type OptionGroup } from "./wish-options";
 import { WishPostcard, WISH_CARD_ID } from "./wish-postcard";
 import { wishAccent, type CardStyle, type CellStyle, type WishBee } from "./types";
@@ -41,7 +42,13 @@ function StatusNote({ tone, children }: { tone?: "error"; children: string }) {
   );
 }
 
-export function WishesSection() {
+export function WishesSection({
+  guestId,
+  refreshKey,
+}: {
+  guestId?: string;
+  refreshKey?: unknown;
+} = {}) {
   const headerRef = useScrollReveal<HTMLDivElement>();
   const sectionRef = useRef<HTMLElement>(null);
 
@@ -51,7 +58,7 @@ export function WishesSection() {
   const [layout, setLayout] = useState<HoneycombLayout>("organic");
   const [cardStyle, setCardStyle] = useState<CardStyle>("index");
   const [openIndex, setOpenIndex] = useState<number | null>(null);
-  const { hostRef: beeHostRef, trailRef: beeTrailRef, active: beeActive, flyOpen, flyAway } = useBeeFlight();
+  const { active: beeActive, flyOpen, flyAway } = useCourierBee();
   const flightOrigin = useRef<{ x: number; y: number } | null>(null);
 
   // The postcard is in the DOM (clipped shut) once openIndex is set, so the
@@ -93,6 +100,12 @@ export function WishesSection() {
     observer.observe(el);
     return () => observer.disconnect();
   }, [fetchBees]);
+
+  useEffect(() => {
+    if (refreshKey) {
+      void fetchBees();
+    }
+  }, [fetchBees, refreshKey]);
 
   const overlay = useMemo(() => {
     if (loadState === "loading" || loadState === "idle")
@@ -157,6 +170,7 @@ export function WishesSection() {
             bees={bees}
             layout={layout}
             cellStyle={cellStyle}
+            guestId={guestId}
             onOpen={(i, e) => {
               const r = e.currentTarget.getBoundingClientRect();
               flightOrigin.current = { x: r.left + r.width / 2, y: r.top + r.height / 2 };
@@ -180,17 +194,6 @@ export function WishesSection() {
           }}
         />
       )}
-
-      {/* courier bee overlay: 3D bee canvas + dotted flight trail */}
-      <div ref={beeHostRef} aria-hidden className="pointer-events-none fixed inset-0 z-65" />
-      <svg aria-hidden className="pointer-events-none fixed inset-0 z-65 h-full w-full overflow-visible">
-        <polyline
-          ref={beeTrailRef}
-          points=""
-          fill="none"
-          style={{ stroke: "var(--canary)", strokeWidth: 3, strokeLinecap: "round", strokeDasharray: "0.1 9" }}
-        />
-      </svg>
     </section>
   );
 }

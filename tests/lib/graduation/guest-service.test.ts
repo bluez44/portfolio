@@ -4,7 +4,7 @@ import { SlugTakenError } from "@/lib/graduation/slug-taken-error";
 import type { GuestData, GuestRecord } from "@/lib/graduation/types";
 
 function fakeRepo(overrides: Partial<{ fail: Error }> = {}) {
-  const record = (data: GuestData): GuestRecord => ({ id: "g1", ...data });
+  const record = (data: GuestData): GuestRecord => ({ id: "g1", customContent: data.customContent ?? null, ...data });
   return {
     create: vi.fn(async (data: GuestData) => {
       if (overrides.fail) throw overrides.fail;

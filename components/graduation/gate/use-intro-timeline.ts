@@ -11,6 +11,8 @@ const CHARS = "[data-intro-char]";
 const FADERS = "[data-intro-fade]";
 const TOAST = "[data-intro-toast]";
 const BACKDROP = "[data-intro-backdrop]";
+/** Root attribute that holds the CSS start state (globals.css) until the entrance takes over. */
+export const PENDING = "data-intro-pending";
 
 /** The design's letterbox entrance and exit, scoped to the intro root. */
 export function useIntroTimeline(rootRef: RefObject<HTMLElement | null>, reduced: boolean) {
@@ -22,7 +24,8 @@ export function useIntroTimeline(rootRef: RefObject<HTMLElement | null>, reduced
     const ctx = gsap.context(() => {}, root);
     ctxRef.current = ctx;
     let cancelled = false;
-    if (!reduced) {
+    if (reduced) root.removeAttribute(PENDING);
+    else {
       (document.fonts?.ready ?? Promise.resolve()).then(() => {
         if (cancelled) return;
         ctx.add(() => {
@@ -32,6 +35,8 @@ export function useIntroTimeline(rootRef: RefObject<HTMLElement | null>, reduced
             .fromTo(BOTTOM, { scaleY: 0, transformOrigin: "50% 100%" }, { scaleY: 1, duration: 1.1, ease: "power4.inOut", clearProps: "transform" }, 0)
             .from(CHARS, { yPercent: 115, duration: 1.15, stagger: 0.035, ease: "power4.out" }, 0.35)
             .from(FADERS, { opacity: 0, y: 14, duration: 0.8, stagger: 0.08, ease: "power3.out" }, 0.85);
+          // The tweens above have already written the same start values inline, so dropping the CSS state is seamless.
+          root.removeAttribute(PENDING);
         });
       });
     }

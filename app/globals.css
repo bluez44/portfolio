@@ -350,6 +350,26 @@
   }
 }
 
+/* Intro entrance start state, painted before hydration so GSAP never snaps visible content away. */
+@media (prefers-reduced-motion: no-preference) {
+  [data-intro-pending] [data-intro-bar] {
+    transform: scaleY(0);
+  }
+  [data-intro-pending] [data-intro-bar="top"] {
+    transform-origin: 50% 0%;
+  }
+  [data-intro-pending] [data-intro-bar="bottom"] {
+    transform-origin: 50% 100%;
+  }
+  [data-intro-pending] [data-intro-char] {
+    transform: translateY(115%);
+  }
+  [data-intro-pending] [data-intro-fade] {
+    opacity: 0;
+    transform: translateY(14px);
+  }
+}
+
 @keyframes wish-pop {
   from {
     clip-path: circle(0% at 50% 50%);
@@ -358,6 +378,32 @@
   to {
     clip-path: circle(150% at 50% 50%);
     transform: scale(1) rotate(-1deg);
+  }
+}
+
+@keyframes postmark-stamp {
+  from {
+    transform: scale(1.5) rotate(-24deg);
+    opacity: 0;
+  }
+  to {
+    transform: scale(1) rotate(-14deg);
+    opacity: 0.9;
+  }
+}
+
+@keyframes mine-pop {
+  0% {
+    transform: scale(1);
+  }
+  35% {
+    transform: scale(1.15) translateY(-6px);
+  }
+  65% {
+    transform: scale(0.95) translateY(2px);
+  }
+  100% {
+    transform: scale(1) translateY(0);
   }
 }
 

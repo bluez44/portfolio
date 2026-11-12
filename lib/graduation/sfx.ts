@@ -55,6 +55,16 @@ function rustle(ac: AudioContext, at: number) {
   source.start(at);
 }
 
+/** Call inside the user gesture: effects played later from timers are otherwise left suspended on WebKit. */
+export function unlockSfx() {
+  try {
+    ctx ??= new AudioContext();
+    void ctx.resume();
+  } catch {
+    return;
+  }
+}
+
 /** Synthesized effect; decoration only, so any audio failure is swallowed. */
 export function playSfx(name: Sfx, delaySec = 0) {
   try {

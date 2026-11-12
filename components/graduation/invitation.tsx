@@ -7,6 +7,7 @@ import type { InvitationGuest, RsvpAnswer } from "@/lib/graduation/types";
 import { useTransientFlag } from "@/lib/hooks/use-transient-flag";
 import { useGradCharacter } from "./character/use-grad-character";
 import { NarratorBubble, type NarratorBubbleHandle } from "./character/narrator-bubble";
+import { CourierBeeProvider } from "./courier/courier-bee-provider";
 import { InvitationFooter } from "./chrome/invitation-footer";
 import { InvitationHeader } from "./chrome/invitation-header";
 import { SideRails } from "./chrome/side-rails";
@@ -38,7 +39,9 @@ export function GraduationInvitation(props: InvitationProps) {
   return (
     <LangProvider initialLang={props.initialLang} customContent={props.guest.customContent}>
       <ResourceGateProvider resources={Object.values(GATE)} overlay={NO_OVERLAY}>
-        <InvitationContent {...props} />
+        <CourierBeeProvider>
+          <InvitationContent {...props} />
+        </CourierBeeProvider>
       </ResourceGateProvider>
     </LangProvider>
   );
@@ -69,6 +72,11 @@ function InvitationContent({ guest, initialRsvp, ownerPhone }: InvitationProps) 
     if (letterOpened) document.getElementById("stage")?.focus({ preventScroll: true });
   }, [letterOpened]);
 
+  const [wishRefreshKey, setWishRefreshKey] = useState(0);
+  const handleRsvpSaved = useCallback(() => {
+    setWishRefreshKey((k) => k + 1);
+  }, []);
+
   return (
     <div id="top" className="relative bg-paper font-sans text-ink">
       <div aria-hidden className="pointer-events-none fixed inset-0 z-15" style={{ backgroundImage: "radial-gradient(var(--halftone) 1px, transparent 1px)", backgroundSize: "28px 28px" }} />
@@ -84,8 +92,14 @@ function InvitationContent({ guest, initialRsvp, ownerPhone }: InvitationProps) 
           <EnvelopeStage guestName={guest.name} />
           <MetSection guestName={guest.name} note={guest.customContent?.met?.note ?? guest.note} />
           <EndsSection onTourOpen={fadePause} onTourClose={fadeResume} />
-          <RsvpSection slug={guest.slug} guestName={guest.name} initialRsvp={initialRsvp} ownerPhone={ownerPhone} />
-          <WishesSection />
+          <RsvpSection
+            slug={guest.slug}
+            guestName={guest.name}
+            initialRsvp={initialRsvp}
+            ownerPhone={ownerPhone}
+            onSaved={handleRsvpSaved}
+          />
+          <WishesSection guestId={guest.id} refreshKey={wishRefreshKey} />
         </main>
 
         <InvitationFooter />

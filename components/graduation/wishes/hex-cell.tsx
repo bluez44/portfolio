@@ -61,10 +61,14 @@ export function HubHex({ count }: { count: number }) {
 export function WishHex({
   bee,
   style,
+  isMine,
+  mineLabel,
   onOpen,
 }: {
   bee: WishBee;
   style: CellStyle;
+  isMine?: boolean;
+  mineLabel?: string;
   onOpen: (e: React.MouseEvent<HTMLButtonElement>) => void;
 }) {
   const tone = style === "tone";
@@ -74,16 +78,31 @@ export function WishHex({
       onClick={onOpen}
       aria-label={`Lời chúc từ ${bee.name}`}
       title={bee.name}
-      className="absolute inset-0 m-0 cursor-pointer border-none bg-transparent p-0 transition-transform duration-200 hover:-translate-x-0.5 hover:-translate-y-0.5"
+      className={`absolute inset-0 m-0 cursor-pointer border-none bg-transparent p-0 transition-transform duration-200 hover:-translate-x-0.5 hover:-translate-y-0.5 ${
+        isMine ? "animate-[mine-pop_0.8s_cubic-bezier(0.34,1.56,0.64,1)_1]" : ""
+      }`}
     >
       <HexSvg>
-        <polygon points={HEX_POINTS} transform={tone ? "translate(4 4)" : "translate(5 5)"} style={{ fill: tone ? "var(--ink)" : bee.color }} />
+        <polygon points={HEX_POINTS} transform={tone ? "translate(4 4)" : "translate(5 5)"} style={{ fill: isMine ? "var(--canary)" : tone ? "var(--ink)" : bee.color }} />
         <polygon
           points={HEX_POINTS}
-          style={{ fill: tone ? bee.color : "var(--paper)", stroke: "var(--ink)", strokeWidth: 1.5 }}
+          style={{
+            fill: tone ? bee.color : "var(--paper)",
+            stroke: isMine ? "var(--canary)" : "var(--ink)",
+            strokeWidth: isMine ? 2.5 : 1.5,
+          }}
         />
         {tone && <polygon points={HEX_POINTS} fill="url(#hexDots)" />}
       </HexSvg>
+      {isMine && (
+        <span
+          aria-hidden
+          className="absolute -top-2 left-1/2 z-10 -translate-x-1/2 rounded-full border-[1.5px] border-ink bg-canary px-2 py-0.5 font-mono text-[8px] font-bold tracking-[0.14em] text-ink uppercase"
+          style={{ boxShadow: "1px 1px 0 var(--ink)" }}
+        >
+          {mineLabel ?? "Của bạn"}
+        </span>
+      )}
       {tone ? (
         <span className="absolute inset-0 flex flex-col items-center justify-center gap-1.5" style={{ color: bee.onColor }}>
           <span

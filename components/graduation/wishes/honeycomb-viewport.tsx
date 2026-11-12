@@ -2,6 +2,7 @@
 
 import { useMemo, type MouseEvent, type ReactNode } from "react";
 import { RisoIconButton } from "@/components/ui/riso/icon-button";
+import { useCopy } from "../i18n/lang-context";
 import { EmptyHex, HubHex, WishHex } from "./hex-cell";
 import { buildHoneycomb, honeycombExtent, HEX_W, HEX_H, type HoneycombLayout } from "./honeycomb-layout";
 import { usePanZoom } from "./use-pan-zoom";
@@ -11,16 +12,19 @@ export function HoneycombViewport({
   bees,
   layout,
   cellStyle,
+  guestId,
   onOpen,
   overlay,
 }: {
   bees: WishBee[];
   layout: HoneycombLayout;
   cellStyle: CellStyle;
+  guestId?: string;
   onOpen: (index: number, e: MouseEvent<HTMLButtonElement>) => void;
   /** status content (loading / error / empty) rendered above the comb */
   overlay?: ReactNode;
 }) {
+  const { wishes: t } = useCopy();
   const slots = useMemo(() => buildHoneycomb(layout, bees.length), [layout, bees.length]);
   const extent = useMemo(() => honeycombExtent(slots), [slots]);
   const { viewportRef, setTarget, zoomPct, zoomIn, zoomOut, reset, suppressClick, handlers } = usePanZoom(extent);
@@ -67,7 +71,13 @@ export function HoneycombViewport({
             {s.kind === "empty" && <EmptyHex drop={s.drop} />}
             {s.kind === "hub" && <HubHex count={bees.length} />}
             {s.kind === "wish" && bees[s.wishIndex] && (
-              <WishHex bee={bees[s.wishIndex]} style={cellStyle} onOpen={(e) => open(s.wishIndex, e)} />
+              <WishHex
+                bee={bees[s.wishIndex]}
+                style={cellStyle}
+                isMine={Boolean(guestId && bees[s.wishIndex].id === guestId)}
+                mineLabel={t.mine}
+                onOpen={(e) => open(s.wishIndex, e)}
+              />
             )}
           </div>
         ))}
