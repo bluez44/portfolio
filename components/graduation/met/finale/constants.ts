@@ -26,16 +26,20 @@ export const NOTE_SIDE_GUTTER = 16;
 /** …and never balloons past this. */
 export const NOTE_MAX_SCALE = 1.25;
 
+/** Shared width; tied to the viewport height too so the row fits between the header and the note. */
+export const MEMORY_PHOTO_WIDTH = "clamp(78px, min(22vw, 22vh), 200px)";
+
 /**
- * Memory photos that gather above the pinned note, one after another. `x` is the photo centre's
- * offset (vw) from the viewport centre; `rest` is where its top settles, as a share of the viewport
+ * Memory photos that gather in a loose row above the pinned note, one after another, each mostly
+ * clear of its neighbours (centres ~22vw apart, one photo wide). `x` is the photo centre's offset
+ * (vw) from the viewport centre; `rest` is where its top settles, as a share of the viewport
  * height; `enter` is the share of the pin over which it rises from below the viewport to rest.
  */
 export const MEMORY_PHOTOS = [
-  { x: -17, width: "clamp(130px, 36vw, 300px)", rot: -5, rest: 0.14, enter: [0.02, 0.32] },
-  { x: 15, width: "clamp(110px, 30vw, 240px)", rot: 4, rest: 0.19, enter: [0.18, 0.48] },
-  { x: -8, width: "clamp(100px, 26vw, 220px)", rot: 3, rest: 0.11, enter: [0.34, 0.64] },
-  { x: 20, width: "clamp(130px, 38vw, 320px)", rot: -3, rest: 0.22, enter: [0.5, 0.8] },
+  { x: -33, rot: -5, rest: 0.12, enter: [0.02, 0.32] },
+  { x: 11, rot: 3, rest: 0.15, enter: [0.18, 0.48] },
+  { x: -11, rot: -2, rest: 0.1, enter: [0.34, 0.64] },
+  { x: 33, rot: 5, rest: 0.14, enter: [0.5, 0.8] },
 ] as const;
 
 /** Top of a memory photo before it rises, as a share of the viewport height (just below it). */

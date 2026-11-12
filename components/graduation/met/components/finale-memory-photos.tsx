@@ -1,5 +1,5 @@
 import Image from "next/image";
-import { ARRIVE_AT, MEMORY_PHOTOS } from "../finale/constants";
+import { ARRIVE_AT, MEMORY_PHOTO_WIDTH, MEMORY_PHOTOS } from "../finale/constants";
 
 /**
  * Memory photos that gather above the pinned note, laid out across the full viewport width (the
@@ -14,10 +14,10 @@ export function FinaleMemoryPhotos({ images }: { images: string[] }) {
           key={i}
           data-memory-photo
           className="absolute m-0 rounded-[10px] opacity-0 border-[1.5px] border-ink bg-paper p-1.5 shadow-(--offset-sm)"
-          style={{ left: `calc(50% + ${p.x}vw)`, translate: "-50% 0", width: p.width, rotate: `${p.rot}deg`, top: `${(p.rest - ARRIVE_AT) * 100}vh` }}
+          style={{ left: `calc(50% + ${p.x}vw)`, translate: "-50% 0", width: MEMORY_PHOTO_WIDTH, rotate: `${p.rot}deg`, top: `${(p.rest - ARRIVE_AT) * 100}vh` }}
         >
           <div className="relative aspect-4/5 overflow-hidden rounded-[6px]">
-            <Image src={images[i % images.length]} alt="" fill sizes="(min-width: 760px) 300px, 38vw" className="object-cover" />
+            <Image src={images[i % images.length]} alt="" fill sizes="(min-width: 760px) 200px, 22vw" className="object-cover" />
           </div>
         </figure>
       ))}
