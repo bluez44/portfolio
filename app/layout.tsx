@@ -1,31 +1,36 @@
 import type { Metadata, Viewport } from "next";
 import { SpeedInsights } from "@vercel/speed-insights/next";
-import { Bricolage_Grotesque, Instrument_Sans, JetBrains_Mono } from "next/font/google";
+import localFont from "next/font/local";
 import { ThemeProvider } from "@/components/providers/theme-provider";
 import { SmoothScrollProvider } from "@/components/providers/smooth-scroll-provider";
 import { Analytics } from "@vercel/analytics/next";
 import { SITE_URL } from "@/lib/site";
 import "./globals.css";
 
-const bricolage = Bricolage_Grotesque({
+// Self-hosted: Google Fonts sometimes returns `/l/font?kit=…&skey=…` URLs that Turbopack's
+// next/font/google cannot resolve. Files are the Google Fonts variable fonts pinned to the same
+// instances Google serves (wght axis only) and subset to the same character ranges.
+const bricolage = localFont({
+  src: "./fonts/bricolage-grotesque.woff2",
   variable: "--font-bricolage",
-  subsets: ["latin", "latin-ext"],
-  weight: ["400", "500", "600", "700", "800"],
+  weight: "400 800",
   display: "swap",
 });
 
-const instrument = Instrument_Sans({
+const instrument = localFont({
+  src: "./fonts/instrument-sans.woff2",
   variable: "--font-instrument",
-  subsets: ["latin", "latin-ext"],
-  weight: ["400", "500", "600", "700"],
+  weight: "400 700",
   display: "swap",
 });
 
-const jetbrains = JetBrains_Mono({
+const jetbrains = localFont({
+  src: "./fonts/jetbrains-mono.woff2",
   variable: "--font-jetbrains",
-  subsets: ["latin"],
-  weight: ["400", "500", "600"],
+  weight: "400 600",
   display: "swap",
+  fallback: ["ui-monospace", "monospace"],
+  adjustFontFallback: false,
 });
 
 const TITLE = "Võ Lê Quang Vinh – Fullstack Software Engineer | Portfolio";
