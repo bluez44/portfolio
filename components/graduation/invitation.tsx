@@ -106,7 +106,7 @@ function InvitationContent({ guest, initialRsvp, ownerPhone }: InvitationProps) 
           <FinaleSection guestName={guest.name} rsvp={currentRsvp} />
         </main>
 
-        <InvitationFooter />
+        {/* <InvitationFooter /> */}
         <div aria-hidden className="sr-only">
           <div ref={musicMountRef} />
         </div>
