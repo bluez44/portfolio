@@ -1,6 +1,8 @@
 "use client";
 
 import { useEffect, useRef, type RefObject } from "react";
+import { readRisoPalette } from "../shared/three/palette";
+import { usePaletteSync } from "../shared/three/use-palette-sync";
 import { createBeeIntroScene, type BeeIntroScene, type BeeScreenPosition } from "./bee-intro-scene";
 
 type Refs = {
@@ -30,6 +32,7 @@ export function useBeeIntroScene(hostRef: RefObject<HTMLElement | null>, { reduc
     try {
       scene = createBeeIntroScene(host, {
         reduced,
+        palette: readRisoPalette(),
         timecode: timecodeRef.current,
         grain: grainRef.current,
         onFlap: () => onFlapRef.current(),
@@ -45,6 +48,7 @@ export function useBeeIntroScene(hostRef: RefObject<HTMLElement | null>, { reduc
       sceneRef.current = null;
     };
   }, [hostRef, timecodeRef, grainRef, reduced]);
+  usePaletteSync(sceneRef);
 
   return sceneRef;
 }

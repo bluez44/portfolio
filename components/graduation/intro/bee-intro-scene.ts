@@ -2,12 +2,11 @@ import gsap from "gsap";
 import * as THREE from "three";
 import { outlineGeometry } from "../character/scene/mesh-kit";
 import { BEE_HEAD_RADIUS, createBeeModel } from "../shared/three/bee-model";
-import { readRisoPalette } from "../shared/three/palette";
+import type { RisoPalette } from "../shared/three/palette";
 import { toonGradient } from "../shared/three/toon";
 import { applyFilmGrain, formatTimecode, shiftFilmGrain } from "./film-effects";
 import { hexGrid } from "./hex-grid";
 
-const C = { paper: "#fbf8f2", paper2: "#f2ede2", paper3: "#e7e1d3", ink: "#1c1b1f", tomato: "#ef4e2b", canary: "#f5c518" };
 const CELL_R = 0.5;
 const BEE_SCALE = 0.021;
 const TRAIL_POINTS = 600;
@@ -16,6 +15,7 @@ export type BeeIntroScene = {
   /** Adds the bee waking and flying off to `tl`; returns when (s) the scene's part ends. */
   wake(tl: gsap.core.Timeline): number;
   pause(): void;
+  applyPalette(p: RisoPalette): void;
   dispose(): void;
 };
 
@@ -24,6 +24,7 @@ export type BeeScreenPosition = { x: number; y: number; head: { x: number; y: nu
 
 type Options = {
   reduced: boolean;
+  palette: RisoPalette;
   timecode?: HTMLElement | null;
   grain?: HTMLElement | null;
   onFlap?: () => void;
@@ -40,12 +41,12 @@ export function createBeeIntroScene(host: HTMLElement, opts: Options): BeeIntroS
   const rnd = seeded(7);
   const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
   renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
-  renderer.setClearColor(0xfbf8f2, 0);
   renderer.domElement.style.cssText = "display:block;width:100%;height:100%;";
   host.appendChild(renderer.domElement);
 
   const scene = new THREE.Scene();
-  scene.fog = new THREE.Fog(0xfbf8f2, 3.5, 12);
+  const fog = new THREE.Fog(0, 3.5, 12);
+  scene.fog = fog;
   const camera = new THREE.PerspectiveCamera(32, 1, 0.05, 100);
   scene.add(new THREE.HemisphereLight(0xffffff, 0x9a9488, 1.8));
   const keyLight = new THREE.DirectionalLight(0xffffff, 1.5);
@@ -53,10 +54,10 @@ export function createBeeIntroScene(host: HTMLElement, opts: Options): BeeIntroS
   scene.add(keyLight);
 
   const gradient = toonGradient([122, 196, 255]);
-  const outM = new THREE.MeshBasicMaterial({ color: C.ink, side: THREE.BackSide });
-  const toon = (color: string) => new THREE.MeshToonMaterial({ color, gradientMap: gradient });
-  const sideM = toon(C.paper3);
-  const tops = [toon(C.canary), toon(C.paper), toon(C.paper2), toon(C.tomato)];
+  const outM = new THREE.MeshBasicMaterial({ side: THREE.BackSide });
+  const toon = () => new THREE.MeshToonMaterial({ gradientMap: gradient });
+  const sideM = toon();
+  const tops = [toon(), toon(), toon(), toon()];
 
   const S = { amp: opts.reduced ? 0 : 1, par: opts.reduced ? 0 : 1, off: 1, t: 0, mx: 0, my: 0, cmx: 0, cmy: 0, flap: 0, follow: 0 };
   const cam = { x: 2.4, y: 2.1, z: 3.7, lx: 0, ly: 0.75, lz: 0, fov: 32 };
@@ -84,7 +85,7 @@ export function createBeeIntroScene(host: HTMLElement, opts: Options): BeeIntroS
   inner.rotation.y = -Math.PI / 2;
   inner.scale.setScalar(BEE_SCALE);
   outer.add(inner);
-  const bee = createBeeModel(gradient, outM, readRisoPalette());
+  const bee = createBeeModel(gradient, outM, opts.palette);
   inner.add(bee.group);
   bee.eyes.forEach((e) => (e.scale.y = 0.18));
   bee.wings.forEach((w) => (w.pivot.rotation.x = w.side * 0.9));
@@ -94,8 +95,19 @@ export function createBeeIntroScene(host: HTMLElement, opts: Options): BeeIntroS
   const trailGeo = new THREE.BufferGeometry();
   trailGeo.setAttribute("position", new THREE.BufferAttribute(trailBuf, 3));
   trailGeo.setDrawRange(0, 0);
-  const trailM = new THREE.PointsMaterial({ color: C.ink, size: 0.045, sizeAttenuation: true, transparent: true, depthWrite: false });
+  const trailM = new THREE.PointsMaterial({ size: 0.045, sizeAttenuation: true, transparent: true, depthWrite: false });
   rig.add(new THREE.Points(trailGeo, trailM));
+
+  const applyPalette = (p: RisoPalette) => {
+    renderer.setClearColor(p.paper, 0);
+    fog.color.set(p.paper);
+    outM.color.set(p.ink);
+    sideM.color.set(p.paper3);
+    [p.canary, p.paper, p.paper2, p.tomato].forEach((color, i) => tops[i].color.set(color));
+    trailM.color.set(p.ink);
+    bee.applyPalette(p);
+  };
+  applyPalette(opts.palette);
   let trailCount = 0;
   const lastTrail = new THREE.Vector3(1e9, 0, 0);
   const flight = { u: 0 };
@@ -235,6 +247,7 @@ export function createBeeIntroScene(host: HTMLElement, opts: Options): BeeIntroS
     pause() {
       paused = true;
     },
+    applyPalette,
     dispose() {
       gsap.ticker.remove(tick);
       ro.disconnect();
