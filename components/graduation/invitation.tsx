@@ -6,6 +6,7 @@ import type { Lang } from "@/lib/graduation/i18n";
 import type { InvitationGuest, RsvpAnswer } from "@/lib/graduation/types";
 import { useTransientFlag } from "@/lib/hooks/use-transient-flag";
 import { useGradCharacter } from "./character/use-grad-character";
+import { NarratorBubble, type NarratorBubbleHandle } from "./character/narrator-bubble";
 import { InvitationFooter } from "./chrome/invitation-footer";
 import { InvitationHeader } from "./chrome/invitation-header";
 import { SideRails } from "./chrome/side-rails";
@@ -46,7 +47,11 @@ export function GraduationInvitation(props: InvitationProps) {
 function InvitationContent({ guest, initialRsvp, ownerPhone }: InvitationProps) {
   const gate = useResourceGate();
   const canvasHost = useRef<HTMLDivElement>(null);
-  useGradCharacter(canvasHost, { onReady: () => gate?.resolve(GATE.character) });
+  const bubbleRef = useRef<NarratorBubbleHandle>(null);
+  useGradCharacter(canvasHost, {
+    onReady: () => gate?.resolve(GATE.character),
+    onFrame: (head, line) => bubbleRef.current?.update(head, line),
+  });
   const [musicNote, flashMusicNote] = useTransientFlag(2600);
   const musicId = guest.customContent?.music?.youtubeId || GRADUATION_EVENT.musicYoutubeId;
   const music = useYouTubePlayer(musicId, flashMusicNote, () => gate?.resolve(GATE.music));
@@ -68,6 +73,7 @@ function InvitationContent({ guest, initialRsvp, ownerPhone }: InvitationProps) 
     <div id="top" className="relative bg-paper font-sans text-ink">
       <div aria-hidden className="pointer-events-none fixed inset-0 z-15" style={{ backgroundImage: "radial-gradient(var(--halftone) 1px, transparent 1px)", backgroundSize: "28px 28px" }} />
       <div ref={canvasHost} aria-hidden className="pointer-events-none fixed inset-0 z-25" />
+      <NarratorBubble ref={bubbleRef} guestName={guest.name} />
 
       <LetterGate ready={!gate?.pending} guestName={guest.name} onOpen={startMusic} onOpened={onLetterOpened} />
       <div inert={!letterOpened}>

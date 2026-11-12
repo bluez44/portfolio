@@ -6,26 +6,34 @@ import { useEffect, useRef, type RefObject } from "react";
 import { useIsDark } from "@/lib/hooks/use-is-dark";
 import { useReducedMotion } from "@/lib/hooks/use-reduced-motion";
 import { buildBeats } from "./choreography/beats";
+import { lineAt } from "./choreography/narration";
 import { measureEnvelopeWidth, measureSections } from "./choreography/measure-sections";
 import { besideX, envelopeSideX } from "./choreography/placement";
 import { createGradCharacter, type GradCharacter } from "./scene/grad-character";
+import type { Beat, NarrationKey } from "./types";
+
+export type CharacterFrameHandler = (head: { x: number; y: number }, line: NarrationKey | null) => void;
 
 export function useGradCharacter(
   hostRef: RefObject<HTMLDivElement | null>,
-  { scale = 0.85, onReady }: { scale?: number; onReady?: () => void } = {},
+  {
+    scale = 0.85,
+    onReady,
+    onFrame,
+  }: { scale?: number; onReady?: () => void; onFrame?: CharacterFrameHandler } = {},
 ) {
   const reduced = useReducedMotion();
   const { dark } = useIsDark();
   const charRef = useRef<GradCharacter | null>(null);
   const onReadyRef = useRef(onReady);
+  const onFrameRef = useRef(onFrame);
   useEffect(() => {
     onReadyRef.current = onReady;
-  }, [onReady]);
+    onFrameRef.current = onFrame;
+  }, [onReady, onFrame]);
 
   useEffect(() => {
     const host = hostRef.current;
-    // Bailing out (no motion / no WebGL) still counts as ready — there is
-    // nothing left to wait for.
     if (reduced || !host) {
       onReadyRef.current?.();
       return;
@@ -42,6 +50,8 @@ export function useGradCharacter(
     charRef.current = character;
     onReadyRef.current?.();
 
+    let beats: Beat[] | null = null;
+
     const relayout = () => {
       character.resize(null);
       const metrics = measureSections();
@@ -49,9 +59,19 @@ export function useGradCharacter(
       const sx = envelopeSideX({ viewportW: window.innerWidth, envelopeW: measureEnvelopeWidth(), halfW, scale: s });
       const noteW = metrics?.noteFinale?.width;
       const cheerX = noteW ? besideX({ viewportW: window.innerWidth, objectW: noteW, halfW, scale: s }) : undefined;
-      character.resize(metrics && buildBeats(metrics, sx, cheerX));
+      beats = metrics ? buildBeats(metrics, sx, cheerX) : null;
+      character.resize(beats);
     };
-    const tick = (time: number) => character.frame(time, window.scrollY);
+
+    const tick = (time: number) => {
+      const scrollY = window.scrollY;
+      character.frame(time, scrollY);
+      if (onFrameRef.current) {
+        const head = character.headScreen();
+        const line = beats ? lineAt(beats, scrollY) : null;
+        onFrameRef.current(head, line);
+      }
+    };
 
     relayout();
     ScrollTrigger.addEventListener("refresh", relayout);

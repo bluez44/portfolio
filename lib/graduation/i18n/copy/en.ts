@@ -102,6 +102,16 @@ export const en: GraduationCopy = {
     nowPlaying: "♪ Now playing",
     preparing: "Preparing your letter…",
   },
+  narrator: {
+    wave: (name) => `Hi ${name}! Flip the letter over.`,
+    bow: () => "Thanks for stopping by.",
+    desk: () => "Here are my four years, keep scrolling.",
+    cheer: () => "And this part is just for you!",
+    point: () => "Meet me here, there's a map and a 360° tour.",
+    toss: (name) => `Write me a reply, ${name}!`,
+    read: () => "Everyone's wishes, right here.",
+    farewell: () => "See you on Nov 28!",
+  },
   footer: "Thanks for celebrating with me",
   notFound: {
     kicker: "404 · Return to sender",

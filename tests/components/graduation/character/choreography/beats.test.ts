@@ -3,21 +3,35 @@ import type { SectionMetrics } from "@/components/graduation/character/types";
 import { buildBeats, moveSpan } from "@/components/graduation/character/choreography/beats";
 import { targetPose } from "@/components/graduation/character/choreography/target-pose";
 
-const M: SectionMetrics = { vh: 1000, stageTop: 0, stageScroll: 3200, metTop: 4200, metHeight: 1500, endsTop: 5700, endsHeight: 1200, rsvpTop: 6900 };
+const M: SectionMetrics = {
+  vh: 1000,
+  stageTop: 0,
+  stageScroll: 3200,
+  metTop: 4200,
+  metHeight: 1500,
+  endsTop: 5700,
+  endsHeight: 1200,
+  rsvpTop: 6900,
+  wishesTop: 8100,
+};
 
 describe("buildBeats", () => {
   const beats = buildBeats(M, 0.8);
-  it("creates nine strictly increasing beats ≥ 40px apart", () => {
-    expect(beats).toHaveLength(9);
+  it("creates eleven strictly increasing beats ≥ 40px apart", () => {
+    expect(beats).toHaveLength(11);
     beats.slice(1).forEach((b, i) => expect(b.s - beats[i].s).toBeGreaterThanOrEqual(40));
   });
-  it("starts waving on the right, ends tossing", () => {
-    expect(beats[0]).toMatchObject({ act: "wave", x: 0.8 });
-    expect(beats.at(-1)).toMatchObject({ act: "toss", x: 0.62 });
+  it("starts waving on the right, ends reading honeycomb", () => {
+    expect(beats[0]).toMatchObject({ act: "wave", x: 0.8, say: "wave" });
+    expect(beats.at(-1)).toMatchObject({ act: "read", x: 0.62, say: "read" });
   });
   it("forces spacing when sections are tiny", () => {
     const tiny = buildBeats({ ...M, metHeight: 0, endsHeight: 0 }, 0.5);
     tiny.slice(1).forEach((b, i) => expect(b.s).toBeGreaterThan(tiny[i].s));
+  });
+  it("includes farewell beat when finaleTop is provided", () => {
+    const withFinale = buildBeats({ ...M, finaleTop: 9500 }, 0.8);
+    expect(withFinale.at(-1)).toMatchObject({ act: "wave", say: "farewell" });
   });
 });
 
@@ -27,11 +41,11 @@ describe("buildBeats with the note finale", () => {
 
   // How we met's bottom edge is at 6700: it shows 20px at scroll 5720 and reaches mid-screen at 6200.
   it("sits until the note pins and cheers beside it before heading for How it ends", () => {
-    expect(beats).toHaveLength(11);
-    expect(beats[5]).toMatchObject({ s: 5000, act: "sit", x: 0.66 });
-    expect(beats[6]).toMatchObject({ s: 5300, act: "cheer", x: 0.9 });
-    expect(beats[7]).toMatchObject({ s: 5480, act: "cheer", x: 0.9 });
-    expect(beats[8]).toMatchObject({ s: 6440, act: "point", x: -0.66 });
+    expect(beats).toHaveLength(13);
+    expect(beats[5]).toMatchObject({ s: 5000, act: "sit", x: 0.66, say: "desk" });
+    expect(beats[6]).toMatchObject({ s: 5300, act: "cheer", x: 0.9, say: "cheer" });
+    expect(beats[7]).toMatchObject({ s: 5480, act: "cheer", x: 0.9, say: "cheer" });
+    expect(beats[8]).toMatchObject({ s: 6440, act: "point", x: -0.66, say: "point" });
   });
 
   it("walks toward the note during its grow phase and cheers once there", () => {

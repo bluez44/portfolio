@@ -3,13 +3,23 @@ import type { SectionMetrics } from "@/components/graduation/character/types";
 import { buildBeats } from "@/components/graduation/character/choreography/beats";
 import { targetPose } from "@/components/graduation/character/choreography/target-pose";
 
-const M: SectionMetrics = { vh: 1000, stageTop: 0, stageScroll: 3200, metTop: 4200, metHeight: 1500, endsTop: 5700, endsHeight: 1200, rsvpTop: 6900 };
+const M: SectionMetrics = {
+  vh: 1000,
+  stageTop: 0,
+  stageScroll: 3200,
+  metTop: 4200,
+  metHeight: 1500,
+  endsTop: 5700,
+  endsHeight: 1200,
+  rsvpTop: 6900,
+  wishesTop: 8100,
+};
 
 describe("targetPose", () => {
   const beats = buildBeats(M, 0.8);
   it("clamps before the first and after the last beat", () => {
     expect(targetPose(beats, -100)).toMatchObject({ wave: 1, x: 0.8, walk: 0 });
-    expect(targetPose(beats, 99999)).toMatchObject({ toss: 1, x: 0.62 });
+    expect(targetPose(beats, 99999)).toMatchObject({ read: 1, x: 0.62 });
   });
   it("walks between beats on different sides", () => {
     const mid = (beats[1].s + beats[2].s) / 2;

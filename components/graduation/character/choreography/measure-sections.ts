@@ -35,6 +35,10 @@ export function measureSections(): SectionMetrics | null {
       const wishes = get("bee-wall");
       return wishes ? top(wishes) : top(rsvp) + rsvp.offsetHeight;
     })(),
+    finaleTop: (() => {
+      const finale = get("finale");
+      return finale ? top(finale) : undefined;
+    })(),
     noteFinale,
   };
 }

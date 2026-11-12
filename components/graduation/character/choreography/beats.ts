@@ -1,7 +1,7 @@
-import type { Action, Beat, SectionMetrics } from "../types";
+import type { Action, Beat, NarrationKey, SectionMetrics } from "../types";
 import { ARRIVE_ENDS_AT, CHEER_BY, CHEER_RY, DESK, FADE, LEAVE_MET_INSET, MIN_GAP, POINTING, READING, TOSSING } from "./constants";
 
-type RawBeat = [scroll: number, x: number, ry: number, act: Action];
+type RawBeat = [scroll: number, x: number, ry: number, act: Action, say?: NarrationKey];
 
 /**
  * Beat positions whose transition moves the character exactly over scroll `[start, end]`:
@@ -24,11 +24,11 @@ function toEnds(m: SectionMetrics): [leave: number, arrive: number] {
  */
 function metEndBeats(m: SectionMetrics, cheerX: number, leave: number): RawBeat[] {
   const f = m.noteFinale;
-  if (!f) return [[leave, DESK.x, DESK.ry, DESK.act]];
+  if (!f) return [[leave, DESK.x, DESK.ry, DESK.act, "desk"]];
   return [
-    [f.start, DESK.x, DESK.ry, DESK.act],
-    [f.start + (f.grown - f.start) * CHEER_BY, cheerX, CHEER_RY, "cheer"],
-    [leave, cheerX, CHEER_RY, "cheer"],
+    [f.start, DESK.x, DESK.ry, DESK.act, "desk"],
+    [f.start + (f.grown - f.start) * CHEER_BY, cheerX, CHEER_RY, "cheer", "cheer"],
+    [leave, cheerX, CHEER_RY, "cheer", "cheer"],
   ];
 }
 
@@ -37,22 +37,23 @@ export function buildBeats(m: SectionMetrics, sx: number, cheerX = DESK.x): Beat
   const { vh, stageTop: s0, stageScroll: sl } = m;
   const [leave, arrive] = toEnds(m);
   const raw: RawBeat[] = [
-    [s0, sx, -0.5, "wave"],
-    [s0 + sl * 0.3, sx, -0.5, "wave"],
-    [s0 + sl * 0.6, -sx, 0.5, "bow"],
-    [s0 + sl, -sx, 0.5, "bow"],
-    [m.metTop - vh * 0.1, DESK.x, DESK.ry, DESK.act],
+    [s0, sx, -0.5, "wave", "wave"],
+    [s0 + sl * 0.3, sx, -0.5, "wave", "wave"],
+    [s0 + sl * 0.6, -sx, 0.5, "bow", "bow"],
+    [s0 + sl, -sx, 0.5, "bow", "bow"],
+    [m.metTop - vh * 0.1, DESK.x, DESK.ry, DESK.act, "desk"],
     ...metEndBeats(m, cheerX, leave),
-    [arrive, POINTING.x, POINTING.ry, POINTING.act],
-    [m.endsTop + m.endsHeight - vh * 0.9, POINTING.x, POINTING.ry, POINTING.act],
-    [m.rsvpTop - vh * 0.25, TOSSING.x, TOSSING.ry, TOSSING.act],
-    [m.wishesTop - vh * 0.75, TOSSING.x, TOSSING.ry, TOSSING.act],
-    [m.wishesTop - vh * 0.2, READING.x, READING.ry, READING.act],
+    [arrive, POINTING.x, POINTING.ry, POINTING.act, "point"],
+    [m.endsTop + m.endsHeight - vh * 0.9, POINTING.x, POINTING.ry, POINTING.act, "point"],
+    [m.rsvpTop - vh * 0.25, TOSSING.x, TOSSING.ry, TOSSING.act, "toss"],
+    [m.wishesTop - vh * 0.75, TOSSING.x, TOSSING.ry, TOSSING.act, "toss"],
+    [m.wishesTop - vh * 0.2, READING.x, READING.ry, READING.act, "read"],
+    ...(m.finaleTop != null ? ([[m.finaleTop, sx, -0.5, "wave", "farewell"]] as RawBeat[]) : []),
   ];
   let prev = -Infinity;
-  return raw.map(([s, x, ry, act]) => {
+  return raw.map(([s, x, ry, act, say]) => {
     const at = Math.max(s, prev + MIN_GAP);
     prev = at;
-    return { s: at, x, ry, act };
+    return { s: at, x, ry, act, ...(say ? { say } : {}) };
   });
 }

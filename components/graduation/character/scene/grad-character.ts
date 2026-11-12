@@ -12,6 +12,7 @@ export type GradCharacter = {
   resize(beats: Beat[] | null): void;
   applyPalette(dark: boolean): void;
   view(): { halfW: number; scale: number };
+  headScreen(): { x: number; y: number };
   dispose(): void;
 };
 
@@ -42,6 +43,8 @@ export function createGradCharacter(host: HTMLElement, opts: { scale: number }):
     let phase = 0;
     let last: number | null = null;
 
+    const headPos = new THREE.Vector3();
+
     return {
       frame(time, scrollY) {
         const dt = last == null ? 0.016 : Math.min(0.05, time - last);
@@ -71,6 +74,14 @@ export function createGradCharacter(host: HTMLElement, opts: { scale: number }):
         applyPalette(M, (n) => styles.getPropertyValue(n).trim(), dark);
       },
       view: () => ({ halfW: view.halfW, scale: view.scale }),
+      headScreen() {
+        rig.headG.getWorldPosition(headPos);
+        headPos.project(camera);
+        return {
+          x: (headPos.x * 0.5 + 0.5) * window.innerWidth,
+          y: (-(headPos.y * 0.5) + 0.5) * window.innerHeight,
+        };
+      },
       dispose() {
         scene.traverse((o) => (o as THREE.Mesh).geometry?.dispose());
         disposeMaterials(M);

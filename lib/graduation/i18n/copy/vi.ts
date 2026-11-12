@@ -102,6 +102,16 @@ export const vi: GraduationCopy = {
     nowPlaying: "♪ Đang phát",
     preparing: "Đang chuẩn bị lá thư…",
   },
+  narrator: {
+    wave: (name) => `Chào ${name}! Lật thư ra xem nhé.`,
+    bow: () => "Cảm ơn bạn đã ghé qua.",
+    desk: () => "Bốn năm của mình đây, kéo xuống xem tiếp nha.",
+    cheer: () => "Còn đây là phần dành riêng cho bạn!",
+    point: () => "Hẹn bạn ở đây nhé, có bản đồ cả tour 360°.",
+    toss: (name) => `Viết cho mình vài dòng hồi âm nha, ${name}!`,
+    read: () => "Lời chúc của mọi người đây.",
+    farewell: () => "Hẹn gặp bạn ngày 28.11!",
+  },
   footer: "Cảm ơn bạn đã đồng hành cùng mình trong hành trình này. Hẹn gặp bạn tại lễ tốt nghiệp!",
   notFound: {
     kicker: "404 · Trả lại người gửi",
