@@ -1,6 +1,7 @@
 import gsap from "gsap";
 import type { FinaleElements } from "../elements";
-import { ARRIVE_LINE, GROW, GROW_EASE, HOLD, PARALLAX_PHOTOS, PIN_END } from "./constants";
+import { ARRIVE_LINE, GROW, GROW_EASE, HOLD, MEMORY_RANGE, PARALLAX_PHOTOS, PIN_END } from "./constants";
+import { memoryLook } from "./memory-fade";
 import { noteScaleFor } from "./note-finale";
 
 /**
@@ -75,7 +76,12 @@ export function createFinaleTimeline({ pin, note, dock, halves, photo, parallaxL
     const span = tl.duration();
     parallaxPhotos.forEach((el, i) => {
       const { from, to } = PARALLAX_PHOTOS[i % PARALLAX_PHOTOS.length];
-      tl.fromTo(el, { y: 0 }, { y: () => (to - from) * window.innerHeight, duration: span }, 0);
+      const fade = () => {
+        const p = el.getBoundingClientRect();
+        const n = note.getBoundingClientRect();
+        gsap.set(el, memoryLook(p.top + p.height / 2 - (n.top + n.height / 2), window.innerHeight * MEMORY_RANGE));
+      };
+      tl.fromTo(el, { y: 0 }, { y: () => (to - from) * window.innerHeight, duration: span, onUpdate: fade }, 0);
     });
   }
 

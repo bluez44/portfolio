@@ -37,3 +37,6 @@ export const PARALLAX_PHOTOS = [
   { side: "left", inset: 9, width: "clamp(100px, 26vw, 220px)", from: 1.6, to: -0.9, rot: 3 },
   { side: "right", inset: -6, width: "clamp(130px, 38vw, 320px)", from: 2.0, to: -1.0, rot: -3 },
 ] as const;
+
+/** Vertical distance from the note's centre, as a share of the viewport height, at which a drifting photo has fully faded. */
+export const MEMORY_RANGE = 0.55;
