@@ -96,11 +96,31 @@ export function createBeeIntroScene(host: HTMLElement, opts: Options): BeeIntroS
   const lastTrail = new THREE.Vector3(1e9, 0, 0);
   const flight = { u: 0 };
   let curve: THREE.CatmullRomCurve3 | null = null;
-  const fly = () => {
+  const heading = new THREE.Quaternion();
+  const facing = new THREE.Quaternion();
+  const roll = new THREE.Quaternion();
+  const forwardAxis = new THREE.Vector3(0, 0, 1);
+  const aim = new THREE.Matrix4();
+  const up = new THREE.Vector3(0, 1, 0);
+  const tan = new THREE.Vector3();
+  const ahead = new THREE.Vector3();
+  let bank = 0;
+  /** Follows the curve, easing the heading and rolling into turns instead of snapping to the tangent. */
+  const fly = (dt: number) => {
     if (!curve) return;
-    const p = curve.getPointAt(flight.u);
-    outer.position.copy(p);
-    outer.lookAt(p.clone().add(curve.getTangentAt(flight.u)));
+    const u = flight.u;
+    const p = curve.getPointAt(u);
+    curve.getTangentAt(u, tan);
+    curve.getTangentAt(Math.min(1, u + 0.03), ahead);
+    // A light hover bob: eased in at take-off and damped while the bee is at full speed.
+    const bob = Math.sin(S.t * 9) * 0.03 * Math.min(1, u * 15) * (1 - Math.sin(u * Math.PI) * 0.7);
+    outer.position.set(p.x, p.y + bob, p.z);
+    const k = 1 - Math.exp(-dt * 7);
+    bank += (THREE.MathUtils.clamp(-tan.clone().cross(ahead).y * 9, -0.6, 0.6) - bank) * k;
+    aim.lookAt(ahead.add(p), p, up);
+    heading.setFromRotationMatrix(aim);
+    facing.slerp(heading, 1 - Math.exp(-dt * 6));
+    outer.quaternion.copy(facing).multiply(roll.setFromAxisAngle(forwardAxis, bank));
     if (p.distanceTo(lastTrail) > 0.08 && trailCount < TRAIL_POINTS) {
       trailBuf.set([p.x, p.y, p.z], trailCount * 3);
       trailCount++;
@@ -145,6 +165,7 @@ export function createBeeIntroScene(host: HTMLElement, opts: Options): BeeIntroS
     const dt = Math.min(0.05, deltaMs / 1000);
     S.t += dt;
     frame++;
+    if (curve) fly(dt);
     if (S.flap) bee.wings.forEach((w) => (w.pivot.rotation.x = w.side * (0.2 + Math.sin(S.t * 70) * 0.55)));
     else {
       inner.scale.set(BEE_SCALE, BEE_SCALE * (1 + Math.sin(S.t * 2.2) * 0.04 * S.amp), BEE_SCALE);
@@ -184,11 +205,17 @@ export function createBeeIntroScene(host: HTMLElement, opts: Options): BeeIntroS
           S.flap = 1;
           opts.onFlap?.();
         }, 0.45)
-        .to(outer.position, { y: "+=0.5", duration: 0.6, ease: "power2.out" }, 0.5)
         .add(() => {
-          curve = new THREE.CatmullRomCurve3([outer.position.clone(), V(0.6, 1.9, -0.9), V(-1.4, 2.6, -0.2), V(-1.0, 3.2, 1.8), V(0.9, 3.1, 3.6), V(0.6, 3.2, 5.9)], false, "catmullrom", 0.5);
-        }, 1.05)
-        .to(flight, { u: 1, duration: 2.5, ease: "power1.inOut", onUpdate: fly }, 1.08)
+          const o = outer.position.clone();
+          facing.copy(outer.quaternion);
+          // One continuous path from the cell: a gentle hover first, then the loop off-screen.
+          curve = new THREE.CatmullRomCurve3(
+            [o, V(o.x + 0.12, o.y + 0.45, o.z + 0.1), V(0.6, 1.95, -0.8), V(-1.3, 2.6, -0.2), V(-1.0, 3.15, 1.8), V(0.8, 3.15, 3.7), V(0.6, 3.2, 5.9)],
+            false,
+            "centripetal",
+          );
+        }, 0.52)
+        .to(flight, { u: 1, duration: 3.1, ease: "power2.inOut" }, 0.52)
         .to(S, { follow: 0.85, duration: 0.9, ease: "power2.inOut" }, 1.0)
         .to(cam, { x: 0.6, y: 3.2, z: 6.3, fov: 36, duration: 2.5, ease: "power2.inOut" }, 1.0)
         .to(trailM, { opacity: 0, duration: 0.6 }, 3.0);
