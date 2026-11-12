@@ -5,6 +5,7 @@ import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { useEffect, useRef, type RefObject } from "react";
 import { useIsDark } from "@/lib/hooks/use-is-dark";
 import { useReducedMotion } from "@/lib/hooks/use-reduced-motion";
+import { openedCardScale } from "../envelope/opened-card";
 import { buildBeats } from "./choreography/beats";
 import { lineAt } from "./choreography/narration";
 import { measureEnvelopeWidth, measureSections } from "./choreography/measure-sections";
@@ -56,7 +57,7 @@ export function useGradCharacter(
       character.resize(null);
       const metrics = measureSections();
       const { halfW, scale: s } = character.view();
-      const sx = envelopeSideX({ viewportW: window.innerWidth, envelopeW: measureEnvelopeWidth(), halfW, scale: s });
+      const sx = envelopeSideX({ viewportW: window.innerWidth, envelopeW: measureEnvelopeWidth(), cardScale: openedCardScale(), halfW, scale: s });
       const noteW = metrics?.noteFinale?.width;
       const cheerX = noteW ? besideX({ viewportW: window.innerWidth, objectW: noteW, halfW, scale: s }) : undefined;
       beats = metrics ? buildBeats(metrics, sx, cheerX) : null;

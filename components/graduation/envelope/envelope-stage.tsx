@@ -4,7 +4,7 @@ import { useRef } from "react";
 import { useReducedMotion } from "@/lib/hooks/use-reduced-motion";
 import { EnvelopeBack } from "./envelope-back";
 import { EnvelopeFront } from "./envelope-front";
-import { ENVELOPE_SIZE } from "../shared/envelope-size";
+import { ENVELOPE_SIZE, ENVELOPE_WIDTH } from "../shared/envelope-size";
 import { InvitationCard } from "./invitation-card";
 import { ScrollHint } from "./scroll-hint";
 import { StageKickers } from "./stage-kickers";
@@ -28,9 +28,7 @@ export function EnvelopeStage({ guestName }: { guestName: string }) {
         <Glows />
         <StageKickers greetingVisible={reduced} />
         {reduced ? (
-          <div className={ENVELOPE_SIZE}>
-            <InvitationCard guestName={guestName} className="absolute inset-0 h-full w-full" />
-          </div>
+          <InvitationCard guestName={guestName} className={ENVELOPE_WIDTH} />
         ) : (
           <>
             <div id="envWrap" className={`${ENVELOPE_SIZE} transform-3d`} style={{ transform: "rotateX(14deg) rotateZ(-3deg)" }}>

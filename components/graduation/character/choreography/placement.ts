@@ -1,4 +1,4 @@
-import { BODY_GAP, BODY_MARGIN, OPENED_CARD_SCALE } from "./constants";
+import { BODY_GAP, BODY_MARGIN } from "./constants";
 
 type View = { viewportW: number; halfW: number; scale: number };
 
@@ -9,6 +9,6 @@ export function besideX({ viewportW, objectW, halfW, scale }: View & { objectW: 
 }
 
 /** Horizontal slot (−1..1) that keeps the character just outside the opened invitation card. */
-export function envelopeSideX({ envelopeW, ...view }: View & { envelopeW: number }): number {
-  return besideX({ ...view, objectW: envelopeW * OPENED_CARD_SCALE });
+export function envelopeSideX({ envelopeW, cardScale, ...view }: View & { envelopeW: number; cardScale: number }): number {
+  return besideX({ ...view, objectW: envelopeW * cardScale });
 }

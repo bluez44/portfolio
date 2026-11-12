@@ -3,6 +3,7 @@
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { useLayoutEffect, type RefObject } from "react";
+import { openedCardScale } from "./opened-card";
 
 export function useEnvelopeTimeline(rootRef: RefObject<HTMLElement | null>, enabled: boolean) {
   useLayoutEffect(() => {
@@ -23,6 +24,7 @@ export function useEnvelopeTimeline(rootRef: RefObject<HTMLElement | null>, enab
             start: "top top",
             end: "bottom bottom",
             scrub: 0.6,
+            invalidateOnRefresh: true,
           },
           defaults: { ease: "none" },
         })
@@ -87,10 +89,11 @@ export function useEnvelopeTimeline(rootRef: RefObject<HTMLElement | null>, enab
         )
         .fromTo(
           "#card",
-          { yPercent: -100, scale: 1 },
+          { yPercent: -100, scale: 1, height: "88%" },
           {
             yPercent: 0,
-            scale: 1.32,
+            scale: openedCardScale,
+            height: "auto",
             duration: 0.2,
             ease: "power2.inOut",
             immediateRender: false,

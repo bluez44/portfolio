@@ -19,7 +19,7 @@ export function InvitationCard({
       className={`box-border flex flex-col justify-between gap-2.5 overflow-hidden rounded-[14px] border-[1.5px] border-ink bg-paper px-[clamp(18px,2.8vw,34px)] py-[clamp(16px,2.4vw,28px)] ${className}`}
       style={{ boxShadow: "var(--offset-tomato)", ...style }}
     >
-      <div className="flex items-center justify-between font-mono text-[9px] tracking-[0.26em] uppercase">
+      <div className="flex items-center justify-between font-mono text-[10px] tracking-[0.26em] uppercase">
         <span className="text-ink-3">{t.label}</span>
         <span className="text-tomato">Fig · 01</span>
       </div>
@@ -40,10 +40,10 @@ export function InvitationCard({
           </div>
         )}
       </div>
-      <p className="m-0 text-[clamp(11px,1.05vw,13.5px)] leading-[1.55] text-pretty text-ink-2">{t.body}</p>
+      <p className="m-0 text-[clamp(13px,1.05vw,14px)] leading-[1.55] text-pretty text-ink-2">{t.body}</p>
       <div className="flex items-end justify-between border-t border-dashed border-ink/25 pt-2">
         <span className="font-heading text-sm font-semibold text-ink">{t.author || "— Vinh (Tom)"}</span>
-        <span className="font-mono text-[9px] tracking-[0.22em] text-ink-3 uppercase">{t.keepScrolling}</span>
+        <span className="font-mono text-[10px] tracking-[0.22em] text-ink-3 uppercase">{t.keepScrolling}</span>
       </div>
     </div>
   );

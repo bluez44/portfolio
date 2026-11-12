@@ -23,8 +23,6 @@ export const CHEER_BY = 0.6;
 /** Fallback width (px) of the envelope when it is not mounted: min(560px, 50vw). */
 export const ENVELOPE_MAX_W = 560;
 export const ENVELOPE_VW_SHARE = 0.5;
-/** Scale the opened card reaches in the envelope stage (see use-envelope-timeline). */
-export const OPENED_CARD_SCALE = 1.32;
 
 /** Character footprint in world units at scale 1: half-width margin and the gap kept from objects. */
 export const BODY_MARGIN = 1.3;

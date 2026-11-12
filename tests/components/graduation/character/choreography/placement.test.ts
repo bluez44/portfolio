@@ -3,7 +3,7 @@ import { besideX, envelopeSideX } from "@/components/graduation/character/choreo
 
 describe("envelopeSideX", () => {
   it("never exceeds 1", () => {
-    expect(envelopeSideX({ viewportW: 400, envelopeW: 344, halfW: 2, scale: 0.6 })).toBeLessThanOrEqual(1);
+    expect(envelopeSideX({ viewportW: 400, envelopeW: 344, cardScale: 1.32, halfW: 2, scale: 0.6 })).toBeLessThanOrEqual(1);
   });
 });
 
