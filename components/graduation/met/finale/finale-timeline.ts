@@ -1,6 +1,6 @@
 import gsap from "gsap";
 import type { FinaleElements } from "../elements";
-import { ARRIVE_LINE, GROW, GROW_EASE, HOLD, PIN_END } from "./constants";
+import { ARRIVE_LINE, GROW, GROW_EASE, HOLD, PARALLAX_PHOTOS, PIN_END } from "./constants";
 import { noteScaleFor } from "./note-finale";
 
 /**
@@ -8,7 +8,7 @@ import { noteScaleFor } from "./note-finale";
  * the badge while the note scales up and slides to the viewport centre, then holds briefly.
  * Requires ScrollTrigger and DrawSVGPlugin to be registered.
  */
-export function createFinaleTimeline({ pin, note, dock, halves, photo }: FinaleElements): gsap.core.Timeline {
+export function createFinaleTimeline({ pin, note, dock, halves, photo, parallaxLayer, parallaxPhotos }: FinaleElements): gsap.core.Timeline {
   // Function values so `invalidateOnRefresh` recomputes them from the current viewport and layout.
   /** The note sits in the left column; slide it to the viewport's centre while it grows. */
   const shift = () => {
@@ -66,5 +66,18 @@ export function createFinaleTimeline({ pin, note, dock, halves, photo }: FinaleE
     );
   }
 
-  return tl.to({}, { duration: HOLD }); // the finished card stays pinned a little before the next section
+  tl.to({}, { duration: HOLD }); // the finished card stays pinned a little before the next section
+
+  if (parallaxLayer) {
+    // The pin sits in a column; pull the layer back to the viewport's left edge.
+    tl.set(parallaxLayer, { x: () => -pin.getBoundingClientRect().left }, 0);
+    // Drift across the whole pin, so the photos never change the timeline's length.
+    const span = tl.duration();
+    parallaxPhotos.forEach((el, i) => {
+      const { from, to } = PARALLAX_PHOTOS[i % PARALLAX_PHOTOS.length];
+      tl.fromTo(el, { y: 0 }, { y: () => (to - from) * window.innerHeight, duration: span }, 0);
+    });
+  }
+
+  return tl;
 }

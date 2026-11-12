@@ -15,6 +15,8 @@ export const SELECTORS = {
   moment: "[data-moment]",
   badgeSpin: "[data-badge-spin]",
   polaroidPhoto: "[data-polaroid-photo]",
+  parallaxLayer: "[data-parallax-layer]",
+  parallaxPhoto: "[data-parallax-photo]",
 } as const;
 
 export type TrailElements = {
@@ -42,6 +44,9 @@ export type FinaleElements = {
   outline: SVGSVGElement;
   halves: SVGPathElement[];
   photo: HTMLElement | null;
+  /** Full-width layer of drifting photos behind the note; absent under reduced motion. */
+  parallaxLayer: HTMLElement | null;
+  parallaxPhotos: HTMLElement[];
 };
 
 export function queryMomentTrail(root: HTMLElement): { trail: TrailElements; finale: FinaleElements } | null {
@@ -63,6 +68,15 @@ export function queryMomentTrail(root: HTMLElement): { trail: TrailElements; fin
   }
   return {
     trail: { root, section: root.closest("section") ?? root, base, draw, rider, end, cards, spinners: all<HTMLElement>(SELECTORS.badgeSpin) },
-    finale: { pin, note, dock, outline, halves, photo },
+    finale: {
+      pin,
+      note,
+      dock,
+      outline,
+      halves,
+      photo,
+      parallaxLayer: one<HTMLElement>(SELECTORS.parallaxLayer),
+      parallaxPhotos: all<HTMLElement>(SELECTORS.parallaxPhoto),
+    },
   };
 }

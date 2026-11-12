@@ -36,7 +36,7 @@ export function MetSection({ guestName, note }: { guestName: string; note: strin
           ))}
         </ol>
 
-        <NoteFinaleStage guestName={guestName} label={t.andYou(guestName)} note={note ?? t.defaultNote} />
+        <NoteFinaleStage guestName={guestName} label={t.andYou(guestName)} note={note ?? t.defaultNote} photos={reduced ? [] : t.moments.map((m) => m.image)} />
       </div>
     </GraduationSection>
   );
