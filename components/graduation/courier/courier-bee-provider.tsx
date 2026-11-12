@@ -153,53 +153,71 @@ export function CourierBeeProvider({ children }: { children: ReactNode }) {
       }
 
       const cr = cardEl.getBoundingClientRect();
-      const startPoint: Point = { x: cr.left + cr.width / 2, y: cr.top + 20 };
+      const perch: Point = { x: cr.left + cr.width / 2, y: cr.top + 20 };
+      // Flies in from off-screen top-right and lands on the letter before picking it up.
+      const from: Point = { x: window.innerWidth + 80, y: Math.max(-80, perch.y - 220) };
+      const inC1: Point = { x: from.x - 200, y: from.y - 120 };
+      const inC2: Point = { x: perch.x + 160, y: perch.y - 180 };
       const endPoint: Point = { x: window.innerWidth * 0.75, y: window.innerHeight + 160 };
-      const ctrlPoint: Point = { x: startPoint.x + 80, y: startPoint.y - 120 };
+      const ctrlPoint: Point = { x: perch.x + 80, y: perch.y - 120 };
+      // The card keeps the fold it already has (rotateX, scale) and only gains the carry offset on top.
+      const foldScale = Number(gsap.getProperty(cardEl, "scale")) || 1;
 
-      const bee: BeeState = (beeRef.current = {
-        x: startPoint.x,
-        y: startPoint.y,
-        s: 0,
-        on: true,
-        perched: true,
-      });
+      const bee: BeeState = (beeRef.current = { x: from.x, y: from.y, s: 1, on: true, perched: false });
 
       const pts: string[] = [];
-      const prog = { t: 0 };
+      const track = () => {
+        pts.push(`${Math.round(bee.x)},${Math.round(bee.y)}`);
+        trail?.setAttribute("points", pts.join(" "));
+      };
+      const arrive = { t: 0 };
+      const carry = { t: 0 };
 
       return new Promise<void>((resolve) => {
-        tlRef.current = gsap
+        const tl = gsap
           .timeline({
             onComplete: () => {
               bee.on = false;
               resolve();
             },
           })
-          .to(bee, { s: 1, duration: 0.3, ease: "power2.out" }, 0)
-          .to(
-            prog,
-            {
-              t: 1,
-              duration: 1.25,
-              ease: "power2.in",
-              onUpdate: () => {
-                const p = quadraticBezier(prog.t, startPoint, ctrlPoint, endPoint);
-                bee.x = p.x;
-                bee.y = p.y;
-                pts.push(`${Math.round(bee.x)},${Math.round(bee.y)}`);
-                if (trail) trail.setAttribute("points", pts.join(" "));
-
-                const dx = p.x - startPoint.x;
-                const dy = p.y - startPoint.y;
-                const scale = Math.max(0.2, 1 - prog.t * 0.75);
-                cardEl.style.transform = `translate3d(${dx}px, ${dy}px, 0) scale(${scale}) rotate(${prog.t * 12}deg)`;
-                cardEl.style.opacity = String(Math.max(0, 1 - prog.t * 1.2));
-              },
+          .to(arrive, {
+            t: 1,
+            duration: 0.85,
+            ease: "power2.out",
+            onUpdate: () => {
+              const p = cubicBezier(arrive.t, from, inC1, inC2, perch);
+              bee.x = p.x;
+              bee.y = p.y;
+              track();
             },
-            0.2,
-          )
-          .to(trail, { opacity: 0, duration: 0.4 }, 1.1);
+            onComplete: () => {
+              bee.perched = true;
+            },
+          })
+          .add(() => {
+            bee.perched = false;
+          }, "+=0.25")
+          .to(carry, {
+            t: 1,
+            duration: 1.2,
+            ease: "power2.in",
+            onUpdate: () => {
+              const p = quadraticBezier(carry.t, perch, ctrlPoint, endPoint);
+              bee.x = p.x;
+              bee.y = p.y;
+              track();
+              gsap.set(cardEl, {
+                x: p.x - perch.x,
+                y: p.y - perch.y,
+                scale: foldScale * Math.max(0.2, 1 - carry.t * 0.75),
+                rotation: carry.t * 12,
+                opacity: Math.max(0, 1 - carry.t * 1.2),
+              });
+            },
+          });
+        if (trail) tl.to(trail, { opacity: 0, duration: 0.4 }, "-=0.35");
+        tlRef.current = tl;
       });
     },
     [reduced],

@@ -5,6 +5,9 @@ import { useCallback, useRef, useState, type RefObject } from "react";
 import { useReducedMotion } from "@/lib/hooks/use-reduced-motion";
 import { useCourierBee } from "../courier/courier-bee-provider";
 
+/** How long the freshly stamped letter stays flat before it folds. */
+const STAMP_HOLD_S = 0.75;
+
 export function useReplySendoff(cardRef: RefObject<HTMLElement | null>, hasInitialSaved: boolean) {
   const { carryOff } = useCourierBee();
   const reduced = useReducedMotion();
@@ -28,12 +31,14 @@ export function useReplySendoff(cardRef: RefObject<HTMLElement | null>, hasIniti
 
     setPostmarked(true);
 
-    // Fold the letter in 3D before the courier bee carries it off
+    // Let the postmark land and be read (its stamp animation runs 0.35s), then fold the letter
+    // in 3D for the courier bee, which flies in and perches on it before carrying it off.
     await new Promise<void>((resolve) => {
       gsap.to(card, {
         scale: 0.88,
         rotateX: 45,
-        duration: 0.5,
+        delay: STAMP_HOLD_S,
+        duration: 0.45,
         ease: "power2.inOut",
         transformOrigin: "50% 50%",
         onComplete: () => resolve(),
