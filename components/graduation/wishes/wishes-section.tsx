@@ -58,7 +58,8 @@ export function WishesSection({
   const [layout, setLayout] = useState<HoneycombLayout>("organic");
   const [cardStyle, setCardStyle] = useState<CardStyle>("index");
   const [openIndex, setOpenIndex] = useState<number | null>(null);
-  const { active: beeActive, flyOpen, flyAway } = useCourierBee();
+  const [cardDelayMs, setCardDelayMs] = useState(0);
+  const { canFly, flyOpen, flyAway } = useCourierBee();
   const flightOrigin = useRef<{ x: number; y: number } | null>(null);
 
   // The postcard is in the DOM (clipped shut) once openIndex is set, so the
@@ -174,6 +175,7 @@ export function WishesSection({
             onOpen={(i, e) => {
               const r = e.currentTarget.getBoundingClientRect();
               flightOrigin.current = { x: r.left + r.width / 2, y: r.top + r.height / 2 };
+              setCardDelayMs(canFly() ? BEE_CARD_REVEAL_DELAY_MS : 0);
               setOpenIndex(i);
             }}
             overlay={overlay}
@@ -187,7 +189,7 @@ export function WishesSection({
           bee={bees[openIndex]}
           index={openIndex}
           cardStyle={cardStyle}
-          entranceDelayMs={beeActive ? BEE_CARD_REVEAL_DELAY_MS : 0}
+          entranceDelayMs={cardDelayMs}
           onClose={() => {
             flyAway();
             setOpenIndex(null);

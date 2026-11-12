@@ -1,13 +1,14 @@
 "use client";
 
 import gsap from "gsap";
-import { createContext, useCallback, useContext, useEffect, useRef, useState, type ReactNode } from "react";
+import { createContext, useCallback, useContext, useEffect, useRef, type ReactNode } from "react";
 import { useReducedMotion } from "@/lib/hooks/use-reduced-motion";
 import { createBeeScene, type BeeScene, type BeeState } from "../wishes/bee-scene";
 import { cubicBezier, quadraticBezier, type Point } from "./flight-path";
 
 type CourierBeeContextType = {
-  active: boolean;
+  /** Whether the 3D bee exists (WebGL available, motion allowed); read it in event handlers. */
+  canFly: () => boolean;
   flyOpen: (from: Point, cardId: string) => void;
   flyAway: () => void;
   carryOff: (cardEl: HTMLElement) => Promise<void>;
@@ -19,7 +20,7 @@ export function useCourierBee(): CourierBeeContextType {
   const ctx = useContext(CourierBeeContext);
   if (!ctx) {
     return {
-      active: false,
+      canFly: () => false,
       flyOpen: () => {},
       flyAway: () => {},
       carryOff: async () => {},
@@ -35,7 +36,6 @@ export function CourierBeeProvider({ children }: { children: ReactNode }) {
   const beeRef = useRef<BeeState | null>(null);
   const tlRef = useRef<gsap.core.Timeline | null>(null);
   const reduced = useReducedMotion();
-  const [active, setActive] = useState(false);
 
   useEffect(() => {
     const host = hostRef.current;
@@ -47,7 +47,6 @@ export function CourierBeeProvider({ children }: { children: ReactNode }) {
       return;
     }
     sceneRef.current = scene;
-    setActive(true);
     const tick = (time: number) => scene.frame(time, beeRef.current);
     gsap.ticker.add(tick);
     const onResize = () => scene.resize();
@@ -59,9 +58,10 @@ export function CourierBeeProvider({ children }: { children: ReactNode }) {
       tlRef.current = null;
       scene.dispose();
       sceneRef.current = null;
-      setActive(false);
     };
   }, [reduced]);
+
+  const canFly = useCallback(() => sceneRef.current !== null, []);
 
   const flyOpen = useCallback((from: Point, cardId: string) => {
     const trail = trailRef.current;
@@ -203,7 +203,7 @@ export function CourierBeeProvider({ children }: { children: ReactNode }) {
   );
 
   return (
-    <CourierBeeContext.Provider value={{ active, flyOpen, flyAway, carryOff }}>
+    <CourierBeeContext.Provider value={{ canFly, flyOpen, flyAway, carryOff }}>
       {children}
       {/* Shared fullscreen courier bee overlay */}
       <div ref={hostRef} aria-hidden className="pointer-events-none fixed inset-0 z-65" />
