@@ -4,12 +4,11 @@ import { useRef } from "react";
 import { useReducedMotion } from "@/lib/hooks/use-reduced-motion";
 import { EnvelopeBack } from "./envelope-back";
 import { EnvelopeFront } from "./envelope-front";
+import { ENVELOPE_SIZE } from "../shared/envelope-size";
 import { InvitationCard } from "./invitation-card";
 import { ScrollHint } from "./scroll-hint";
 import { StageKickers } from "./stage-kickers";
 import { useEnvelopeTimeline } from "./use-envelope-timeline";
-
-const ENVELOPE_SIZE = "relative aspect-[1.6/1] w-[min(560px,86vw)] min-[760px]:w-[min(560px,50vw)]";
 
 const Glows = () => (
   <>

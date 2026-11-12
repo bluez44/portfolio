@@ -5,6 +5,7 @@ import type { RsvpAnswer } from "@/lib/graduation/types";
 import { useReducedMotion } from "@/lib/hooks/use-reduced-motion";
 import { useCopy } from "../i18n/lang-context";
 import { RisoButton } from "@/components/ui/riso/button";
+import { FINALE_ENVELOPE_SIZE } from "../shared/envelope-size";
 import { SectionHeading } from "../shared/section-heading";
 import { EnvelopeBody } from "../envelope/envelope-body";
 import { EnvelopeFlap } from "../envelope/envelope-flap";
@@ -12,8 +13,6 @@ import { EnvelopePocket } from "../envelope/envelope-pocket";
 import { FinaleReplyCard } from "./finale-reply-card";
 import { useCountdown } from "./use-countdown";
 import { useFinaleTimeline } from "./use-finale-timeline";
-
-const ENVELOPE_SIZE = "relative aspect-[1.6/1] w-[min(540px,88vw)] min-[760px]:w-[min(540px,46vw)]";
 
 const pad = (n: number) => String(n).padStart(2, "0");
 
@@ -88,7 +87,7 @@ export function FinaleSection({
         </div>
 
         {/* Center: Envelope sealing stage */}
-        <div id="finaleWrap" className={`${ENVELOPE_SIZE} my-auto transform-3d`}>
+        <div id="finaleWrap" className={`${FINALE_ENVELOPE_SIZE} my-auto transform-3d`}>
           <EnvelopeBody id="finaleBody" />
           <EnvelopePocket
             id="finalePocket"
