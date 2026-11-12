@@ -1,36 +1,28 @@
-import Image from "next/image";
-import type { CSSProperties } from "react";
-import { ARRIVE_AT, MEMORY_PHOTOS } from "../finale/constants";
+import type { Moment } from "@/lib/graduation/i18n";
+import { useCopy } from "../../i18n/lang-context";
+import { Tape } from "../../shared/tape";
+import { MEMORY_PHOTOS, TOGETHER_PHOTO } from "../finale/constants";
+import { MemoryPolaroid } from "./memory-polaroid";
 
 /**
  * Memory photos that gather around the pinned note, laid out across the full viewport width (the
  * finale timeline shifts the layer to the viewport's left edge and owns each photo's transform:
- * centring on its spot, tilt and the way in).
+ * centring on its spot, tilt and the way in). The together photo comes last so it paints on top.
  */
-export function FinaleMemoryPhotos({ images }: { images: string[] }) {
-  if (images.length === 0) return null;
+export function FinaleMemoryPhotos({ memories, together, guestName }: { memories: Moment[]; together?: string; guestName: string }) {
+  const { met: t } = useCopy();
+  if (memories.length === 0) return null;
   return (
     <div data-memory-layer aria-hidden className="pointer-events-none absolute top-0 left-0 h-0 w-screen">
-      {MEMORY_PHOTOS.map((p, i) => (
-        <figure
-          key={i}
-          data-memory-photo
-          className="absolute top-(--top-phone) left-[calc(50%+var(--x-phone))] m-0 rounded-[10px] border-[1.5px] border-ink bg-paper p-1.5 opacity-0 shadow-(--offset-sm) min-[760px]:top-(--top-wide) min-[760px]:left-[calc(50%+var(--x-wide))]"
-          style={
-            {
-              "--x-phone": `${p.phone.x}vw`,
-              "--x-wide": `${p.wide.x}vw`,
-              "--top-phone": `${(p.phone.rest - ARRIVE_AT) * 100}vh`,
-              "--top-wide": `${(p.wide.rest - ARRIVE_AT) * 100}vh`,
-              width: p.width,
-            } as CSSProperties
-          }
-        >
-          <div className="relative aspect-4/5 overflow-hidden rounded-[6px]">
-            <Image src={images[i % images.length]} alt="" fill sizes="(min-width: 760px) 320px, 38vw" className="object-cover" />
-          </div>
-        </figure>
-      ))}
+      {MEMORY_PHOTOS.map((slot, i) => {
+        const m = memories[i % memories.length];
+        return <MemoryPolaroid key={i} slot={slot} image={m.image} caption={`${m.year} · ${m.title}`} />;
+      })}
+      {together && (
+        <MemoryPolaroid slot={TOGETHER_PHOTO} image={together} caption={t.togetherCaption(guestName)}>
+          <Tape color="canary" width={58} height={18} rotate={38} className="z-10" style={{ top: -6, left: "auto", right: -18, marginLeft: 0 }} />
+        </MemoryPolaroid>
+      )}
     </div>
   );
 }

@@ -97,7 +97,7 @@ function InvitationContent({ guest, initialRsvp, ownerPhone }: InvitationProps) 
 
         <main>
           <EnvelopeStage guestName={guest.name} />
-          <MetSection guestName={guest.name} note={guest.customContent?.met?.note ?? guest.note} />
+          <MetSection guestName={guest.name} note={guest.customContent?.met?.note ?? guest.note} togetherPhoto={guest.customContent?.met?.togetherPhoto} />
           <EndsSection onTourOpen={fadePause} onTourClose={fadeResume} />
           <RsvpSection
             slug={guest.slug}

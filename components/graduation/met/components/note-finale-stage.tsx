@@ -1,3 +1,4 @@
+import type { Moment } from "@/lib/graduation/i18n";
 import { BkBadge } from "./bk-badge";
 import { FinaleMemoryPhotos } from "./finale-memory-photos";
 import { PersonalNoteCard } from "./personal-note-card";
@@ -9,11 +10,13 @@ const outlineStroke = { fill: "none", stroke: "var(--tomato)", strokeWidth: 3, s
  * The trail's last stop. The outer wrapper stays in flow (the trail measures it); the inner element
  * is what gets pinned, holding the scalable note with its outline and the docked badge.
  */
-export function NoteFinaleStage({ guestName, label, note, photos }: { guestName: string; label: string; note: string; photos: string[] }) {
+type Props = { guestName: string; label: string; note: string; memories: Moment[]; together?: string };
+
+export function NoteFinaleStage({ guestName, label, note, memories, together }: Props) {
   return (
     <div data-trail-end className="relative">
       <div data-trail-pin className="relative">
-        <FinaleMemoryPhotos images={photos} />
+        <FinaleMemoryPhotos memories={memories} together={together} guestName={guestName} />
         <div data-note-scale className="relative origin-top">
           <PolaroidFrame guestName={guestName}>
             <PersonalNoteCard label={label} note={note} />
