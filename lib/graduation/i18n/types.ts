@@ -11,7 +11,7 @@ export type Field = { label: string; placeholder: string };
 export type GuideTab = { tab: string; frameTitle: string };
 /** Attribution for content owned by someone else. */
 export type Credit = { label: string; owner: string };
-export type VenueGuideCopy = { tabsLabel: string; map: GuideTab & { hint: string }; tour: GuideTab & { load: string; open: string; credit: Credit } };
+export type VenueGuideCopy = { tabsLabel: string; loading: string; map: GuideTab & { hint: string; touchHint: string }; tour: GuideTab & { load: string; open: string; credit: Credit } };
 
 export type GraduationCopy = {
   meta: { title: string; guestTitle: (name: string) => string; description: string };

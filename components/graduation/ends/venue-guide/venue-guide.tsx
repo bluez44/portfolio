@@ -46,7 +46,7 @@ export function VenueGuide({
       id: "map",
       copy: t.map,
       frame: (
-        <ScrollShield hint={t.map.hint}>
+        <ScrollShield hint={t.map.hint} touchHint={t.map.touchHint}>
           <DeferredEmbed src={E.mapEmbedUrl} title={t.map.frameTitle} />
         </ScrollShield>
       ),

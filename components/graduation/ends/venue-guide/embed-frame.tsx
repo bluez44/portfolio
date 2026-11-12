@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { Loader2 } from "lucide-react";
+import { useCopy } from "../../i18n/lang-context";
 
 /** A full-bleed iframe for the venue guide frame with a loading spinner. */
 export function EmbedFrame({
@@ -15,6 +16,7 @@ export function EmbedFrame({
   allow?: string;
   onLoad?: () => void;
 }) {
+  const { ends } = useCopy();
   const [isLoading, setIsLoading] = useState(true);
 
   return (
@@ -27,7 +29,7 @@ export function EmbedFrame({
         >
           <Loader2 className="h-7 w-7 animate-spin text-tomato" />
           <span className="font-mono text-[11px] tracking-[0.16em] uppercase text-ink-3">
-            Đang tải...
+            {ends.guide.loading}
           </span>
         </div>
       )}

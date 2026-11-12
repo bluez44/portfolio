@@ -63,7 +63,8 @@ export const vi: GraduationCopy = {
     addToCalendar: "Thêm vào lịch",
     guide: {
       tabsLabel: "Bản đồ và tham quan trường",
-      map: { tab: "Bản đồ", frameTitle: "Bản đồ đến hội trường", hint: "Ctrl + cuộn để phóng to · Bấm để dùng bản đồ" },
+      loading: "Đang tải…",
+      map: { tab: "Bản đồ", frameTitle: "Bản đồ đến hội trường", hint: "Ctrl + cuộn để phóng to · Bấm để dùng bản đồ", touchHint: "Chạm để dùng bản đồ" },
       tour: {
         tab: "Tham quan 360°",
         load: "Bắt đầu tham quan",
