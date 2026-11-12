@@ -89,17 +89,15 @@ export function BeeIntro({ guestName, phase, musicPlaying, onEnter, onExited }: 
         <div className="flex min-w-0 flex-col gap-[clamp(10px,2vh,18px)]">
           <h1
             aria-label={`${stage.cover.lead} ${stage.cover.accent}`}
-            className="m-0 font-heading text-[min(clamp(56px,11.5vw,184px),18vh)] leading-[0.86] font-bold tracking-[-0.045em] text-ink"
+            className="m-0 font-heading text-[clamp(56px,11.5vw,184px)] leading-[0.86] font-bold tracking-[-0.045em] text-ink"
             style={{ fontVariationSettings: '"wdth" 82, "opsz" 96' }}
           >
-            <span aria-hidden className="-mt-[0.3em] block overflow-hidden pt-[0.3em] pb-[0.05em]">
+            <span aria-hidden className="relative z-1 -mt-[0.3em] block overflow-hidden pt-[0.3em] pb-[0.05em]">
               <Chars text={stage.cover.lead} />
             </span>
-            {stage.cover.accent.split(" ").map((word, i) => (
-              <span key={i} aria-hidden className="-mt-[0.3em] block overflow-hidden pt-[0.3em] pb-[0.1em] text-tomato italic" style={{ fontVariationSettings: '"wdth" 78, "opsz" 96' }}>
-                <Chars text={word} />
-              </span>
-            ))}
+            <span aria-hidden className="-mt-[0.3em] block overflow-hidden pt-[0.3em] pb-[0.1em] text-tomato italic" style={{ fontVariationSettings: '"wdth" 78, "opsz" 96' }}>
+              <Chars text={stage.cover.accent} />
+            </span>
           </h1>
           <div data-intro-fade className="flex flex-wrap items-baseline gap-3">
             <span className={`${mono} text-ink-3`}>{envelope.to}</span>
