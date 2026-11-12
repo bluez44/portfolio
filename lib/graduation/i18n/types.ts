@@ -30,7 +30,7 @@ export type GraduationCopy = {
   };
   card: { label: string; greeting: string; body: string; keepScrolling: string; coverImage?: string; author?: string };
   stage: { coverKicker: string; cover: Heading; greetKicker: string; scrollHint: string };
-  met: { heading: Heading; intro: string; moments: Moment[]; andYou: (name: string) => string; defaultNote: string };
+  met: { heading: Heading; intro: string; moments: Moment[]; andYou: (name: string) => string; defaultNote: string; togetherCaption: (name: string) => string };
   ends: {
     heading: Heading;
     intro: string;

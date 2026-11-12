@@ -17,6 +17,10 @@ describe("GRADUATION_COPY", () => {
     expect(GRADUATION_COPY.en.met.moments).toHaveLength(GRADUATION_COPY.vi.met.moments.length);
     expect(GRADUATION_COPY.vi.met.moments.every((m) => m.title && m.body)).toBe(true);
   });
+  it("captions the together photo with the guest's name", () => {
+    expect(GRADUATION_COPY.vi.met.togetherCaption("Lan")).toBe("Mình & Lan");
+    expect(GRADUATION_COPY.en.met.togetherCaption("Lan")).toBe("Us · Lan");
+  });
   it("has the letter gate copy in every language", () => {
     for (const copy of Object.values(GRADUATION_COPY)) {
       expect(Object.values(copy.gate).every(Boolean)).toBe(true);

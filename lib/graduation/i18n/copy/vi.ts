@@ -47,6 +47,7 @@ export const vi: GraduationCopy = {
       { title: "Đi làm & luận văn", body: "Front-end Developer ban ngày, TrackNest ban đêm — và chặng cuối của tấm bằng." },
     ]),
     andYou: (name) => `Và bạn, ${name}`,
+    togetherCaption: (name) => `Mình & ${name}`,
     defaultNote: "Ở đâu đó trên hành trình ấy, mình đã gặp bạn. Cảm ơn vì đã là một phần của câu chuyện.",
   },
   ends: {

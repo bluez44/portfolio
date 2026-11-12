@@ -47,6 +47,7 @@ export const en: GraduationCopy = {
       { title: "Work meets thesis", body: "Front-end Developer by day, TrackNest by night — and the final stretch of the degree." },
     ]),
     andYou: (name) => `And you, ${name}`,
+    togetherCaption: (name) => `Us · ${name}`,
     defaultNote: "Somewhere along the way, I met you. Thank you for being part of the story.",
   },
   ends: {
