@@ -2,6 +2,7 @@ import gsap from "gsap";
 import * as THREE from "three";
 import { outlineGeometry } from "../character/scene/mesh-kit";
 import { BEE_HEAD_RADIUS, createBeeModel } from "../shared/three/bee-model";
+import { readRisoPalette } from "../shared/three/palette";
 import { toonGradient } from "../shared/three/toon";
 import { applyFilmGrain, formatTimecode, shiftFilmGrain } from "./film-effects";
 import { hexGrid } from "./hex-grid";
@@ -83,7 +84,7 @@ export function createBeeIntroScene(host: HTMLElement, opts: Options): BeeIntroS
   inner.rotation.y = -Math.PI / 2;
   inner.scale.setScalar(BEE_SCALE);
   outer.add(inner);
-  const bee = createBeeModel(gradient, outM);
+  const bee = createBeeModel(gradient, outM, readRisoPalette());
   inner.add(bee.group);
   bee.eyes.forEach((e) => (e.scale.y = 0.18));
   bee.wings.forEach((w) => (w.pivot.rotation.x = w.side * 0.9));

@@ -1,5 +1,6 @@
 import * as THREE from "three";
 import { createBeeModel } from "../shared/three/bee-model";
+import { readRisoPalette } from "../shared/three/palette";
 import { toonGradient } from "../shared/three/toon";
 
 /** Screen-space position/state of the courier bee, mutated by the flight timeline. */
@@ -34,7 +35,7 @@ export function createBeeScene(host: HTMLElement): BeeScene {
 
   const grad = toonGradient([120, 200, 255]);
   const outM = new THREE.MeshBasicMaterial({ color: "#1c1b1f", side: THREE.BackSide });
-  const model = createBeeModel(grad, outM);
+  const model = createBeeModel(grad, outM, readRisoPalette());
   const g = model.group;
   const wings = model.wings.map((w) => w.pivot);
   scene.add(g);

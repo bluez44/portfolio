@@ -1,5 +1,6 @@
 import * as THREE from "three";
 import { outlineGeometry } from "../../character/scene/mesh-kit";
+import { inkAndPaperByDepth, type RisoPalette } from "./palette";
 
 type Vec3 = [number, number, number];
 
@@ -11,17 +12,26 @@ export type BeeModel = {
   head: THREE.Mesh;
   wings: { pivot: THREE.Group; side: 1 | -1 }[];
   eyes: THREE.Mesh[];
+  applyPalette(p: RisoPalette): void;
   dispose(): void;
 };
 
 /** The design's toon bee in its own units (body radius 14, facing +x); callers scale and pose it. */
-export function createBeeModel(gradient: THREE.DataTexture, outline: THREE.Material): BeeModel {
-  const toon = (color: string, extra?: THREE.MeshToonMaterialParameters) =>
-    new THREE.MeshToonMaterial({ color, gradientMap: gradient, ...extra });
-  const yellow = toon("#f5c518");
-  const ink = toon("#1c1b1f");
-  const eye = toon("#fbf8f2");
-  const wing = toon("#fbf8f2", { transparent: true, opacity: 0.82 });
+export function createBeeModel(gradient: THREE.DataTexture, outline: THREE.Material, palette: RisoPalette): BeeModel {
+  const toon = (extra?: THREE.MeshToonMaterialParameters) => new THREE.MeshToonMaterial({ gradientMap: gradient, ...extra });
+  const yellow = toon();
+  const ink = toon();
+  const eye = toon();
+  const wing = toon({ transparent: true, opacity: 0.82 });
+  // The bee keeps its identity in both themes: a canary body with dark stripes and pale eyes and wings.
+  const applyPalette = (p: RisoPalette) => {
+    const { deep, pale } = inkAndPaperByDepth(p);
+    yellow.color.set(p.canary);
+    ink.color.set(deep);
+    eye.color.set(pale);
+    wing.color.set(pale);
+  };
+  applyPalette(palette);
 
   const add = (parent: THREE.Object3D, geo: THREE.BufferGeometry, mat: THREE.Material, pos?: Vec3 | null, rot?: Vec3 | null, scale?: Vec3 | null, line = 1.3) => {
     const mesh = new THREE.Mesh(geo, mat);
@@ -64,6 +74,7 @@ export function createBeeModel(gradient: THREE.DataTexture, outline: THREE.Mater
     head,
     wings,
     eyes,
+    applyPalette,
     dispose() {
       group.traverse((o) => {
         if (o instanceof THREE.Mesh) o.geometry.dispose();
