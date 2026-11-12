@@ -14,7 +14,7 @@ export function TicketWhen() {
         {E.dateShort}
       </span>
       <span className="font-heading text-lg font-semibold">{t.day}</span>
-      <span className="self-start rounded-full border-[1.5px] border-ink bg-canary px-2.5 py-1 font-mono text-xs tracking-[0.14em] text-ink">
+      <span className="self-start rounded-full border-[1.5px] border-ink bg-canary px-2.5 py-1 font-mono text-xs tracking-[0.14em] text-(--on-canary)">
         {E.timeRange}
       </span>
     </div>

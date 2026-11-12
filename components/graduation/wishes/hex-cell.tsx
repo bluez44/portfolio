@@ -99,7 +99,7 @@ export function WishHex({
       {isMine && (
         <span
           aria-hidden
-          className="absolute -top-2 left-1/2 z-10 -translate-x-1/2 rounded-full border-[1.5px] border-ink bg-canary px-2 py-0.5 font-mono text-[8px] font-bold tracking-[0.14em] text-ink uppercase"
+          className="absolute -top-2 left-1/2 z-10 -translate-x-1/2 rounded-full border-[1.5px] border-ink bg-canary px-2 py-0.5 font-mono text-[8px] font-bold tracking-[0.14em] text-(--on-canary) uppercase"
           style={{ boxShadow: "1px 1px 0 var(--ink)" }}
         >
           {mineLabel}

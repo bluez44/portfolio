@@ -69,7 +69,7 @@ export function FinaleSection({
 
           {countdown?.phase === "during" && (
             <span
-              className="rounded-full border-[1.5px] border-ink bg-canary px-4 py-1.5 font-mono text-[11px] font-bold tracking-[0.16em] text-ink uppercase"
+              className="rounded-full border-[1.5px] border-ink bg-canary px-4 py-1.5 font-mono text-[11px] font-bold tracking-[0.16em] text-(--on-canary) uppercase"
               style={{ boxShadow: "var(--offset-xs)" }}
             >
               {t.countdown.during}

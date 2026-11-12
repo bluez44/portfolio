@@ -46,7 +46,7 @@ export function GuideTabs({
             tabIndex={selected ? 0 : -1}
             onClick={() => onSelect(id)}
             className={`riso-focus hit-area relative rounded-full border-0 px-4 py-1.5 font-mono text-[11px] tracking-[0.14em] uppercase transition-colors duration-(--dur-fast) ${
-              selected ? "bg-canary text-ink" : "bg-transparent text-ink-3 hover:text-tomato"
+              selected ? "bg-canary text-(--on-canary)" : "bg-transparent text-ink-3 hover:text-tomato"
             }`}
           >
             {text}

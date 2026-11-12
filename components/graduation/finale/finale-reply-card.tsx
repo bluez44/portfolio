@@ -67,7 +67,7 @@ export function FinaleReplyCard({
             </span>
             <a
               href="#rsvp"
-              className="riso-focus inline-flex items-center gap-1.5 rounded-full border-[1.5px] border-ink bg-canary px-4 py-1.5 font-mono text-[11px] font-bold tracking-[0.16em] text-ink uppercase no-underline transition-transform hover:-translate-y-0.5"
+              className="riso-focus inline-flex items-center gap-1.5 rounded-full border-[1.5px] border-ink bg-canary px-4 py-1.5 font-mono text-[11px] font-bold tracking-[0.16em] text-(--on-canary) uppercase no-underline transition-transform hover:-translate-y-0.5"
               style={{ boxShadow: "var(--offset-xs)" }}
             >
               {t.replyNow}

@@ -12,6 +12,7 @@ export function RisoPill({
   children,
 }: { color?: PillColor; tilt?: number; pulse?: boolean; size?: "md" | "sm"; wrap?: boolean; children: ReactNode }) {
   const light = color === "canary" || color === "paper" || color === "paper-2";
+  const ink = color === "canary" ? "var(--on-canary)" : light ? "var(--ink)" : "var(--paper)";
   const sizeCls =
     size === "sm"
       ? "px-2.5 py-0.5 font-mono text-[10px] tracking-[0.18em]"
@@ -22,13 +23,13 @@ export function RisoPill({
       className={`inline-flex max-w-full items-center gap-2 border-[1.5px] border-ink uppercase leading-[1.4] ${wrap ? "rounded-2xl whitespace-normal text-left" : "rounded-full whitespace-nowrap"} ${sizeCls}`}
       style={{
         background: `var(--${color})`,
-        color: light ? "var(--ink)" : "var(--paper)",
+        color: ink,
         boxShadow: size === "sm" ? "2px 2px 0 var(--ink)" : "var(--offset-sm)",
         transform: tilt ? `rotate(${tilt}deg)` : undefined,
       }}
     >
       {pulse && (
-        <span aria-hidden className="h-1.5 w-1.5 rounded-full" style={{ background: light ? "var(--ink)" : "var(--paper)", animation: "pulse-dot 2.2s ease-in-out infinite" }} />
+        <span aria-hidden className="h-1.5 w-1.5 rounded-full" style={{ background: ink, animation: "pulse-dot 2.2s ease-in-out infinite" }} />
       )}
       {children}
     </span>
