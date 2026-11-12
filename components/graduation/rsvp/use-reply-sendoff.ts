@@ -15,6 +15,8 @@ export function useReplySendoff(cardRef: RefObject<HTMLElement | null>, hasIniti
   const startSendoff = useCallback(async () => {
     if (sendoffActive.current) return;
     sendoffActive.current = true;
+    // A re-sent reply (after "change answer") must hide the previous result until the bee has carried the letter off.
+    setShowResult(false);
 
     const card = cardRef.current;
     if (reduced || !card) {
