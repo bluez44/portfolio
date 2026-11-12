@@ -4,6 +4,7 @@ import dynamic from "next/dynamic";
 import { useEffect, useRef, useState } from "react";
 import { CanvasErrorBoundary } from "./canvas-error-boundary";
 import { TechFocusPanel } from "./tech-focus-panel";
+import { useCoarsePointer } from "@/lib/hooks/use-media-query";
 import { useScrollReveal } from "@/lib/hooks/use-scroll-reveal";
 import { useHandTracking } from "@/lib/hooks/use-hand-tracking";
 import { ACCENT_COLOR, chipTiers, techs, tierLegend } from "@/lib/portfolio-data";
@@ -37,6 +38,7 @@ export function Skills() {
   const chipsRef = useScrollReveal<HTMLDivElement>(true);
   const wrapperRef = useRef<HTMLDivElement>(null);
   const sceneRef = useRef<TechSceneHandle>(null);
+  const coarse = useCoarsePointer();
 
   const [visible, setVisible] = useState(false);
   const [reducedMotion, setReducedMotion] = useState(false);
@@ -102,7 +104,7 @@ export function Skills() {
             </h2>
             <p className="max-w-md text-[16px] leading-[1.6] text-ink-2">
               A living map of my stack — foundations at the root, specialised
-              tools at the crown. Drag to orbit, click a node or chip to inspect.
+              tools at the crown. Drag to orbit, select a node or chip to inspect.
             </p>
           </div>
 
@@ -171,18 +173,20 @@ export function Skills() {
 
           {/* stage controls */}
           <div className="absolute bottom-4 left-4 flex flex-wrap items-center gap-3">
-            <button
-              onClick={toggleHands}
-              aria-pressed={handOn}
-              className="rounded-full border-[1.5px] border-ink px-4 py-2 text-[12px] font-semibold transition-transform hover:-translate-y-0.5"
-              style={{
-                background: handOn ? "var(--jade)" : "var(--paper)",
-                color: handOn ? "var(--paper)" : "var(--ink)",
-                boxShadow: "3px 3px 0 var(--ink)",
-              }}
-            >
-              {handOn ? "✕ Hand control ON" : "◉ Enable hand control"}
-            </button>
+            {!coarse && (
+              <button
+                onClick={toggleHands}
+                aria-pressed={handOn}
+                className="rounded-full border-[1.5px] border-ink px-4 py-2 text-[12px] font-semibold transition-transform hover:-translate-y-0.5"
+                style={{
+                  background: handOn ? "var(--jade)" : "var(--paper)",
+                  color: handOn ? "var(--paper)" : "var(--ink)",
+                  boxShadow: "3px 3px 0 var(--ink)",
+                }}
+              >
+                {handOn ? "✕ Hand control ON" : "◉ Enable hand control"}
+              </button>
+            )}
             {handStatus && (
               <p
                 role="status"
