@@ -28,7 +28,7 @@ Bốn thay đổi so với design (theo yêu cầu):
 
 - Nút "↺ Xem lại mở đầu" của design. Nếu muốn có thì làm sau.
 - Ba biến thể seal, vinyl, press.
-- Âm thanh hiệu ứng: `playSfx` (tiếng nứt sáp, tiếng giấy) không còn được dùng nên sẽ bị xóa.
+- Tiếng nứt sáp: cảnh mới không còn con dấu nên bỏ tiếng này. Các tiếng khác được đổi cho khớp cảnh ong (§3.5).
 
 ## 2. Quyết định
 
@@ -42,6 +42,7 @@ Bốn thay đổi so với design (theo yêu cầu):
 | Mô hình ong | Tách mô hình ong 3D đang nằm trong `wishes/bee-scene.ts` ra thành `shared/three/bee-model.ts`. Ong đưa thư và ong ở màn mở đầu dùng chung một mô hình (cùng hình học trong design). |
 | Helper 3D | Export `outlineGeometry` từ `character/scene/mesh-kit.ts` và tạo `toonGradient()` dùng chung, thay cho ba bản copy hiện có. |
 | Reduced motion | Cảnh đứng yên (không thở, không parallax), không có hiệu ứng vào. Bấm nút thì màn mở đầu mờ đi trong 0.45s, không có ong bay. |
+| Âm thanh hiệu ứng | Giữ `playSfx` (tổng hợp bằng Web Audio, không cần file). Đổi bộ tiếng: thêm `buzz` (ong vỗ cánh), giữ `rustle` (giấy), bỏ `crack`. Chỉ phát trên đường "Đánh thức" và khi không bật reduced motion. |
 | Không có WebGL | Không vẽ cảnh 3D, phần còn lại (nền chấm, dải đen, chữ, nút) vẫn hoạt động. Đường "Đánh thức" lúc đó chạy như đường không nhạc nhưng vẫn phát nhạc. |
 
 ## 3. Các phần
@@ -74,7 +75,7 @@ export type BeeIntroScene = {
   pause(): void;
   dispose(): void;
 };
-export function createBeeIntroScene(host: HTMLElement, opts: { reduced: boolean; timecode?: HTMLElement | null; grain?: HTMLElement | null }): BeeIntroScene;
+export function createBeeIntroScene(host: HTMLElement, opts: { reduced: boolean; timecode?: HTMLElement | null; grain?: HTMLElement | null; onFlap?: () => void }): BeeIntroScene;
 ```
 
 - Tổ ong là lưới lục giác bán kính 4 (61 ô); màu nắp ô và chiều cao lấy ngẫu nhiên theo seed cố định 7.
@@ -129,9 +130,26 @@ export function createBeeIntroScene(host: HTMLElement, opts: { reduced: boolean;
 | `nowPlaying` | ♪ Đang phát | ♪ Now playing |
 | `preparing` | Đang chuẩn bị lá thư… | Preparing your letter… |
 
-### 3.5 Xóa
+### 3.5 Âm thanh hiệu ứng
 
-- `lib/graduation/sfx.ts` và lời gọi `playSfx`.
+**`lib/graduation/sfx.ts`** giữ nguyên cách tổng hợp bằng Web Audio, chỉ đổi bộ tiếng thành `playSfx(name: "buzz" | "rustle", delaySec?)`:
+
+- **`buzz` (mới):** tiếng ong vo ve kéo dài khoảng 2.6s.
+  - Nguồn là oscillator răng cưa khoảng 190 Hz, qua bộ lọc lowpass khoảng 1.2 kHz.
+  - Một LFO khoảng 28 Hz điều biên để ra cảm giác cánh đập.
+  - Cao độ nhích lên nhẹ lúc cất cánh, âm lượng to dần trong 0.15s đầu rồi nhỏ dần về 0 khi ong bay xa.
+  - Đường âm lượng là hàm thuần `buzzGain(t, duration)` trong `lib/graduation/sfx-envelope.ts` để test được.
+- **`rustle` (giữ):** tiếng giấy sột soạt.
+- **`crack`:** bỏ.
+
+Thời điểm phát (chỉ trên đường "Đánh thức", không bật reduced motion):
+- `buzz`: lúc ong bắt đầu vỗ cánh, giây 0.45 của timeline. `wake()` gọi qua callback `onFlap` trong `opts` của cảnh.
+- `rustle`: lúc hai dải đen bắt đầu mở ra để lộ thiệp.
+
+Đường "Vào không nhạc" không phát âm thanh hiệu ứng.
+
+### 3.6 Xóa
+
 - Markup phong bì và con dấu trong `letter-gate.tsx`. `WaxSeal`, `EnvelopeBody` và prop `id/sealed` của `EnvelopeFlap` vẫn giữ vì phong bì chính dùng, và màn khép lại (§3.6 của spec trước) sẽ dùng.
 - Keyframes `gate-drop` và `gate-out` trong `globals.css`.
 
@@ -147,14 +165,15 @@ export function createBeeIntroScene(host: HTMLElement, opts: { reduced: boolean;
 
 **Vitest:**
 - `hexGrid(4)` có 61 ô, có ô tâm `d = 0`, và mọi ô đều có `d ≤ 4`.
+- `buzzGain`: bằng 0 lúc bắt đầu và lúc kết thúc, đạt đỉnh sau 0.15s, không bao giờ âm.
 - Reducer: thêm trường hợp `finish` đến trước `open` thì bị bỏ qua (đã có test "stray openFinished"; giữ nguyên).
 - Copy: test i18n kiểm tra đủ các khóa `gate` ở cả hai ngôn ngữ.
 
 **Kiểm tra trên trình duyệt:**
 1. Hiệu ứng vào: dải đen, chữ, ong thở.
 2. Nút bị khóa khi chưa tải xong.
-3. "Đánh thức": nhạc có tiếng, ong bay, ô rơi, dải đen khép/mở, trang ở đầu, focus về `#stage`.
-4. "Vào không nhạc": không có nhạc, vào trang nhanh.
+3. "Đánh thức": nhạc có tiếng, nghe tiếng vo ve lúc ong cất cánh và tiếng giấy lúc dải đen mở, ong bay, ô rơi, dải đen khép/mở, trang ở đầu, focus về `#stage`.
+4. "Vào không nhạc": không có nhạc, không có âm thanh hiệu ứng, vào trang nhanh.
 5. Chạm khung hình tương đương "Đánh thức".
 6. Đổi vi/en ngay trên màn mở đầu.
 7. Tab không thoát ra ngoài màn mở đầu.
