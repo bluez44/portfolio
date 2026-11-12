@@ -62,6 +62,7 @@ export const vi: GraduationCopy = {
     notes: ["Trang phục · Lịch sự", "Gửi xe · Cổng Lý Thường Kiệt", "Chụp ảnh sau lễ"],
     directions: "Chỉ đường",
     addToCalendar: "Thêm vào lịch",
+    calendar: { google: "Google Calendar", apple: "Lịch Apple", orOther: (name) => `hoặc dùng ${name}` },
     guide: {
       tabsLabel: "Bản đồ và tham quan trường",
       loading: "Đang tải…",

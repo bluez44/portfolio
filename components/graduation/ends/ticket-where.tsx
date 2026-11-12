@@ -1,15 +1,12 @@
 "use client";
 
 import { RisoButton } from "@/components/ui/riso/button";
-import { downloadTextFile } from "@/lib/browser/download-text-file";
-import { buildIcs } from "@/lib/graduation/ics";
 import { useCopy, useGradEvent } from "../i18n/lang-context";
+import { AddToCalendar } from "../shared/add-to-calendar";
 
 export function TicketWhere({ onDirections }: { onDirections: () => void }) {
   const { ends: t } = useCopy();
   const E = useGradEvent();
-  const addToCalendar = () =>
-    downloadTextFile("tot-nghiep-quang-vinh.ics", "text/calendar", buildIcs(E, new Date()));
 
   return (
     <div className="flex flex-col gap-3.5 px-7 py-8">
@@ -22,13 +19,11 @@ export function TicketWhere({ onDirections }: { onDirections: () => void }) {
         <br />
         <span className="text-ink-3 italic">{t.venueSub}</span>
       </span>
-      <div data-character-avoid className="mt-1.5 flex flex-wrap gap-3">
+      <div data-character-avoid className="mt-1.5 flex flex-wrap items-start gap-3">
         <RisoButton variant="primary" size="md" onClick={onDirections} icon="↓">
           {t.directions}
         </RisoButton>
-        <RisoButton variant="secondary" size="md" onClick={addToCalendar} icon="↓">
-          {t.addToCalendar}
-        </RisoButton>
+        <AddToCalendar />
       </div>
     </div>
   );

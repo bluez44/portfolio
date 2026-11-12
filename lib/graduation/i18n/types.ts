@@ -44,6 +44,7 @@ export type GraduationCopy = {
     specialMessage?: string;
     directions: string;
     addToCalendar: string;
+    calendar: { google: string; apple: string; orOther: (name: string) => string };
     guide: VenueGuideCopy;
   };
   rsvp: {

@@ -62,6 +62,7 @@ export const en: GraduationCopy = {
     notes: ["Dress code · Smart casual", "Parking · Ly Thuong Kiet gate", "Photos after the ceremony"],
     directions: "Directions",
     addToCalendar: "Add to calendar",
+    calendar: { google: "Google Calendar", apple: "Apple Calendar", orOther: (name) => `or use ${name}` },
     guide: {
       tabsLabel: "Map and campus tour",
       loading: "Loading…",
