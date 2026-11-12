@@ -45,7 +45,7 @@ export function HoneycombViewport({
       <svg width="0" height="0" className="absolute">
         <defs>
           <pattern id="hexDots" width="7" height="7" patternUnits="userSpaceOnUse">
-            <circle cx="3.5" cy="3.5" r="1.2" fill="#fbf8f2" opacity="0.42" />
+            <circle cx="3.5" cy="3.5" r="1.2" opacity="0.42" style={{ fill: "var(--paper)" }} />
           </pattern>
         </defs>
       </svg>

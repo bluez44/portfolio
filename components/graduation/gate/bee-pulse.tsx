@@ -55,7 +55,7 @@ export const BeePulse = forwardRef<BeePulseHandle, { label: string; cue: string;
             width: `calc(var(--head) * ${HALO_SHARE})`,
             height: `calc(var(--head) * ${HALO_SHARE})`,
             background:
-              "radial-gradient(closest-side, transparent 48%, color-mix(in oklab, var(--paper) 85%, transparent) 64%, color-mix(in oklab, var(--canary) 35%, transparent) 78%, transparent)",
+              "radial-gradient(closest-side, transparent 48%, color-mix(in oklab, var(--halo) 85%, transparent) 64%, color-mix(in oklab, var(--canary) 35%, transparent) 78%, transparent)",
             animation: "breathe 4s ease-in-out infinite",
           }}
         />

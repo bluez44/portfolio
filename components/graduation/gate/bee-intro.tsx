@@ -96,7 +96,7 @@ export function BeeIntro({ guestName, phase, musicPlaying, onEnter, onExited }: 
         <div className="absolute -right-45 -bottom-50 h-175 w-175 rounded-full" style={{ background: "radial-gradient(closest-side, color-mix(in oklab, var(--blue) 11%, transparent), transparent)" }} />
       </div>
       <div ref={hostRef} data-intro-backdrop aria-hidden onClick={() => enter(true)} className={`absolute inset-0 z-2 ${waiting ? "cursor-wait" : "cursor-pointer"}`} />
-      <div data-intro-backdrop aria-hidden className="pointer-events-none absolute inset-0 z-4" style={{ background: "radial-gradient(ellipse 75% 70% at 55% 50%, transparent 55%, rgba(28,27,31,0.12) 100%)" }} />
+      <div data-intro-backdrop aria-hidden className="pointer-events-none absolute inset-0 z-4" style={{ background: "radial-gradient(ellipse 75% 70% at 55% 50%, transparent 55%, var(--vignette) 100%)" }} />
       <div ref={grainRef} data-intro-backdrop aria-hidden className="pointer-events-none absolute inset-0 z-6 opacity-7 mix-blend-multiply" />
 
       <span data-intro-toast className="absolute inset-x-0 top-[calc(clamp(44px,8vh,72px)+64px)] z-7 translate-y-2 text-center font-mono text-[11px] tracking-[0.22em] text-jade uppercase opacity-0">

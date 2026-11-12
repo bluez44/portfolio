@@ -19,5 +19,5 @@ export type CardStyle = "air" | "index";
 const ACCENTS = ["var(--tomato)", "var(--blue)", "var(--jade)", "var(--canary)"] as const;
 
 export function wishAccent(i: number): { color: string; onColor: string } {
-  return { color: ACCENTS[i % 4], onColor: i % 4 === 3 ? "#1c1b1f" : "var(--paper)" };
+  return { color: ACCENTS[i % 4], onColor: i % 4 === 3 ? "var(--on-canary)" : "var(--paper)" };
 }

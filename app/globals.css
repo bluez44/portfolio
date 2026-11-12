@@ -43,6 +43,11 @@
   --header-bg: color-mix(in oklab, var(--paper) 82%, transparent);
   --chip: color-mix(in oklab, var(--ink) 6%, transparent);
   --halftone: color-mix(in oklab, var(--ink) 7%, transparent);
+  --scrim: rgb(20 18 14 / 0.6);
+  --vignette: color-mix(in oklab, var(--ink) 12%, transparent);
+  --halo: var(--paper);
+  --on-canary: var(--ink);
+  --memory-brightness: 1;
 
   /* elevation — riso offset shadows (no blur, no glow) */
   --offset-sm: 3px 3px 0 var(--ink);
@@ -103,6 +108,11 @@
   --header-bg: color-mix(in oklab, var(--paper) 78%, transparent);
   --chip: color-mix(in oklab, var(--ink) 8%, transparent);
   --halftone: color-mix(in oklab, var(--ink) 12%, transparent);
+  --scrim: rgb(0 0 0 / 0.7);
+  --vignette: rgb(0 0 0 / 0.35);
+  --halo: color-mix(in oklab, var(--canary) 55%, transparent);
+  --on-canary: var(--paper);
+  --memory-brightness: 0.9;
 
   --offset-sm: 3px 3px 0 var(--ink-3);
   --offset-md: 5px 5px 0 var(--ink-3);

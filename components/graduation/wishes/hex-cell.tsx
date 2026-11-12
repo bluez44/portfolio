@@ -45,7 +45,7 @@ export function HubHex({ count, label }: { count: number; label: string }) {
         <polygon points={HEX_POINTS} transform="translate(5 5)" style={{ fill: "var(--ink)" }} />
         <polygon points={HEX_POINTS} style={{ fill: "var(--canary)", stroke: "var(--ink)", strokeWidth: 1.5 }} />
       </HexSvg>
-      <span className="absolute inset-0 flex flex-col items-center justify-center gap-1 text-[#1c1b1f]">
+      <span className="absolute inset-0 flex flex-col items-center justify-center gap-1 text-(--on-canary)">
         <span
           className="font-heading leading-[0.9] font-bold tracking-[-0.04em]"
           style={{ fontSize: 44, fontVariationSettings: '"wdth" 80, "opsz" 96' }}

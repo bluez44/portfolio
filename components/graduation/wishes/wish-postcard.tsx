@@ -150,7 +150,7 @@ export function WishPostcard({
       <div
         onClick={onClose}
         className="fixed inset-0 z-60 animate-[wish-fade_0.45s_ease_both]"
-        style={{ background: "rgba(20,18,14,0.6)" }}
+        style={{ background: "var(--scrim)" }}
       />
       <div className="pointer-events-none fixed inset-0 z-61 grid place-items-center p-6">
         <div
