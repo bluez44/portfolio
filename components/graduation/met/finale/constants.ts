@@ -26,20 +26,19 @@ export const NOTE_SIDE_GUTTER = 16;
 /** …and never balloons past this. */
 export const NOTE_MAX_SCALE = 1.25;
 
-/** Shared width; tied to the viewport height too so the row fits between the header and the note. */
-export const MEMORY_PHOTO_WIDTH = "clamp(78px, min(22vw, 22vh), 200px)";
-
 /**
- * Memory photos that gather in a loose row above the pinned note, one after another, each mostly
- * clear of its neighbours (centres ~22vw apart, one photo wide). `x` is the photo centre's offset
- * (vw) from the viewport centre; `rest` is where its top settles, as a share of the viewport
- * height; `enter` is the share of the pin over which it rises from below the viewport to rest.
+ * Memory photos that gather around the pinned note one after another and stay, scattered at
+ * random-looking spots. `phone`/`wide` place them below/above the 760px breakpoint: `x` is the
+ * photo centre's offset (vw) from the viewport centre, `rest` where its top settles (share of the
+ * viewport height). Widths are also capped by the viewport height so short screens keep the note
+ * clear. Each rises from below the viewport over `enter` (share of the pin), drifting in sideways
+ * by `drift` (vw) and turning by `spin` (deg) before it settles at `rot`.
  */
 export const MEMORY_PHOTOS = [
-  { x: -33, rot: -5, rest: 0.12, enter: [0.02, 0.32] },
-  { x: 11, rot: 3, rest: 0.15, enter: [0.18, 0.48] },
-  { x: -11, rot: -2, rest: 0.1, enter: [0.34, 0.64] },
-  { x: 33, rot: 5, rest: 0.14, enter: [0.5, 0.8] },
+  { width: "clamp(130px, min(36vw, 34vh), 300px)", rot: -5, phone: { x: -22, rest: 0.1 }, wide: { x: -33, rest: 0.08 }, drift: -14, spin: -10, enter: [0.02, 0.3] },
+  { width: "clamp(110px, min(30vw, 30vh), 240px)", rot: 4, phone: { x: 21, rest: 0.18 }, wide: { x: 36, rest: 0.12 }, drift: 18, spin: 12, enter: [0.14, 0.48] },
+  { width: "clamp(100px, min(26vw, 26vh), 220px)", rot: 3, phone: { x: 3, rest: 0.1 }, wide: { x: -40, rest: 0.55 }, drift: 8, spin: -6, enter: [0.36, 0.62] },
+  { width: "clamp(130px, min(38vw, 34vh), 320px)", rot: -3, phone: { x: -18, rest: 0.76 }, wide: { x: 36, rest: 0.56 }, drift: -10, spin: 8, enter: [0.46, 0.84] },
 ] as const;
 
 /** Top of a memory photo before it rises, as a share of the viewport height (just below it). */

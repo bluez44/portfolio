@@ -1,4 +1,5 @@
 import gsap from "gsap";
+import { MOBILE_BREAKPOINT } from "../../character/scene/constants";
 import type { FinaleElements } from "../elements";
 import { ARRIVE_LINE, GROW, GROW_EASE, HOLD, MEMORY_ENTER_FROM, MEMORY_LOOK, MEMORY_PHOTOS, PIN_END } from "./constants";
 import { noteScaleFor } from "./note-finale";
@@ -73,13 +74,20 @@ export function createFinaleTimeline({ pin, note, dock, halves, photo, memoryLay
     tl.set(memoryLayer, { x: () => -pin.getBoundingClientRect().left }, 0);
     // Placed within the pin's existing length, so the photos never change it.
     const span = tl.duration();
+    const wide = () => window.innerWidth >= MOBILE_BREAKPOINT;
     memoryPhotos.forEach((el, i) => {
-      const { rest, enter } = MEMORY_PHOTOS[i % MEMORY_PHOTOS.length];
-      const [from, to] = enter;
+      const p = MEMORY_PHOTOS[i % MEMORY_PHOTOS.length];
+      const [from, to] = p.enter;
       tl.fromTo(
         el,
-        { y: () => (MEMORY_ENTER_FROM - rest) * window.innerHeight, ...MEMORY_LOOK.from },
-        { y: 0, ...MEMORY_LOOK.to, duration: span * (to - from), ease: "power2.out" },
+        {
+          x: () => (p.drift * window.innerWidth) / 100,
+          y: () => (MEMORY_ENTER_FROM - (wide() ? p.wide : p.phone).rest) * window.innerHeight,
+          xPercent: -50,
+          rotation: p.rot + p.spin,
+          ...MEMORY_LOOK.from,
+        },
+        { x: 0, y: 0, xPercent: -50, rotation: p.rot, ...MEMORY_LOOK.to, duration: span * (to - from), ease: "power2.out" },
         span * from,
       );
     });

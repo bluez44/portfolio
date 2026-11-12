@@ -1,9 +1,11 @@
 import Image from "next/image";
-import { ARRIVE_AT, MEMORY_PHOTO_WIDTH, MEMORY_PHOTOS } from "../finale/constants";
+import type { CSSProperties } from "react";
+import { ARRIVE_AT, MEMORY_PHOTOS } from "../finale/constants";
 
 /**
- * Memory photos that gather above the pinned note, laid out across the full viewport width (the
- * finale timeline shifts the layer to the viewport's left edge and raises each photo into place).
+ * Memory photos that gather around the pinned note, laid out across the full viewport width (the
+ * finale timeline shifts the layer to the viewport's left edge and owns each photo's transform:
+ * centring on its spot, tilt and the way in).
  */
 export function FinaleMemoryPhotos({ images }: { images: string[] }) {
   if (images.length === 0) return null;
@@ -13,11 +15,19 @@ export function FinaleMemoryPhotos({ images }: { images: string[] }) {
         <figure
           key={i}
           data-memory-photo
-          className="absolute m-0 rounded-[10px] opacity-0 border-[1.5px] border-ink bg-paper p-1.5 shadow-(--offset-sm)"
-          style={{ left: `calc(50% + ${p.x}vw)`, translate: "-50% 0", width: MEMORY_PHOTO_WIDTH, rotate: `${p.rot}deg`, top: `${(p.rest - ARRIVE_AT) * 100}vh` }}
+          className="absolute top-(--top-phone) left-[calc(50%+var(--x-phone))] m-0 rounded-[10px] border-[1.5px] border-ink bg-paper p-1.5 opacity-0 shadow-(--offset-sm) min-[760px]:top-(--top-wide) min-[760px]:left-[calc(50%+var(--x-wide))]"
+          style={
+            {
+              "--x-phone": `${p.phone.x}vw`,
+              "--x-wide": `${p.wide.x}vw`,
+              "--top-phone": `${(p.phone.rest - ARRIVE_AT) * 100}vh`,
+              "--top-wide": `${(p.wide.rest - ARRIVE_AT) * 100}vh`,
+              width: p.width,
+            } as CSSProperties
+          }
         >
           <div className="relative aspect-4/5 overflow-hidden rounded-[6px]">
-            <Image src={images[i % images.length]} alt="" fill sizes="(min-width: 760px) 200px, 22vw" className="object-cover" />
+            <Image src={images[i % images.length]} alt="" fill sizes="(min-width: 760px) 320px, 38vw" className="object-cover" />
           </div>
         </figure>
       ))}
