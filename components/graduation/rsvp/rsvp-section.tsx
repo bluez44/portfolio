@@ -17,21 +17,23 @@ export function RsvpSection({
   guestName,
   initialRsvp,
   ownerPhone,
+  soundOn,
   onSaved,
 }: {
   slug: string;
   guestName: string;
   initialRsvp: RsvpAnswer | null;
   ownerPhone: string | null;
+  soundOn: boolean;
   onSaved?: (answer: RsvpAnswer) => void;
 }) {
   const ref = useScrollReveal<HTMLDivElement>();
   const cardRef = useRef<HTMLDivElement>(null);
-  const { showResult, postmarked, startSendoff } = useReplySendoff(cardRef, Boolean(initialRsvp));
+  const { showResult, postmarked, startSendoff } = useReplySendoff(cardRef, Boolean(initialRsvp), soundOn);
   const rsvp = useRsvp(slug, initialRsvp, {
     onSaved: (ans) => {
       onSaved?.(ans);
-      void startSendoff();
+      void startSendoff(ans.status);
     },
   });
   const { rsvp: t } = useCopy();

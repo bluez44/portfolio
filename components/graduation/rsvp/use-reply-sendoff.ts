@@ -1,29 +1,38 @@
 "use client";
 
 import gsap from "gsap";
-import { useCallback, useLayoutEffect, useRef, useState, type RefObject } from "react";
+import { useCallback, useEffect, useLayoutEffect, useRef, useState, type RefObject } from "react";
+import type { RsvpStatus } from "@/lib/graduation/types";
 import { useReducedMotion } from "@/lib/hooks/use-reduced-motion";
 import { useCourierBee } from "../courier/courier-bee-provider";
+import { shakeCard, stampFeedback } from "./stamp-impact";
+import { STAMP_IMPACT_S } from "./stamp-timing";
 
 /** How long the freshly stamped letter stays flat before it folds. */
 const STAMP_HOLD_S = 0.75;
 
-export function useReplySendoff(cardRef: RefObject<HTMLElement | null>, hasInitialSaved: boolean) {
+export function useReplySendoff(cardRef: RefObject<HTMLElement | null>, hasInitialSaved: boolean, soundOn: boolean) {
   const { carryOff } = useCourierBee();
   const reduced = useReducedMotion();
+  const soundOnRef = useRef(soundOn);
+  useEffect(() => {
+    soundOnRef.current = soundOn;
+  }, [soundOn]);
   const [showResult, setShowResult] = useState(hasInitialSaved);
   const [postmarked, setPostmarked] = useState(hasInitialSaved);
   const sendoffActive = useRef(false);
   const revealPending = useRef(false);
 
-  const startSendoff = useCallback(async () => {
+  const startSendoff = useCallback(async (status: RsvpStatus) => {
     if (sendoffActive.current) return;
     sendoffActive.current = true;
     // A re-sent reply (after "change answer") must hide the previous result until the bee has carried the letter off.
     setShowResult(false);
 
     const card = cardRef.current;
+    const attending = status === "yes";
     if (reduced || !card) {
+      if (attending) stampFeedback(soundOnRef.current);
       setPostmarked(true);
       setShowResult(true);
       sendoffActive.current = false;
@@ -31,6 +40,12 @@ export function useReplySendoff(cardRef: RefObject<HTMLElement | null>, hasIniti
     }
 
     setPostmarked(true);
+    if (attending) {
+      gsap.delayedCall(STAMP_IMPACT_S, () => {
+        stampFeedback(soundOnRef.current);
+        shakeCard(card);
+      });
+    }
 
     // Let the postmark land and be read (its stamp animation runs 0.35s), then fold the letter
     // in 3D for the courier bee, which flies in and perches on it before carrying it off.

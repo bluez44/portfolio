@@ -104,6 +104,7 @@ function InvitationContent({ guest, initialRsvp, ownerPhone }: InvitationProps) 
             guestName={guest.name}
             initialRsvp={initialRsvp}
             ownerPhone={ownerPhone}
+            soundOn={musicStatus === "playing"}
             onSaved={handleRsvpSaved}
           />
           <WishesSection guestId={guest.id} refreshKey={wishRefreshKey} />
