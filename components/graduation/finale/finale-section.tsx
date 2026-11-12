@@ -91,7 +91,7 @@ export function FinaleSection({
             id="finalePocket"
             label={envCopy.returnTo}
             senderName={guestName}
-            subText="Khách mời · Guest"
+            subText={envCopy.guest}
           />
           <EnvelopeFlap id="finaleFlap" sealed={true} />
           <FinaleReplyCard

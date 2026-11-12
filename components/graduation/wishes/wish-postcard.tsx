@@ -2,9 +2,11 @@
 
 import { useEffect, useRef } from "react";
 import { RisoIconButton } from "@/components/ui/riso/icon-button";
+import { useCopy } from "../i18n/lang-context";
 import type { CardStyle, WishBee } from "./types";
 
 function AirmailCard({ bee, n }: { bee: WishBee; n: string }) {
+  const { wishes: t, envelope } = useCopy();
   return (
     <div
       className="box-border rounded-lg border-[1.5px] border-ink p-2.5"
@@ -16,7 +18,7 @@ function AirmailCard({ bee, n }: { bee: WishBee; n: string }) {
     >
       <div className="flex flex-wrap gap-6 rounded border-[1.5px] border-ink bg-paper p-[clamp(20px,3vw,30px)]">
         <div className="flex flex-[3_1_240px] flex-col gap-4">
-          <span className="font-mono text-[10px] tracking-[0.26em] text-blue uppercase">Air Mail · Lời chúc Nº {n}</span>
+          <span className="font-mono text-[10px] tracking-[0.26em] text-blue uppercase">{t.airMail(n)}</span>
           <p
             className="m-0 font-heading font-semibold tracking-[-0.015em] text-ink"
             style={{ fontSize: "clamp(19px,2.2vw,23px)", lineHeight: 1.38, textWrap: "pretty" }}
@@ -25,7 +27,7 @@ function AirmailCard({ bee, n }: { bee: WishBee; n: string }) {
           </p>
           <div className="mt-auto flex flex-col gap-1">
             <span className="font-heading text-lg font-bold text-ink">— {bee.name}</span>
-            <span className="font-mono text-[10px] tracking-[0.18em] text-ink-3 uppercase">Khách mời · Guest</span>
+            <span className="font-mono text-[10px] tracking-[0.18em] text-ink-3 uppercase">{envelope.guest}</span>
           </div>
         </div>
         <div className="flex flex-[2_1_170px] flex-col gap-[18px] border-l-[1.5px] border-dashed border-ink pl-[22px]">
@@ -53,8 +55,8 @@ function AirmailCard({ bee, n }: { bee: WishBee; n: string }) {
             </div>
           </div>
           {[
-            ["Gửi · To", "Võ Lê Quang Vinh"],
-            ["Từ · From", bee.name],
+            [t.to, "Võ Lê Quang Vinh"],
+            [t.from, bee.name],
           ].map(([label, value]) => (
             <div key={label} className="flex flex-col gap-1">
               <span className="font-mono text-[10px] tracking-[0.22em] text-ink-3 uppercase">{label}</span>
@@ -70,6 +72,7 @@ function AirmailCard({ bee, n }: { bee: WishBee; n: string }) {
 }
 
 function IndexCard({ bee }: { bee: WishBee }) {
+  const { envelope } = useCopy();
   const padX = "clamp(22px,3.4vw,34px)";
   return (
     <div
@@ -112,7 +115,7 @@ function IndexCard({ bee }: { bee: WishBee }) {
         </span>
         <div className="flex flex-col gap-0.5">
           <span className="font-heading text-[17px] font-bold text-ink">{bee.name}</span>
-          <span className="font-mono text-[10px] tracking-[0.18em] text-ink-3 uppercase">Khách mời · Guest</span>
+          <span className="font-mono text-[10px] tracking-[0.18em] text-ink-3 uppercase">{envelope.guest}</span>
         </div>
       </div>
     </div>
@@ -135,6 +138,7 @@ export function WishPostcard({
   /** holds the card clipped shut while the courier bee flies in */
   entranceDelayMs?: number;
 }) {
+  const { wishes: t } = useCopy();
   const n = String(index + 1).padStart(2, "0");
   const cardRef = useRef<HTMLDivElement>(null);
 
@@ -157,12 +161,12 @@ export function WishPostcard({
           id={WISH_CARD_ID}
           role="dialog"
           aria-modal="true"
-          aria-label={`Lời chúc từ ${bee.name}`}
+          aria-label={t.wishFrom(bee.name)}
           className="pointer-events-auto relative w-[min(620px,100%)] animate-[wish-pop_0.75s_cubic-bezier(0.22,1,0.36,1)_both]"
           style={{ animationDelay: `${entranceDelayMs}ms` }}
         >
           <div className="absolute -top-3.5 -right-3.5 z-2">
-            <RisoIconButton size="md" fill="paper" label="Đóng · Close" onClick={onClose}>
+            <RisoIconButton size="md" fill="paper" label={t.close} onClick={onClose}>
               ✕
             </RisoIconButton>
           </div>

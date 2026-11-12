@@ -2,6 +2,7 @@
 
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useScrollReveal } from "@/lib/hooks/use-scroll-reveal";
+import { useCopy } from "../i18n/lang-context";
 import { BEE_CARD_REVEAL_DELAY_MS, useCourierBee } from "../courier/courier-bee-provider";
 import { SectionHeading } from "../shared/section-heading";
 import { HoneycombViewport } from "./honeycomb-viewport";
@@ -60,6 +61,7 @@ export function WishesSection({
   guestId?: string;
   refreshKey?: unknown;
 } = {}) {
+  const { wishes: t } = useCopy();
   const headerRef = useScrollReveal<HTMLDivElement>();
   const sectionRef = useRef<HTMLElement>(null);
 
@@ -117,18 +119,17 @@ export function WishesSection({
   }, [visible, refreshKey, guestId]);
 
   const overlay = useMemo(() => {
-    if (loadState === "idle")
-      return <StatusNote>[ đàn ong đang mang mật về tổ… ]</StatusNote>;
-    if (loadState === "error") return <StatusNote tone="error">[ không thể kết nối tới tổ ong lúc này ]</StatusNote>;
+    if (loadState === "idle") return <StatusNote>{t.loading}</StatusNote>;
+    if (loadState === "error") return <StatusNote tone="error">{t.error}</StatusNote>;
     if (bees.length === 0)
       return (
         <div className="flex flex-col items-center gap-2 text-center">
           <span className="text-3xl">🐝</span>
-          <StatusNote>[ tổ ong đang chờ những lời chúc đầu tiên ]</StatusNote>
+          <StatusNote>{t.empty}</StatusNote>
         </div>
       );
     return null;
-  }, [loadState, bees.length]);
+  }, [loadState, bees.length, t]);
 
   return (
     <section
@@ -138,9 +139,9 @@ export function WishesSection({
     >
       <div className="mx-auto flex max-w-6xl flex-col gap-10">
         <div ref={headerRef} className="flex flex-col gap-5">
-          <SectionHeading lead="Một tổ ong" accent="lời chúc." />
+          <SectionHeading lead={t.heading.lead} accent={t.heading.accent} />
           <p className="m-0 max-w-[52ch] text-[17px] leading-[1.72] text-ink-2" style={{ textWrap: "pretty" }}>
-            Mỗi ô là một lời nhắn gửi tới mình. Bấm vào một ô — một chú ong sẽ mang lời chúc đến cho bạn.{" "}
+            {t.intro}
           </p>
         </div>
 

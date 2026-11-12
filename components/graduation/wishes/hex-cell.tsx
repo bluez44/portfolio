@@ -38,7 +38,7 @@ export function EmptyHex({ drop }: { drop: boolean }) {
   );
 }
 
-export function HubHex({ count }: { count: number }) {
+export function HubHex({ count, label }: { count: number; label: string }) {
   return (
     <>
       <HexSvg>
@@ -52,7 +52,7 @@ export function HubHex({ count }: { count: number }) {
         >
           {count}
         </span>
-        <span className="font-mono text-[9px] tracking-[0.22em] uppercase">Lời chúc</span>
+        <span className="font-mono text-[9px] tracking-[0.22em] uppercase">{label}</span>
       </span>
     </>
   );
@@ -63,12 +63,14 @@ export function WishHex({
   style,
   isMine,
   mineLabel,
+  label,
   onOpen,
 }: {
   bee: WishBee;
   style: CellStyle;
   isMine?: boolean;
-  mineLabel?: string;
+  mineLabel: string;
+  label: string;
   onOpen: (e: React.MouseEvent<HTMLButtonElement>) => void;
 }) {
   const tone = style === "tone";
@@ -76,7 +78,7 @@ export function WishHex({
     <button
       type="button"
       onClick={onOpen}
-      aria-label={`Lời chúc từ ${bee.name}`}
+      aria-label={label}
       title={bee.name}
       className={`absolute inset-0 m-0 cursor-pointer border-none bg-transparent p-0 transition-transform duration-200 hover:-translate-x-0.5 hover:-translate-y-0.5 ${
         isMine ? "animate-[mine-pop_0.8s_cubic-bezier(0.34,1.56,0.64,1)_1]" : ""
@@ -100,7 +102,7 @@ export function WishHex({
           className="absolute -top-2 left-1/2 z-10 -translate-x-1/2 rounded-full border-[1.5px] border-ink bg-canary px-2 py-0.5 font-mono text-[8px] font-bold tracking-[0.14em] text-ink uppercase"
           style={{ boxShadow: "1px 1px 0 var(--ink)" }}
         >
-          {mineLabel ?? "Của bạn"}
+          {mineLabel}
         </span>
       )}
       {tone ? (

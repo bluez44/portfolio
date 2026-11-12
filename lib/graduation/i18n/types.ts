@@ -25,6 +25,8 @@ export type GraduationCopy = {
     from: string;
     returnTo: string;
     faculty: string;
+    /** Caption under a guest's name, on wish cards and the sealed reply. */
+    guest: string;
   };
   card: { label: string; greeting: string; body: string; keepScrolling: string; coverImage?: string; author?: string };
   stage: { coverKicker: string; cover: Heading; greetKicker: string; scrollHint: string };
@@ -67,7 +69,23 @@ export type GraduationCopy = {
     };
   };
   wishes: {
+    heading: Heading;
+    intro: string;
+    loading: string;
+    error: string;
+    empty: string;
     mine: string;
+    /** Caption under the wish count in the centre cell. */
+    count: string;
+    /** Accessible name of a wish cell and its postcard. */
+    wishFrom: (name: string) => string;
+    airMail: (n: string) => string;
+    to: string;
+    from: string;
+    close: string;
+    zoomIn: string;
+    zoomOut: string;
+    recenter: string;
   };
   finale: {
     heading: Heading;

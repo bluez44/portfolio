@@ -67,13 +67,14 @@ export function HoneycombViewport({
         {slots.map((s, i) => (
           <div key={i} className="absolute" style={{ left: s.left, top: s.top, width: HEX_W, height: HEX_H }}>
             {s.kind === "empty" && <EmptyHex drop={s.drop} />}
-            {s.kind === "hub" && <HubHex count={bees.length} />}
+            {s.kind === "hub" && <HubHex count={bees.length} label={t.count} />}
             {s.kind === "wish" && bees[s.wishIndex] && (
               <WishHex
                 bee={bees[s.wishIndex]}
                 style={cellStyle}
                 isMine={bees[s.wishIndex].mine}
                 mineLabel={t.mine}
+                label={t.wishFrom(bees[s.wishIndex].name)}
                 onOpen={(e) => open(s.wishIndex, e)}
               />
             )}
@@ -82,16 +83,16 @@ export function HoneycombViewport({
       </div>
 
       <div onPointerDown={(e) => e.stopPropagation()} className="absolute bottom-4 left-4 flex items-center gap-2">
-        <RisoIconButton size="md" fill="paper" label="Thu nhỏ · Zoom out" onClick={zoomOut}>
+        <RisoIconButton size="md" fill="paper" label={t.zoomOut} onClick={zoomOut}>
           −
         </RisoIconButton>
         <span className="min-w-13 rounded-full border-[1.5px] border-ink bg-paper px-2 py-1.5 text-center font-mono text-[11px] tracking-[0.12em] text-ink">
           {zoomPct}%
         </span>
-        <RisoIconButton size="md" fill="paper" label="Phóng to · Zoom in" onClick={zoomIn}>
+        <RisoIconButton size="md" fill="paper" label={t.zoomIn} onClick={zoomIn}>
           +
         </RisoIconButton>
-        <RisoIconButton size="md" fill="canary" label="Về giữa · Recenter" onClick={reset}>
+        <RisoIconButton size="md" fill="canary" label={t.recenter} onClick={reset}>
           ◉
         </RisoIconButton>
       </div>
