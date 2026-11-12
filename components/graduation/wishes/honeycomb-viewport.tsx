@@ -2,6 +2,8 @@
 
 import { useMemo, type MouseEvent, type ReactNode } from "react";
 import { RisoIconButton } from "@/components/ui/riso/icon-button";
+import { useCoarsePointer } from "@/lib/hooks/use-media-query";
+import { useTapToEngage } from "@/lib/hooks/use-tap-to-engage";
 import { useCopy } from "../i18n/lang-context";
 import { EmptyHex, HubHex, WishHex } from "./hex-cell";
 import { buildHoneycomb, honeycombExtent, HEX_W, HEX_H, type HoneycombLayout } from "./honeycomb-layout";
@@ -26,6 +28,8 @@ export function HoneycombViewport({
   const slots = useMemo(() => buildHoneycomb(layout, bees.length), [layout, bees.length]);
   const extent = useMemo(() => honeycombExtent(slots), [slots]);
   const { viewportRef, setTarget, zoomPct, zoomIn, zoomOut, reset, suppressClick, handlers } = usePanZoom(extent);
+  const coarse = useCoarsePointer();
+  const { engaged, engage } = useTapToEngage(viewportRef);
   const open = (i: number, e: MouseEvent<HTMLButtonElement>) => {
     if (!suppressClick.current) onOpen(i, e);
   };
@@ -34,7 +38,8 @@ export function HoneycombViewport({
     <div
       ref={viewportRef}
       {...handlers}
-      className="relative box-border h-[clamp(440px,64vh,600px)] min-w-0 flex-[2_1_520px] cursor-grab touch-none overflow-hidden rounded-[14px] border-[1.5px] border-ink bg-paper-2 select-none"
+      onClickCapture={engage}
+      className={`relative box-border h-[clamp(360px,52svh,600px)] min-w-0 flex-[2_1_520px] cursor-grab ${coarse && !engaged ? "touch-pan-y" : "touch-none"} overflow-hidden min-[760px]:h-[clamp(440px,64vh,600px)] rounded-[14px] border-[1.5px] border-ink bg-paper-2 select-none`}
       style={{ boxShadow: "6px 6px 0 var(--ink)" }}
     >
       <svg width="0" height="0" className="absolute">
