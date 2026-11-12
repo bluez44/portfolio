@@ -138,6 +138,7 @@ export const vi: GraduationCopy = {
     noReply: "Bạn chưa gửi thư hồi âm",
     replyNow: "Viết hồi âm ngay ↑",
     downloadCard: "Tải ảnh thiệp mời (PNG)",
+    backToTop: "Lên đầu trang",
   },
   gate: {
     dialogLabel: "Mở thiệp",

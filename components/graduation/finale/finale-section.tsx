@@ -112,14 +112,40 @@ export function FinaleSection({
           >
             {footerText}
           </p>
-          {guestId && (
+          <div className="flex flex-wrap items-center justify-center gap-3">
+            {guestId && (
+              <RisoButton
+                variant="secondary"
+                size="md"
+                href={`/graduation/${guestId}/card`}
+                download={`thiep-moi-${guestId}.png`}
+                target="_blank"
+                rel="noopener noreferrer"
+                icon={
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="15"
+                    height="15"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="2.2"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  >
+                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+                    <polyline points="7 10 12 15 17 10" />
+                    <line x1="12" y1="15" x2="12" y2="3" />
+                  </svg>
+                }
+              >
+                {t.downloadCard}
+              </RisoButton>
+            )}
             <RisoButton
-              variant="secondary"
+              variant="ink"
               size="md"
-              href={`/graduation/${guestId}/card`}
-              download={`thiep-moi-${guestId}.png`}
-              target="_blank"
-              rel="noopener noreferrer"
+              onClick={() => window.scrollTo({ top: 0, behavior: reduced ? "auto" : "smooth" })}
               icon={
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
@@ -132,15 +158,14 @@ export function FinaleSection({
                   strokeLinecap="round"
                   strokeLinejoin="round"
                 >
-                  <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
-                  <polyline points="7 10 12 15 17 10" />
-                  <line x1="12" y1="15" x2="12" y2="3" />
+                  <line x1="12" y1="19" x2="12" y2="5" />
+                  <polyline points="5 12 12 5 19 12" />
                 </svg>
               }
             >
-              {t.downloadCard}
+              {t.backToTop}
             </RisoButton>
-          )}
+          </div>
         </div>
       </div>
     </section>

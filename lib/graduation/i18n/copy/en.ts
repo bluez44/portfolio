@@ -138,6 +138,7 @@ export const en: GraduationCopy = {
     noReply: "You haven't replied yet",
     replyNow: "Send reply now ↑",
     downloadCard: "Download invitation card (PNG)",
+    backToTop: "Back to top",
   },
   gate: {
     dialogLabel: "Open invitation",

@@ -108,6 +108,7 @@ export type GraduationCopy = {
     noReply: string;
     replyNow: string;
     downloadCard: string;
+    backToTop: string;
   };
   gate: {
     dialogLabel: string;
