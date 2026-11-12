@@ -53,7 +53,7 @@ export function Header() {
 
   return (
     <header
-      className="fixed inset-x-0 z-60 transition-[transform,background,border-color,backdrop-filter] duration-300 ease-out"
+      className="fixed inset-x-0 z-60 pt-[env(safe-area-inset-top)] transition-[transform,background,border-color,backdrop-filter] duration-300 ease-out"
       style={{
         background: scrolled ? "var(--header-bg)" : "transparent",
         borderBottom: scrolled

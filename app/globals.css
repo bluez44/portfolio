@@ -190,6 +190,10 @@
     display: none;
   }
 
+  html {
+    scroll-padding-top: 5rem;
+  }
+
   /* clip, not hidden: hidden still scrolls programmatically and makes a scroll container that breaks
      sticky / ScrollTrigger pins. It must be on both, or the root's value propagates to the viewport. */
   html,

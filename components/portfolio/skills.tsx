@@ -20,7 +20,7 @@ const TIER_ACCENT = ["tomato", "blue", "jade"] as const;
 function WebglFallback() {
   return (
     <div
-      className="flex h-[clamp(360px,50vh,520px)] items-center justify-center"
+      className="flex h-[clamp(360px,50svh,520px)] items-center justify-center"
       style={{
         backgroundImage:
           "repeating-linear-gradient(-45deg, var(--paper-2) 0 12px, transparent 12px 24px)",
@@ -151,7 +151,7 @@ export function Skills() {
             }}
           />
           <CanvasErrorBoundary fallback={<WebglFallback />}>
-            <div className="relative h-[clamp(420px,62vh,640px)] cursor-grab [touch-action:pan-y]">
+            <div className="relative h-[clamp(420px,62svh,640px)] cursor-grab [touch-action:pan-y]">
               <TechScene
                 ref={sceneRef}
                 techs={techs}

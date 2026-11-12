@@ -12,7 +12,7 @@ import type { GatePhase } from "./gate-phase";
 import { PENDING, useIntroTimeline } from "./use-intro-timeline";
 
 const mono = "font-mono text-[10px] tracking-[0.22em] uppercase";
-const bar = "absolute inset-x-0 z-8 box-border flex h-[clamp(44px,8vh,72px)] items-center justify-between gap-4 overflow-hidden bg-ink px-[clamp(16px,3vw,32px)]";
+const bar = "absolute inset-x-0 z-8 box-content flex h-[clamp(44px,8vh,72px)] items-center justify-between gap-4 overflow-hidden bg-ink px-[clamp(16px,3vw,32px)]";
 
 const segmenter = typeof Intl.Segmenter === "function" ? new Intl.Segmenter(undefined, { granularity: "grapheme" }) : null;
 const graphemes = (word: string) => (segmenter ? [...segmenter.segment(word)].map((s) => s.segment) : [...word]);
@@ -123,7 +123,7 @@ export function BeeIntro({ guestName, phase, musicPlaying, onEnter, onExited }: 
         </div>
       </div>
 
-      <div data-intro-bar="top" className={`${bar} top-0`}>
+      <div data-intro-bar="top" className={`${bar} top-0 pt-[env(safe-area-inset-top)]`}>
         <span className={`${mono} whitespace-nowrap text-paper`}>{header.title}</span>
         <div className="flex items-center gap-4">
           <span aria-hidden className={`${mono} hidden items-center gap-2 text-paper sm:flex`}>
@@ -135,7 +135,7 @@ export function BeeIntro({ guestName, phase, musicPlaying, onEnter, onExited }: 
           <LangToggle />
         </div>
       </div>
-      <div data-intro-bar="bottom" className={`${bar} bottom-0`}>
+      <div data-intro-bar="bottom" className={`${bar} bottom-0 pb-[env(safe-area-inset-bottom)]`}>
         <button
           type="button"
           disabled={waiting}

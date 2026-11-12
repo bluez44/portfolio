@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { SpeedInsights } from "@vercel/speed-insights/next";
 import { Bricolage_Grotesque, Instrument_Sans, JetBrains_Mono } from "next/font/google";
 import { ThemeProvider } from "@/components/providers/theme-provider";
@@ -31,6 +31,8 @@ const jetbrains = JetBrains_Mono({
 const TITLE = "Võ Lê Quang Vinh – Fullstack Software Engineer | Portfolio";
 const DESCRIPTION =
   "Võ Lê Quang Vinh – Fullstack Software Engineer in Ho Chi Minh City. Building fast, scalable web & mobile apps with React, Next.js, Vue, React Native and NestJS.";
+
+export const viewport: Viewport = { width: "device-width", initialScale: 1, viewportFit: "cover" };
 
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
