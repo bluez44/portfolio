@@ -6,7 +6,7 @@ export function RsvpResult({ status, onReset }: { status: RsvpStatus; onReset: (
   const { rsvp: t } = useCopy();
   return (
     <div className="flex flex-col items-start gap-3.5">
-      <RisoPill color={status === "no" ? "tomato" : "jade"} tilt={-2}>
+      <RisoPill color={status === "no" ? "tomato" : "jade"} tilt={-2} wrap>
         {t.result[status]}
       </RisoPill>
       <button

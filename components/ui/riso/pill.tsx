@@ -8,8 +8,9 @@ export function RisoPill({
   tilt = 0,
   pulse = false,
   size = "md",
+  wrap = false,
   children,
-}: { color?: PillColor; tilt?: number; pulse?: boolean; size?: "md" | "sm"; children: ReactNode }) {
+}: { color?: PillColor; tilt?: number; pulse?: boolean; size?: "md" | "sm"; wrap?: boolean; children: ReactNode }) {
   const light = color === "canary" || color === "paper" || color === "paper-2";
   const sizeCls =
     size === "sm"
@@ -18,7 +19,7 @@ export function RisoPill({
   return (
     <span
       role="status"
-      className={`inline-flex items-center gap-2 whitespace-nowrap rounded-full border-[1.5px] border-ink uppercase leading-[1.4] ${sizeCls}`}
+      className={`inline-flex max-w-full items-center gap-2 border-[1.5px] border-ink uppercase leading-[1.4] ${wrap ? "rounded-2xl whitespace-normal text-left" : "rounded-full whitespace-nowrap"} ${sizeCls}`}
       style={{
         background: `var(--${color})`,
         color: light ? "var(--ink)" : "var(--paper)",
