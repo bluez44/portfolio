@@ -20,6 +20,7 @@ import {
 } from "./loading/resource-gate";
 import { MetSection } from "./met/met-section";
 import { useYouTubePlayer } from "./music/use-youtube-player";
+import { useMusicCues } from "./music/use-music-cues";
 import { RsvpSection } from "./rsvp/rsvp-section";
 import { WishesSection } from "./wishes/wishes-section";
 
@@ -48,8 +49,9 @@ function InvitationContent({ guest, initialRsvp, ownerPhone }: InvitationProps) 
   useGradCharacter(canvasHost, { onReady: () => gate?.resolve(GATE.character) });
   const [musicNote, flashMusicNote] = useTransientFlag(2600);
   const musicId = guest.customContent?.music?.youtubeId || GRADUATION_EVENT.musicYoutubeId;
-  const { status: musicStatus, mountRef: musicMountRef, start: startMusic, toggle: toggleMusic, fadePause, fadeResume } =
-    useYouTubePlayer(musicId, flashMusicNote, () => gate?.resolve(GATE.music));
+  const music = useYouTubePlayer(musicId, flashMusicNote, () => gate?.resolve(GATE.music));
+  const { status: musicStatus, mountRef: musicMountRef, start: startMusic, toggle: toggleMusic, fadePause, fadeResume } = music;
+  useMusicCues(music);
 
   // No track configured means there is no music to wait for.
   useEffect(() => {
