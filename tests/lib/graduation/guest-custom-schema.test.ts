@@ -45,6 +45,11 @@ describe("guestCustomContentSchema", () => {
     }
   });
 
+  it("keeps the together photo, trimmed", () => {
+    const res = guestCustomContentSchema.safeParse({ met: { togetherPhoto: "  https://blob/us.jpg " } });
+    expect(res.success && res.data.met?.togetherPhoto).toBe("https://blob/us.jpg");
+  });
+
   it("rejects invalid riso color", () => {
     const input = {
       met: {

@@ -30,6 +30,7 @@ export const guestCustomContentSchema = z.object({
       intro: z.string().trim().optional(),
       moments: z.array(customMomentSchema).optional(),
       note: z.string().trim().optional(),
+      togetherPhoto: z.string().trim().optional(),
     })
     .optional(),
   ends: z

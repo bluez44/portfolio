@@ -30,6 +30,7 @@ export type MetCustomization = {
   intro?: string;
   moments?: CustomMoment[];
   note?: string;
+  togetherPhoto?: string;
 };
 
 export type EndsCustomization = {
