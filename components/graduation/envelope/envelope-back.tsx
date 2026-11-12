@@ -13,7 +13,7 @@ export function EnvelopeBack({ guestName }: { guestName: string }) {
         <EnvelopePocket />
         <EnvelopeFlap />
       </div>
-      <InvitationCard id="card" guestName={guestName} className="absolute top-[6%] left-[5%] z-1 h-[88%] w-[90%]" />
+      <InvitationCard id="card" data-bubble-avoid guestName={guestName} className="absolute top-[6%] left-[5%] z-1 h-[88%] w-[90%]" />
     </div>
   );
 }

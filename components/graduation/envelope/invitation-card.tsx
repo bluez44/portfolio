@@ -1,21 +1,16 @@
-import type { CSSProperties } from "react";
+import type { ComponentProps } from "react";
 import { useCopy } from "../i18n/lang-context";
 
 export function InvitationCard({
   guestName,
-  id,
   className = "",
   style,
-}: {
-  guestName: string;
-  id?: string;
-  className?: string;
-  style?: CSSProperties;
-}) {
+  ...rest
+}: Omit<ComponentProps<"div">, "children"> & { guestName: string }) {
   const { card: t } = useCopy();
   return (
     <div
-      id={id}
+      {...rest}
       className={`box-border flex flex-col justify-between gap-2.5 overflow-hidden rounded-[14px] border-[1.5px] border-ink bg-paper px-[clamp(18px,2.8vw,34px)] py-[clamp(16px,2.4vw,28px)] ${className}`}
       style={{ boxShadow: "var(--offset-tomato)", ...style }}
     >

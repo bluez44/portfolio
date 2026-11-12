@@ -13,6 +13,17 @@ const TAIL_INSET = 16;
 
 const clamp = (v: number, lo: number, hi: number) => Math.min(Math.max(v, lo), hi);
 
+type Box = { left: number; top: number; right: number; bottom: number };
+
+/** Whether a box overlaps any visible `[data-bubble-avoid]` element, i.e. content the bubble must not cover. */
+function coversAvoided(box: Box): boolean {
+  return [...document.querySelectorAll("[data-bubble-avoid]")].some((el) => {
+    if (el.checkVisibility?.({ visibilityProperty: true }) === false) return false;
+    const r = el.getBoundingClientRect();
+    return box.left < r.right && box.right > r.left && box.top < r.bottom && box.bottom > r.top;
+  });
+}
+
 type Props = {
   guestName: string;
 };
@@ -49,13 +60,14 @@ export const NarratorBubble = forwardRef<NarratorBubbleHandle, Props>(function N
           return;
         }
 
-        root.style.opacity = "1";
         // Keep the bubble on screen; the tail shifts the other way so it still points at the head.
         const half = root.offsetWidth / 2;
         const x = clamp(head.x, half + EDGE_MARGIN, window.innerWidth - half - EDGE_MARGIN);
+        const bottom = head.y - 70;
         const tail = clamp(head.x - x, TAIL_INSET - half, half - TAIL_INSET);
         root.style.setProperty("--tail", `${Math.round(tail)}px`);
-        root.style.transform = `translate3d(${Math.round(x)}px, ${Math.round(head.y - 70)}px, 0) translate(-50%, -100%)`;
+        root.style.transform = `translate3d(${Math.round(x)}px, ${Math.round(bottom)}px, 0) translate(-50%, -100%)`;
+        root.style.opacity = coversAvoided({ left: x - half, right: x + half, top: bottom - root.offsetHeight, bottom }) ? "0" : "1";
 
         if (activeLineRef.current !== line) {
           activeLineRef.current = line;
