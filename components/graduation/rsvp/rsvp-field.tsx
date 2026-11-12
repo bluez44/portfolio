@@ -9,7 +9,7 @@ function submitOnEnter(event: KeyboardEvent<HTMLTextAreaElement>) {
 }
 
 const control =
-  "riso-focus w-full rounded-[10px] border-[1.5px] bg-paper px-4 py-3 text-[15px] leading-normal text-ink outline-none placeholder:text-ink-3";
+  "riso-focus w-full rounded-[10px] border-[1.5px] bg-paper px-4 py-3 text-[16px] leading-normal text-ink outline-none placeholder:text-ink-3";
 
 export function RsvpField({
   name,
@@ -44,7 +44,7 @@ export function RsvpField({
         {field.label}
         {optionalLabel && <span className="text-ink-3 normal-case"> · {optionalLabel}</span>}
       </label>
-      {multiline ? <textarea rows={3} {...props} onKeyDown={submitOnEnter} className={`${props.className} resize-y`} /> : <input type="text" {...props} />}
+      {multiline ? <textarea rows={3} {...props} enterKeyHint="send" onKeyDown={submitOnEnter} className={`${props.className} resize-y`} /> : <input type="text" {...props} />}
       {error && (
         <p id={errorId} className="m-0 text-[13px] text-tomato">
           {error}
