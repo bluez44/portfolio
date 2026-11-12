@@ -6,6 +6,9 @@ import { useReducedMotion } from "@/lib/hooks/use-reduced-motion";
 import { createBeeScene, type BeeScene, type BeeState } from "../wishes/bee-scene";
 import { cubicBezier, quadraticBezier, type Point } from "./flight-path";
 
+/** When the courier bee lands on an opened wish card; the card waits this long to reveal. */
+export const BEE_CARD_REVEAL_DELAY_MS = 1300;
+
 type CourierBeeContextType = {
   /** Whether the 3D bee exists (WebGL available, motion allowed); read it in event handlers. */
   canFly: () => boolean;

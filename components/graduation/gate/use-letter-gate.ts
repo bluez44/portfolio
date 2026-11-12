@@ -23,7 +23,7 @@ export function useLetterGate(ready: boolean) {
 
   useScrollLock(phase !== "done");
 
-  const open = useCallback(() => dispatch({ type: "open", animate: true }), []);
+  const open = useCallback(() => dispatch({ type: "open" }), []);
   const finish = useCallback(() => dispatch({ type: "openFinished" }), []);
   return { phase, open, finish };
 }

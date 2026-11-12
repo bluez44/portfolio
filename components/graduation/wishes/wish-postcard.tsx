@@ -69,7 +69,7 @@ function AirmailCard({ bee, n }: { bee: WishBee; n: string }) {
   );
 }
 
-function IndexCard({ bee, n }: { bee: WishBee; n: string }) {
+function IndexCard({ bee }: { bee: WishBee }) {
   const padX = "clamp(22px,3.4vw,34px)";
   return (
     <div
@@ -166,7 +166,7 @@ export function WishPostcard({
               ✕
             </RisoIconButton>
           </div>
-          {cardStyle === "index" ? <IndexCard bee={bee} n={n} /> : <AirmailCard bee={bee} n={n} />}
+          {cardStyle === "index" ? <IndexCard bee={bee} /> : <AirmailCard bee={bee} n={n} />}
         </div>
       </div>
     </>

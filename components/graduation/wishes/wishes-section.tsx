@@ -3,19 +3,20 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { beeAlias } from "@/lib/bee-alias";
 import { useScrollReveal } from "@/lib/hooks/use-scroll-reveal";
-import { useCourierBee } from "../courier/courier-bee-provider";
+import { BEE_CARD_REVEAL_DELAY_MS, useCourierBee } from "../courier/courier-bee-provider";
 import { SectionHeading } from "../shared/section-heading";
-import { SectionKicker } from "../shared/section-kicker";
 import { HoneycombViewport } from "./honeycomb-viewport";
 import type { HoneycombLayout } from "./honeycomb-layout";
-import { BEE_CARD_REVEAL_DELAY_MS } from "./use-bee-flight";
-import { WishOptions, type OptionGroup } from "./wish-options";
 import { WishPostcard, WISH_CARD_ID } from "./wish-postcard";
 import { wishAccent, type CardStyle, type CellStyle, type WishBee } from "./types";
 
 type ApiBee = { id: string; wish: string; at: string };
 /** "idle" until the first answer arrives; a refetch keeps showing the current bees meanwhile. */
 type LoadState = "idle" | "done" | "error";
+
+const CELL_STYLE: CellStyle = "tone";
+const LAYOUT: HoneycombLayout = "organic";
+const CARD_STYLE: CardStyle = "index";
 
 function toWishBee(row: ApiBee, index: number): WishBee {
   const name = beeAlias(row.id);
@@ -65,9 +66,6 @@ export function WishesSection({
 
   const [bees, setBees] = useState<WishBee[]>([]);
   const [loadState, setLoadState] = useState<LoadState>("idle");
-  const [cellStyle, setCellStyle] = useState<CellStyle>("tone");
-  const [layout, setLayout] = useState<HoneycombLayout>("organic");
-  const [cardStyle, setCardStyle] = useState<CardStyle>("index");
   const [openIndex, setOpenIndex] = useState<number | null>(null);
   const [cardDelayMs, setCardDelayMs] = useState(0);
   const { canFly, flyOpen, flyAway } = useCourierBee();
@@ -133,36 +131,6 @@ export function WishesSection({
     return null;
   }, [loadState, bees.length]);
 
-  const groups: OptionGroup[] = [
-    {
-      label: "Ô lục giác · Cell",
-      value: cellStyle,
-      options: [
-        { value: "ink", label: "Viền mực" },
-        { value: "tone", label: "Halftone" },
-      ],
-      onChange: (v) => setCellStyle(v as CellStyle),
-    },
-    {
-      label: "Bố cục · Layout",
-      value: layout,
-      options: [
-        { value: "ring", label: "Đồng tâm" },
-        { value: "organic", label: "Hữu cơ" },
-      ],
-      onChange: (v) => setLayout(v as HoneycombLayout),
-    },
-    {
-      label: "Bưu thiếp · Postcard",
-      value: cardStyle,
-      options: [
-        { value: "air", label: "Airmail" },
-        { value: "index", label: "Thẻ index" },
-      ],
-      onChange: (v) => setCardStyle(v as CardStyle),
-    },
-  ];
-
   return (
     <section
       ref={sectionRef}
@@ -180,8 +148,8 @@ export function WishesSection({
         <div className="flex flex-wrap items-start gap-10">
           <HoneycombViewport
             bees={bees}
-            layout={layout}
-            cellStyle={cellStyle}
+            layout={LAYOUT}
+            cellStyle={CELL_STYLE}
             guestId={guestId}
             onOpen={(i, e) => {
               const r = e.currentTarget.getBoundingClientRect();
@@ -191,7 +159,6 @@ export function WishesSection({
             }}
             overlay={overlay}
           />
-          {/* <WishOptions groups={groups} /> */}
         </div>
       </div>
 
@@ -199,7 +166,7 @@ export function WishesSection({
         <WishPostcard
           bee={bees[openIndex]}
           index={openIndex}
-          cardStyle={cardStyle}
+          cardStyle={CARD_STYLE}
           entranceDelayMs={cardDelayMs}
           onClose={() => {
             flyAway();

@@ -66,10 +66,10 @@ export function unlockSfx() {
 }
 
 /** Synthesized effect; decoration only, so any audio failure is swallowed. */
-export function playSfx(name: Sfx, delaySec = 0) {
+export function playSfx(name: Sfx) {
   try {
     ctx ??= new AudioContext();
-    (name === "buzz" ? buzz : rustle)(ctx, ctx.currentTime + delaySec);
+    (name === "buzz" ? buzz : rustle)(ctx, ctx.currentTime);
   } catch {
     return;
   }
