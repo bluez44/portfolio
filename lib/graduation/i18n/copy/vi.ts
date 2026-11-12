@@ -143,7 +143,7 @@ export const vi: GraduationCopy = {
     silent: "Vào không nhạc →",
     soundHint: "♪ Nên bật âm thanh",
     nowPlaying: "♪ Đang phát",
-    preparing: "Đang chuẩn bị lá thư…",
+    beePreparing: "Chờ mình chút nhé, đang chuẩn bị lá thư…",
     beeNotice: (name) => `${name} ơi, bạn có 1 thông báo mới!`,
   },
   narrator: {

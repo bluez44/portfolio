@@ -103,19 +103,10 @@ export function BeeIntro({ guestName, phase, musicPlaying, onEnter, onExited }: 
         {musicPlaying ? t.nowPlaying : null}
       </span>
 
-      <BeeBubble ref={bubbleRef} guestName={guestName} />
+      <BeeBubble ref={bubbleRef} guestName={guestName} loading={phase === "arriving"} />
       <BeePulse ref={pulseRef} label={t.wake} cue={t.tapBee} onPress={() => enter(true)} />
 
-      {phase === "arriving" && (
-        <p
-          role="status"
-          className="pointer-events-none absolute inset-x-0 bottom-[calc(clamp(44px,8vh,72px)+env(safe-area-inset-bottom)+clamp(10px,2vh,18px))] z-7 m-0 text-center font-mono text-[11px] tracking-[0.22em] text-ink-3 uppercase motion-safe:animate-pulse"
-        >
-          {t.preparing}
-        </p>
-      )}
-
-      <div className="pointer-events-none absolute inset-x-[clamp(20px,5vw,72px)] bottom-[calc(clamp(44px,8vh,72px)+clamp(36px,7vh,72px))] z-5 flex flex-wrap items-end justify-between gap-x-8 gap-y-5">
+      <div className="pointer-events-none absolute inset-x-[clamp(20px,5vw,72px)] bottom-[calc(clamp(44px,8vh,72px)+clamp(20px,5vh,56px))] z-5 flex flex-wrap items-end justify-between gap-x-8 gap-y-5">
         <div className="flex min-w-0 flex-col gap-[clamp(10px,2vh,18px)] max-sm:w-full">
           <h1
             aria-label={`${stage.cover.lead} ${stage.cover.accent}`}

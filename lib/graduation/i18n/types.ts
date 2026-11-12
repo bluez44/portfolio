@@ -114,7 +114,8 @@ export type GraduationCopy = {
     silent: string;
     soundHint: string;
     nowPlaying: string;
-    preparing: string;
+    /** What the bee says while the invitation loads, then once it is ready. */
+    beePreparing: string;
     beeNotice: (name: string) => string;
   };
   narrator: Record<NarrationKey, (name: string) => string>;

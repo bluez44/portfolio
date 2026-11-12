@@ -10,10 +10,12 @@ export type BeeBubbleHandle = {
 
 type Props = {
   guestName: string;
+  /** While the invitation loads the bee says so; once ready it announces the letter. */
+  loading: boolean;
 };
 
 /** Speech bubble tracking the intro bee with direct DOM transforms at 60fps. */
-export const BeeBubble = forwardRef<BeeBubbleHandle, Props>(function BeeBubble({ guestName }, ref) {
+export const BeeBubble = forwardRef<BeeBubbleHandle, Props>(function BeeBubble({ guestName, loading }, ref) {
   const { gate: t } = useCopy();
   const reduced = useReducedMotion();
   const rootRef = useRef<HTMLDivElement>(null);
@@ -60,7 +62,7 @@ export const BeeBubble = forwardRef<BeeBubbleHandle, Props>(function BeeBubble({
       setTypedText("");
       return;
     }
-    const fullText = t.beeNotice(guestName);
+    const fullText = loading ? t.beePreparing : t.beeNotice(guestName);
     if (reduced) {
       setTypedText(fullText);
       return;
@@ -76,7 +78,7 @@ export const BeeBubble = forwardRef<BeeBubbleHandle, Props>(function BeeBubble({
     }, 24);
 
     return () => window.clearInterval(interval);
-  }, [started, guestName, t, reduced]);
+  }, [started, loading, guestName, t, reduced]);
 
   return (
     <div

@@ -143,7 +143,7 @@ export const en: GraduationCopy = {
     silent: "Enter silently →",
     soundHint: "♪ Sound on",
     nowPlaying: "♪ Now playing",
-    preparing: "Preparing your letter…",
+    beePreparing: "One moment, I'm getting your letter ready…",
     beeNotice: (name) => `Hey ${name}, you have a new notification!`,
   },
   narrator: {
