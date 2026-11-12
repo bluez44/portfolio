@@ -97,7 +97,7 @@ export function BeeIntro({ guestName, phase, musicPlaying, onEnter, onExited }: 
       <BeeBubble ref={bubbleRef} guestName={guestName} />
 
       <div className="pointer-events-none absolute inset-x-[clamp(20px,5vw,72px)] bottom-[calc(clamp(44px,8vh,72px)+clamp(20px,5vh,56px))] z-5 flex flex-wrap items-end justify-between gap-x-8 gap-y-5">
-        <div className="flex min-w-0 flex-col gap-[clamp(10px,2vh,18px)]">
+        <div className="flex min-w-0 flex-col gap-[clamp(10px,2vh,18px)] max-sm:w-full">
           <h1
             aria-label={`${stage.cover.lead} ${stage.cover.accent}`}
             className="m-0 font-heading text-[clamp(56px,11.5vw,184px)] leading-[0.86] font-bold tracking-[-0.045em] text-ink"
@@ -110,7 +110,7 @@ export function BeeIntro({ guestName, phase, musicPlaying, onEnter, onExited }: 
               <Chars text={stage.cover.accent} />
             </span>
           </h1>
-          <div data-intro-fade className="flex flex-wrap items-baseline gap-3">
+          <div data-intro-fade className="flex flex-wrap items-baseline gap-3 max-sm:justify-end">
             <span className={`${mono} text-ink-3`}>{envelope.to}</span>
             <span className="font-heading text-[clamp(20px,2.4vw,30px)] font-semibold min-w-0 tracking-[-0.02em] text-ink wrap-anywhere">{guestName}</span>
           </div>
