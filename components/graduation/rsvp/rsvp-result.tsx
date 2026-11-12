@@ -12,7 +12,7 @@ export function RsvpResult({ status, onReset }: { status: RsvpStatus; onReset: (
       <button
         type="button"
         onClick={onReset}
-        className="riso-focus cursor-pointer border-0 bg-transparent p-0 font-mono text-[11px] tracking-[0.2em] text-ink-3 uppercase underline underline-offset-[5px] hover:text-tomato"
+        className="riso-focus hit-area relative cursor-pointer border-0 bg-transparent p-0 font-mono text-[11px] tracking-[0.2em] text-ink-3 uppercase underline underline-offset-[5px] hover:text-tomato"
       >
         {t.change}
       </button>

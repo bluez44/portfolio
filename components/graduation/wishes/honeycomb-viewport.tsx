@@ -88,16 +88,16 @@ export function HoneycombViewport({
       </div>
 
       <div onPointerDown={(e) => e.stopPropagation()} className="absolute bottom-4 left-4 flex items-center gap-2">
-        <RisoIconButton size="md" fill="paper" label={t.zoomOut} onClick={zoomOut}>
+        <RisoIconButton size="lg" fill="paper" label={t.zoomOut} onClick={zoomOut}>
           −
         </RisoIconButton>
         <span className="min-w-13 rounded-full border-[1.5px] border-ink bg-paper px-2 py-1.5 text-center font-mono text-[11px] tracking-[0.12em] text-ink">
           {zoomPct}%
         </span>
-        <RisoIconButton size="md" fill="paper" label={t.zoomIn} onClick={zoomIn}>
+        <RisoIconButton size="lg" fill="paper" label={t.zoomIn} onClick={zoomIn}>
           +
         </RisoIconButton>
-        <RisoIconButton size="md" fill="canary" label={t.recenter} onClick={reset}>
+        <RisoIconButton size="lg" fill="canary" label={t.recenter} onClick={reset}>
           ◉
         </RisoIconButton>
       </div>

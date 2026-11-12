@@ -19,7 +19,7 @@ export function LangToggle() {
           lang={l}
           aria-pressed={lang === l}
           onClick={() => setLang(l)}
-          className={`riso-focus h-full cursor-pointer rounded-full border-0 px-2.5 font-mono text-[11px] tracking-[0.14em] uppercase transition-colors duration-(--dur-fast) ${
+          className={`riso-focus hit-area relative h-full cursor-pointer rounded-full border-0 px-2.5 font-mono text-[11px] tracking-[0.14em] uppercase transition-colors duration-(--dur-fast) ${
             lang === l ? "border-ink bg-canary text-ink" : "bg-transparent text-ink-3 hover:text-tomato"
           }`}
         >

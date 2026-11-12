@@ -140,7 +140,7 @@ export function BeeIntro({ guestName, phase, musicPlaying, onEnter, onExited }: 
           type="button"
           disabled={waiting}
           onClick={() => enter(false)}
-          className="riso-focus cursor-pointer border-0 bg-transparent px-0 py-1.5 font-sans text-sm whitespace-nowrap text-paper underline underline-offset-4 hover:text-canary disabled:cursor-wait"
+          className="riso-focus hit-area relative cursor-pointer border-0 bg-transparent px-0 py-1.5 font-sans text-sm whitespace-nowrap text-paper underline underline-offset-4 hover:text-canary disabled:cursor-wait"
         >
           {t.silent}
         </button>
