@@ -17,10 +17,3 @@ export function toSlug(name: string): string {
 export function isValidSlug(value: string): boolean {
   return value.length <= SLUG_MAX_LENGTH && SLUG_PATTERN.test(value);
 }
-
-/** Normalises the `?to=` search param; null means "render 404". */
-export function parseGuestSlug(value: string | string[] | undefined): string | null {
-  if (typeof value !== "string") return null;
-  const slug = value.trim().toLowerCase();
-  return isValidSlug(slug) ? slug : null;
-}

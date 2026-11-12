@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { isValidSlug, parseGuestSlug, toSlug } from "@/lib/graduation/slug";
+import { isValidSlug, toSlug } from "@/lib/graduation/slug";
 
 describe("toSlug", () => {
   it("strips Vietnamese diacritics and joins with dashes", () => {
@@ -31,17 +31,4 @@ describe("isValidSlug", () => {
       expect(isValidSlug(s)).toBe(false);
     },
   );
-});
-
-describe("parseGuestSlug", () => {
-  it("trims and lowercases", () => {
-    expect(parseGuestSlug("  Minh-Anh ")).toBe("minh-anh");
-  });
-  it("returns null for missing, array, or invalid values", () => {
-    expect(parseGuestSlug(undefined)).toBeNull();
-    expect(parseGuestSlug(["a", "b"])).toBeNull();
-    expect(parseGuestSlug("minh anh")).toBeNull();
-    expect(parseGuestSlug("nguyễn")).toBeNull();
-    expect(parseGuestSlug("a".repeat(65))).toBeNull();
-  });
 });
