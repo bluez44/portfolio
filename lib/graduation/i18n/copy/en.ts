@@ -107,6 +107,7 @@ export const en: GraduationCopy = {
       days: "days",
       hours: "hours",
       minutes: "mins",
+      seconds: "secs",
       during: "Today is the day!",
       after: "Thank you for celebrating with me!",
     },

@@ -14,6 +14,19 @@ import { useFinaleTimeline } from "./use-finale-timeline";
 
 const ENVELOPE_SIZE = "relative aspect-[1.6/1] w-[min(540px,88vw)] min-[760px]:w-[min(540px,46vw)]";
 
+const pad = (n: number) => String(n).padStart(2, "0");
+
+function Cell({ value, label }: { value: string; label: string }) {
+  return (
+    <div className="flex min-w-13 flex-col items-center rounded-lg border-[1.5px] border-ink bg-paper px-2.5 py-1.5 min-[420px]:px-3" style={{ boxShadow: "var(--offset-xs)" }}>
+      <span className="font-heading text-2xl leading-none font-bold text-ink tabular-nums min-[420px]:text-3xl">{value}</span>
+      <span className="text-[9px] tracking-[0.2em] text-ink-3 uppercase min-[420px]:text-[10px]">{label}</span>
+    </div>
+  );
+}
+
+const Dot = () => <span className="font-bold text-ink-3">·</span>;
+
 export function FinaleSection({
   guestName,
   rsvp,
@@ -41,42 +54,14 @@ export function FinaleSection({
           <SectionHeading lead={t.heading.lead} accent={t.heading.accent} />
 
           {countdown?.phase === "before" && (
-            <div className="flex items-center gap-2 font-mono min-[420px]:gap-3">
-              <div
-                className="flex flex-col items-center rounded-lg border-[1.5px] border-ink bg-paper px-3 py-1.5"
-                style={{ boxShadow: "var(--offset-xs)" }}
-              >
-                <span className="font-heading text-2xl font-bold leading-none text-ink min-[420px]:text-3xl">
-                  {countdown.days}
-                </span>
-                <span className="text-[9px] tracking-[0.2em] text-ink-3 uppercase min-[420px]:text-[10px]">
-                  {t.countdown.days}
-                </span>
-              </div>
-              <span className="font-bold text-ink-3">·</span>
-              <div
-                className="flex flex-col items-center rounded-lg border-[1.5px] border-ink bg-paper px-3 py-1.5"
-                style={{ boxShadow: "var(--offset-xs)" }}
-              >
-                <span className="font-heading text-2xl font-bold leading-none text-ink min-[420px]:text-3xl">
-                  {String(countdown.hours).padStart(2, "0")}
-                </span>
-                <span className="text-[9px] tracking-[0.2em] text-ink-3 uppercase min-[420px]:text-[10px]">
-                  {t.countdown.hours}
-                </span>
-              </div>
-              <span className="font-bold text-ink-3">·</span>
-              <div
-                className="flex flex-col items-center rounded-lg border-[1.5px] border-ink bg-paper px-3 py-1.5"
-                style={{ boxShadow: "var(--offset-xs)" }}
-              >
-                <span className="font-heading text-2xl font-bold leading-none text-ink min-[420px]:text-3xl">
-                  {String(countdown.minutes).padStart(2, "0")}
-                </span>
-                <span className="text-[9px] tracking-[0.2em] text-ink-3 uppercase min-[420px]:text-[10px]">
-                  {t.countdown.minutes}
-                </span>
-              </div>
+            <div className="flex items-center gap-1.5 font-mono min-[420px]:gap-3">
+              <Cell value={String(countdown.days)} label={t.countdown.days} />
+              <Dot />
+              <Cell value={pad(countdown.hours)} label={t.countdown.hours} />
+              <Dot />
+              <Cell value={pad(countdown.minutes)} label={t.countdown.minutes} />
+              <Dot />
+              <Cell value={pad(countdown.seconds)} label={t.countdown.seconds} />
             </div>
           )}
 

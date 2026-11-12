@@ -107,6 +107,7 @@ export const vi: GraduationCopy = {
       days: "ngày",
       hours: "giờ",
       minutes: "phút",
+      seconds: "giây",
       during: "Hôm nay là ngày ấy!",
       after: "Cảm ơn bạn đã đến chung vui!",
     },

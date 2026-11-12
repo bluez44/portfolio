@@ -75,6 +75,7 @@ export type GraduationCopy = {
       days: string;
       hours: string;
       minutes: string;
+      seconds: string;
       during: string;
       after: string;
     };
