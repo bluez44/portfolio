@@ -8,22 +8,33 @@ type Refs = {
   timecodeRef: RefObject<HTMLElement | null>;
   grainRef: RefObject<HTMLElement | null>;
   onFlap: () => void;
+  onPosition?: (pos: { x: number; y: number }) => void;
 };
 
 /** Mounts the intro's 3D scene into `hostRef`; the ref stays null when WebGL is unavailable. */
-export function useBeeIntroScene(hostRef: RefObject<HTMLElement | null>, { reduced, timecodeRef, grainRef, onFlap }: Refs) {
+export function useBeeIntroScene(hostRef: RefObject<HTMLElement | null>, { reduced, timecodeRef, grainRef, onFlap, onPosition }: Refs) {
   const sceneRef = useRef<BeeIntroScene | null>(null);
   const onFlapRef = useRef(onFlap);
+  const onPositionRef = useRef(onPosition);
   useEffect(() => {
     onFlapRef.current = onFlap;
   }, [onFlap]);
+  useEffect(() => {
+    onPositionRef.current = onPosition;
+  }, [onPosition]);
 
   useEffect(() => {
     const host = hostRef.current;
     if (!host) return;
     let scene: BeeIntroScene;
     try {
-      scene = createBeeIntroScene(host, { reduced, timecode: timecodeRef.current, grain: grainRef.current, onFlap: () => onFlapRef.current() });
+      scene = createBeeIntroScene(host, {
+        reduced,
+        timecode: timecodeRef.current,
+        grain: grainRef.current,
+        onFlap: () => onFlapRef.current(),
+        onPosition: (pos) => onPositionRef.current?.(pos),
+      });
     } catch (error) {
       console.error("Bee intro scene disabled (WebGL unavailable):", error);
       return;

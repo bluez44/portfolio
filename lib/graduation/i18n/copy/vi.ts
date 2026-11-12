@@ -127,6 +127,7 @@ export const vi: GraduationCopy = {
     soundHint: "♪ Nên bật âm thanh",
     nowPlaying: "♪ Đang phát",
     preparing: "Đang chuẩn bị lá thư…",
+    beeNotice: (name) => `${name} ơi, bạn có 1 thông báo mới!`,
   },
   narrator: {
     wave: (name) => `Chào ${name}! Lật thư ra xem nhé.`,

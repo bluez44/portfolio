@@ -127,6 +127,7 @@ export const en: GraduationCopy = {
     soundHint: "♪ Sound on",
     nowPlaying: "♪ Now playing",
     preparing: "Preparing your letter…",
+    beeNotice: (name) => `Hey ${name}, you have a new notification!`,
   },
   narrator: {
     wave: (name) => `Hi ${name}! Flip the letter over.`,

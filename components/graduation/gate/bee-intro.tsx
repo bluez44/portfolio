@@ -7,6 +7,7 @@ import { useReducedMotion } from "@/lib/hooks/use-reduced-motion";
 import { LangToggle } from "../i18n/lang-toggle";
 import { useCopy } from "../i18n/lang-context";
 import { useBeeIntroScene } from "../intro/use-bee-intro-scene";
+import { BeeBubble, type BeeBubbleHandle } from "./bee-bubble";
 import type { GatePhase } from "./gate-phase";
 import { PENDING, useIntroTimeline } from "./use-intro-timeline";
 
@@ -52,7 +53,14 @@ export function BeeIntro({ guestName, phase, musicPlaying, onEnter, onExited }: 
   const hostRef = useRef<HTMLDivElement>(null);
   const timecodeRef = useRef<HTMLSpanElement>(null);
   const grainRef = useRef<HTMLDivElement>(null);
-  const sceneRef = useBeeIntroScene(hostRef, { reduced, timecodeRef, grainRef, onFlap: () => playSfx("buzz") });
+  const bubbleRef = useRef<BeeBubbleHandle>(null);
+  const sceneRef = useBeeIntroScene(hostRef, {
+    reduced,
+    timecodeRef,
+    grainRef,
+    onFlap: () => playSfx("buzz"),
+    onPosition: (pos) => bubbleRef.current?.update(pos, phase !== "opening"),
+  });
   const { exit, entered } = useIntroTimeline(rootRef, reduced);
 
   useEffect(() => {
@@ -61,6 +69,7 @@ export function BeeIntro({ guestName, phase, musicPlaying, onEnter, onExited }: 
 
   const enter = (withMusic: boolean) => {
     if (!onEnter(withMusic)) return;
+    bubbleRef.current?.update({ x: 0, y: 0 }, false);
     const audible = withMusic && !reduced;
     if (audible) unlockSfx();
     exit(withMusic ? sceneRef.current : null, onExited, () => audible && playSfx("rustle"));
@@ -84,6 +93,8 @@ export function BeeIntro({ guestName, phase, musicPlaying, onEnter, onExited }: 
       <span data-intro-toast className="absolute inset-x-0 top-[calc(clamp(44px,8vh,72px)+64px)] z-7 translate-y-2 text-center font-mono text-[11px] tracking-[0.22em] text-jade uppercase opacity-0">
         {musicPlaying ? t.nowPlaying : null}
       </span>
+
+      <BeeBubble ref={bubbleRef} guestName={guestName} />
 
       <div className="pointer-events-none absolute inset-x-[clamp(20px,5vw,72px)] bottom-[calc(clamp(44px,8vh,72px)+clamp(20px,5vh,56px))] z-5 flex flex-wrap items-end justify-between gap-x-8 gap-y-5">
         <div className="flex min-w-0 flex-col gap-[clamp(10px,2vh,18px)]">

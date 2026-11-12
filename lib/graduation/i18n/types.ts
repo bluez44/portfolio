@@ -87,7 +87,16 @@ export type GraduationCopy = {
     noReply: string;
     replyNow: string;
   };
-  gate: { dialogLabel: string; wake: string; tapHint: string; silent: string; soundHint: string; nowPlaying: string; preparing: string };
+  gate: {
+    dialogLabel: string;
+    wake: string;
+    tapHint: string;
+    silent: string;
+    soundHint: string;
+    nowPlaying: string;
+    preparing: string;
+    beeNotice: (name: string) => string;
+  };
   narrator: Record<NarrationKey, (name: string) => string>;
   footer: string;
   notFound: { kicker: string; heading: Heading; body: string };
