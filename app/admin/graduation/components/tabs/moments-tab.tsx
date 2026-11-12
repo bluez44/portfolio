@@ -219,6 +219,18 @@ export function MomentsTab({ met, onChange }: MomentsTabProps) {
           ))}
         </div>
       </div>
+
+      <div className="rounded-lg border border-zinc-800 bg-zinc-900/50 p-3">
+        <h4 className="text-xs font-semibold uppercase tracking-wider text-zinc-400 mb-2">
+          3. Ảnh chụp chung với khách
+        </h4>
+        <ImageUploader
+          label="Ảnh chụp chung với khách"
+          value={met.togetherPhoto || ""}
+          onChange={(url) => onChange({ ...met, togetherPhoto: url || undefined })}
+          helperText="Ảnh thứ 5, bay vào cuối cùng phía trên lời nhắn cá nhân. Để trống nếu không có."
+        />
+      </div>
     </div>
   );
 }
