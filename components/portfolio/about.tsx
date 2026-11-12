@@ -146,7 +146,7 @@ export function About() {
                   <div
                     className={`relative ${
                       reverse ? "lg:order-1" : ""
-                    }`}
+                    } ${index > 0 ? "max-lg:hidden" : ""}`}
                   >
                     <div
                       className="relative overflow-hidden rounded-(--r-round) border-[1.5px] border-ink bg-paper-2"
