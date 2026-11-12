@@ -1,7 +1,7 @@
 "use client";
 
 import gsap from "gsap";
-import { useCallback, useRef, useState, type RefObject } from "react";
+import { useCallback, useLayoutEffect, useRef, useState, type RefObject } from "react";
 import { useReducedMotion } from "@/lib/hooks/use-reduced-motion";
 import { useCourierBee } from "../courier/courier-bee-provider";
 
@@ -14,6 +14,7 @@ export function useReplySendoff(cardRef: RefObject<HTMLElement | null>, hasIniti
   const [showResult, setShowResult] = useState(hasInitialSaved);
   const [postmarked, setPostmarked] = useState(hasInitialSaved);
   const sendoffActive = useRef(false);
+  const revealPending = useRef(false);
 
   const startSendoff = useCallback(async () => {
     if (sendoffActive.current) return;
@@ -47,14 +48,47 @@ export function useReplySendoff(cardRef: RefObject<HTMLElement | null>, hasIniti
 
     await carryOff(card);
 
+    // The fade-in runs in the layout effect below, once React has committed the result into the card.
+    revealPending.current = true;
     setShowResult(true);
-    gsap.fromTo(
-      card,
-      { opacity: 0, y: 14, scale: 0.98 },
-      { opacity: 1, y: 0, scale: 1, duration: 0.45, ease: "power2.out", clearProps: "all" },
-    );
-    sendoffActive.current = false;
   }, [cardRef, carryOff, reduced]);
+
+  useLayoutEffect(() => {
+    if (!showResult || !revealPending.current) return;
+    revealPending.current = false;
+    const card = cardRef.current;
+    if (!card) {
+      sendoffActive.current = false;
+      return;
+    }
+    // carryOff leaves x / rotation / rotateX on the card; drop every leftover transform so the
+    // fade-in starts from the card's real resting place instead of snapping there at the end.
+    gsap.set(card, { clearProps: "transform" });
+    const tween = gsap.fromTo(
+      card,
+      { opacity: 0, x: 0, y: 14, scale: 0.98, rotation: 0, rotateX: 0 },
+      {
+        opacity: 1,
+        y: 0,
+        scale: 1,
+        duration: 0.45,
+        ease: "power2.out",
+        clearProps: "all",
+        onComplete: () => {
+          sendoffActive.current = false;
+        },
+      },
+    );
+    return () => {
+      // Only clean up an interrupted fade-in (e.g. unmount); a finished one has already cleared itself,
+      // and this cleanup also runs when a re-send flips showResult back to false mid-sendoff.
+      if (tween.progress() < 1) {
+        tween.kill();
+        gsap.set(card, { clearProps: "all" });
+        sendoffActive.current = false;
+      }
+    };
+  }, [showResult, cardRef]);
 
   return { showResult, postmarked, startSendoff };
 }
