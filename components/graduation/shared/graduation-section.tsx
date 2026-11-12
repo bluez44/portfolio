@@ -12,7 +12,7 @@ export function GraduationSection({
   return (
     <section
       id={id}
-      className={`relative border-t-[1.5px] border-ink px-6 py-[clamp(80px,10vw,140px)] min-[760px]:px-[clamp(72px,8vw,128px)] ${className}`}
+      className={`relative px-6 py-[clamp(80px,10vw,140px)] min-[760px]:px-[clamp(72px,8vw,128px)] ${className}`}
       style={{ background: `var(--${tone})` }}
     >
       <div className={`mx-auto grid max-w-6xl grid-cols-1 gap-12 ${cols}`}>

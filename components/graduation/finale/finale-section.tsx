@@ -47,7 +47,7 @@ export function FinaleSection({
     <section
       id="finale"
       ref={rootRef}
-      className="relative border-t-[1.5px] border-ink bg-paper"
+      className="relative bg-paper"
       style={{ height: reduced ? "100vh" : "220vh" }}
     >
       <div className="sticky top-0 box-border flex h-screen flex-col items-center justify-between overflow-hidden px-6 pt-[clamp(80px,11vh,104px)] pb-[clamp(20px,3.5vh,36px)] min-[760px]:px-[clamp(72px,8vw,128px)]">

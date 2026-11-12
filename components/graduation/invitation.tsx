@@ -24,6 +24,7 @@ import { MetSection } from "./met/met-section";
 import { useYouTubePlayer } from "./music/use-youtube-player";
 import { useMusicCues } from "./music/use-music-cues";
 import { RsvpSection } from "./rsvp/rsvp-section";
+import { HalftoneSeam } from "./shared/halftone-seam";
 import { WishesSection } from "./wishes/wishes-section";
 import { FinaleSection } from "./finale/finale-section";
 
@@ -97,8 +98,11 @@ function InvitationContent({ guest, initialRsvp, ownerPhone }: InvitationProps) 
 
         <main>
           <EnvelopeStage guestName={guest.name} />
+          <HalftoneSeam from="paper" to="paper-2" />
           <MetSection guestName={guest.name} note={guest.customContent?.met?.note ?? guest.note} togetherPhoto={guest.customContent?.met?.togetherPhoto} />
+          <HalftoneSeam from="paper-2" to="paper" />
           <EndsSection onTourOpen={fadePause} onTourClose={fadeResume} />
+          <HalftoneSeam from="paper" to="paper-2" />
           <RsvpSection
             slug={guest.slug}
             guestName={guest.name}
@@ -107,7 +111,9 @@ function InvitationContent({ guest, initialRsvp, ownerPhone }: InvitationProps) 
             soundOn={musicStatus === "playing"}
             onSaved={handleRsvpSaved}
           />
+          <HalftoneSeam from="paper-2" to="paper" />
           <WishesSection guestId={guest.id} refreshKey={wishRefreshKey} />
+          <HalftoneSeam from="paper" to="paper" />
           <FinaleSection guestName={guest.name} guestId={guest.id} rsvp={currentRsvp} />
         </main>
 

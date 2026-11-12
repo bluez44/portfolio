@@ -135,7 +135,7 @@ export function WishesSection({
     <section
       ref={sectionRef}
       id="bee-wall"
-      className="relative border-t-[1.5px] border-ink bg-paper px-6 py-[clamp(80px,10vw,140px)] min-[760px]:px-[clamp(72px,8vw,128px)]"
+      className="relative bg-paper px-6 py-[clamp(80px,10vw,140px)] min-[760px]:px-[clamp(72px,8vw,128px)]"
     >
       <div className="mx-auto flex max-w-6xl flex-col gap-10">
         <div ref={headerRef} className="flex flex-col gap-5">
