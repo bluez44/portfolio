@@ -13,13 +13,14 @@ function sectionCorner({ root, section }: TrailElements): Point {
   return { x: s.right - r.left - START_INSET, y: s.top - r.top + START_INSET };
 }
 
-/** Beside each card on its open side. */
+/** Beside each card on its open side, halfway to the viewport edge when that side is narrow (phones). */
 function cardDocks({ root, cards }: TrailElements): Point[] {
-  const width = root.offsetWidth;
+  const rootLeft = root.getBoundingClientRect().left;
   return cards.map((card) => {
     const { x, y } = offsetWithin(card, root);
-    const gap = Math.min(DOCK_GAP, (width - card.offsetWidth) / 2);
     const left = card.dataset.side === "left";
+    const free = left ? window.innerWidth - rootLeft - (x + card.offsetWidth) : rootLeft + x;
+    const gap = Math.max(0, Math.min(DOCK_GAP, free / 2));
     return { x: left ? x + card.offsetWidth + gap : x - gap, y: y + card.offsetHeight / 2 };
   });
 }

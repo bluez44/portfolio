@@ -3,6 +3,9 @@ import type { CSSProperties } from "react";
 import type { Moment } from "@/lib/graduation/i18n";
 import { Tape } from "../../shared/tape";
 
+/** Phones: 90vw wide, breaking out of the section's 24px gutter so each card sits 2.5vw from its edge. */
+const MOBILE = { left: "max-[759px]:ml-[calc(2.5vw-24px)]", right: "max-[759px]:mr-[calc(2.5vw-24px)]" };
+
 /**
  * `--a` (0..1) is driven by the BK badge's distance along the trail (see use-moment-trail):
  * 0 = idle (blurred, veiled photo), 1 = badge at the card (sharp photo, card lifted and straightened).
@@ -12,7 +15,7 @@ export function MomentCard({ moment: m, side }: { moment: Moment; side: "left" |
     <li
       data-moment
       data-side={side}
-      className={`relative flex min-h-140 w-[84%] flex-col justify-end rounded-[14px] border-[1.5px] border-ink bg-paper ${side === "left" ? "self-start" : "self-end"}`}
+      className={`relative flex min-h-140 w-[84%] flex-col justify-end rounded-[14px] border-[1.5px] border-ink bg-paper max-[759px]:w-[90vw] ${side === "left" ? "self-start" : "self-end"} ${MOBILE[side]}`}
       style={{
         "--a": 0,
         boxShadow: `calc(5px + var(--a) * 4px) calc(5px + var(--a) * 4px) 0 var(--${m.color})`,
@@ -21,7 +24,7 @@ export function MomentCard({ moment: m, side }: { moment: Moment; side: "left" |
     >
       <div aria-hidden className="absolute inset-0 overflow-hidden rounded-[13px]">
         <div className="absolute -inset-3" style={{ filter: "blur(calc((1 - var(--a)) * 7px)) saturate(calc(0.35 + var(--a) * 0.65))" }}>
-          <Image src={m.image} alt="" fill sizes="(min-width: 760px) 400px, 84vw" className="object-cover" />
+          <Image src={m.image} alt="" fill sizes="(min-width: 760px) 400px, 90vw" className="object-cover" />
         </div>
         <div className="absolute inset-0 bg-paper" style={{ opacity: "calc((1 - var(--a)) * 0.55)" }} />
         <div className="absolute inset-x-0 bottom-0 h-[72%]" style={{ background: "linear-gradient(to bottom, transparent, var(--paper) )" }} />
