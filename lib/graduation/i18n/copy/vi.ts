@@ -83,6 +83,7 @@ export const vi: GraduationCopy = {
     no: "Tiếc quá, không kịp",
     error: "Không gửi được, thử lại nhé",
     result: { yes: "✓ Đã nhận — hẹn gặp bạn ngày 28.11!", no: "✓ Đã nhận — cảm ơn bạn đã báo" },
+    stamp: "Sẽ đến · 28.11.2026",
     change: "Đổi ý",
     contact: { label: "Số điện thoại hoặc email", placeholder: "0901 234 567 hoặc ban@email.com" },
     reason: { label: "Lý do", placeholder: "Hôm đó mình bận…" },

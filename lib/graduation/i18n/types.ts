@@ -54,6 +54,8 @@ export type GraduationCopy = {
     no: string;
     error: string;
     result: { yes: string; no: string };
+    /** Rubber stamp on an attending reply. */
+    stamp: string;
     change: string;
     contact: Field;
     reason: Field;

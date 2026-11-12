@@ -430,6 +430,17 @@
   }
 }
 
+@keyframes attending-stamp {
+  from {
+    transform: scale(1.6) rotate(-2deg);
+    opacity: 0;
+  }
+  to {
+    transform: scale(1) rotate(-8deg);
+    opacity: 0.92;
+  }
+}
+
 @keyframes mine-pop {
   0% {
     transform: scale(1);

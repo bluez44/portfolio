@@ -45,7 +45,7 @@ export function RsvpSection({
         </p>
         <div className="perspective-distant">
           <div ref={cardRef} data-character-avoid className="transform-3d">
-            <ReplyPostcard guestName={guestName} postmarked={postmarked}>
+            <ReplyPostcard guestName={guestName} postmarked={postmarked} status={rsvp.saved?.status}>
               {rsvp.saved && !rsvp.editing && showResult ? (
                 <RsvpResult status={rsvp.saved.status} onReset={rsvp.edit} />
               ) : (

@@ -1,13 +1,16 @@
 "use client";
 
 import type { ReactNode } from "react";
+import type { RsvpStatus } from "@/lib/graduation/types";
 import { Postmark } from "../shared/postmark";
 import { Stamp } from "../shared/stamp";
 import { useCopy } from "../i18n/lang-context";
+import { AttendingStamp } from "./attending-stamp";
 
 type Props = {
   guestName: string;
   postmarked?: boolean;
+  status?: RsvpStatus;
   children: ReactNode;
 };
 
@@ -15,7 +18,7 @@ type Props = {
  * Postcard frame styling for the RSVP form and its response.
  * Uses index card horizontal lines and airmail-inspired typography.
  */
-export function ReplyPostcard({ guestName, postmarked = false, children }: Props) {
+export function ReplyPostcard({ guestName, postmarked = false, status, children }: Props) {
   const { rsvp: t } = useCopy();
 
   return (
@@ -38,7 +41,8 @@ export function ReplyPostcard({ guestName, postmarked = false, children }: Props
         </div>
         <div className="relative shrink-0">
           <Stamp className="scale-85 origin-top-right" />
-          {postmarked && (
+          {postmarked && status === "yes" && <AttendingStamp label={t.stamp} className="top-10 right-0 z-10 min-[760px]:top-9 min-[760px]:right-14" />}
+          {postmarked && status !== "yes" && (
             <Postmark
               color="tomato"
               lines={["HCMUT", "· 2026 ·", "TP.HCM"]}

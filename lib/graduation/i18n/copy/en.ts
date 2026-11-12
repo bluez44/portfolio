@@ -83,6 +83,7 @@ export const en: GraduationCopy = {
     no: "Sorry, can't make it",
     error: "Couldn't send, please try again",
     result: { yes: "✓ Postmarked — see you on Nov 28!", no: "✓ Noted — thanks for letting me know" },
+    stamp: "Attending · Nov 28",
     change: "Change answer",
     contact: { label: "Phone or email", placeholder: "+84 901 234 567 or you@email.com" },
     reason: { label: "Reason", placeholder: "I'm busy that day…" },
