@@ -18,7 +18,13 @@ export type BeeIntroScene = {
   dispose(): void;
 };
 
-type Options = { reduced: boolean; timecode?: HTMLElement | null; grain?: HTMLElement | null; onFlap?: () => void };
+type Options = {
+  reduced: boolean;
+  timecode?: HTMLElement | null;
+  grain?: HTMLElement | null;
+  onFlap?: () => void;
+  onPosition?: (pos: { x: number; y: number }) => void;
+};
 
 const seeded = (seed: number) => () => {
   seed = (seed * 16807) % 2147483647;
@@ -37,8 +43,8 @@ export function createBeeIntroScene(host: HTMLElement, opts: Options): BeeIntroS
   const scene = new THREE.Scene();
   scene.fog = new THREE.Fog(0xfbf8f2, 3.5, 12);
   const camera = new THREE.PerspectiveCamera(32, 1, 0.05, 100);
-  scene.add(new THREE.HemisphereLight(0xffffff, 0x9a9488, 0.85));
-  const keyLight = new THREE.DirectionalLight(0xffffff, 0.85);
+  scene.add(new THREE.HemisphereLight(0xffffff, 0x9a9488, 1.8));
+  const keyLight = new THREE.DirectionalLight(0xffffff, 1.5);
   keyLight.position.set(3, 6, 5);
   scene.add(keyLight);
 
@@ -131,6 +137,7 @@ export function createBeeIntroScene(host: HTMLElement, opts: Options): BeeIntroS
   if (!opts.reduced) gsap.from(cam, { x: cam.x * 1.35, y: cam.y + 1.3, z: cam.z * 1.45, duration: 2.6, ease: "power3.out" });
 
   const look = new THREE.Vector3();
+  const beePos = new THREE.Vector3();
   let paused = false;
   let frame = 0;
   const tick = (_time: number, deltaMs: number) => {
@@ -153,6 +160,14 @@ export function createBeeIntroScene(host: HTMLElement, opts: Options): BeeIntroS
     camera.setViewOffset(vw, vh, ox * S.off, oy * S.off, vw, vh);
     camera.updateProjectionMatrix();
     renderer.render(scene, camera);
+    if (opts.onPosition) {
+      outer.getWorldPosition(beePos);
+      beePos.project(camera);
+      opts.onPosition({
+        x: (beePos.x * 0.5 + 0.5) * vw,
+        y: (-(beePos.y * 0.5) + 0.5) * vh,
+      });
+    }
     if (opts.timecode && frame % 2 === 0) opts.timecode.textContent = formatTimecode(S.t);
     if (opts.grain && frame % 3 === 0) shiftFilmGrain(opts.grain);
   };
