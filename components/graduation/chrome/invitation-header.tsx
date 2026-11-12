@@ -20,9 +20,11 @@ export function InvitationHeader({
   const t = useCopy();
   return (
     <header className="fixed inset-x-0 top-0 z-40 border-b-[1.5px] border-ink bg-header-bg backdrop-blur-[14px] backdrop-saturate-[1.2]">
-      <div className="mx-auto flex h-16 max-w-6xl items-center justify-between gap-4 px-6">
-        <Link href="/" className="riso-focus font-mono text-[11px] tracking-[0.22em] text-ink-2 uppercase hover:text-tomato">← Portfolio</Link>
-        <div className="flex items-center gap-3.5">
+      <div className="mx-auto flex h-16 max-w-6xl items-center justify-between gap-2 px-4 sm:gap-4 sm:px-6">
+        <Link href="/" className="riso-focus hit-area relative font-mono text-[11px] tracking-[0.22em] whitespace-nowrap text-ink-2 uppercase hover:text-tomato">
+          ←<span className="max-sm:sr-only"> Portfolio</span>
+        </Link>
+        <div className="flex items-center gap-2 sm:gap-3.5">
           <span className="hidden font-mono text-[11px] tracking-[0.28em] text-ink uppercase sm:inline">{t.header.title}</span>
           {musicNote && (
             <span role="status" className="absolute top-full right-6 mt-1 whitespace-nowrap font-mono text-[10px] tracking-[0.14em] text-tomato uppercase">
