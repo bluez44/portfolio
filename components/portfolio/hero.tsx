@@ -220,7 +220,7 @@ export function Hero() {
               { k: "Currently", v: "Open to opportunities" },
             ].map((item) => (
               <div key={item.k} className="flex flex-col gap-0.5">
-                <span className="font-mono text-[10px] tracking-[0.22em] text-ink-3 uppercase">
+                <span className="font-mono text-[11px] tracking-[0.22em] text-ink-3 uppercase">
                   {item.k}
                 </span>
                 <span className="font-heading text-[15px] font-semibold text-ink">
