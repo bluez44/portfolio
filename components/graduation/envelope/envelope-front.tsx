@@ -16,14 +16,16 @@ export function EnvelopeFront({ guestName }: { guestName: string }) {
         </div>
         <Stamp className="absolute top-[clamp(14px,2vw,24px)] right-[clamp(14px,2vw,24px)]" />
         <Postmark color="tomato" lines={["HCMUT", "· 2026 ·", "TP.HCM"]} rotate={-14} className="top-[clamp(40px,5vw,56px)] right-[clamp(64px,8vw,92px)]" />
-        <div className="flex max-w-[78%] flex-col gap-2">
+        <div className="flex flex-col gap-2">
           <span className={`${mono} text-[11px] tracking-[0.24em] text-ink-3`}>{t.to}</span>
-          <span className="border-b-[1.5px] border-dashed border-ink pb-2.5 font-heading text-[clamp(28px,4vw,48px)] leading-none font-bold tracking-[-0.035em] text-ink" style={{ fontVariationSettings: '"wdth" 86, "opsz" 96' }}>
+          <span className="max-w-[78%] border-b-[1.5px] border-dashed border-ink pb-2.5 font-heading text-[clamp(28px,4vw,48px)] leading-none font-bold tracking-[-0.035em] text-ink" style={{ fontVariationSettings: '"wdth" 86, "opsz" 96' }}>
             {guestName}
           </span>
-          <span className={`${mono} text-[10px] tracking-[0.2em] text-ink-2`}>{t.cordially}</span>
+          <div className="flex flex-wrap items-end justify-between gap-x-3 gap-y-1">
+            <span className={`${mono} text-[10px] tracking-[0.2em] text-ink-2`}>{t.cordially}</span>
+            <span className={`${mono} text-[10px] tracking-[0.18em] text-ink-3`}>{t.from}</span>
+          </div>
         </div>
-        <span className={`${mono} absolute right-[clamp(16px,2.4vw,28px)] bottom-[clamp(14px,2vw,24px)] text-[10px] tracking-[0.18em] text-ink-3`}>{t.from}</span>
       </div>
     </div>
   );
