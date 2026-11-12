@@ -1,5 +1,6 @@
 import * as THREE from "three";
 import { targetPose } from "../choreography/target-pose";
+import { readRisoPalette, type RisoPalette } from "../../shared/three/palette";
 import { applyPalette, createMaterials, disposeMaterials, type Materials } from "./materials";
 import { createMeshKit } from "./mesh-kit";
 import { applyPose, type PoseState } from "./pose";
@@ -10,7 +11,7 @@ import { CAMERA_Y, CAMERA_Z, FOV, INITIAL_POSE, MAX_PIXEL_RATIO, MOBILE_BREAKPOI
 export type GradCharacter = {
   frame(time: number, scrollY: number): void;
   resize(beats: Beat[] | null): void;
-  applyPalette(dark: boolean): void;
+  applyPalette(p: RisoPalette): void;
   view(): { halfW: number; scale: number };
   headScreen(): { x: number; y: number };
   dispose(): void;
@@ -34,7 +35,7 @@ export function createGradCharacter(host: HTMLElement, opts: { scale: number }):
     light.position.set(3, 5, 6);
     scene.add(light);
 
-    const M = createMaterials();
+    const M = createMaterials(readRisoPalette());
     materials = M;
     const rig = buildRig(scene, createMeshKit(M.outline), M);
     const S: PoseState = { ...INITIAL_POSE };
@@ -69,9 +70,8 @@ export function createGradCharacter(host: HTMLElement, opts: { scale: number }):
         view.scale = opts.scale * (w < MOBILE_BREAKPOINT ? MOBILE_SCALE : 1);
         beats = nextBeats;
       },
-      applyPalette(dark) {
-        const styles = getComputedStyle(document.documentElement);
-        applyPalette(M, (n) => styles.getPropertyValue(n).trim(), dark);
+      applyPalette(p) {
+        applyPalette(M, p);
       },
       view: () => ({ halfW: view.halfW, scale: view.scale }),
       headScreen() {

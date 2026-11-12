@@ -1,8 +1,11 @@
 import * as THREE from "three";
+import { isDarkPalette, type RisoPalette } from "../../shared/three/palette";
 import { toonGradient } from "../../shared/three/toon";
 
 const TOON_KEYS = ["gown", "stole", "tassel", "skin", "blush", "hair", "cap", "pants", "shoe", "b1", "b2", "b3", "laptop", "paper"] as const;
 type ToonKey = (typeof TOON_KEYS)[number];
+type ThemedKey = "gown" | "stole" | "blush" | "tassel" | "b1" | "b2" | "b3";
+type FixedKey = Exclude<ToonKey, ThemedKey>;
 
 export type Materials = Record<ToonKey, THREE.MeshToonMaterial> & {
   screen: THREE.MeshBasicMaterial;
@@ -11,39 +14,39 @@ export type Materials = Record<ToonKey, THREE.MeshToonMaterial> & {
   gradient: THREE.DataTexture;
 };
 
-const DEFAULTS: Record<ToonKey, string> = {
-  gown: "#1240e5", stole: "#ef4e2b", tassel: "#f5c518", skin: "#f4cfb2", blush: "#ef4e2b",
-  hair: "#1c1b1f", cap: "#1c1b1f", pants: "#4a4a52", shoe: "#1c1b1f",
-  b1: "#ef4e2b", b2: "#f5c518", b3: "#0f8f65", laptop: "#7a7a83", paper: "#fbf8f2",
+// The figure's own colours (skin, hair, shoes, the sheet of paper) stay put in either theme.
+const FIXED: Record<FixedKey, string> = {
+  skin: "#f4cfb2", hair: "#1c1b1f", cap: "#1c1b1f", pants: "#4a4a52", shoe: "#1c1b1f", laptop: "#7a7a83", paper: "#fbf8f2",
 };
+// A near-black rim reads on the dark page, where the ink token turns pale.
+const DARK_OUTLINE = "#0a0907";
 
-export function createMaterials(): Materials {
+const themed = (p: RisoPalette): Record<ThemedKey, string> => ({
+  gown: p.blue, stole: p.tomato, blush: p.tomato, tassel: p.canary, b1: p.tomato, b2: p.canary, b3: p.jade,
+});
+
+export function createMaterials(p: RisoPalette): Materials {
   const gradient = toonGradient([110, 190, 255]);
+  const colors = { ...FIXED, ...themed(p) };
   const toon = Object.fromEntries(
-    TOON_KEYS.map((k) => [k, new THREE.MeshToonMaterial({ color: DEFAULTS[k], gradientMap: gradient })]),
+    TOON_KEYS.map((k) => [k, new THREE.MeshToonMaterial({ color: colors[k], gradientMap: gradient })]),
   ) as Record<ToonKey, THREE.MeshToonMaterial>;
-  return {
+  const m: Materials = {
     ...toon,
     gradient,
-    screen: new THREE.MeshBasicMaterial({ color: "#1240e5" }),
-    outline: new THREE.MeshBasicMaterial({ color: "#1c1b1f", side: THREE.BackSide }),
-    shadow: new THREE.MeshBasicMaterial({ color: "#1c1b1f", transparent: true, opacity: 0.16 }),
+    screen: new THREE.MeshBasicMaterial(),
+    outline: new THREE.MeshBasicMaterial({ side: THREE.BackSide }),
+    shadow: new THREE.MeshBasicMaterial({ transparent: true, opacity: 0.16 }),
   };
+  applyPalette(m, p);
+  return m;
 }
 
-/** Re-tints materials from the current CSS riso tokens. */
-export function applyPalette(m: Materials, readVar: (name: string) => string, dark: boolean): void {
-  const set = (mat: { color: THREE.Color }, value: string) => value && mat.color.set(value);
-  set(m.gown, readVar("--blue"));
-  set(m.stole, readVar("--tomato"));
-  set(m.blush, readVar("--tomato"));
-  set(m.tassel, readVar("--canary"));
-  set(m.b1, readVar("--tomato"));
-  set(m.b2, readVar("--canary"));
-  set(m.b3, readVar("--jade"));
-  set(m.screen, readVar("--blue"));
-  set(m.outline, dark ? "#0a0907" : readVar("--ink"));
-  set(m.shadow, readVar("--ink"));
+export function applyPalette(m: Materials, p: RisoPalette): void {
+  for (const [key, color] of Object.entries(themed(p)) as [ThemedKey, string][]) m[key].color.set(color);
+  m.screen.color.set(p.blue);
+  m.outline.color.set(isDarkPalette(p) ? DARK_OUTLINE : p.ink);
+  m.shadow.color.set(p.ink);
 }
 
 export function disposeMaterials(m: Materials): void {

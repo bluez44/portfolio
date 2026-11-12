@@ -3,13 +3,13 @@
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { useEffect, useRef, type RefObject } from "react";
-import { useIsDark } from "@/lib/hooks/use-is-dark";
 import { useReducedMotion } from "@/lib/hooks/use-reduced-motion";
 import { openedCardScale } from "../envelope/opened-card";
 import { buildBeats } from "./choreography/beats";
 import { lineAt } from "./choreography/narration";
 import { measureEnvelopeWidth, measureSections } from "./choreography/measure-sections";
 import { besideX, envelopeSideX } from "./choreography/placement";
+import { usePaletteSync } from "../shared/three/use-palette-sync";
 import { createGradCharacter, type GradCharacter } from "./scene/grad-character";
 import type { Beat, NarrationKey } from "./types";
 
@@ -24,7 +24,6 @@ export function useGradCharacter(
   }: { scale?: number; onReady?: () => void; onFrame?: CharacterFrameHandler } = {},
 ) {
   const reduced = useReducedMotion();
-  const { dark } = useIsDark();
   const charRef = useRef<GradCharacter | null>(null);
   const onReadyRef = useRef(onReady);
   const onFrameRef = useRef(onFrame);
@@ -85,8 +84,5 @@ export function useGradCharacter(
     };
   }, [hostRef, reduced, scale]);
 
-  useEffect(() => {
-    const id = requestAnimationFrame(() => charRef.current?.applyPalette(dark));
-    return () => cancelAnimationFrame(id);
-  }, [dark, reduced]);
+  usePaletteSync(charRef);
 }
