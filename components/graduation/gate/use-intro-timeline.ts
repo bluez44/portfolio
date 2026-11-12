@@ -1,7 +1,7 @@
 "use client";
 
 import gsap from "gsap";
-import { useCallback, useEffect, useRef, type RefObject } from "react";
+import { useCallback, useEffect, useRef, useState, type RefObject } from "react";
 import type { BeeIntroScene } from "../intro/bee-intro-scene";
 
 const TOP = '[data-intro-bar="top"]';
@@ -19,6 +19,7 @@ export function useIntroTimeline(rootRef: RefObject<HTMLElement | null>, reduced
   const ctxRef = useRef<gsap.Context | null>(null);
   const enterRef = useRef<gsap.core.Timeline | null>(null);
   const exitingRef = useRef(false);
+  const [entered, setEntered] = useState(false);
 
   useEffect(() => {
     const root = rootRef.current;
@@ -32,7 +33,7 @@ export function useIntroTimeline(rootRef: RefObject<HTMLElement | null>, reduced
         if (cancelled || exitingRef.current) return;
         ctx.add(() => {
           enterRef.current = gsap
-            .timeline()
+            .timeline({ onComplete: () => setEntered(true) })
             .fromTo(TOP, { scaleY: 0, transformOrigin: "50% 0%" }, { scaleY: 1, duration: 1.1, ease: "power4.inOut", clearProps: "transform" }, 0)
             .fromTo(BOTTOM, { scaleY: 0, transformOrigin: "50% 100%" }, { scaleY: 1, duration: 1.1, ease: "power4.inOut", clearProps: "transform" }, 0)
             .from(CHARS, { yPercent: 115, duration: 1.15, stagger: 0.035, ease: "power4.out" }, 0.35)
@@ -95,5 +96,6 @@ export function useIntroTimeline(rootRef: RefObject<HTMLElement | null>, reduced
     [rootRef, reduced],
   );
 
-  return { exit };
+  /** `entered`: the entrance has finished, so its controls are fully visible. */
+  return { exit, entered };
 }

@@ -53,11 +53,11 @@ export function BeeIntro({ guestName, phase, musicPlaying, onEnter, onExited }: 
   const timecodeRef = useRef<HTMLSpanElement>(null);
   const grainRef = useRef<HTMLDivElement>(null);
   const sceneRef = useBeeIntroScene(hostRef, { reduced, timecodeRef, grainRef, onFlap: () => playSfx("buzz") });
-  const { exit } = useIntroTimeline(rootRef, reduced);
+  const { exit, entered } = useIntroTimeline(rootRef, reduced);
 
   useEffect(() => {
-    if (phase === "ready") rootRef.current?.querySelector<HTMLButtonElement>("[data-intro-wake]")?.focus({ preventScroll: true });
-  }, [phase]);
+    if (phase === "ready" && (entered || reduced)) rootRef.current?.querySelector<HTMLButtonElement>("[data-intro-wake]")?.focus({ preventScroll: true });
+  }, [phase, entered, reduced]);
 
   const enter = (withMusic: boolean) => {
     if (!onEnter(withMusic)) return;
