@@ -4,7 +4,7 @@ export function RisoThemeToggle({ dark, onToggle }: { dark: boolean; onToggle: (
       type="button"
       onClick={onToggle}
       aria-label={dark ? "Switch to light mode" : "Switch to dark mode"}
-      className="riso-focus relative h-9 w-16 cursor-pointer overflow-hidden rounded-full border-[1.5px] border-ink bg-paper-2 p-0"
+      className="riso-focus hit-area relative h-9 w-16 cursor-pointer overflow-hidden rounded-full border-[1.5px] border-ink bg-paper-2 p-0"
       style={{ boxShadow: "var(--offset-xs)" }}
     >
       <span

@@ -25,7 +25,7 @@ export function RisoButton(props: AsButton | AsLink) {
   const { variant = "primary", size = "lg", icon, offsetColor, children, className = "", style, ...rest } = props;
   const s = SIZE[size];
   const oc = offsetColor ?? OFFSET[variant];
-  const cls = `riso-btn riso-focus inline-flex items-center rounded-full border-[1.5px] border-ink font-sans font-semibold leading-[1.2] no-underline ${VARIANT[variant]} ${s.cls} ${className}`;
+  const cls = `riso-btn riso-focus hit-area relative inline-flex items-center rounded-full border-[1.5px] border-ink font-sans font-semibold leading-[1.2] no-underline ${VARIANT[variant]} ${s.cls} ${className}`;
   const vars = { "--off": `${s.off}px`, "--off-color": `var(--${oc})`, ...style } as CSSProperties;
   const content = (
     <>

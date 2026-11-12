@@ -19,7 +19,7 @@ export function RisoIconButton({ size = "md", fill = "paper", label, className =
       aria-label={label}
       title={label}
       {...rest}
-      className={`riso-focus grid flex-none cursor-pointer place-items-center rounded-full border-[1.5px] border-ink p-0 font-heading font-bold leading-none transition-transform duration-(--dur-fast) hover:-translate-y-0.5 ${className} ${isPlaying ? "animate-spin" : ""}`}
+      className={`riso-focus hit-area relative grid flex-none cursor-pointer place-items-center rounded-full border-[1.5px] border-ink p-0 font-heading font-bold leading-none transition-transform duration-(--dur-fast) hover:-translate-y-0.5 ${className} ${isPlaying ? "animate-spin" : ""}`}
       style={{
         width: d,
         height: d,
