@@ -67,7 +67,8 @@ export function useIntroTimeline(rootRef: RefObject<HTMLElement | null>, reduced
           return;
         }
         const tl = gsap.timeline({ onComplete: onDone });
-        tl.to(CHARS, { yPercent: -115, duration: 0.7, stagger: 0.022, ease: "power3.in" }, 0).to(
+        // Diacritics and the line's top padding sit above the glyph box, so the letters also fade rather than relying on the mask alone.
+        tl.to(CHARS, { yPercent: -160, autoAlpha: 0, duration: 0.7, stagger: 0.022, ease: "power3.in" }, 0).to(
           FADERS,
           { opacity: 0, y: -12, duration: 0.45, stagger: 0.04, ease: "power2.in" },
           0,
