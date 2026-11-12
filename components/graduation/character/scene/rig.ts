@@ -1,12 +1,19 @@
 import * as THREE from "three";
+import { createBeeModel, type BeeModel } from "../../shared/three/bee-model";
+import type { RisoPalette } from "../../shared/three/palette";
 import type { Materials } from "./materials";
 import type { MeshKit } from "./mesh-kit";
+
+/** Bee model units (body radius 14) to rig units: about half a head long. */
+const BEE_SCALE = 0.016;
 
 export type Arm = { sh: THREE.Group; el: THREE.Group };
 export type Rig = {
   root: THREE.Group; hips: THREE.Group; legs: { leg: THREE.Group; knee: THREE.Group }[];
   skirt: THREE.Mesh; spine: THREE.Group; headG: THREE.Group; capG: THREE.Group; tassel: THREE.Group;
-  A: Arm; B: Arm; cardProp: THREE.Group; books: THREE.Group; laptop: THREE.Group; hexProp: THREE.Group; shadow: THREE.Mesh;
+  A: Arm; B: Arm; cardProp: THREE.Group; books: THREE.Group; laptop: THREE.Group;
+  /** Bee the character plays with on the wishes wall: `bee` is posed in rig space, `beeModel` sits inside it. */
+  bee: THREE.Group; beeModel: BeeModel; shadow: THREE.Mesh;
 };
 
 function buildHead(k: MeshKit, M: Materials, spine: THREE.Group) {
@@ -51,15 +58,10 @@ function buildProps(k: MeshKit, M: Materials, root: THREE.Group, hips: THREE.Gro
   lid.rotation.x = -1.85;
   k.add(lid, new THREE.BoxGeometry(0.62, 0.03, 0.42), M.laptop, [0, 0, 0.21], null, 0.015);
   k.add(lid, new THREE.PlaneGeometry(0.54, 0.34), M.screen, [0, 0.017, 0.21], [-Math.PI / 2, 0, 0], 0);
-  // Honeycomb held in both hands while reading the wishes wall.
-  const hexProp = k.group(spine, [0, 0.36, 0.56]);
-  hexProp.rotation.x = 0.95;
-  k.add(hexProp, new THREE.CylinderGeometry(0.24, 0.24, 0.05, 6), M.tassel, null, null, 0.015);
-  k.add(hexProp, new THREE.CylinderGeometry(0.1, 0.1, 0.07, 6), M.stole, null, null, 0);
-  return { cardProp, books, laptop, hexProp };
+  return { cardProp, books, laptop };
 }
 
-export function buildRig(scene: THREE.Scene, k: MeshKit, M: Materials): Rig {
+export function buildRig(scene: THREE.Scene, k: MeshKit, M: Materials, palette: RisoPalette): Rig {
   const root = k.group(scene);
   const shadow = new THREE.Mesh(new THREE.CircleGeometry(0.62, 32), M.shadow);
   shadow.rotation.x = -Math.PI / 2;
@@ -86,5 +88,9 @@ export function buildRig(scene: THREE.Scene, k: MeshKit, M: Materials): Rig {
   const A = buildArm(k, M, spine, 1);
   const B = buildArm(k, M, spine, -1);
   const props = buildProps(k, M, root, hips, spine, B.el);
-  return { root, hips, legs, skirt, spine, ...head, A, B, ...props, shadow };
+  const bee = k.group(root);
+  const beeModel = createBeeModel(M.gradient, M.outline, palette);
+  beeModel.group.scale.setScalar(BEE_SCALE);
+  bee.add(beeModel.group);
+  return { root, hips, legs, skirt, spine, ...head, A, B, ...props, bee, beeModel, shadow };
 }

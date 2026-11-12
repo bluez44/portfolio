@@ -1,7 +1,7 @@
-export type Action = "wave" | "bow" | "sit" | "point" | "toss" | "cheer" | "read";
-export const ACTIONS: readonly Action[] = ["wave", "bow", "sit", "point", "toss", "cheer", "read"];
+export type Action = "wave" | "bow" | "sit" | "point" | "toss" | "cheer" | "play";
+export const ACTIONS: readonly Action[] = ["wave", "bow", "sit", "point", "toss", "cheer", "play"];
 
-export type NarrationKey = "wave" | "bow" | "desk" | "cheer" | "point" | "toss" | "read" | "farewell";
+export type NarrationKey = "wave" | "bow" | "desk" | "cheer" | "point" | "toss" | "play" | "farewell";
 
 export type Beat = { s: number; x: number; ry: number; act: Action; say?: NarrationKey };
 
@@ -18,9 +18,9 @@ export type SectionMetrics = {
   rsvpTop: number;
   /** Height of the RSVP section, which bounds the toss hold. */
   rsvpHeight?: number;
-  /** Top of the bee-wall wishes section, where the character reads the honeycomb. */
+  /** Top of the bee-wall wishes section, where the character plays with a bee. */
   wishesTop: number;
-  /** Height of the bee-wall section; the character reads until its bottom edge enters the viewport. */
+  /** Height of the bee-wall section; the character plays until its bottom edge enters the viewport. */
   wishesHeight?: number;
   /** Top of the finale section, where the character says farewell. */
   finaleTop?: number;

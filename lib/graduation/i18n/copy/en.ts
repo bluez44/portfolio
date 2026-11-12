@@ -158,7 +158,7 @@ export const en: GraduationCopy = {
     cheer: () => "This part is for you.",
     point: () => "The venue, with a map and a 360° tour.",
     toss: (name) => `Send me a reply, ${name}.`,
-    read: () => "Wishes from everyone.",
+    play: () => "Wishes from everyone.",
     farewell: () => "See you on Nov 28.",
   },
   footer: "Thanks for celebrating with me",

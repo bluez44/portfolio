@@ -158,7 +158,7 @@ export const vi: GraduationCopy = {
     cheer: () => "Phần này dành cho bạn.",
     point: () => "Địa điểm ở đây, có bản đồ và tour 360°.",
     toss: (name) => `Hồi âm cho mình, ${name}.`,
-    read: () => "Lời chúc của mọi người.",
+    play: () => "Lời chúc của mọi người.",
     farewell: () => "Hẹn gặp ngày 28.11.",
   },
   footer: "Cảm ơn bạn đã đồng hành cùng mình trong hành trình này. Hẹn gặp bạn tại lễ tốt nghiệp!",

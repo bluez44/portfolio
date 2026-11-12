@@ -33,6 +33,6 @@ type Station = { x: number; ry: number; act: Action };
 export const DESK: Station = { x: 0.66, ry: -0.35, act: "sit" };
 export const POINTING: Station = { x: -0.66, ry: 0.1, act: "point" };
 export const TOSSING: Station = { x: 0.62, ry: 0, act: "toss" };
-export const READING: Station = { x: 0.62, ry: -0.25, act: "read" };
+export const PLAYING: Station = { x: 0.62, ry: -0.15, act: "play" };
 /** Facing while cheering beside the note (toward the centred card). */
 export const CHEER_RY = -0.45;

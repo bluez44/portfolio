@@ -35,9 +35,10 @@ export function createGradCharacter(host: HTMLElement, opts: { scale: number }):
     light.position.set(3, 5, 6);
     scene.add(light);
 
-    const M = createMaterials(readRisoPalette());
+    const palette = readRisoPalette();
+    const M = createMaterials(palette);
     materials = M;
-    const rig = buildRig(scene, createMeshKit(M.outline), M);
+    const rig = buildRig(scene, createMeshKit(M.outline), M, palette);
     const S: PoseState = { ...INITIAL_POSE };
     const view = { halfW: 1, halfH: 1, scale: opts.scale };
     let beats: Beat[] | null = null;
@@ -72,6 +73,7 @@ export function createGradCharacter(host: HTMLElement, opts: { scale: number }):
       },
       applyPalette(p) {
         applyPalette(M, p);
+        rig.beeModel.applyPalette(p);
       },
       view: () => ({ halfW: view.halfW, scale: view.scale }),
       headScreen() {
@@ -84,6 +86,7 @@ export function createGradCharacter(host: HTMLElement, opts: { scale: number }):
       },
       dispose() {
         scene.traverse((o) => (o as THREE.Mesh).geometry?.dispose());
+        rig.beeModel.dispose();
         disposeMaterials(M);
         // Release the GL context now; otherwise it lingers until GC (StrictMode remounts would pile them up).
         renderer.forceContextLoss();

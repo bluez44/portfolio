@@ -1,5 +1,6 @@
 import type { Rig } from "./rig";
 import type { PoseTarget } from "../types";
+import { smoothstep } from "@/lib/math/smoothstep";
 
 export type PoseState = PoseTarget;
 
@@ -8,13 +9,70 @@ const show = (g: { visible: boolean; scale: { setScalar(v: number): void } }, v:
   g.scale.setScalar(Math.max(0.001, v));
 };
 
+/** Head centre in rig space while standing (hips 1.0 + neck 1.13). */
+const HEAD_Y = 2.13;
+/** Seconds per loop of the bee around the head; it swoops in to boop the nose near the end of each. */
+const BEE_LOOP = 3.3;
+const BOOP_EVERY = 2;
+
+/** play: a bee loops around the head; the character follows it with its eyes, reaches for it, sways and hops. */
+function playWithBee(R: Rig, play: number, T: number) {
+  if (play < 0.001) return;
+  const a = (T / BEE_LOOP) * Math.PI * 2;
+  // Every BOOP_EVERY loops, the last stretch dives to the nose and back out.
+  const c = (T / (BEE_LOOP * BOOP_EVERY)) % 1;
+  const boop = Math.sin(Math.PI * smoothstep((c - 0.82) / 0.18)) ** 2;
+  const ox = 0.95 * Math.cos(a);
+  const oy = HEAD_Y + 0.15 + 0.25 * Math.sin(2 * a) + 0.03 * Math.sin(T * 13);
+  // Kept in front of the face (head radius 0.3) so it never passes through the head.
+  const oz = 0.65 + 0.25 * Math.sin(a);
+  const bx = ox * (1 - boop);
+  const by = oy + (HEAD_Y + 0.02 - oy) * boop;
+  const bz = oz + (0.5 - oz) * boop;
+
+  R.bee.position.set(bx, by, bz);
+  R.bee.rotation.x = 0.3;
+  // Model faces +x: head along the orbit's tangent, and turn to face the character while booping.
+  const heading = Math.atan2(-0.25 * Math.cos(a), -0.95 * Math.sin(a));
+  R.beeModel.group.rotation.y = heading + (Math.PI / 2 - heading) * boop;
+  R.beeModel.group.rotation.z = 0.25 * Math.sin(2 * a);
+  const flap = 0.55 + Math.sin(T * 55) * 0.55;
+  for (const w of R.beeModel.wings) w.pivot.rotation.x = -w.side * flap;
+
+  // Eyes on the bee, chin up; a startled lean back when it boops.
+  const yaw = Math.max(-1, Math.min(1, Math.atan2(bx, bz)));
+  const pitch = -Math.atan2(by - HEAD_Y, Math.hypot(bx, bz));
+  R.headG.rotation.y += play * yaw * 0.8;
+  R.headG.rotation.x += play * (Math.max(-0.5, pitch) * 0.8 - 0.15 * boop);
+  R.spine.rotation.x -= play * 0.1 * boop;
+  R.spine.rotation.z -= play * 0.1 * Math.cos(a);
+  R.hips.position.y += play * 0.06 * Math.max(0, Math.sin(T * 3.8));
+
+  // The hand on the bee's side reaches up for it, elbow soft and fingers wiggling; the other hangs low.
+  const near = 0.5 + 0.5 * Math.cos(a);
+  const reachA = smoothstep((near - 0.35) / 0.55);
+  const reachB = smoothstep((0.65 - near) / 0.55);
+  const tickle = Math.sin(T * 9) * 0.3;
+  R.A.sh.rotation.z += play * (0.15 + 2.1 * reachA);
+  R.A.sh.rotation.x -= play * (0.2 + 0.5 * reachA);
+  R.A.el.rotation.x -= play * 0.5 * reachA;
+  R.A.el.rotation.z += play * (0.35 + tickle) * reachA;
+  R.B.sh.rotation.z -= play * (0.15 + 2.1 * reachB);
+  R.B.sh.rotation.x -= play * (0.2 + 0.5 * reachB);
+  R.B.el.rotation.x -= play * 0.5 * reachB;
+  R.B.el.rotation.z -= play * (0.35 + tickle) * reachB;
+  // Both hands come up to catch it when it boops.
+  R.A.sh.rotation.x -= play * 0.6 * boop;
+  R.B.sh.rotation.x -= play * 0.6 * boop;
+}
+
 export function applyPose(
   R: Rig,
   S: PoseState,
   { time: T, phase }: { time: number; phase: number },
   view: { halfW: number; halfH: number; scale: number },
 ): void {
-  const { wave, bow, sit, point, toss, cheer, read, walk } = S;
+  const { wave, bow, sit, point, toss, cheer, play, walk } = S;
   const hop = Math.abs(Math.sin(T * 5.5)) * cheer;
   const sw = Math.sin(phase) * 0.6 * walk;
 
@@ -46,15 +104,7 @@ export function applyPose(
   R.B.el.rotation.x = -1.0 * wave - 1.0 * sit - 1.75 * bow - type;
   R.B.el.rotation.z = 0.25 * bow - cheer * (0.25 + Math.sin(T * 11 + 1.2) * 0.3);
 
-  // read: both arms forward cradling the honeycomb, head tipped down toward it.
-  R.A.sh.rotation.x -= 1.05 * read;
-  R.A.el.rotation.x -= 0.75 * read;
-  R.A.sh.rotation.z -= 0.3 * read;
-  R.B.sh.rotation.x -= 1.05 * read;
-  R.B.el.rotation.x -= 0.75 * read;
-  R.B.sh.rotation.z += 0.3 * read;
-  R.headG.rotation.x += 0.32 * read;
-  R.spine.rotation.x += 0.06 * read;
+  playWithBee(R, play, T);
 
   const p = (T % 2.2) / 2.2;
   R.capG.position.y = 0.2 + toss * Math.max(0, Math.sin(Math.PI * p)) * 2.6;
@@ -65,6 +115,6 @@ export function applyPose(
   show(R.cardProp, wave);
   show(R.books, sit);
   show(R.laptop, sit);
-  show(R.hexProp, read);
+  show(R.bee, play);
   R.shadow.scale.set(1 + 0.4 * sit, 1, 1);
 }
