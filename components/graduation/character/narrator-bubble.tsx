@@ -8,6 +8,11 @@ export type NarratorBubbleHandle = {
   update: (head: { x: number; y: number }, line: NarrationKey | null) => void;
 };
 
+const EDGE_MARGIN = 12;
+const TAIL_INSET = 16;
+
+const clamp = (v: number, lo: number, hi: number) => Math.min(Math.max(v, lo), hi);
+
 type Props = {
   guestName: string;
 };
@@ -45,8 +50,12 @@ export const NarratorBubble = forwardRef<NarratorBubbleHandle, Props>(function N
         }
 
         root.style.opacity = "1";
-        // Position bubble above the character's head, horizontally centered
-        root.style.transform = `translate3d(${Math.round(head.x)}px, ${Math.round(head.y - 70)}px, 0) translate(-50%, -100%)`;
+        // Keep the bubble on screen; the tail shifts the other way so it still points at the head.
+        const half = root.offsetWidth / 2;
+        const x = clamp(head.x, half + EDGE_MARGIN, window.innerWidth - half - EDGE_MARGIN);
+        const tail = clamp(head.x - x, TAIL_INSET - half, half - TAIL_INSET);
+        root.style.setProperty("--tail", `${Math.round(tail)}px`);
+        root.style.transform = `translate3d(${Math.round(x)}px, ${Math.round(head.y - 70)}px, 0) translate(-50%, -100%)`;
 
         if (activeLineRef.current !== line) {
           activeLineRef.current = line;
@@ -83,16 +92,16 @@ export const NarratorBubble = forwardRef<NarratorBubbleHandle, Props>(function N
       className="pointer-events-none fixed top-0 left-0 z-30 transition-opacity duration-200"
       style={{ opacity: 0 }}
     >
-      <div className="relative rounded-xl border-[1.5px] border-ink bg-paper px-4 py-2 text-[14px] font-medium text-ink shadow-[2px_2px_0_var(--ink)]">
+      <div className="relative max-w-[calc(100vw-24px)] rounded-xl border-[1.5px] border-ink bg-paper px-4 py-2 text-[14px] font-medium text-ink shadow-[2px_2px_0_var(--ink)]">
         <span>{typedText}</span>
         {/* Pointer tail pointing down towards the character's head */}
         <div
           aria-hidden
-          className="absolute -bottom-2 left-1/2 h-0 w-0 -translate-x-1/2 border-x-[6px] border-t-[8px] border-x-transparent border-t-ink"
+          className="absolute -bottom-2 left-[calc(50%+var(--tail,0px))] h-0 w-0 -translate-x-1/2 border-x-[6px] border-t-[8px] border-x-transparent border-t-ink"
         />
         <div
           aria-hidden
-          className="absolute -bottom-[6.5px] left-1/2 h-0 w-0 -translate-x-1/2 border-x-[5px] border-t-[7px] border-x-transparent border-t-paper"
+          className="absolute -bottom-[6.5px] left-[calc(50%+var(--tail,0px))] h-0 w-0 -translate-x-1/2 border-x-[5px] border-t-[7px] border-x-transparent border-t-paper"
         />
       </div>
     </div>
