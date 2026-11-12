@@ -106,7 +106,11 @@ export function BeeIntro({ guestName, phase, musicPlaying, onEnter, onExited }: 
       <BeeBubble ref={bubbleRef} guestName={guestName} loading={phase === "arriving"} />
       <BeePulse ref={pulseRef} label={t.wake} cue={t.tapBee} onPress={() => enter(true)} />
 
-      <div className="pointer-events-none absolute inset-x-[clamp(20px,5vw,72px)] bottom-[calc(clamp(44px,8vh,72px)+clamp(20px,5vh,56px))] z-5 flex flex-wrap items-end justify-between gap-x-8 gap-y-5">
+      <p data-intro-fade className={`${mono} pointer-events-none absolute inset-x-4 bottom-[calc(clamp(44px,8vh,72px)+env(safe-area-inset-bottom)+clamp(10px,2vh,18px))] z-5 m-0 text-center tracking-[0.16em] text-ink-3 min-[760px]:hidden`}>
+        {t.desktopHint}
+      </p>
+
+      <div className="pointer-events-none absolute inset-x-[clamp(20px,5vw,72px)] bottom-[calc(clamp(44px,8vh,72px)+clamp(20px,5vh,56px))] z-5 flex max-[759px]:bottom-[calc(clamp(44px,8vh,72px)+clamp(36px,7vh,72px))] flex-wrap items-end justify-between gap-x-8 gap-y-5">
         <div className="flex min-w-0 flex-col gap-[clamp(10px,2vh,18px)] max-sm:w-full">
           <h1
             aria-label={`${stage.cover.lead} ${stage.cover.accent}`}

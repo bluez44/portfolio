@@ -142,6 +142,7 @@ export const vi: GraduationCopy = {
     tapBee: "chạm để mở thiệp",
     silent: "Vào không nhạc →",
     soundHint: "♪ Nên bật âm thanh",
+    desktopHint: "Xem trên máy tính để có trải nghiệm tốt nhất",
     nowPlaying: "♪ Đang phát",
     beePreparing: "Đang chuẩn bị thư…",
     beeNotice: (name) => `${name}, bạn có thư mới.`,

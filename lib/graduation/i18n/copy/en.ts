@@ -142,6 +142,7 @@ export const en: GraduationCopy = {
     tapBee: "tap to open",
     silent: "Enter silently →",
     soundHint: "♪ Sound on",
+    desktopHint: "Best viewed on a desktop",
     nowPlaying: "♪ Now playing",
     beePreparing: "Preparing your letter…",
     beeNotice: (name) => `${name}, you've got mail.`,
