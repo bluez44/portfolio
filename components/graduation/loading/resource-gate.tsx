@@ -32,16 +32,20 @@ const ResourceGateContext = createContext<ResourceGateValue | null>(null);
 /** null outside a provider, so gated components also work on ungated pages. */
 export const useResourceGate = () => useContext(ResourceGateContext);
 
+const defaultOverlay = (ready: boolean) => <LoadingOverlay ready={ready} />;
+
 /**
- * Holds a full-screen LoadingOverlay over `children` until every id in
- * `resources` has been resolved, with a hard timeout so a stuck resource
- * can never block the page forever.
+ * Holds a full-screen cover (`overlay`, the riso LoadingOverlay by default) over `children` until
+ * every id in `resources` has been resolved, with a hard timeout so a stuck resource can never
+ * block the page forever.
  */
 export function ResourceGateProvider({
   resources,
+  overlay = defaultOverlay,
   children,
 }: {
   resources: readonly string[];
+  overlay?: (ready: boolean) => ReactNode;
   children: ReactNode;
 }) {
   const [pendingIds, setPendingIds] = useState<ReadonlySet<string>>(() => new Set(resources));
@@ -67,7 +71,7 @@ export function ResourceGateProvider({
   return (
     <ResourceGateContext.Provider value={value}>
       {children}
-      <LoadingOverlay ready={ready} />
+      {overlay(ready)}
     </ResourceGateContext.Provider>
   );
 }

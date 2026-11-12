@@ -2,6 +2,7 @@
 
 import Image from "next/image";
 import LoadingCat from "@/public/lottie/Bad Cat.svg";
+import { HalftoneBackdrop } from "./halftone-backdrop";
 
 /** Full-screen riso loading screen; fades out (and stops catching events) once `ready`. */
 export function LoadingOverlay({ ready }: { ready: boolean }) {
@@ -14,16 +15,7 @@ export function LoadingOverlay({ ready }: { ready: boolean }) {
         ready ? "pointer-events-none opacity-0" : "opacity-100"
       }`}
     >
-      {/* halftone backdrop */}
-      <span
-        aria-hidden
-        className="pointer-events-none absolute inset-0 opacity-40 mix-blend-multiply"
-        style={{
-          background:
-            "radial-gradient(color-mix(in oklab, var(--ink) 8%, transparent) 1px, transparent 1.5px)",
-          backgroundSize: "22px 22px",
-        }}
-      />
+      <HalftoneBackdrop />
 
       <Image
         src={LoadingCat}
