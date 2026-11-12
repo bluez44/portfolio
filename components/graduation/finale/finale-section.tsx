@@ -40,7 +40,7 @@ export function FinaleSection({
         <div className="relative z-10 flex flex-col items-center gap-4 text-center shrink-0">
           <SectionHeading lead={t.heading.lead} accent={t.heading.accent} />
 
-          {countdown.phase === "before" && (
+          {countdown?.phase === "before" && (
             <div className="flex items-center gap-2 font-mono min-[420px]:gap-3">
               <div
                 className="flex flex-col items-center rounded-lg border-[1.5px] border-ink bg-paper px-3 py-1.5"
@@ -80,7 +80,7 @@ export function FinaleSection({
             </div>
           )}
 
-          {countdown.phase === "during" && (
+          {countdown?.phase === "during" && (
             <span
               className="rounded-full border-[1.5px] border-ink bg-canary px-4 py-1.5 font-mono text-[11px] font-bold tracking-[0.16em] text-ink uppercase"
               style={{ boxShadow: "var(--offset-xs)" }}
@@ -89,7 +89,7 @@ export function FinaleSection({
             </span>
           )}
 
-          {countdown.phase === "after" && (
+          {countdown?.phase === "after" && (
             <span
               className="rounded-full border-[1.5px] border-ink bg-paper-2 px-4 py-1.5 font-mono text-[11px] font-bold tracking-[0.16em] text-ink-2 uppercase"
               style={{ boxShadow: "var(--offset-xs)" }}
