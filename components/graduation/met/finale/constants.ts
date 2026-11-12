@@ -27,17 +27,21 @@ export const NOTE_SIDE_GUTTER = 16;
 export const NOTE_MAX_SCALE = 1.25;
 
 /**
- * Photos drifting up behind the pinned note, scattered unevenly around the middle. `x` is the
- * photo centre's offset (vw) from the viewport centre; `from`/`to` are vh offsets from the pin's top
- * over the whole pin, so each starts below the viewport, ends above it, and its travel (from − to)
- * sets its parallax speed.
+ * Memory photos that gather above the pinned note, one after another. `x` is the photo centre's
+ * offset (vw) from the viewport centre; `rest` is where its top settles, as a share of the viewport
+ * height; `enter` is the share of the pin over which it rises from below the viewport to rest.
  */
-export const PARALLAX_PHOTOS = [
-  { x: -17, width: "clamp(130px, 36vw, 300px)", from: 0.75, to: -0.9, rot: -5 },
-  { x: 15, width: "clamp(110px, 30vw, 240px)", from: 1.15, to: -0.95, rot: 4 },
-  { x: -8, width: "clamp(100px, 26vw, 220px)", from: 1.6, to: -0.9, rot: 3 },
-  { x: 20, width: "clamp(130px, 38vw, 320px)", from: 2.0, to: -1.0, rot: -3 },
+export const MEMORY_PHOTOS = [
+  { x: -17, width: "clamp(130px, 36vw, 300px)", rot: -5, rest: 0.14, enter: [0.02, 0.32] },
+  { x: 15, width: "clamp(110px, 30vw, 240px)", rot: 4, rest: 0.19, enter: [0.18, 0.48] },
+  { x: -8, width: "clamp(100px, 26vw, 220px)", rot: 3, rest: 0.11, enter: [0.34, 0.64] },
+  { x: 20, width: "clamp(130px, 38vw, 320px)", rot: -3, rest: 0.22, enter: [0.5, 0.8] },
 ] as const;
 
-/** Vertical distance from the note's centre, as a share of the viewport height, at which a drifting photo has fully faded. */
-export const MEMORY_RANGE = 1;
+/** Top of a memory photo before it rises, as a share of the viewport height (just below it). */
+export const MEMORY_ENTER_FROM = 1.05;
+/** A photo surfaces faded like an old memory and settles clear. */
+export const MEMORY_LOOK = {
+  from: { opacity: 0, filter: "blur(6px) sepia(0.85)" },
+  to: { opacity: 0.95, filter: "blur(0px) sepia(0.25)" },
+} as const;

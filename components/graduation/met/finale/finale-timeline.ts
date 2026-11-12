@@ -1,7 +1,6 @@
 import gsap from "gsap";
 import type { FinaleElements } from "../elements";
-import { ARRIVE_LINE, GROW, GROW_EASE, HOLD, MEMORY_RANGE, PARALLAX_PHOTOS, PIN_END } from "./constants";
-import { memoryLook } from "./memory-fade";
+import { ARRIVE_LINE, GROW, GROW_EASE, HOLD, MEMORY_ENTER_FROM, MEMORY_LOOK, MEMORY_PHOTOS, PIN_END } from "./constants";
 import { noteScaleFor } from "./note-finale";
 
 /**
@@ -9,7 +8,7 @@ import { noteScaleFor } from "./note-finale";
  * the badge while the note scales up and slides to the viewport centre, then holds briefly.
  * Requires ScrollTrigger and DrawSVGPlugin to be registered.
  */
-export function createFinaleTimeline({ pin, note, dock, halves, photo, parallaxLayer, parallaxPhotos }: FinaleElements): gsap.core.Timeline {
+export function createFinaleTimeline({ pin, note, dock, halves, photo, memoryLayer, memoryPhotos }: FinaleElements): gsap.core.Timeline {
   // Function values so `invalidateOnRefresh` recomputes them from the current viewport and layout.
   /** The note sits in the left column; slide it to the viewport's centre while it grows. */
   const shift = () => {
@@ -69,19 +68,20 @@ export function createFinaleTimeline({ pin, note, dock, halves, photo, parallaxL
 
   tl.to({}, { duration: HOLD }); // the finished card stays pinned a little before the next section
 
-  if (parallaxLayer) {
+  if (memoryLayer) {
     // The pin sits in a column; pull the layer back to the viewport's left edge.
-    tl.set(parallaxLayer, { x: () => -pin.getBoundingClientRect().left }, 0);
-    // Drift across the whole pin, so the photos never change the timeline's length.
+    tl.set(memoryLayer, { x: () => -pin.getBoundingClientRect().left }, 0);
+    // Placed within the pin's existing length, so the photos never change it.
     const span = tl.duration();
-    parallaxPhotos.forEach((el, i) => {
-      const { from, to } = PARALLAX_PHOTOS[i % PARALLAX_PHOTOS.length];
-      const fade = () => {
-        const p = el.getBoundingClientRect();
-        const n = note.getBoundingClientRect();
-        gsap.set(el, memoryLook(p.top + p.height / 2 - (n.top + n.height / 2), window.innerHeight * MEMORY_RANGE));
-      };
-      tl.fromTo(el, { y: 0 }, { y: () => (to - from) * window.innerHeight, duration: span, onUpdate: fade }, 0);
+    memoryPhotos.forEach((el, i) => {
+      const { rest, enter } = MEMORY_PHOTOS[i % MEMORY_PHOTOS.length];
+      const [from, to] = enter;
+      tl.fromTo(
+        el,
+        { y: () => (MEMORY_ENTER_FROM - rest) * window.innerHeight, ...MEMORY_LOOK.from },
+        { y: 0, ...MEMORY_LOOK.to, duration: span * (to - from), ease: "power2.out" },
+        span * from,
+      );
     });
   }
 

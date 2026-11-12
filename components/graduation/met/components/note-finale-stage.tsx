@@ -1,5 +1,5 @@
 import { BkBadge } from "./bk-badge";
-import { FinaleParallaxPhotos } from "./finale-parallax-photos";
+import { FinaleMemoryPhotos } from "./finale-memory-photos";
 import { PersonalNoteCard } from "./personal-note-card";
 import { PolaroidFrame } from "./polaroid-frame";
 
@@ -13,7 +13,7 @@ export function NoteFinaleStage({ guestName, label, note, photos }: { guestName:
   return (
     <div data-trail-end className="relative">
       <div data-trail-pin className="relative">
-        <FinaleParallaxPhotos images={photos} />
+        <FinaleMemoryPhotos images={photos} />
         <div data-note-scale className="relative origin-top">
           <PolaroidFrame guestName={guestName}>
             <PersonalNoteCard label={label} note={note} />
