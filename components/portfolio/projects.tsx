@@ -39,8 +39,8 @@ export function Projects() {
               </span>
             </h2>
             <p className="max-w-md text-[16px] leading-[1.6] text-ink-2">
-              Two case studies from the last twelve months — each shipped end
-              to end, from architecture to interaction detail.
+              A selection of recent work — each shipped end to end, from
+              architecture to interaction detail.
             </p>
           </div>
         </div>
