@@ -8,7 +8,6 @@ import { useTransientFlag } from "@/lib/hooks/use-transient-flag";
 import { useGradCharacter } from "./character/use-grad-character";
 import { NarratorBubble, type NarratorBubbleHandle } from "./character/narrator-bubble";
 import { CourierBeeProvider } from "./courier/courier-bee-provider";
-import { InvitationFooter } from "./chrome/invitation-footer";
 import { InvitationHeader } from "./chrome/invitation-header";
 import { SideRails } from "./chrome/side-rails";
 import { EndsSection } from "./ends/ends-section";
@@ -103,7 +102,7 @@ function InvitationContent({ guest, initialRsvp, ownerPhone }: InvitationProps) 
             onSaved={handleRsvpSaved}
           />
           <WishesSection guestId={guest.id} refreshKey={wishRefreshKey} />
-          <FinaleSection guestName={guest.name} rsvp={currentRsvp} />
+          <FinaleSection guestName={guest.name} guestId={guest.id} rsvp={currentRsvp} />
         </main>
 
         {/* <InvitationFooter /> */}

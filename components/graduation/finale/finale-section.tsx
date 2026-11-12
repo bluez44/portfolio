@@ -4,6 +4,7 @@ import { useRef } from "react";
 import type { RsvpAnswer } from "@/lib/graduation/types";
 import { useReducedMotion } from "@/lib/hooks/use-reduced-motion";
 import { useCopy } from "../i18n/lang-context";
+import { RisoButton } from "@/components/ui/riso/button";
 import { SectionHeading } from "../shared/section-heading";
 import { EnvelopeBody } from "../envelope/envelope-body";
 import { EnvelopeFlap } from "../envelope/envelope-flap";
@@ -29,9 +30,11 @@ const Dot = () => <span className="font-bold text-ink-3">·</span>;
 
 export function FinaleSection({
   guestName,
+  guestId,
   rsvp,
 }: {
   guestName: string;
+  guestId?: string;
   rsvp: RsvpAnswer | null;
 }) {
   const rootRef = useRef<HTMLElement>(null);
@@ -102,19 +105,43 @@ export function FinaleSection({
           />
         </div>
 
-        {/* Bottom: Warm closing appreciation */}
-        <div className="flex flex-col items-center gap-2 text-center shrink-0">
+        {/* Bottom: Warm closing appreciation & Download invitation card */}
+        <div className="flex flex-col items-center gap-3.5 text-center shrink-0">
           <p
             className="m-0 max-w-[44ch] font-heading text-[clamp(15px,1.6vw,18px)] leading-relaxed text-pretty text-ink-2"
             style={{ fontVariationSettings: '"wdth" 88' }}
           >
             {footerText}
           </p>
-          {/* {!reduced && (
-            <span className="font-mono text-[9px] tracking-[0.24em] text-ink-3 uppercase">
-              [ Cuộn để niêm phong thư · Scroll to seal ]
-            </span>
-          )} */}
+          {guestId && (
+            <RisoButton
+              variant="secondary"
+              size="md"
+              href={`/graduation/${guestId}/card`}
+              download={`thiep-moi-${guestId}.png`}
+              target="_blank"
+              rel="noopener noreferrer"
+              icon={
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="15"
+                  height="15"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2.2"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                >
+                  <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+                  <polyline points="7 10 12 15 17 10" />
+                  <line x1="12" y1="15" x2="12" y2="3" />
+                </svg>
+              }
+            >
+              {t.downloadCard}
+            </RisoButton>
+          )}
         </div>
       </div>
     </section>
