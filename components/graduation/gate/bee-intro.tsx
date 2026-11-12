@@ -62,7 +62,7 @@ export function BeeIntro({ guestName, phase, musicPlaying, onEnter, onExited }: 
     onFlap: () => playSfx("buzz"),
     onPosition: (pos) => {
       bubbleRef.current?.update(pos, phase !== "opening");
-      pulseRef.current?.update(pos, phase === "ready");
+      pulseRef.current?.update(pos.head, phase === "ready");
     },
   });
   const { exit, entered } = useIntroTimeline(rootRef, reduced);
@@ -70,7 +70,7 @@ export function BeeIntro({ guestName, phase, musicPlaying, onEnter, onExited }: 
   useEffect(() => {
     if (phase !== "ready" || !(entered || reduced)) return;
     // Without WebGL there is no bee to follow, so the tap target waits in the middle of the frame.
-    if (!sceneRef.current) pulseRef.current?.update({ x: innerWidth / 2, y: innerHeight / 2 }, true);
+    if (!sceneRef.current) pulseRef.current?.update({ x: innerWidth / 2, y: innerHeight / 2, r: 32 }, true);
     // Focus the dialog, not the bee: programmatic focus would paint the bee's keyboard ring for every visitor. Tab reaches it next.
     rootRef.current?.focus({ preventScroll: true });
   }, [phase, entered, reduced, sceneRef]);
@@ -78,7 +78,7 @@ export function BeeIntro({ guestName, phase, musicPlaying, onEnter, onExited }: 
   const enter = (withMusic: boolean) => {
     if (!onEnter(withMusic)) return;
     bubbleRef.current?.update({ x: 0, y: 0 }, false);
-    pulseRef.current?.update({ x: 0, y: 0 }, false);
+    pulseRef.current?.update({ x: 0, y: 0, r: 0 }, false);
     const audible = withMusic && !reduced;
     if (audible) unlockSfx();
     exit(withMusic ? sceneRef.current : null, onExited, () => audible && playSfx("rustle"));

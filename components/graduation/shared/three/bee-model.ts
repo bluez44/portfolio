@@ -3,8 +3,12 @@ import { outlineGeometry } from "../../character/scene/mesh-kit";
 
 type Vec3 = [number, number, number];
 
+/** Head sphere radius in model units. */
+export const BEE_HEAD_RADIUS = 9.5;
+
 export type BeeModel = {
   group: THREE.Group;
+  head: THREE.Mesh;
   wings: { pivot: THREE.Group; side: 1 | -1 }[];
   eyes: THREE.Mesh[];
   dispose(): void;
@@ -36,7 +40,7 @@ export function createBeeModel(gradient: THREE.DataTexture, outline: THREE.Mater
     band.rotateZ(Math.PI / 2);
     add(group, band, ink, [x, 0, 0], null, null, 0);
   }
-  add(group, new THREE.SphereGeometry(9.5, 20, 16), ink, [19, 1, 0]);
+  const head = add(group, new THREE.SphereGeometry(BEE_HEAD_RADIUS, 20, 16), ink, [19, 1, 0]);
   const eyes = [5, -5].map((z) => add(group, new THREE.SphereGeometry(2.4, 10, 8), eye, [25.5, 3.5, z], null, null, 0));
   const stinger = new THREE.ConeGeometry(3, 8, 10);
   stinger.rotateZ(Math.PI / 2);
@@ -57,6 +61,7 @@ export function createBeeModel(gradient: THREE.DataTexture, outline: THREE.Mater
 
   return {
     group,
+    head,
     wings,
     eyes,
     dispose() {

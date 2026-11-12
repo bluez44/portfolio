@@ -1,7 +1,7 @@
 import gsap from "gsap";
 import * as THREE from "three";
 import { outlineGeometry } from "../character/scene/mesh-kit";
-import { createBeeModel } from "../shared/three/bee-model";
+import { BEE_HEAD_RADIUS, createBeeModel } from "../shared/three/bee-model";
 import { toonGradient } from "../shared/three/toon";
 import { applyFilmGrain, formatTimecode, shiftFilmGrain } from "./film-effects";
 import { hexGrid } from "./hex-grid";
@@ -18,12 +18,15 @@ export type BeeIntroScene = {
   dispose(): void;
 };
 
+/** Where the bee is on screen (CSS px): its body centre, and its head's centre and radius. */
+export type BeeScreenPosition = { x: number; y: number; head: { x: number; y: number; r: number } };
+
 type Options = {
   reduced: boolean;
   timecode?: HTMLElement | null;
   grain?: HTMLElement | null;
   onFlap?: () => void;
-  onPosition?: (pos: { x: number; y: number }) => void;
+  onPosition?: (pos: BeeScreenPosition) => void;
 };
 
 const seeded = (seed: number) => () => {
@@ -158,6 +161,9 @@ export function createBeeIntroScene(host: HTMLElement, opts: Options): BeeIntroS
 
   const look = new THREE.Vector3();
   const beePos = new THREE.Vector3();
+  const headPos = new THREE.Vector3();
+  const headScale = new THREE.Vector3();
+  const headEdge = new THREE.Vector3();
   let paused = false;
   let frame = 0;
   const tick = (_time: number, deltaMs: number) => {
@@ -182,12 +188,15 @@ export function createBeeIntroScene(host: HTMLElement, opts: Options): BeeIntroS
     camera.updateProjectionMatrix();
     renderer.render(scene, camera);
     if (opts.onPosition) {
-      outer.getWorldPosition(beePos);
-      beePos.project(camera);
-      opts.onPosition({
-        x: (beePos.x * 0.5 + 0.5) * vw,
-        y: (-(beePos.y * 0.5) + 0.5) * vh,
-      });
+      const toScreen = (v: THREE.Vector3) => ({ x: (v.x * 0.5 + 0.5) * vw, y: (-(v.y * 0.5) + 0.5) * vh });
+      const body = toScreen(outer.getWorldPosition(beePos).project(camera));
+      // The head's screen radius: project its centre and a point one world radius to the camera's right.
+      bee.head.getWorldPosition(headPos);
+      bee.head.getWorldScale(headScale);
+      headEdge.setFromMatrixColumn(camera.matrixWorld, 0).multiplyScalar(BEE_HEAD_RADIUS * headScale.x).add(headPos);
+      const head = toScreen(headPos.project(camera));
+      const edge = toScreen(headEdge.project(camera));
+      opts.onPosition({ ...body, head: { ...head, r: Math.hypot(edge.x - head.x, edge.y - head.y) } });
     }
     if (opts.timecode && frame % 2 === 0) opts.timecode.textContent = formatTimecode(S.t);
     if (opts.grain && frame % 3 === 0) shiftFilmGrain(opts.grain);

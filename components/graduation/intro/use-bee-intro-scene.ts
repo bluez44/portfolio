@@ -1,14 +1,14 @@
 "use client";
 
 import { useEffect, useRef, type RefObject } from "react";
-import { createBeeIntroScene, type BeeIntroScene } from "./bee-intro-scene";
+import { createBeeIntroScene, type BeeIntroScene, type BeeScreenPosition } from "./bee-intro-scene";
 
 type Refs = {
   reduced: boolean;
   timecodeRef: RefObject<HTMLElement | null>;
   grainRef: RefObject<HTMLElement | null>;
   onFlap: () => void;
-  onPosition?: (pos: { x: number; y: number }) => void;
+  onPosition?: (pos: BeeScreenPosition) => void;
 };
 
 /** Mounts the intro's 3D scene into `hostRef`; the ref stays null when WebGL is unavailable. */
