@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import { useTheme } from "next-themes";
+import { RisoThemeToggle } from "@/components/ui/riso/theme-toggle";
 import { navLinks } from "@/lib/portfolio-data";
 
 export function Header() {
@@ -105,24 +106,7 @@ export function Header() {
 
         {/* right cluster */}
         <div className="flex items-center gap-2.5">
-          {/* theme toggle — sun/moon riso pill */}
-          <button
-            onClick={toggleTheme}
-            aria-label={isLight ? "Switch to dark mode" : "Switch to light mode"}
-            title={isLight ? "Switch to dark mode" : "Switch to light mode"}
-            className="relative h-9 w-16 cursor-pointer overflow-hidden rounded-full border-[1.5px] border-ink bg-paper-2 transition-transform hover:-translate-y-0.5"
-            style={{ boxShadow: "2px 2px 0 var(--ink)" }}
-          >
-            <span
-              className="absolute top-1/2 grid h-6 w-6 -translate-y-1/2 place-items-center rounded-full border-[1.5px] border-ink transition-[left,background] duration-300"
-              style={{
-                left: isLight ? "4px" : "34px",
-                background: isLight ? "var(--canary)" : "var(--blue)",
-              }}
-            >
-              <span className="text-[10px]">{isLight ? "☀" : "☾"}</span>
-            </span>
-          </button>
+          <RisoThemeToggle dark={!isLight} onToggle={toggleTheme} />
 
           <a
             href="/vo-le-quang-vinh-resume.pdf"
