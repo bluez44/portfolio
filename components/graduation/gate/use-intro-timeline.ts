@@ -17,6 +17,8 @@ export const PENDING = "data-intro-pending";
 /** The design's letterbox entrance and exit, scoped to the intro root. */
 export function useIntroTimeline(rootRef: RefObject<HTMLElement | null>, reduced: boolean) {
   const ctxRef = useRef<gsap.Context | null>(null);
+  const enterRef = useRef<gsap.core.Timeline | null>(null);
+  const exitingRef = useRef(false);
 
   useEffect(() => {
     const root = rootRef.current;
@@ -27,9 +29,9 @@ export function useIntroTimeline(rootRef: RefObject<HTMLElement | null>, reduced
     if (reduced) root.removeAttribute(PENDING);
     else {
       (document.fonts?.ready ?? Promise.resolve()).then(() => {
-        if (cancelled) return;
+        if (cancelled || exitingRef.current) return;
         ctx.add(() => {
-          gsap
+          enterRef.current = gsap
             .timeline()
             .fromTo(TOP, { scaleY: 0, transformOrigin: "50% 0%" }, { scaleY: 1, duration: 1.1, ease: "power4.inOut", clearProps: "transform" }, 0)
             .fromTo(BOTTOM, { scaleY: 0, transformOrigin: "50% 100%" }, { scaleY: 1, duration: 1.1, ease: "power4.inOut", clearProps: "transform" }, 0)
@@ -53,6 +55,11 @@ export function useIntroTimeline(rootRef: RefObject<HTMLElement | null>, reduced
       const ctx = ctxRef.current;
       const root = rootRef.current;
       if (!ctx || !root) return onDone();
+      // Finish (or skip) the entrance first so the two timelines never tween the same letters and bars.
+      exitingRef.current = true;
+      enterRef.current?.progress(1).kill();
+      enterRef.current = null;
+      root.removeAttribute(PENDING);
       ctx.add(() => {
         if (reduced) {
           gsap.to(root, { opacity: 0, duration: 0.45, onComplete: onDone });
