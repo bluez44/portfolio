@@ -139,6 +139,7 @@ export const en: GraduationCopy = {
   gate: {
     dialogLabel: "Open invitation",
     wake: "Wake the bee to open your invitation",
+    tapBee: "Tap the bee",
     silent: "Enter silently →",
     soundHint: "♪ Sound on",
     nowPlaying: "♪ Now playing",

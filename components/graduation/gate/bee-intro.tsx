@@ -71,7 +71,8 @@ export function BeeIntro({ guestName, phase, musicPlaying, onEnter, onExited }: 
     if (phase !== "ready" || !(entered || reduced)) return;
     // Without WebGL there is no bee to follow, so the tap target waits in the middle of the frame.
     if (!sceneRef.current) pulseRef.current?.update({ x: innerWidth / 2, y: innerHeight / 2 }, true);
-    rootRef.current?.querySelector<HTMLButtonElement>("[data-intro-wake]")?.focus({ preventScroll: true });
+    // Focus the dialog, not the bee: programmatic focus would paint the bee's keyboard ring for every visitor. Tab reaches it next.
+    rootRef.current?.focus({ preventScroll: true });
   }, [phase, entered, reduced, sceneRef]);
 
   const enter = (withMusic: boolean) => {
@@ -85,9 +86,9 @@ export function BeeIntro({ guestName, phase, musicPlaying, onEnter, onExited }: 
   const waiting = phase !== "ready";
 
   return (
-    <div ref={rootRef} {...{ [PENDING]: "" }} role="dialog" aria-modal="true" aria-label={t.dialogLabel}
+    <div ref={rootRef} {...{ [PENDING]: "" }} role="dialog" aria-modal="true" aria-label={t.dialogLabel} tabIndex={-1}
       // Children opt back in with pointer-events-auto, so the whole subtree is switched off once the exit runs.
-      className={`fixed inset-0 z-100 overflow-hidden bg-paper ${phase === "opening" ? "pointer-events-none **:pointer-events-none" : ""}`}
+      className={`fixed inset-0 z-100 overflow-hidden bg-paper outline-none ${phase === "opening" ? "pointer-events-none **:pointer-events-none" : ""}`}
     >
       <div data-intro-backdrop aria-hidden className="pointer-events-none absolute inset-0" style={{ backgroundImage: "radial-gradient(var(--halftone) 1px, transparent 1px)", backgroundSize: "28px 28px" }} />
       <div data-intro-backdrop aria-hidden className="pointer-events-none absolute inset-0">
@@ -103,7 +104,7 @@ export function BeeIntro({ guestName, phase, musicPlaying, onEnter, onExited }: 
       </span>
 
       <BeeBubble ref={bubbleRef} guestName={guestName} />
-      <BeePulse ref={pulseRef} label={t.wake} onPress={() => enter(true)} />
+      <BeePulse ref={pulseRef} label={t.wake} cue={t.tapBee} onPress={() => enter(true)} />
 
       {phase === "arriving" && (
         <p

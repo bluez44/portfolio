@@ -367,6 +367,20 @@
   }
 }
 
+@keyframes tap-ripple {
+  0% {
+    opacity: 0;
+    transform: scale(0.72);
+  }
+  14% {
+    opacity: 0.75;
+  }
+  100% {
+    opacity: 0;
+    transform: scale(1.5);
+  }
+}
+
 @keyframes wish-fade {
   from {
     opacity: 0;

@@ -109,6 +109,8 @@ export type GraduationCopy = {
   gate: {
     dialogLabel: string;
     wake: string;
+    /** Short visible cue under the bee; `wake` is its accessible name. */
+    tapBee: string;
     silent: string;
     soundHint: string;
     nowPlaying: string;
