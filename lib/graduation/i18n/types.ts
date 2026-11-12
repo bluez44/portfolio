@@ -60,7 +60,7 @@ export type GraduationCopy = {
     ownerPhone: string;
     fieldErrors: Record<RsvpFieldError, string>;
   };
-  gate: { youHaveMail: string; preparing: string; tapToOpen: string };
+  gate: { dialogLabel: string; wake: string; tapHint: string; silent: string; soundHint: string; nowPlaying: string; preparing: string };
   footer: string;
   notFound: { kicker: string; heading: Heading; body: string };
 };

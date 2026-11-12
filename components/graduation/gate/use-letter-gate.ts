@@ -4,7 +4,8 @@ import { useCallback, useEffect, useReducer } from "react";
 import { useScrollLock } from "@/lib/hooks/use-scroll-lock";
 import { gateReducer } from "./gate-phase";
 
-export function useLetterGate(ready: boolean, { animate, openMs }: { animate: boolean; openMs: number }) {
+/** Phase of the intro cover; the exit animation decides when it is done by calling `finish`. */
+export function useLetterGate(ready: boolean) {
   const [phase, dispatch] = useReducer(gateReducer, "arriving");
 
   useEffect(() => {
@@ -20,14 +21,9 @@ export function useLetterGate(ready: boolean, { animate, openMs }: { animate: bo
     if (ready) dispatch({ type: "resourcesReady" });
   }, [ready]);
 
-  useEffect(() => {
-    if (phase !== "opening") return;
-    const timer = window.setTimeout(() => dispatch({ type: "openFinished" }), openMs);
-    return () => window.clearTimeout(timer);
-  }, [phase, openMs]);
-
   useScrollLock(phase !== "done");
 
-  const open = useCallback(() => dispatch({ type: "open", animate }), [animate]);
-  return { phase, open };
+  const open = useCallback(() => dispatch({ type: "open", animate: true }), []);
+  const finish = useCallback(() => dispatch({ type: "openFinished" }), []);
+  return { phase, open, finish };
 }

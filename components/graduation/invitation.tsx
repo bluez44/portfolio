@@ -67,7 +67,7 @@ function InvitationContent({ guest, initialRsvp, ownerPhone }: InvitationProps) 
       <div aria-hidden className="pointer-events-none fixed inset-0 z-15" style={{ backgroundImage: "radial-gradient(var(--halftone) 1px, transparent 1px)", backgroundSize: "28px 28px" }} />
       <div ref={canvasHost} aria-hidden className="pointer-events-none fixed inset-0 z-25" />
 
-      <LetterGate ready={!gate?.pending} onOpen={startMusic} onOpened={onLetterOpened} />
+      <LetterGate ready={!gate?.pending} guestName={guest.name} onOpen={startMusic} onOpened={onLetterOpened} />
       <div inert={!letterOpened}>
         <InvitationHeader musicPlaying={musicStatus === "playing"} musicNote={musicNote} onMusic={toggleMusic} />
         <SideRails />

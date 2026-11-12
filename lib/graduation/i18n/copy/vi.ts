@@ -93,7 +93,15 @@ export const vi: GraduationCopy = {
       too_long: "Hơi dài, rút gọn giúp mình nhé",
     },
   },
-  gate: { youHaveMail: "Bạn có thư", preparing: "Đang chuẩn bị lá thư…", tapToOpen: "Chạm vào con dấu để mở thư" },
+  gate: {
+    dialogLabel: "Mở thiệp",
+    wake: "Đánh thức",
+    tapHint: "hoặc chạm vào khung hình",
+    silent: "Vào không nhạc →",
+    soundHint: "♪ Nên bật âm thanh",
+    nowPlaying: "♪ Đang phát",
+    preparing: "Đang chuẩn bị lá thư…",
+  },
   footer: "Cảm ơn bạn đã đồng hành cùng mình trong hành trình này. Hẹn gặp bạn tại lễ tốt nghiệp!",
   notFound: {
     kicker: "404 · Trả lại người gửi",

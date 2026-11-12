@@ -19,7 +19,7 @@ describe("GRADUATION_COPY", () => {
   });
   it("has the letter gate copy in every language", () => {
     for (const copy of Object.values(GRADUATION_COPY)) {
-      expect(copy.gate.youHaveMail && copy.gate.preparing && copy.gate.tapToOpen).toBeTruthy();
+      expect(Object.values(copy.gate).every(Boolean)).toBe(true);
     }
   });
 });

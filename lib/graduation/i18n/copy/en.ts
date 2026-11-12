@@ -93,7 +93,15 @@ export const en: GraduationCopy = {
       too_long: "That's a bit long, please shorten it",
     },
   },
-  gate: { youHaveMail: "You've got mail", preparing: "Preparing your letter…", tapToOpen: "Tap the seal to open" },
+  gate: {
+    dialogLabel: "Open invitation",
+    wake: "Wake",
+    tapHint: "or tap the frame",
+    silent: "Enter silently →",
+    soundHint: "♪ Sound on",
+    nowPlaying: "♪ Now playing",
+    preparing: "Preparing your letter…",
+  },
   footer: "Thanks for celebrating with me",
   notFound: {
     kicker: "404 · Return to sender",
