@@ -24,7 +24,7 @@ export function EnvelopeStage({ guestName }: { guestName: string }) {
   useEnvelopeTimeline(rootRef, !reduced);
 
   return (
-    <section id="stage" ref={rootRef} className="relative bg-paper" style={{ height: reduced ? "100vh" : "420vh" }}>
+    <section id="stage" ref={rootRef} tabIndex={-1} className="relative bg-paper outline-none" style={{ height: reduced ? "100vh" : "420vh" }}>
       <div className="sticky top-0 box-border flex h-screen flex-col items-center justify-center gap-[clamp(20px,3.5vh,40px)] overflow-hidden px-6 pt-22 pb-8 perspective-[1600px] min-[760px]:px-[clamp(72px,8vw,128px)]">
         <Glows />
         <StageKickers greetingVisible={reduced} />

@@ -3,14 +3,14 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { loadYouTubeIframeApi } from "@/lib/youtube/load-iframe-api";
 import type { YTPlayer } from "@/lib/youtube/types";
+import { playbackRefused, YT_PLAYING } from "./playback-state";
 
 export type MusicStatus = "idle" | "loading" | "playing" | "paused" | "error";
 
 const FADE_MS = 1200;
 const FULL_VOLUME = 100;
-/** Still not playing this long after a gesture means the browser refused it (iOS Safari can). */
+/** Still not started this long after a gesture means the browser refused it (iOS Safari can). */
 const START_CHECK_MS = 1500;
-const YT_PLAYING = 1;
 
 /**
  * Background track in a hidden YouTube iframe. Browsers only allow audible playback from a user
@@ -74,7 +74,7 @@ export function useYouTubePlayer(videoId: string, onError: () => void, onReady?:
       fadeTo(FULL_VOLUME);
       window.clearTimeout(startCheck.current);
       startCheck.current = window.setTimeout(() => {
-        if (p.getPlayerState() !== YT_PLAYING) onErrorRef.current();
+        if (playbackRefused(p.getPlayerState())) onErrorRef.current();
       }, START_CHECK_MS);
     },
     [fadeTo, setVolume],
@@ -148,6 +148,7 @@ export function useYouTubePlayer(videoId: string, onError: () => void, onReady?:
   }, [begin]);
 
   const toggle = useCallback(() => {
+    resumeAfterDuck.current = false;
     const p = playerRef.current;
     if (!p) {
       if (status === "loading") wantsPlay.current = true;

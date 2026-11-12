@@ -13,7 +13,7 @@ import { useLetterGate } from "./use-letter-gate";
 const OPEN_MS = 900;
 
 /** "You've got mail": a sealed envelope whose seal is the user activation that starts the music. */
-export function LetterGate({ ready, onOpen }: { ready: boolean; onOpen: () => void }) {
+export function LetterGate({ ready, onOpen, onOpened }: { ready: boolean; onOpen: () => void; onOpened: () => void }) {
   const { gate: t } = useCopy();
   const reduced = useReducedMotion();
   const { phase, open } = useLetterGate(ready, { animate: !reduced, openMs: OPEN_MS });
@@ -21,7 +21,8 @@ export function LetterGate({ ready, onOpen }: { ready: boolean; onOpen: () => vo
 
   useEffect(() => {
     if (phase === "ready") sealRef.current?.focus({ preventScroll: true });
-  }, [phase]);
+    if (phase === "done") onOpened();
+  }, [phase, onOpened]);
 
   if (phase === "done") return null;
 

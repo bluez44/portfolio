@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { GRADUATION_EVENT } from "@/lib/graduation/event";
 import type { Lang } from "@/lib/graduation/i18n";
 import type { InvitationGuest, RsvpAnswer } from "@/lib/graduation/types";
@@ -56,26 +56,34 @@ function InvitationContent({ guest, initialRsvp, ownerPhone }: InvitationProps) 
     if (!musicId) gate?.resolve(GATE.music);
   }, [musicId, gate]);
 
+  const [letterOpened, setLetterOpened] = useState(false);
+  const onLetterOpened = useCallback(() => setLetterOpened(true), []);
+  useEffect(() => {
+    if (letterOpened) document.getElementById("stage")?.focus({ preventScroll: true });
+  }, [letterOpened]);
+
   return (
     <div id="top" className="relative bg-paper font-sans text-ink">
       <div aria-hidden className="pointer-events-none fixed inset-0 z-15" style={{ backgroundImage: "radial-gradient(var(--halftone) 1px, transparent 1px)", backgroundSize: "28px 28px" }} />
       <div ref={canvasHost} aria-hidden className="pointer-events-none fixed inset-0 z-25" />
 
-      <LetterGate ready={!gate?.pending} onOpen={startMusic} />
-      <InvitationHeader musicPlaying={musicStatus === "playing"} musicNote={musicNote} onMusic={toggleMusic} />
-      <SideRails />
+      <LetterGate ready={!gate?.pending} onOpen={startMusic} onOpened={onLetterOpened} />
+      <div inert={!letterOpened}>
+        <InvitationHeader musicPlaying={musicStatus === "playing"} musicNote={musicNote} onMusic={toggleMusic} />
+        <SideRails />
 
-      <main>
-        <EnvelopeStage guestName={guest.name} />
-        <MetSection guestName={guest.name} note={guest.customContent?.met?.note ?? guest.note} />
-        <EndsSection onTourOpen={fadePause} onTourClose={fadeResume} />
-        <RsvpSection slug={guest.slug} guestName={guest.name} initialRsvp={initialRsvp} ownerPhone={ownerPhone} />
-        <WishesSection />
-      </main>
+        <main>
+          <EnvelopeStage guestName={guest.name} />
+          <MetSection guestName={guest.name} note={guest.customContent?.met?.note ?? guest.note} />
+          <EndsSection onTourOpen={fadePause} onTourClose={fadeResume} />
+          <RsvpSection slug={guest.slug} guestName={guest.name} initialRsvp={initialRsvp} ownerPhone={ownerPhone} />
+          <WishesSection />
+        </main>
 
-      <InvitationFooter />
-      <div aria-hidden className="sr-only">
-        <div ref={musicMountRef} />
+        <InvitationFooter />
+        <div aria-hidden className="sr-only">
+          <div ref={musicMountRef} />
+        </div>
       </div>
     </div>
   );
