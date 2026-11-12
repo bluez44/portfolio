@@ -40,10 +40,12 @@ type Props = {
   /** Returns false when the intro is not ready to open. */
   onEnter: (withMusic: boolean) => boolean;
   onExited: () => void;
+  /** The "now playing" toast only speaks once the track has actually started. */
+  musicPlaying: boolean;
 };
 
 /** The design's "bee" cinematic cover; `onEnter` must run inside the click for the music to start. */
-export function BeeIntro({ guestName, phase, onEnter, onExited }: Props) {
+export function BeeIntro({ guestName, phase, musicPlaying, onEnter, onExited }: Props) {
   const { gate: t, header, stage, envelope } = useCopy();
   const reduced = useReducedMotion();
   const rootRef = useRef<HTMLDivElement>(null);
@@ -77,7 +79,7 @@ export function BeeIntro({ guestName, phase, onEnter, onExited }: Props) {
       <div ref={grainRef} data-intro-backdrop aria-hidden className="pointer-events-none absolute inset-0 z-6 opacity-7 mix-blend-multiply" />
 
       <span data-intro-toast className="absolute inset-x-0 top-[calc(clamp(44px,8vh,72px)+64px)] z-7 translate-y-2 text-center font-mono text-[11px] tracking-[0.22em] text-jade uppercase opacity-0">
-        {t.nowPlaying}
+        {musicPlaying ? t.nowPlaying : null}
       </span>
 
       <div className="pointer-events-none absolute inset-x-[clamp(20px,5vw,72px)] bottom-[calc(clamp(44px,8vh,72px)+clamp(20px,5vh,56px))] z-5 flex flex-wrap items-end justify-between gap-x-8 gap-y-5">
