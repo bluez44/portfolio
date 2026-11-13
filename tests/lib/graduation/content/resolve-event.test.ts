@@ -1,8 +1,10 @@
 import { describe, expect, it } from "vitest";
 import { eventVars } from "@/lib/graduation/content/event-vars";
+import { resolveGraduationContent } from "@/lib/graduation/content/resolve-content";
 import { resolveEvent, resolveEventTimes } from "@/lib/graduation/content/resolve-event";
 import { GRADUATION_EVENT } from "@/lib/graduation/event";
-import { GRADUATION_COPY } from "@/lib/graduation/i18n";
+
+const GRADUATION_COPY = { vi: resolveGraduationContent({ lang: "vi" }).copy, en: resolveGraduationContent({ lang: "en" }).copy };
 
 describe("resolveEventTimes", () => {
   it("uses the defaults", () => {

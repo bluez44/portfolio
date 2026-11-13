@@ -1,6 +1,7 @@
 import { describe, expect, it } from "vitest";
 import { resolveGraduationContent } from "@/lib/graduation/content/resolve-content";
-import { GRADUATION_COPY } from "@/lib/graduation/i18n";
+
+const GRADUATION_COPY = { vi: resolveGraduationContent({ lang: "vi" }).copy, en: resolveGraduationContent({ lang: "en" }).copy };
 
 describe("resolveGraduationContent", () => {
   it("matches the default copy without settings or guest", () => {
