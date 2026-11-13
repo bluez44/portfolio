@@ -2,6 +2,7 @@
 
 import { useRef, useState } from "react";
 import { Loader2 } from "lucide-react";
+import { useHydrated } from "@/lib/hooks/use-hydrated";
 import { useReadyWhenSettled } from "@/lib/hooks/use-ready-when-settled";
 import { GRADUATION_GATE_RESOURCES, useResourceGate } from "../../loading/resource-gate";
 import { EMBED_NEAR_MARGIN, EMBED_SETTLE_MS } from "./constants";
@@ -16,9 +17,11 @@ export function DeferredEmbed({ src, title }: { src: string; title: string }) {
   const ref = useRef<HTMLDivElement>(null);
   const settled = useReadyWhenSettled(ref, { rootMargin: EMBED_NEAR_MARGIN, settleMs: EMBED_SETTLE_MS });
   const gate = useResourceGate();
+  // Never server-render the iframe: it could finish loading before hydration attaches onLoad.
+  const hydrated = useHydrated();
   // Once mounted, never unmount again (gate.pending flips back to false).
   const [mounted, setMounted] = useState(false);
-  if (!mounted && (settled || gate?.pending)) setMounted(true);
+  if (!mounted && hydrated && (settled || gate?.pending)) setMounted(true);
 
   return (
     <div ref={ref} className="absolute inset-0 bg-paper-2">

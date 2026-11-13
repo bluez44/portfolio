@@ -1,13 +1,11 @@
 "use client";
 
 import { useTheme } from "next-themes";
-import { useSyncExternalStore } from "react";
-
-const noop = () => () => {};
+import { useHydrated } from "./use-hydrated";
 
 export function useIsDark(): { dark: boolean; toggle: () => void } {
   const { resolvedTheme, setTheme } = useTheme();
-  const mounted = useSyncExternalStore(noop, () => true, () => false);
+  const mounted = useHydrated();
   const dark = mounted && resolvedTheme === "dark";
   return { dark, toggle: () => setTheme(dark ? "light" : "dark") };
 }
