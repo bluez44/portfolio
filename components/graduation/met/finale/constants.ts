@@ -10,8 +10,8 @@ export const ARRIVE_LINE = `top ${ARRIVE_AT * 100}%`;
 export const PIN_END = `+=${PIN_VH * 100}%`;
 
 /** Timeline units: the grow phase (outline + scale together), then the hold before the pin releases. */
-export const GROW = 0.85;
-export const HOLD = 0.6;
+export const GROW = 1;
+export const HOLD = 2.5;
 export const GROW_EASE = "power1.inOut";
 
 /** px between the card edge and the drawn outline; the outline's corner radius follows the card's. */
