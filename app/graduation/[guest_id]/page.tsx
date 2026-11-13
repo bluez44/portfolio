@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { GraduationInvitation } from "@/components/graduation/invitation";
+import { loadGraduationSettings } from "@/lib/graduation/content/load-settings";
+import { normalizeGuestContent } from "@/lib/graduation/content/normalize-guest-content";
 import { getGraduationLang } from "@/lib/graduation/i18n/get-lang";
 import { getInvitationGuest } from "@/lib/graduation/get-invitation-guest";
 import { readOwnerPhone } from "@/lib/graduation/owner-phone";
@@ -40,13 +42,15 @@ export default async function GraduationGuestPage({ params }: Props) {
   if (!guest_id) notFound();
   const found = await getInvitationGuest(guest_id);
   if (!found) notFound();
-  const lang = await getGraduationLang();
+  const [lang, settings] = await Promise.all([getGraduationLang(), loadGraduationSettings()]);
   return (
     <GraduationInvitation
       guest={found.guest}
+      guestContent={normalizeGuestContent(found.guest.customContent, found.guest.note)}
+      settings={settings}
       initialRsvp={found.rsvp}
       initialLang={lang}
-      ownerPhone={readOwnerPhone()}
+      envPhone={readOwnerPhone()}
     />
   );
 }

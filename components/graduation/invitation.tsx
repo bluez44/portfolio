@@ -1,7 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useRef, useState } from "react";
-import { GRADUATION_EVENT } from "@/lib/graduation/event";
+import type { GraduationSettingsContent, GuestContent } from "@/lib/graduation/content/settings-types";
 import type { Lang } from "@/lib/graduation/i18n";
 import type { InvitationGuest, RsvpAnswer } from "@/lib/graduation/types";
 import { useTransientFlag } from "@/lib/hooks/use-transient-flag";
@@ -13,7 +13,7 @@ import { SideRails } from "./chrome/side-rails";
 import { EndsSection } from "./ends/ends-section";
 import { EnvelopeStage } from "./envelope/envelope-stage";
 import { LetterGate } from "./gate/letter-gate";
-import { LangProvider } from "./i18n/lang-context";
+import { LangProvider, useLang } from "./i18n/lang-context";
 import {
   GRADUATION_GATE_RESOURCES as GATE,
   ResourceGateProvider,
@@ -29,16 +29,18 @@ import { FinaleSection } from "./finale/finale-section";
 
 type InvitationProps = {
   guest: InvitationGuest;
+  guestContent: GuestContent;
+  settings: GraduationSettingsContent;
   initialRsvp: RsvpAnswer | null;
   initialLang: Lang;
-  ownerPhone: string | null;
+  envPhone: string | null;
 };
 
 const NO_OVERLAY = () => null;
 
 export function GraduationInvitation(props: InvitationProps) {
   return (
-    <LangProvider initialLang={props.initialLang} customContent={props.guest.customContent}>
+    <LangProvider initialLang={props.initialLang} settings={props.settings} guest={props.guestContent} guestId={props.guest.id} envPhone={props.envPhone}>
       <ResourceGateProvider resources={Object.values(GATE)} overlay={NO_OVERLAY}>
         <CourierBeeProvider>
           <InvitationContent {...props} />
@@ -48,7 +50,8 @@ export function GraduationInvitation(props: InvitationProps) {
   );
 }
 
-function InvitationContent({ guest, initialRsvp, ownerPhone }: InvitationProps) {
+function InvitationContent({ guest, initialRsvp }: InvitationProps) {
+  const { owner, images, event } = useLang();
   const gate = useResourceGate();
   const canvasHost = useRef<HTMLDivElement>(null);
   const bubbleRef = useRef<NarratorBubbleHandle>(null);
@@ -57,7 +60,7 @@ function InvitationContent({ guest, initialRsvp, ownerPhone }: InvitationProps) 
     onFrame: (head, line) => bubbleRef.current?.update(head, line),
   });
   const [musicNote, flashMusicNote] = useTransientFlag(2600);
-  const musicId = guest.customContent?.music?.youtubeId || GRADUATION_EVENT.musicYoutubeId;
+  const musicId = event.musicYoutubeId;
   const music = useYouTubePlayer(musicId, flashMusicNote, () => gate?.resolve(GATE.music));
   const { status: musicStatus, mountRef: musicMountRef, start: startMusic, toggle: toggleMusic, fadePause, fadeResume } = music;
   useMusicCues(music);
@@ -94,7 +97,7 @@ function InvitationContent({ guest, initialRsvp, ownerPhone }: InvitationProps) 
         <main>
           <EnvelopeStage guestName={guest.name} />
           <HalftoneSeam from="paper" to="paper-2" />
-          <MetSection guestName={guest.name} note={guest.customContent?.met?.note ?? guest.note} togetherPhoto={guest.customContent?.met?.togetherPhoto} />
+          <MetSection guestName={guest.name} togetherPhoto={images.togetherPhoto} />
           <HalftoneSeam from="paper-2" to="paper" />
           <EndsSection onTourOpen={fadePause} onTourClose={fadeResume} />
           <HalftoneSeam from="paper" to="paper-2" />
@@ -102,7 +105,7 @@ function InvitationContent({ guest, initialRsvp, ownerPhone }: InvitationProps) 
             slug={guest.slug}
             guestName={guest.name}
             initialRsvp={initialRsvp}
-            ownerPhone={ownerPhone}
+            ownerPhone={owner.phone}
             soundOn={musicStatus === "playing"}
             onSaved={handleRsvpSaved}
           />

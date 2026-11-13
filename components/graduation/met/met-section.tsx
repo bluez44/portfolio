@@ -12,7 +12,7 @@ import { NoteFinaleStage } from "./components/note-finale-stage";
 import { TrailLine } from "./components/trail-line";
 import { useMomentTrail } from "./trail/use-moment-trail";
 
-export function MetSection({ guestName, note, togetherPhoto }: { guestName: string; note: string | null; togetherPhoto?: string }) {
+export function MetSection({ guestName, togetherPhoto }: { guestName: string; togetherPhoto?: string }) {
   const trailRef = useRef<HTMLDivElement>(null);
   const headRef = useScrollReveal<HTMLDivElement>();
   const reduced = useReducedMotion();
@@ -39,7 +39,7 @@ export function MetSection({ guestName, note, togetherPhoto }: { guestName: stri
         <NoteFinaleStage
           guestName={guestName}
           label={t.andYou(guestName)}
-          note={note ?? t.defaultNote}
+          note={t.defaultNote}
           memories={reduced ? [] : t.moments}
           together={togetherPhoto}
         />
