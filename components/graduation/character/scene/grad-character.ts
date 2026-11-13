@@ -40,7 +40,7 @@ export function createGradCharacter(host: HTMLElement, opts: { scale: number }):
     const M = createMaterials(palette);
     materials = M;
     const geometries = createGeometryCache();
-    const rig = buildRig(scene, createMeshKit(M.outline), M, palette, geometries);
+    const rig = buildRig(scene, createMeshKit(M.outline, geometries), M, palette);
     const S: PoseState = { ...INITIAL_POSE };
     const view = { halfW: 1, halfH: 1, scale: opts.scale };
     let beats: Beat[] | null = null;
@@ -87,7 +87,6 @@ export function createGradCharacter(host: HTMLElement, opts: { scale: number }):
         };
       },
       dispose() {
-        scene.traverse((o) => (o as THREE.Mesh).geometry?.dispose());
         rig.beeModel.dispose();
         geometries.dispose();
         disposeMaterials(M);
