@@ -5,6 +5,7 @@ import type { NarrationKey } from "@/components/graduation/character/types";
 export type Lang = "vi" | "en";
 
 export type Moment = { n: string; year: string; title: string; body: string; color: RisoColor; rot: number; image: string };
+export type MomentText = Pick<Moment, "title" | "body">;
 export type Heading = { lead: string; accent: string };
 export type Field = { label: string; placeholder: string };
 /** One tab of the venue guide: its label and the iframe title. */
@@ -14,8 +15,8 @@ export type Credit = { label: string; owner: string };
 export type VenueGuideCopy = { tabsLabel: string; loading: string; map: GuideTab & { hint: string; touchHint: string }; tour: GuideTab & { load: string; open: string; credit: Credit } };
 
 export type GraduationCopy = {
-  meta: { title: string; guestTitle: (name: string) => string; description: string };
-  header: { title: string; musicUnavailable: string; music: string; switchLang: string };
+  meta: { title: string; guestTitle: (name: string) => string; description: string; eventTitle: string };
+  header: { title: string; back: string; musicUnavailable: string; music: string; switchLang: string };
   rails: { when: string; whenValue: string; where: string; whereValue: string; whereSub: string };
   envelope: {
     airMail: string;
@@ -28,9 +29,9 @@ export type GraduationCopy = {
     /** Caption under a guest's name, on wish cards and the sealed reply. */
     guest: string;
   };
-  card: { label: string; greeting: string; body: string; keepScrolling: string; coverImage?: string; author?: string };
+  card: { label: string; fig: string; greeting: string; body: string; author: string; keepScrolling: string; coverAlt: string; coverImage?: string };
   stage: { coverKicker: string; cover: Heading; greetKicker: string; scrollHint: string };
-  met: { heading: Heading; intro: string; moments: Moment[]; andYou: (name: string) => string; defaultNote: string; togetherCaption: (name: string) => string };
+  met: { heading: Heading; intro: string; moments: Moment[]; andYou: (name: string) => string; defaultNote: string; togetherCaption: (name: string) => string; polaroidCaption: (name: string) => string };
   ends: {
     heading: Heading;
     intro: string;
@@ -40,6 +41,7 @@ export type GraduationCopy = {
     where: string;
     venue: string;
     venueSub: string;
+    address: string;
     notes: string[];
     specialMessage?: string;
     directions: string;
@@ -109,6 +111,7 @@ export type GraduationCopy = {
     replyNow: string;
     downloadCard: string;
     backToTop: string;
+    dateMark: string;
   };
   gate: {
     dialogLabel: string;
@@ -123,6 +126,19 @@ export type GraduationCopy = {
     /** What the bee says while the invitation loads, then once it is ready. */
     beePreparing: string;
     beeNotice: (name: string) => string;
+  };
+  marks: { school: string; city: string; signature: string };
+  png: {
+    attend: string;
+    faculty: string;
+    guestFallback: string;
+    qrWebTitle: string;
+    qrWebBody: string;
+    qrWebAlt: string;
+    qrMapTitle: string;
+    qrMapBody: string;
+    qrMapAlt: string;
+    footer: string;
   };
   narrator: Record<NarrationKey, (name: string) => string>;
   footer: string;

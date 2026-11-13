@@ -27,4 +27,19 @@ describe("GRADUATION_COPY", () => {
       expect(copy.gate.beeNotice("Vinh")).toContain("Vinh");
     }
   });
+  it("renders the event date from the event times", () => {
+    expect(GRADUATION_COPY.vi.rails.whenValue).toBe("Thứ Bảy 28.11.2026");
+    expect(GRADUATION_COPY.en.rails.whenValue).toBe("Sat · Nov 28, 2026");
+    expect(GRADUATION_COPY.vi.ends.day).toBe("Thứ Bảy, 28.11.2026");
+    expect(GRADUATION_COPY.en.ends.day).toBe("Saturday, Nov 28, 2026");
+    expect(GRADUATION_COPY.vi.narrator.farewell("Lan")).toBe("Hẹn gặp ngày 28.11.");
+  });
+  it("renders owner and call templates", () => {
+    expect(GRADUATION_COPY.vi.meta.title).toBe("Thư mời tốt nghiệp – Võ Lê Quang Vinh");
+    expect(GRADUATION_COPY.vi.met.andYou("Lan")).toBe("Và bạn, Lan");
+    expect(GRADUATION_COPY.en.wishes.airMail("07")).toBe("Air Mail · Wish Nº 07");
+    expect(GRADUATION_COPY.vi.ends.calendar.orOther("Lịch Apple")).toBe("hoặc dùng Lịch Apple");
+    expect(GRADUATION_COPY.vi.card.author).toBe("— Vinh (Tom)");
+    expect(GRADUATION_COPY.vi.ends.specialMessage).toBeUndefined();
+  });
 });

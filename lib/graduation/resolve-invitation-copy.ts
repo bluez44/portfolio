@@ -25,7 +25,7 @@ export function resolveInvitationCopy(
       ...baseCopy.card,
       greeting: custom.envelope?.cardGreeting || baseCopy.card.greeting,
       body: custom.envelope?.cardBody || baseCopy.card.body,
-      author: custom.envelope?.cardAuthor,
+      author: custom.envelope?.cardAuthor || baseCopy.card.author,
       coverImage: custom.envelope?.coverImage,
     },
     stage: {
