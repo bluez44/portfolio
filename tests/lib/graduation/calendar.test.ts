@@ -14,7 +14,7 @@ describe("calendarLinks", () => {
     expect(url.origin + url.pathname).toBe("https://calendar.google.com/calendar/render");
     expect(url.searchParams.get("action")).toBe("TEMPLATE");
     expect(url.searchParams.get("text")).toBe(GRADUATION_EVENT.title);
-    expect(url.searchParams.get("dates")).toBe("20261128T163000Z/20261128T183000Z");
+    expect(url.searchParams.get("dates")).toBe("20261128T093000Z/20261128T113000Z");
     expect(url.searchParams.get("location")).toBe(`${GRADUATION_EVENT.venue}, ${GRADUATION_EVENT.address}`);
   });
 });

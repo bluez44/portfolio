@@ -5,8 +5,8 @@ import { buildIcs } from "@/lib/graduation/ics";
 describe("buildIcs", () => {
   const ics = buildIcs(GRADUATION_EVENT, new Date("2026-11-08T00:00:00Z"));
   it("uses UTC start/end and stamp", () => {
-    expect(ics).toContain("DTSTART:20261128T163000Z");
-    expect(ics).toContain("DTEND:20261128T183000Z");
+    expect(ics).toContain("DTSTART:20261128T093000Z");
+    expect(ics).toContain("DTEND:20261128T113000Z");
     expect(ics).toContain("DTSTAMP:20261108T000000Z");
   });
   it("escapes commas in LOCATION and uses CRLF", () => {

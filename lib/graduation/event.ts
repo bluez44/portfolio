@@ -22,8 +22,8 @@ export const eventLocation = (event: GraduationEvent) => `${event.venue}, ${even
 
 export const GRADUATION_EVENT: GraduationEvent = {
   title: "Lễ tốt nghiệp — Võ Lê Quang Vinh",
-  startUtc: "2026-11-28T16:30:00Z",
-  endUtc: "2026-11-28T18:30:00Z",
+  startUtc: "2026-11-28T09:30:00Z",
+  endUtc: "2026-11-28T11:30:00Z",
   dateShort: "28.11",
   timeRange: "16:30 — 18:30",
   venue: "Hội trường A5, ĐH Bách Khoa",

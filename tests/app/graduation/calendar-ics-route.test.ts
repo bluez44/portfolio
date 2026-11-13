@@ -9,6 +9,6 @@ describe("GET /graduation/calendar.ics", () => {
     expect(res.headers.get("content-disposition")).toBe('inline; filename="tot-nghiep-quang-vinh.ics"');
     const body = await res.text();
     expect(body.startsWith("BEGIN:VCALENDAR")).toBe(true);
-    expect(body).toContain("DTSTART:20261128T163000Z");
+    expect(body).toContain("DTSTART:20261128T093000Z");
   });
 });
