@@ -17,4 +17,8 @@ describe("calendarLinks", () => {
     expect(url.searchParams.get("dates")).toBe("20261128T093000Z/20261128T113000Z");
     expect(url.searchParams.get("location")).toBe(`${GRADUATION_EVENT.venue}, ${GRADUATION_EVENT.address}`);
   });
+
+  it("points Apple Calendar at the guest's own .ics file", () => {
+    expect(calendarLinks(GRADUATION_EVENT, "a b").apple).toBe(`${ICS_PATH}?g=a%20b`);
+  });
 });

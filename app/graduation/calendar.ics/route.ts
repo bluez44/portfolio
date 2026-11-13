@@ -1,11 +1,11 @@
-import { GRADUATION_EVENT } from "@/lib/graduation/event";
-import { buildIcs } from "@/lib/graduation/ics";
+import { loadGraduationContent } from "@/lib/graduation/content/load-content";
+import { getInvitationGuest } from "@/lib/graduation/get-invitation-guest";
+import { getGraduationLang } from "@/lib/graduation/i18n/get-lang";
+import { icsResponse } from "@/lib/graduation/ics-response";
 
-export function GET() {
-  return new Response(buildIcs(GRADUATION_EVENT, new Date()), {
-    headers: {
-      "Content-Type": "text/calendar; charset=utf-8",
-      "Content-Disposition": 'inline; filename="tot-nghiep-quang-vinh.ics"',
-    },
-  });
+export async function GET(request: Request) {
+  const guestKey = new URL(request.url).searchParams.get("g");
+  const found = guestKey ? await getInvitationGuest(guestKey).catch(() => null) : null;
+  const { event, owner } = await loadGraduationContent(await getGraduationLang(), found?.guest ?? null);
+  return icsResponse(event, owner.name);
 }

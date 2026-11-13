@@ -3,14 +3,15 @@
 import { RisoButton } from "@/components/ui/riso/button";
 import { calendarLinks, type CalendarTarget } from "@/lib/graduation/calendar";
 import { useCalendarTarget } from "@/lib/hooks/use-calendar-target";
-import { useCopy, useGradEvent } from "../i18n/lang-context";
+import { useCopy, useLang } from "../i18n/lang-context";
 
 const NEW_TAB = { target: "_blank", rel: "noopener noreferrer" } as const;
 
 /** Opens the calendar that fits the guest's platform, with a quiet link to the other one. */
 export function AddToCalendar() {
   const { ends: t } = useCopy();
-  const links = calendarLinks(useGradEvent());
+  const { event, guestId } = useLang();
+  const links = calendarLinks(event, guestId);
   const primary = useCalendarTarget();
   const other: CalendarTarget = primary === "apple" ? "google" : "apple";
   const linkProps = (target: CalendarTarget) => (target === "google" ? { href: links.google, ...NEW_TAB } : { href: links.apple });
