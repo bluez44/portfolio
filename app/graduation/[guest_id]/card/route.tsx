@@ -151,7 +151,7 @@ export async function GET(
                     color: INK,
                   }}
                 >
-                  {name ? `${copy.envelope.to} ${name}` : copy.meta.description}
+                  {name || copy.meta.description}
                 </span>
                 <span style={{ fontSize: 20, color: INK_2, marginTop: 12 }}>
                   {copy.png.attend}
