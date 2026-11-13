@@ -2,13 +2,14 @@ import { readFile } from "node:fs/promises";
 import { join } from "node:path";
 import { ImageResponse } from "next/og";
 import QRCode from "qrcode";
+import { loadGraduationContent } from "@/lib/graduation/content/load-content";
 import { getInvitationGuest } from "@/lib/graduation/get-invitation-guest";
-import { GRADUATION_COPY } from "@/lib/graduation/i18n";
+import { getGraduationLang } from "@/lib/graduation/i18n/get-lang";
+import type { InvitationGuest } from "@/lib/graduation/types";
 import { SITE_URL } from "@/lib/site";
 
 export const dynamic = "force-dynamic";
 
-const copy = GRADUATION_COPY.vi;
 const CARD_SIZE = { width: 1200, height: 750 };
 const FONT_PATH = join(process.cwd(), "public/fonts/BricolageGrotesque-Bold.ttf");
 
@@ -19,8 +20,6 @@ const INK_2 = "#4a4a52";
 const INK_3 = "#7a7a83";
 const TOMATO = "#ef4e2b";
 const BLUE = "#2c4f7c";
-
-const MAP_URL = "https://www.google.com/maps/search/?api=1&query=10.774599,106.659381";
 
 let fontPromise: Promise<ArrayBuffer | null> | null = null;
 
@@ -45,15 +44,16 @@ export async function GET(
   { params }: { params: Promise<{ guest_id: string }> },
 ) {
   const { guest_id } = await params;
-  let name = "";
+  let guest: InvitationGuest | null = null;
   if (guest_id) {
     try {
-      const found = await getInvitationGuest(guest_id);
-      name = found?.guest.name ?? "";
+      guest = (await getInvitationGuest(guest_id))?.guest ?? null;
     } catch {
-      name = "";
+      guest = null;
     }
   }
+  const name = guest?.name ?? "";
+  const { copy, event, owner } = await loadGraduationContent(await getGraduationLang(), guest);
 
   const webUrl = `${SITE_URL}/graduation/${guest_id}`;
 
@@ -63,7 +63,7 @@ export async function GET(
       color: { dark: INK, light: "#ffffff" },
       width: 280,
     }),
-    QRCode.toDataURL(MAP_URL, {
+    QRCode.toDataURL(event.mapLinkUrl, {
       margin: 1,
       color: { dark: INK, light: "#ffffff" },
       width: 280,
@@ -113,7 +113,7 @@ export async function GET(
               {`${copy.envelope.airMail} · ${copy.envelope.invitationNo}`.toUpperCase()}
             </span>
             <span style={{ fontSize: 16, letterSpacing: 2, color: INK_2 }}>
-              HCMUT · 2026 · TP.HCM
+              {`${copy.marks.school} · ${event.year} · ${copy.marks.city}`}
             </span>
           </div>
 
@@ -143,7 +143,7 @@ export async function GET(
                 </span>
                 <span
                   style={{
-                    fontSize: nameFontSize(name || "Quý khách"),
+                    fontSize: nameFontSize(name || copy.png.guestFallback),
                     lineHeight: 1.08,
                     letterSpacing: -1.5,
                     color: INK,
@@ -152,10 +152,10 @@ export async function GET(
                   {name ? `${copy.envelope.to} ${name}` : copy.meta.description}
                 </span>
                 <span style={{ fontSize: 20, color: INK_2, marginTop: 12 }}>
-                  Đến tham dự Lễ tốt nghiệp Kỹ sư của Võ Lê Quang Vinh
+                  {copy.png.attend}
                 </span>
                 <span style={{ fontSize: 18, color: INK_3 }}>
-                  K22 · Khoa học Máy tính · Trường ĐH Bách Khoa — ĐHQG-HCM
+                  {copy.png.faculty}
                 </span>
               </div>
 
@@ -170,7 +170,7 @@ export async function GET(
                   color: INK,
                 }}
               >
-                <span>🗓️ {copy.rails.when}: {copy.rails.whenValue} · 16:30 — 18:30</span>
+                <span>🗓️ {copy.rails.when}: {copy.rails.whenValue} · {event.timeRange}</span>
                 <span>📍 {copy.rails.where}: {copy.rails.whereValue}</span>
                 <span style={{ fontSize: 16, color: INK_2 }}>
                   {"    "}{copy.rails.whereSub}
@@ -204,13 +204,13 @@ export async function GET(
                 }}
               >
                 {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img src={qrWeb} width={104} height={104} alt="QR Thiệp mời" />
+                <img src={qrWeb} width={104} height={104} alt={copy.png.qrWebAlt} />
                 <div style={{ display: "flex", flexDirection: "column", gap: 4 }}>
                   <span style={{ fontSize: 14, letterSpacing: 1, color: TOMATO }}>
-                    QUÉT XEM THIỆP
+                    {copy.png.qrWebTitle}
                   </span>
                   <span style={{ fontSize: 12, color: INK_2 }}>
-                    Trang web thiệp mời, gửi lời chúc & hồi âm
+                    {copy.png.qrWebBody}
                   </span>
                 </div>
               </div>
@@ -229,13 +229,13 @@ export async function GET(
                 }}
               >
                 {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img src={qrMap} width={104} height={104} alt="QR Chỉ đường" />
+                <img src={qrMap} width={104} height={104} alt={copy.png.qrMapAlt} />
                 <div style={{ display: "flex", flexDirection: "column", gap: 4 }}>
                   <span style={{ fontSize: 14, letterSpacing: 1, color: BLUE }}>
-                    CHỈ ĐƯỜNG ĐẾN LỄ
+                    {copy.png.qrMapTitle}
                   </span>
                   <span style={{ fontSize: 12, color: INK_2 }}>
-                    Mở Google Maps chỉ đường đến Hội trường A5
+                    {copy.png.qrMapBody}
                   </span>
                 </div>
               </div>
@@ -254,8 +254,8 @@ export async function GET(
               color: INK_3,
             }}
           >
-            <span>Rất vinh hạnh được đón tiếp bạn trong ngày vui này!</span>
-            <span>vinhvolequang.io.vn</span>
+            <span>{copy.png.footer}</span>
+            <span>{owner.website}</span>
           </div>
         </div>
       </div>
