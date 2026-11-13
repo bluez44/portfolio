@@ -1,12 +1,12 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { GraduationInvitation } from "@/components/graduation/invitation";
+import { loadGraduationContent } from "@/lib/graduation/content/load-content";
 import { loadGraduationSettings } from "@/lib/graduation/content/load-settings";
 import { normalizeGuestContent } from "@/lib/graduation/content/normalize-guest-content";
 import { getGraduationLang } from "@/lib/graduation/i18n/get-lang";
 import { getInvitationGuest } from "@/lib/graduation/get-invitation-guest";
 import { readOwnerPhone } from "@/lib/graduation/owner-phone";
-import { GRADUATION_COPY } from "@/lib/graduation/i18n";
 
 export const dynamic = "force-dynamic";
 
@@ -16,9 +16,9 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { guest_id } = await params;
   const found = guest_id ? await getInvitationGuest(guest_id) : null;
   const lang = await getGraduationLang();
-  const { meta } = GRADUATION_COPY[lang];
-  const title = found ? meta.guestTitle(found.guest.name) : meta.title;
-  const description = meta.description;
+  const { copy, owner } = await loadGraduationContent(lang, found?.guest ?? null);
+  const title = found ? copy.meta.guestTitle(found.guest.name) : copy.meta.title;
+  const description = copy.meta.description;
   return {
     title,
     description,
@@ -29,7 +29,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       description,
       url: `/graduation/${guest_id}`,
       type: "website",
-      siteName: "Võ Lê Quang Vinh",
+      siteName: owner.name,
       locale: lang === "vi" ? "vi_VN" : "en_US",
     },
     twitter: { card: "summary_large_image", title, description },
