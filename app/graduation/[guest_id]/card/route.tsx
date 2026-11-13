@@ -205,7 +205,7 @@ export async function GET(
               >
                 {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img src={qrWeb} width={104} height={104} alt={copy.png.qrWebAlt} />
-                <div style={{ display: "flex", flexDirection: "column", gap: 4 }}>
+                <div style={{ display: "flex", flex: 1, minWidth: 0, flexDirection: "column", gap: 4 }}>
                   <span style={{ fontSize: 14, letterSpacing: 1, color: TOMATO }}>
                     {copy.png.qrWebTitle}
                   </span>
@@ -230,7 +230,7 @@ export async function GET(
               >
                 {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img src={qrMap} width={104} height={104} alt={copy.png.qrMapAlt} />
-                <div style={{ display: "flex", flexDirection: "column", gap: 4 }}>
+                <div style={{ display: "flex", flex: 1, minWidth: 0, flexDirection: "column", gap: 4 }}>
                   <span style={{ fontSize: 14, letterSpacing: 1, color: BLUE }}>
                     {copy.png.qrMapTitle}
                   </span>
