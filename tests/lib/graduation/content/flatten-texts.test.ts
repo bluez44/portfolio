@@ -12,6 +12,6 @@ describe("flattenTexts", () => {
     expect(flat["met.andYou"]).toBe("Và bạn, {name}");
   });
   it("joins lists by line", () => {
-    expect(flat["ends.stamp"]).toBe("Vé mời\n· Một ·\nKhách");
+    expect(flat["ends.stamp"]).toBe("Vé mời\nKhách");
   });
 });

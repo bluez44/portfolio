@@ -51,7 +51,7 @@ export const viTexts: CopyTexts = {
   ends: {
     heading: { lead: "Và rồi,", accent: "tốt nghiệp." },
     intro: "Chương này khép lại bằng một buổi lễ — và sẽ thật ý nghĩa nếu được chia sẻ khoảnh khắc ấy cùng bạn.",
-    stamp: ["Vé mời", "· Một ·", "Khách"],
+    stamp: ["Vé mời", "Khách"],
     when: "Thời gian",
     day: "{weekday}, {date}.{year}",
     where: "Địa điểm",

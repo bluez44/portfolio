@@ -1,4 +1,4 @@
-// postmark.tsx: round rubber stamp (HCMUT postmark, "Admit One Guest")
+// postmark.tsx: round rubber stamp (HCMUT postmark, "Admit Guest")
 import type { CSSProperties } from "react";
 import type { RisoColor } from "@/lib/graduation/event";
 

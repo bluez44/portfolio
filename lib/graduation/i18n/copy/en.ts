@@ -51,7 +51,7 @@ export const enTexts: CopyTexts = {
   ends: {
     heading: { lead: "And then,", accent: "graduation." },
     intro: "This chapter closes with a ceremony — and it would mean a lot to share it with you.",
-    stamp: ["Admit", "· One ·", "Guest"],
+    stamp: ["Admit", "Guest"],
     when: "When",
     day: "{weekday}, {date}, {year}",
     where: "Where",
