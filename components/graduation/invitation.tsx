@@ -119,7 +119,7 @@ function InvitationContent({ guest, initialRsvp }: InvitationProps) {
           <EndsSection tourKey={tour.key} onTourStart={startTour} onTourLeave={leaveTour} />
           <HalftoneSeam from="paper" to="paper-2" />
           <RsvpSection
-            slug={guest.slug}
+            guestId={guest.id}
             guestName={guest.name}
             initialRsvp={initialRsvp}
             ownerPhone={owner.phone}

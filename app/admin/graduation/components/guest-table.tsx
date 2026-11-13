@@ -6,6 +6,7 @@ import { ExternalLink, Edit3, Trash2, Sparkles, Mail, Calendar, Music } from "lu
 import { summarizeGuestContent } from "@/lib/graduation/content/guest-content-summary";
 import type { GuestPlaceholders } from "@/lib/graduation/content/guest-placeholders";
 import type { GuestListItem } from "@/lib/graduation/types";
+import { guestPath } from "@/lib/graduation/guest-path";
 import { CopyGuestLinkButton } from "./copy-guest-link-button";
 import { GuestEditorDialog } from "./guest-editor-dialog";
 import { deleteGraduationGuestAction } from "../actions";
@@ -69,7 +70,7 @@ export function GuestTable({ guests, placeholders }: GuestTableProps) {
                     <td className="px-4 py-3.5">
                       <div className="flex items-center gap-1 font-mono text-[11px] text-zinc-400">
                         <span title={guest.id}>{guest.id.slice(0, 13)}...</span>
-                        <CopyGuestLinkButton guestId={guest.id} variant="icon" />
+                        <CopyGuestLinkButton guest={guest} variant="icon" />
                       </div>
                       <code className="text-[11px] text-zinc-500">{guest.slug}</code>
                     </td>
@@ -155,10 +156,10 @@ export function GuestTable({ guests, placeholders }: GuestTableProps) {
 
                     <td className="px-4 py-3.5 text-right">
                       <div className="flex items-center justify-end gap-2">
-                        <CopyGuestLinkButton guestId={guest.id} />
+                        <CopyGuestLinkButton guest={guest} />
 
                         <Link
-                          href={`/graduation/${guest.id}`}
+                          href={guestPath(guest)}
                           target="_blank"
                           rel="noreferrer"
                           className="rounded p-1 text-zinc-400 hover:bg-zinc-800 hover:text-white"

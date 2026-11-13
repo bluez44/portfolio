@@ -13,14 +13,14 @@ import { useReplySendoff } from "./use-reply-sendoff";
 import { useRsvp } from "./use-rsvp";
 
 export function RsvpSection({
-  slug,
+  guestId,
   guestName,
   initialRsvp,
   ownerPhone,
   soundOn,
   onSaved,
 }: {
-  slug: string;
+  guestId: string;
   guestName: string;
   initialRsvp: RsvpAnswer | null;
   ownerPhone: string | null;
@@ -30,7 +30,7 @@ export function RsvpSection({
   const ref = useScrollReveal<HTMLDivElement>();
   const cardRef = useRef<HTMLDivElement>(null);
   const { showResult, postmarked, startSendoff } = useReplySendoff(cardRef, Boolean(initialRsvp), soundOn);
-  const rsvp = useRsvp(slug, initialRsvp, {
+  const rsvp = useRsvp(guestId, initialRsvp, {
     onSaved: (ans) => {
       onSaved?.(ans);
       void startSendoff(ans.status);

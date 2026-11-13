@@ -9,7 +9,7 @@ export async function submitRsvpAction(input: Record<string, unknown>): Promise<
   return submitRsvp(
     input,
     {
-      findGuest: guestRepository.findBySlug,
+      findGuest: guestRepository.findById,
       saveRsvp: rsvpRepository.save,
       notify: (message) => sendEmail(message),
       now: () => new Date(),

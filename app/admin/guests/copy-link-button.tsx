@@ -1,14 +1,14 @@
 'use client';
 
 import { useState } from 'react';
+import { guestPath } from '@/lib/graduation/guest-path';
 import { SITE_URL } from '@/lib/site';
 
-export function CopyLinkButton({ slug, guestId }: { slug?: string; guestId?: string }) {
+export function CopyLinkButton({ guest }: { guest: { id: string; slug: string } }) {
   const [state, setState] = useState<'idle' | 'copied' | 'failed'>('idle');
   const copy = async () => {
     try {
-      const target = guestId || slug;
-      await navigator.clipboard.writeText(`${SITE_URL}/graduation/${target}`);
+      await navigator.clipboard.writeText(`${SITE_URL}${guestPath(guest)}`);
       setState('copied');
     } catch {
       setState('failed');

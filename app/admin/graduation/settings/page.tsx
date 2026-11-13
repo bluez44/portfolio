@@ -1,6 +1,7 @@
 import { isAdminSession } from "@/lib/admin-auth/session";
 import { flattenTexts } from "@/lib/graduation/content/flatten-texts";
 import { loadGraduationSettings } from "@/lib/graduation/content/load-settings";
+import { guestPath } from "@/lib/graduation/guest-path";
 import { guestRepository } from "@/lib/graduation/guest-repository";
 import { DEFAULT_MOMENTS, DEFAULT_TEXTS } from "@/lib/graduation/i18n";
 import { readOwnerPhone } from "@/lib/graduation/owner-phone";
@@ -30,7 +31,7 @@ export default async function AdminGraduationSettingsPage() {
         defaults={{ vi: flattenTexts(DEFAULT_TEXTS.vi), en: flattenTexts(DEFAULT_TEXTS.en) }}
         defaultMoments={DEFAULT_MOMENTS}
         envPhone={readOwnerPhone()}
-        previewHref={guests[0] ? `/graduation/${guests[0].id}` : undefined}
+        previewHref={guests[0] ? guestPath(guests[0]) : undefined}
       />
     </AdminShell>
   );

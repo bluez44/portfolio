@@ -3,12 +3,13 @@ import { buildRsvpEmail } from "@/lib/graduation/rsvp-email";
 import { submitRsvp, type RsvpDeps } from "@/lib/graduation/rsvp-service";
 
 const AT = new Date("2026-11-20T03:04:00Z");
-const YES = { slug: "minh-anh", status: "yes", contact: "minh@example.com", wish: "Chúc mừng!" };
-const NO = { slug: "minh-anh", status: "no", reason: "Đi công tác" };
+const GUEST_ID = "6e565e95-4579-4c1b-9d0e-2f1a3b4c5d6e";
+const YES = { guestId: GUEST_ID, status: "yes", contact: "minh@example.com", wish: "Chúc mừng!" };
+const NO = { guestId: GUEST_ID, status: "no", reason: "Đi công tác" };
 
 function deps(overrides: Partial<RsvpDeps> = {}): RsvpDeps {
   return {
-    findGuest: vi.fn(async () => ({ id: "g1", slug: "minh-anh", name: "Minh Anh", note: null, customContent: null })),
+    findGuest: vi.fn(async () => ({ id: GUEST_ID, slug: "minh-anh", name: "Minh Anh", note: null, customContent: null })),
     saveRsvp: vi.fn(async () => ({ previous: null })),
     notify: vi.fn(async () => ({ ok: true as const })),
     now: () => AT,
@@ -46,7 +47,7 @@ describe("submitRsvp", () => {
     const d = deps();
     const answer = { status: "yes", contact: "minh@example.com", wish: "Chúc mừng!" };
     await expect(submitRsvp(YES, d)).resolves.toEqual({ ok: true, answer });
-    expect(d.saveRsvp).toHaveBeenCalledWith("g1", answer);
+    expect(d.saveRsvp).toHaveBeenCalledWith(GUEST_ID, answer);
     expect(d.notify).toHaveBeenCalledOnce();
   });
 

@@ -2,7 +2,7 @@ import { createHash } from "node:crypto";
 import { NextRequest, NextResponse } from "next/server";
 import prisma from "@/lib/prisma";
 import { beeAlias } from "@/lib/bee-alias";
-import { UUID_REGEX } from "@/lib/graduation/guest-repository";
+import { UUID_REGEX } from "@/lib/graduation/uuid";
 
 /** What the wall shows per wish; never the guest's id, since that id is their invitation link. */
 export type BeeWallEntry = { key: string; name: string; wish: string; at: string; mine: boolean };

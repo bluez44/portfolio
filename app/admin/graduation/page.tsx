@@ -27,7 +27,7 @@ export default async function AdminGraduationPage() {
       title="Danh sách khách mời & Tùy biến thiệp"
       description={
         <>
-          Tạo link cá nhân hóa dạng <code className="text-sky-300">graduation/{`{guest_id}`}</code>, tùy biến bìa thiệp, kỷ niệm, thời gian
+          Tạo link cá nhân hóa dạng <code className="text-sky-300">graduation/{`{slug}-{guest_id}`}</code>, tùy biến bìa thiệp, kỷ niệm, thời gian
           và địa điểm riêng cho từng người.
         </>
       }

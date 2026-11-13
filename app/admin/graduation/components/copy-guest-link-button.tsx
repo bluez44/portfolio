@@ -2,12 +2,13 @@
 
 import { useState } from "react";
 import { Copy, Check } from "lucide-react";
+import { guestPath } from "@/lib/graduation/guest-path";
 
 export function CopyGuestLinkButton({
-  guestId,
+  guest,
   variant = "button",
 }: {
-  guestId: string;
+  guest: { id: string; slug: string };
   variant?: "button" | "icon";
 }) {
   const [copied, setCopied] = useState(false);
@@ -19,7 +20,7 @@ export function CopyGuestLinkButton({
         typeof window !== "undefined" && window.location.origin
           ? window.location.origin
           : "";
-      const url = `${origin}/graduation/${guestId}`;
+      const url = `${origin}${guestPath(guest)}`;
       await navigator.clipboard.writeText(url);
       setCopied(true);
       setTimeout(() => setCopied(false), 2000);
@@ -33,7 +34,7 @@ export function CopyGuestLinkButton({
       <button
         type="button"
         onClick={copy}
-        title="Sao chép link thiệp (UUID)"
+        title="Sao chép link thiệp"
         className="inline-flex items-center justify-center rounded p-1.5 text-zinc-400 hover:bg-zinc-800 hover:text-white transition-colors"
       >
         {copied ? <Check className="h-4 w-4 text-emerald-400" /> : <Copy className="h-4 w-4" />}

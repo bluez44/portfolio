@@ -5,6 +5,7 @@ import QRCode from "qrcode";
 import { loadGraduationContent } from "@/lib/graduation/content/load-content";
 import { cardFileName } from "@/lib/graduation/card-file-name";
 import { getInvitationGuest } from "@/lib/graduation/get-invitation-guest";
+import { guestPath } from "@/lib/graduation/guest-path";
 import { getGraduationLang } from "@/lib/graduation/i18n/get-lang";
 import type { InvitationGuest } from "@/lib/graduation/types";
 import { SITE_URL } from "@/lib/site";
@@ -56,7 +57,7 @@ export async function GET(
   const name = guest?.name ?? "";
   const { copy, event, owner } = await loadGraduationContent(await getGraduationLang(), guest);
 
-  const webUrl = `${SITE_URL}/graduation/${guest_id}`;
+  const webUrl = `${SITE_URL}${guest ? guestPath(guest) : `/graduation/${guest_id}`}`;
 
   const [qrWeb, qrMap, font] = await Promise.all([
     QRCode.toDataURL(webUrl, {

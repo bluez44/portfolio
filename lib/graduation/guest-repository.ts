@@ -42,8 +42,6 @@ function parseRecord(row: {
   };
 }
 
-export const UUID_REGEX = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
-
 export const guestRepository = {
   async findById(id: string): Promise<GuestRecord | null> {
     const row = await prisma.guest.findUnique({ where: { id }, select: recordSelect });
@@ -55,24 +53,11 @@ export const guestRepository = {
     return row ? parseRecord(row) : null;
   },
 
-  async findInvitation(
-    identifier: string,
-  ): Promise<{ guest: InvitationGuest; rsvp: RsvpAnswer | null } | null> {
-    const isUuid = UUID_REGEX.test(identifier);
-    let row = isUuid
-      ? await prisma.guest.findUnique({
-          where: { id: identifier },
-          select: { ...recordSelect, rsvp: { select: { status: true, contact: true, reason: true, wish: true } } },
-        })
-      : null;
-
-    if (!row) {
-      row = await prisma.guest.findUnique({
-        where: { slug: identifier },
-        select: { ...recordSelect, rsvp: { select: { status: true, contact: true, reason: true, wish: true } } },
-      });
-    }
-
+  async findInvitation(id: string): Promise<{ guest: InvitationGuest; rsvp: RsvpAnswer | null } | null> {
+    const row = await prisma.guest.findUnique({
+      where: { id },
+      select: { ...recordSelect, rsvp: { select: { status: true, contact: true, reason: true, wish: true } } },
+    });
     if (!row) return null;
     const { rsvp, ...guestRow } = row;
     return {

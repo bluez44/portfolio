@@ -51,8 +51,7 @@ export async function saveGraduationGuestAction(
   if (result.ok) {
     revalidatePath("/admin/graduation");
     revalidatePath("/admin");
-    if (id) revalidatePath(`/graduation/${id}`);
-    if (slug) revalidatePath(`/graduation/${slug}`);
+    revalidatePath("/graduation/[guest_id]", "page");
   }
 
   return result as GuestActionState;
