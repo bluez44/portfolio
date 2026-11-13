@@ -105,7 +105,7 @@ export function GuestEditorDialog({
         </div>
 
         {/* Tab Navigation */}
-        <div className="flex overflow-x-auto border-b border-zinc-800 px-6 pt-2 scrollbar-none">
+        <div className="flex shrink-0 overflow-x-auto border-b border-zinc-800 px-6 pt-2 scrollbar-none">
           {tabs.map((tab) => {
             const isActive = activeTab === tab.key;
             return (
