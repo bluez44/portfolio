@@ -1,4 +1,5 @@
 import Image from "next/image";
+import { useImages } from "../../i18n/lang-context";
 
 /**
  * Riso "BK" roundel. Stand-in until a real HCMUT logo is added.
@@ -7,6 +8,7 @@ import Image from "next/image";
  * Only the inner `[data-badge-spin]` disc rotates, leaving the outer transform free for the path.
  */
 export function BkBadge({ docked = false }: { docked?: boolean }) {
+  const { badgeLogo } = useImages();
   return (
     <div
       {...(docked ? { "data-trail-dock": "" } : { "data-trail-badge": "" })}
@@ -19,10 +21,12 @@ export function BkBadge({ docked = false }: { docked?: boolean }) {
         className="grid h-10 w-10 place-items-center rounded-full"
       >
         <Image
-          src="/01_logobachkhoatoi.webp"
+          src={badgeLogo}
           alt=""
           width={1822}
           height={1822}
+          // next.config only allows local paths through the image optimizer.
+          unoptimized={!badgeLogo.startsWith("/")}
           className="-translate-y-1 aspect-square"
         />
       </div>
