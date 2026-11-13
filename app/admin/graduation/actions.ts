@@ -5,8 +5,7 @@ import { redirect } from "next/navigation";
 import { isAdminSession } from "@/lib/admin-auth/session";
 import { guestRepository } from "@/lib/graduation/guest-repository";
 import { saveGuest, type SaveGuestResult } from "@/lib/graduation/guest-service";
-
-const SESSION_EXPIRED_ERROR = "Phiên đăng nhập đã hết hạn, hãy đăng nhập lại";
+import { SESSION_EXPIRED_ERROR } from "./session-expired";
 
 export type GuestActionState =
   | SaveGuestResult
