@@ -1,12 +1,12 @@
 import gsap from "gsap";
 import * as THREE from "three";
-import { outlineGeometry } from "../shared/three/outline-geometry";
 import { BEE_HEAD_RADIUS, createBeeModel } from "../shared/three/bee-model";
 import { createGeometryCache } from "../shared/three/geometry-cache";
 import type { RisoPalette } from "../shared/three/palette";
 import { toonGradient } from "../shared/three/toon";
 import { applyFilmGrain, formatTimecode, shiftFilmGrain } from "./film-effects";
 import { hexGrid } from "./hex-grid";
+import { createHoneycomb } from "./honeycomb";
 
 const CELL_R = 0.5;
 const BEE_SCALE = 0.021;
@@ -59,26 +59,20 @@ export function createBeeIntroScene(host: HTMLElement, opts: Options): BeeIntroS
   const outM = new THREE.MeshBasicMaterial({ side: THREE.BackSide });
   const toon = () => new THREE.MeshToonMaterial({ gradientMap: gradient });
   const sideM = toon();
-  const tops = [toon(), toon(), toon(), toon()];
+  const topM = new THREE.MeshToonMaterial({ gradientMap: gradient, color: 0xffffff });
 
   const S = { amp: opts.reduced ? 0 : 1, par: opts.reduced ? 0 : 1, off: 1, t: 0, mx: 0, my: 0, cmx: 0, cmy: 0, flap: 0, follow: 0 };
   const cam = { x: 2.4, y: 2.1, z: 3.7, lx: 0, ly: 0.75, lz: 0, fov: 32 };
   const rig = new THREE.Group();
   scene.add(rig);
 
-  const cellGeo = new THREE.CylinderGeometry(CELL_R * 0.95, CELL_R * 0.95, 1, 6);
-  cellGeo.translate(0, -0.5, 0);
-  const cellOutline = outlineGeometry(cellGeo, 0.022);
   const cells = hexGrid(4).map(({ q, r, d }) => {
     const centre = q === 0 && r === 0;
     const top = centre ? 0 : rnd() < 0.32 ? 0 : rnd() < 0.08 ? 3 : rnd() < 0.5 ? 1 : 2;
-    const mesh = new THREE.Mesh(cellGeo, [sideM, tops[top], sideM]);
-    mesh.add(new THREE.Mesh(cellOutline, outM));
-    mesh.position.set(Math.sqrt(3) * CELL_R * (q + r / 2), centre ? 0.72 : 0.3 + rnd() * 0.42 - d * 0.03, 1.5 * CELL_R * r);
-    mesh.scale.y = 3;
-    rig.add(mesh);
-    return { mesh, d };
+    return { x: Math.sqrt(3) * CELL_R * (q + r / 2), y: centre ? 0.72 : 0.3 + rnd() * 0.42 - d * 0.03, z: 1.5 * CELL_R * r, top, d };
   });
+  const honeycomb = createHoneycomb(cells, { radius: CELL_R * 0.95, outline: 0.022, side: sideM, top: topM, outlineMaterial: outM }, geometries);
+  rig.add(honeycomb.group);
 
   const outer = new THREE.Group();
   outer.position.set(0, 1.02, 0);
@@ -105,7 +99,7 @@ export function createBeeIntroScene(host: HTMLElement, opts: Options): BeeIntroS
     fog.color.set(p.paper);
     outM.color.set(p.ink);
     sideM.color.set(p.paper3);
-    [p.canary, p.paper, p.paper2, p.tomato].forEach((color, i) => tops[i].color.set(color));
+    honeycomb.applyTopColors([p.canary, p.paper, p.paper2, p.tomato]);
     trailM.color.set(p.ink);
     bee.applyPalette(p);
   };
@@ -201,6 +195,7 @@ export function createBeeIntroScene(host: HTMLElement, opts: Options): BeeIntroS
     camera.fov = cam.fov * fovK;
     camera.setViewOffset(vw, vh, ox * S.off, oy * S.off, vw, vh);
     camera.updateProjectionMatrix();
+    honeycomb.sync();
     renderer.render(scene, camera);
     if (opts.onPosition) {
       const toScreen = (v: THREE.Vector3) => ({ x: (v.x * 0.5 + 0.5) * vw, y: (-(v.y * 0.5) + 0.5) * vh });
@@ -243,7 +238,7 @@ export function createBeeIntroScene(host: HTMLElement, opts: Options): BeeIntroS
         .to(S, { follow: 0.85, duration: 0.9, ease: "power2.inOut" }, 1.0)
         .to(cam, { x: 0.6, y: 3.2, z: 6.3, fov: 36, duration: 2.5, ease: "power2.inOut" }, 1.0)
         .to(trailM, { opacity: 0, duration: 0.6 }, 3.0);
-      cells.forEach((c) => tl.to(c.mesh.position, { y: c.mesh.position.y - 2.6 - rnd() * 1.5, duration: 1.4, ease: "power3.in" }, 1.5 + c.d * 0.12));
+      honeycomb.heights.forEach((h, i) => tl.to(h, { y: h.y - 2.6 - rnd() * 1.5, duration: 1.4, ease: "power3.in" }, 1.5 + cells[i].d * 0.12));
       return 3.7;
     },
     pause() {
@@ -254,13 +249,12 @@ export function createBeeIntroScene(host: HTMLElement, opts: Options): BeeIntroS
       gsap.ticker.remove(tick);
       ro.disconnect();
       removeEventListener("pointermove", onMove);
-      gsap.killTweensOf([cam, S, flight]);
+      gsap.killTweensOf([cam, S, flight, ...honeycomb.heights]);
       bee.dispose();
+      honeycomb.dispose();
+      trailGeo.dispose();
       geometries.dispose();
-      scene.traverse((o) => {
-        if (o instanceof THREE.Mesh || o instanceof THREE.Points) o.geometry.dispose();
-      });
-      [sideM, ...tops, outM, trailM].forEach((m) => m.dispose());
+      [sideM, topM, outM, trailM].forEach((m) => m.dispose());
       gradient.dispose();
       // Release the GL context now; otherwise it lingers until GC (StrictMode remounts would pile them up).
       renderer.forceContextLoss();
