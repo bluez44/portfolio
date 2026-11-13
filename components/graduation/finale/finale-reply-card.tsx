@@ -14,7 +14,7 @@ export function FinaleReplyCard({
   id?: string;
   className?: string;
 }) {
-  const { finale: t, rsvp: rsvpCopy } = useCopy();
+  const { finale: t, rsvp: rsvpCopy, marks } = useCopy();
 
   return (
     <div
@@ -36,7 +36,7 @@ export function FinaleReplyCard({
           </span>
         </div>
         <span className="font-mono text-[9px] tracking-[0.18em] text-tomato uppercase font-bold">
-          QV · 2026
+          {marks.signature}
         </span>
       </div>
 
@@ -77,8 +77,8 @@ export function FinaleReplyCard({
       </div>
 
       <div className="flex items-center justify-between border-t border-dashed border-ink/20 pt-2 font-mono text-[9px] tracking-[0.2em] text-ink-3 uppercase">
-        <span>HCMUT</span>
-        <span>28.11.2026</span>
+        <span>{marks.school}</span>
+        <span>{t.dateMark}</span>
       </div>
     </div>
   );
