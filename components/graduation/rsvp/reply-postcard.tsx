@@ -4,6 +4,7 @@ import type { ReactNode } from "react";
 import type { RsvpStatus } from "@/lib/graduation/types";
 import { Postmark } from "../shared/postmark";
 import { Stamp } from "../shared/stamp";
+import { usePostmarkLines } from "../shared/use-postmark-lines";
 import { useCopy } from "../i18n/lang-context";
 import { AttendingStamp } from "./attending-stamp";
 
@@ -20,6 +21,7 @@ type Props = {
  */
 export function ReplyPostcard({ guestName, postmarked = false, status, children }: Props) {
   const { rsvp: t } = useCopy();
+  const postmark = usePostmarkLines();
 
   return (
     <div
@@ -45,7 +47,7 @@ export function ReplyPostcard({ guestName, postmarked = false, status, children 
           {postmarked && status !== "yes" && (
             <Postmark
               color="tomato"
-              lines={["HCMUT", "· 2026 ·", "TP.HCM"]}
+              lines={postmark}
               rotate={-14}
               className="absolute -top-3 -left-12 pointer-events-none animate-[postmark-stamp_0.35s_cubic-bezier(0.175,0.885,0.32,1.275)_both]"
             />
