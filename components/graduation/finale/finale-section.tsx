@@ -3,7 +3,7 @@
 import { useRef } from "react";
 import type { RsvpAnswer } from "@/lib/graduation/types";
 import { useReducedMotion } from "@/lib/hooks/use-reduced-motion";
-import { useCopy } from "../i18n/lang-context";
+import { useCopy, useGradEvent } from "../i18n/lang-context";
 import { RisoButton } from "@/components/ui/riso/button";
 import { FINALE_ENVELOPE_SIZE } from "../shared/envelope-size";
 import { SectionHeading } from "../shared/section-heading";
@@ -39,7 +39,8 @@ export function FinaleSection({
   const rootRef = useRef<HTMLElement>(null);
   const reduced = useReducedMotion();
   const { finale: t, footer: footerText, envelope: envCopy } = useCopy();
-  const countdown = useCountdown();
+  const event = useGradEvent();
+  const countdown = useCountdown(event.startUtc, event.endUtc);
 
   useFinaleTimeline(rootRef, !reduced);
 
