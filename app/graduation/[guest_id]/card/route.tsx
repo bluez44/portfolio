@@ -3,6 +3,7 @@ import { join } from "node:path";
 import { ImageResponse } from "next/og";
 import QRCode from "qrcode";
 import { loadGraduationContent } from "@/lib/graduation/content/load-content";
+import { cardFileName } from "@/lib/graduation/card-file-name";
 import { getInvitationGuest } from "@/lib/graduation/get-invitation-guest";
 import { getGraduationLang } from "@/lib/graduation/i18n/get-lang";
 import type { InvitationGuest } from "@/lib/graduation/types";
@@ -264,7 +265,7 @@ export async function GET(
       ...CARD_SIZE,
       fonts: font ? [{ name: "Bricolage", data: font, weight: 700, style: "normal" }] : undefined,
       headers: {
-        "Content-Disposition": `attachment; filename="thiep-moi-${guest_id}.png"`,
+        "Content-Disposition": `attachment; filename="${cardFileName(name)}"`,
         "Content-Type": "image/png",
       },
     },

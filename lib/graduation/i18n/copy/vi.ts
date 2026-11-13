@@ -3,8 +3,8 @@ import type { MomentText } from "../types";
 
 export const viTexts: CopyTexts = {
   meta: {
-    title: "Thư mời tốt nghiệp – {owner}",
-    guestTitle: "Thư mời tốt nghiệp · {name}",
+    title: "Thiệp mời tốt nghiệp – {owner}",
+    guestTitle: "Thiệp mời tốt nghiệp · {name}",
     description: "Bạn được mời đến dự lễ tốt nghiệp của mình.",
     eventTitle: "Lễ tốt nghiệp — {owner}",
   },
@@ -17,7 +17,7 @@ export const viTexts: CopyTexts = {
     whereSub: "268 Lý Thường Kiệt · Q.10",
   },
   envelope: {
-    airMail: "Thư mời",
+    airMail: "Thiệp mời",
     invitationNo: "Lễ tốt nghiệp {year}",
     to: "Gửi",
     cordially: "Trân trọng kính mời",
@@ -155,7 +155,7 @@ export const viTexts: CopyTexts = {
   },
   marks: { school: "HCMUT", city: "TP.HCM", signature: "{initials} · {year}" },
   png: {
-    attend: "Đến tham dự Lễ tốt nghiệp Kỹ sư của {owner}",
+    attend: "Đến tham dự Lễ tốt nghiệp Cử nhân của {owner}",
     faculty: "K22 · Khoa học Máy tính · Trường ĐH Bách Khoa — ĐHQG-HCM",
     guestFallback: "Quý khách",
     qrWebTitle: "QUÉT XEM THIỆP",

@@ -29,7 +29,7 @@ async function findGuest(params: Params | Promise<Params>): Promise<InvitationGu
   }
 }
 
-export const alt = "Thư mời tốt nghiệp – Võ Lê Quang Vinh";
+export const alt = "Thiệp mời tốt nghiệp – Võ Lê Quang Vinh";
 export const size = SIZE;
 export const contentType = "image/png";
 

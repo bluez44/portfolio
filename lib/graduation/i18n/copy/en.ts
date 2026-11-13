@@ -155,7 +155,7 @@ export const enTexts: CopyTexts = {
   },
   marks: { school: "HCMUT", city: "TP.HCM", signature: "{initials} · {year}" },
   png: {
-    attend: "to the engineering graduation of {owner}",
+    attend: "to the bachelor's graduation of {owner}",
     faculty: "K22 · Computer Science · HCMUT — VNU-HCM",
     guestFallback: "Dear guest",
     qrWebTitle: "SCAN TO VIEW",

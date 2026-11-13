@@ -1,6 +1,7 @@
 "use client";
 
 import { useRef } from "react";
+import { cardFileName } from "@/lib/graduation/card-file-name";
 import type { RsvpAnswer } from "@/lib/graduation/types";
 import { useReducedMotion } from "@/lib/hooks/use-reduced-motion";
 import { useCopy, useGradEvent } from "../i18n/lang-context";
@@ -119,7 +120,7 @@ export function FinaleSection({
                 variant="secondary"
                 size="md"
                 href={`/graduation/${guestId}/card`}
-                download={`thiep-moi-${guestId}.png`}
+                download={cardFileName(guestName)}
                 target="_blank"
                 rel="noopener noreferrer"
                 icon={
