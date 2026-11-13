@@ -1,4 +1,6 @@
+import type { CSSProperties } from "react";
 import type { Moment } from "@/lib/graduation/i18n";
+import { ARRIVE_AT } from "../finale/constants";
 import { BkBadge } from "./bk-badge";
 import { FinaleMemoryPhotos } from "./finale-memory-photos";
 import { PersonalNoteCard } from "./personal-note-card";
@@ -15,7 +17,11 @@ type Props = { guestName: string; label: string; note: string; memories: Moment[
 export function NoteFinaleStage({ guestName, label, note, memories, together }: Props) {
   return (
     <div data-trail-end className="relative">
-      <div data-trail-pin className="relative">
+      <div
+        data-trail-pin
+        className="relative motion-safe:min-h-(--pin-min-h)"
+        style={{ "--pin-min-h": `${(1 - ARRIVE_AT) * 100}vh` } as CSSProperties}
+      >
         <FinaleMemoryPhotos memories={memories} together={together} guestName={guestName} />
         <div data-note-scale className="relative origin-top">
           <PolaroidFrame guestName={guestName}>
