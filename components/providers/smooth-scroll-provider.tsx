@@ -16,6 +16,8 @@ export function SmoothScrollProvider({ children }: { children: ReactNode }) {
     if (reduceMotion) return;
 
     const instance = new Lenis({
+      // <html> is h-full, so its box never resizes; observe <body> so the scroll limit follows content height.
+      content: document.body,
       duration: 1.05,
       easing: (t: number) => 1 - Math.pow(1 - t, 3),
       smoothWheel: true,
