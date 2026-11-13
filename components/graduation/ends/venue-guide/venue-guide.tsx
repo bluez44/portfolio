@@ -1,9 +1,8 @@
 "use client";
 
 import { useId, type ReactNode, type Ref } from "react";
-import { GRADUATION_EVENT as E } from "@/lib/graduation/event";
 import type { GuideTab } from "@/lib/graduation/i18n";
-import { useCopy } from "../../i18n/lang-context";
+import { useCopy, useGradEvent } from "../../i18n/lang-context";
 import { DeferredEmbed } from "./deferred-embed";
 import { TourPoster } from "./tour-poster";
 import { GuideTabs, type GuideTabId } from "./guide-tabs";
@@ -37,6 +36,7 @@ export function VenueGuide({
   onTourStart?: () => void;
 }) {
   const { ends } = useCopy();
+  const E = useGradEvent();
   const t = ends.guide;
   const base = useId();
   const idFor = (id: GuideTabId) => ({ tab: `${base}-${id}-tab`, panel: `${base}-${id}-panel` });
