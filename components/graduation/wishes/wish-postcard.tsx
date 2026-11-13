@@ -3,11 +3,13 @@
 import { useRef } from "react";
 import { RisoIconButton } from "@/components/ui/riso/icon-button";
 import { useDismiss } from "@/lib/hooks/use-dismiss";
-import { useCopy } from "../i18n/lang-context";
+import { useCopy, useGradEvent, useOwner } from "../i18n/lang-context";
 import type { CardStyle, WishBee } from "./types";
 
 function AirmailCard({ bee, n }: { bee: WishBee; n: string }) {
-  const { wishes: t, envelope } = useCopy();
+  const { wishes: t, envelope, marks } = useCopy();
+  const owner = useOwner();
+  const { year } = useGradEvent();
   return (
     <div
       className="box-border rounded-lg border-[1.5px] border-ink p-2.5"
@@ -44,19 +46,19 @@ function AirmailCard({ bee, n }: { bee: WishBee; n: string }) {
               }}
             >
               <span className="font-heading text-[28px] leading-none font-bold">{bee.init}</span>
-              <span className="font-mono text-[9px] tracking-[0.18em]">2026</span>
+              <span className="font-mono text-[9px] tracking-[0.18em]">{year}</span>
             </div>
             <div className="absolute top-1.5 right-[52px] grid h-[84px] w-[84px] -rotate-12 place-items-center rounded-full border-[1.5px] border-tomato text-center">
               <span className="font-mono text-[9px] leading-[1.5] tracking-[0.16em] text-tomato uppercase">
-                TP.HCM
+                {marks.city}
                 <br />· {bee.date} ·
                 <br />
-                2026
+                {year}
               </span>
             </div>
           </div>
           {[
-            [t.to, "Võ Lê Quang Vinh"],
+            [t.to, owner.name],
             [t.from, bee.name],
           ].map(([label, value]) => (
             <div key={label} className="flex flex-col gap-1">
@@ -74,6 +76,7 @@ function AirmailCard({ bee, n }: { bee: WishBee; n: string }) {
 
 function IndexCard({ bee }: { bee: WishBee }) {
   const { envelope } = useCopy();
+  const { year } = useGradEvent();
   const padX = "clamp(22px,3.4vw,34px)";
   return (
     <div
@@ -99,7 +102,7 @@ function IndexCard({ bee }: { bee: WishBee }) {
         style={{ margin: `0 calc(-1 * ${padX})`, paddingLeft: padX, paddingRight: padX }}
       >
         {/* <span className="font-mono text-[11px] tracking-[0.24em] text-ink uppercase">Card · {n}</span> */}
-        <span className="font-mono text-[11px] tracking-[0.18em] text-ink-2">{bee.date}.2026</span>
+        <span className="font-mono text-[11px] tracking-[0.18em] text-ink-2">{bee.date}.{year}</span>
       </div>
       <p
         className="m-0 pt-1.5 font-heading font-semibold tracking-[-0.015em] text-ink"
