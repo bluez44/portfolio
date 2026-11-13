@@ -1,6 +1,7 @@
 import { z } from "zod";
+import { risoColorSchema } from "./content/settings-rules";
 
-export const risoColorSchema = z.enum(["tomato", "blue", "jade", "canary"]);
+export { risoColorSchema };
 
 export const customMomentSchema = z.object({
   n: z.string().optional(),

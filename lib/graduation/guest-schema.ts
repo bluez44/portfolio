@@ -1,9 +1,7 @@
 import { z } from "zod";
 import { SLUG_MAX_LENGTH, SLUG_PATTERN } from "./slug";
 import { guestCustomContentSchema } from "./guest-custom-schema";
-
-const blankToUndefined = (v: unknown) =>
-  typeof v === "string" && v.trim() === "" ? undefined : v;
+import { blankToUndefined } from "./content/settings-rules";
 
 const parseCustomContent = (v: unknown) => {
   if (v === undefined) return undefined;
