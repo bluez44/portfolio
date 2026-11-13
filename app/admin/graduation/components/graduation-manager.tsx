@@ -2,12 +2,13 @@
 
 import { useState, useMemo } from "react";
 import { Plus, Search, Filter } from "lucide-react";
+import type { GuestPlaceholders } from "@/lib/graduation/content/guest-placeholders";
 import type { GuestListItem } from "@/lib/graduation/types";
 import { GuestStatsCards } from "./guest-stats-cards";
 import { GuestTable } from "./guest-table";
 import { GuestEditorDialog } from "./guest-editor-dialog";
 
-export function GraduationManager({ initialGuests }: { initialGuests: GuestListItem[] }) {
+export function GraduationManager({ initialGuests, placeholders }: { initialGuests: GuestListItem[]; placeholders: GuestPlaceholders }) {
   const [search, setSearch] = useState("");
   const [filterRsvp, setFilterRsvp] = useState<"all" | "yes" | "no" | "pending">("all");
   const [isCreateOpen, setIsCreateOpen] = useState(false);
@@ -77,12 +78,13 @@ export function GraduationManager({ initialGuests }: { initialGuests: GuestListI
       </div>
 
       {/* Guest Table */}
-      <GuestTable guests={filtered} />
+      <GuestTable guests={filtered} placeholders={placeholders} />
 
       {/* Create Dialog */}
       {isCreateOpen && (
         <GuestEditorDialog
           isOpen={isCreateOpen}
+          placeholders={placeholders}
           onClose={() => setIsCreateOpen(false)}
         />
       )}

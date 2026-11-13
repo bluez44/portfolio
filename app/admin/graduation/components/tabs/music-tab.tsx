@@ -1,7 +1,9 @@
 "use client";
 
-import type { MusicCustomization } from "@/lib/graduation/types";
+import type { GuestContent } from "@/lib/graduation/content/settings-types";
 import { INPUT_CLASS, LABEL_CLASS, PANEL_CLASS } from "../fields/field-classes";
+
+type MusicCustomization = NonNullable<GuestContent["music"]>;
 
 interface MusicTabProps {
   music: MusicCustomization;

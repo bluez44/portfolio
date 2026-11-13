@@ -3,6 +3,8 @@
 import { useState } from "react";
 import Link from "next/link";
 import { ExternalLink, Edit3, Trash2, Sparkles, Mail, Calendar, Music } from "lucide-react";
+import { summarizeGuestContent } from "@/lib/graduation/content/guest-content-summary";
+import type { GuestPlaceholders } from "@/lib/graduation/content/guest-placeholders";
 import type { GuestListItem } from "@/lib/graduation/types";
 import { CopyGuestLinkButton } from "./copy-guest-link-button";
 import { GuestEditorDialog } from "./guest-editor-dialog";
@@ -10,6 +12,7 @@ import { deleteGraduationGuestAction } from "../actions";
 
 interface GuestTableProps {
   guests: GuestListItem[];
+  placeholders: GuestPlaceholders;
 }
 
 const RSVP_BADGE = {
@@ -23,7 +26,7 @@ const RSVP_BADGE = {
   },
 } as const;
 
-export function GuestTable({ guests }: GuestTableProps) {
+export function GuestTable({ guests, placeholders }: GuestTableProps) {
   const [editingGuest, setEditingGuest] = useState<GuestListItem | null>(null);
 
   return (
@@ -50,12 +53,7 @@ export function GuestTable({ guests }: GuestTableProps) {
             ) : (
               guests.map((guest) => {
                 const rsvp = guest.rsvpStatus ? RSVP_BADGE[guest.rsvpStatus] : null;
-                const custom = guest.customContent;
-                const hasEnvelope = Boolean(custom?.envelope && Object.values(custom.envelope).some(Boolean));
-                const momentsCount = custom?.met?.moments?.length;
-                const hasMet = Boolean(momentsCount || custom?.met?.headingLead || custom?.met?.note);
-                const hasEnds = Boolean(custom?.ends && Object.values(custom.ends).some(Boolean));
-                const hasMusic = Boolean(custom?.music?.youtubeId);
+                const summary = summarizeGuestContent(guest.customContent);
 
                 return (
                   <tr key={guest.id} className="hover:bg-zinc-900/40 transition-colors">
@@ -116,7 +114,7 @@ export function GuestTable({ guests }: GuestTableProps) {
 
                     <td className="px-4 py-3.5">
                       <div className="flex flex-wrap items-center gap-1.5">
-                        {hasEnvelope && (
+                        {summary.envelope && (
                           <span
                             className="inline-flex items-center gap-1 rounded bg-zinc-800 px-1.5 py-0.5 text-[10px] text-amber-400"
                             title="Có tùy chỉnh phong bì / bìa thiệp"
@@ -124,16 +122,16 @@ export function GuestTable({ guests }: GuestTableProps) {
                             <Mail className="h-3 w-3" /> Bìa
                           </span>
                         )}
-                        {hasMet && (
+                        {summary.met && (
                           <span
                             className="inline-flex items-center gap-1 rounded bg-zinc-800 px-1.5 py-0.5 text-[10px] text-sky-400"
                             title="Có tùy chỉnh hành trình kỷ niệm"
                           >
                             <Sparkles className="h-3 w-3" />
-                            {momentsCount ? `${momentsCount} thẻ` : "Kỷ niệm"}
+                            {summary.moments ? `${summary.moments} thẻ` : "Kỷ niệm"}
                           </span>
                         )}
-                        {hasEnds && (
+                        {summary.ends && (
                           <span
                             className="inline-flex items-center gap-1 rounded bg-zinc-800 px-1.5 py-0.5 text-[10px] text-emerald-400"
                             title="Có tùy chỉnh thông tin buổi lễ / lưu ý"
@@ -141,7 +139,7 @@ export function GuestTable({ guests }: GuestTableProps) {
                             <Calendar className="h-3 w-3" /> Buổi lễ
                           </span>
                         )}
-                        {hasMusic && (
+                        {summary.music && (
                           <span
                             className="inline-flex items-center gap-1 rounded bg-zinc-800 px-1.5 py-0.5 text-[10px] text-purple-400"
                             title="Có nhạc nền tùy chỉnh"
@@ -149,7 +147,7 @@ export function GuestTable({ guests }: GuestTableProps) {
                             <Music className="h-3 w-3" /> Nhạc
                           </span>
                         )}
-                        {!hasEnvelope && !hasMet && !hasEnds && !hasMusic && (
+                        {!summary.envelope && !summary.met && !summary.ends && !summary.music && (
                           <span className="text-[11px] text-zinc-600">—</span>
                         )}
                       </div>
@@ -208,6 +206,7 @@ export function GuestTable({ guests }: GuestTableProps) {
       {editingGuest && (
         <GuestEditorDialog
           guest={editingGuest}
+          placeholders={placeholders}
           isOpen={true}
           onClose={() => setEditingGuest(null)}
         />

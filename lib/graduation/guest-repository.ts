@@ -2,7 +2,8 @@ import prisma from "@/lib/prisma";
 import { Prisma } from "@/generated/prisma/client";
 import { SlugTakenError } from "./slug-taken-error";
 import { fromRsvpRow } from "./rsvp-mapper";
-import type { GuestCustomContent, GuestData, GuestListItem, GuestRecord, InvitationGuest, RsvpAnswer } from "./types";
+import { normalizeGuestContent } from "./content/normalize-guest-content";
+import type { GuestData, GuestListItem, GuestRecord, InvitationGuest, RsvpAnswer } from "./types";
 
 const recordSelect = {
   id: true,
@@ -37,7 +38,7 @@ function parseRecord(row: {
     slug: row.slug,
     name: row.name,
     note: row.note,
-    customContent: (row.customContent as GuestCustomContent) ?? null,
+    customContent: row.customContent == null ? null : normalizeGuestContent(row.customContent, null),
   };
 }
 

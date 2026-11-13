@@ -51,4 +51,16 @@ describe("saveGuest", () => {
   it("rethrows unknown repository errors", async () => {
     await expect(saveGuest(fakeRepo({ fail: new Error("db down") }), { name: "A", slug: "a", note: "" })).rejects.toThrow("db down");
   });
+
+  it("reports where invalid custom content is wrong", async () => {
+    const repo = fakeRepo();
+    const result = await saveGuest(repo, { name: "A", slug: "a", note: "", customContent: { vi: { "gate.tapBee": "x" } } });
+    expect(result).toEqual({ ok: false, fieldErrors: { customContent: "vi.gate.tapBee: Trường không tồn tại" } });
+  });
+
+  it("accepts and converts legacy custom content", async () => {
+    const repo = fakeRepo();
+    await saveGuest(repo, { name: "A", slug: "a", note: "", customContent: { envelope: { cardGreeting: "Kính gửi," } } });
+    expect(repo.create).toHaveBeenCalledWith(expect.objectContaining({ customContent: expect.objectContaining({ vi: { "card.greeting": "Kính gửi," } }) }));
+  });
 });

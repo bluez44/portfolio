@@ -1,23 +1,17 @@
 import { z } from "zod";
 import { SLUG_MAX_LENGTH, SLUG_PATTERN } from "./slug";
-import { guestCustomContentSchema } from "./guest-custom-schema";
+import { guestContentInputSchema } from "./content/guest-content-schema";
 import { blankToUndefined } from "./content/settings-rules";
 
-const parseCustomContent = (v: unknown) => {
-  if (v === undefined) return undefined;
-  if (!v || v === "" || v === "null") return null;
-  if (typeof v === "string") {
-    try {
-      const parsed = JSON.parse(v);
-      return guestCustomContentSchema.parse(parsed);
-    } catch {
-      return null;
-    }
+const parseCustomContent = (value: unknown) => {
+  if (value === undefined) return undefined;
+  if (value === null || value === "" || value === "null") return null;
+  if (typeof value !== "string") return value;
+  try {
+    return JSON.parse(value);
+  } catch {
+    return value;
   }
-  if (typeof v === "object") {
-    return guestCustomContentSchema.parse(v);
-  }
-  return null;
 };
 
 export const guestInputSchema = z.object({
@@ -36,7 +30,7 @@ export const guestInputSchema = z.object({
     .trim()
     .max(500, "Tối đa 500 ký tự")
     .transform((v) => (v === "" ? null : v)),
-  customContent: z.preprocess(parseCustomContent, guestCustomContentSchema.nullable().optional()),
+  customContent: z.preprocess(parseCustomContent, guestContentInputSchema.nullable().optional()),
 });
 
 export type GuestInput = z.output<typeof guestInputSchema>;

@@ -2,6 +2,8 @@ import { isAdminSession } from "@/lib/admin-auth/session";
 import LoginForm from "../LoginForm";
 import { AdminShell } from "../components/admin-shell";
 import { guestRepository } from "@/lib/graduation/guest-repository";
+import { guestPlaceholders } from "@/lib/graduation/content/guest-placeholders";
+import { loadGraduationSettings } from "@/lib/graduation/content/load-settings";
 import { GraduationManager } from "./components/graduation-manager";
 
 export const dynamic = "force-dynamic";
@@ -18,7 +20,7 @@ export default async function AdminGraduationPage() {
     return <LoginForm />;
   }
 
-  const guests = await guestRepository.list();
+  const [guests, settings] = await Promise.all([guestRepository.list(), loadGraduationSettings()]);
 
   return (
     <AdminShell
@@ -30,7 +32,7 @@ export default async function AdminGraduationPage() {
         </>
       }
     >
-      <GraduationManager initialGuests={guests} />
+      <GraduationManager initialGuests={guests} placeholders={guestPlaceholders(settings)} />
     </AdminShell>
   );
 }

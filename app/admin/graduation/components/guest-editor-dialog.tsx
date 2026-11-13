@@ -2,7 +2,9 @@
 
 import { useEffect, useState, useTransition } from "react";
 import { X, User, Mail, Sparkles, Calendar, MailCheck, Music, Save, Loader2 } from "lucide-react";
-import type { GuestListItem, GuestCustomContent } from "@/lib/graduation/types";
+import type { GuestPlaceholders } from "@/lib/graduation/content/guest-placeholders";
+import type { GuestContent } from "@/lib/graduation/content/settings-types";
+import type { GuestListItem } from "@/lib/graduation/types";
 import { useScrollLock } from "@/lib/hooks/use-scroll-lock";
 import { saveGraduationGuestAction, type GuestActionState } from "../actions";
 import { BasicInfoTab } from "./tabs/basic-info-tab";
@@ -14,6 +16,7 @@ import { MusicTab } from "./tabs/music-tab";
 
 interface GuestEditorDialogProps {
   guest?: GuestListItem | null;
+  placeholders: GuestPlaceholders;
   isOpen: boolean;
   onClose: () => void;
 }
@@ -22,6 +25,7 @@ type TabKey = "basic" | "envelope" | "met" | "ends" | "rsvp" | "music";
 
 export function GuestEditorDialog({
   guest,
+  placeholders,
   isOpen,
   onClose,
 }: GuestEditorDialogProps) {
@@ -33,9 +37,7 @@ export function GuestEditorDialog({
   const [name, setName] = useState(guest?.name || "");
   const [slug, setSlug] = useState(guest?.slug || "");
   const [note, setNote] = useState(guest?.note || "");
-  const [customContent, setCustomContent] = useState<GuestCustomContent>(
-    guest?.customContent || {}
-  );
+  const [customContent, setCustomContent] = useState<GuestContent>(guest?.customContent ?? {});
 
   useScrollLock(isOpen);
   useEffect(() => {
@@ -75,7 +77,7 @@ export function GuestEditorDialog({
   ];
 
   const fieldErrors = state && !state.ok ? state.fieldErrors : {};
-  const globalError = state && !state.ok && "error" in state ? state.error : null;
+  const globalError = state && !state.ok ? ("error" in state ? state.error : fieldErrors.customContent) ?? null : null;
 
   return (
     /* data-lenis-prevent: the site-wide Lenis smooth scroll hijacks wheel
@@ -90,7 +92,7 @@ export function GuestEditorDialog({
               {guest ? `Chỉnh sửa: ${guest.name}` : "Thêm khách mời mới"}
             </h3>
             <p className="text-xs text-zinc-400">
-              Tùy chỉnh thông tin, thiệp mời, các thẻ kỷ niệm và ảnh tải lên Vercel Blob
+              Tùy chỉnh riêng cho khách này, cả tiếng Việt và tiếng Anh. Ô để trống dùng Cài đặt chung (chữ mờ trong ô).
             </p>
           </div>
           <button
@@ -144,39 +146,12 @@ export function GuestEditorDialog({
             />
           )}
 
-          {activeTab === "envelope" && (
-            <EnvelopeTab
-              envelope={customContent.envelope || {}}
-              onChange={(env) => setCustomContent({ ...customContent, envelope: env })}
-            />
-          )}
-
-          {activeTab === "met" && (
-            <MomentsTab
-              met={customContent.met || {}}
-              onChange={(m) => setCustomContent({ ...customContent, met: m })}
-            />
-          )}
-
-          {activeTab === "ends" && (
-            <EndsTab
-              ends={customContent.ends || {}}
-              onChange={(end) => setCustomContent({ ...customContent, ends: end })}
-            />
-          )}
-
-          {activeTab === "rsvp" && (
-            <RsvpTab
-              rsvp={customContent.rsvp || {}}
-              onChange={(r) => setCustomContent({ ...customContent, rsvp: r })}
-            />
-          )}
-
+          {activeTab === "envelope" && <EnvelopeTab content={customContent} placeholders={placeholders} onChange={setCustomContent} />}
+          {activeTab === "met" && <MomentsTab content={customContent} placeholders={placeholders} onChange={setCustomContent} />}
+          {activeTab === "ends" && <EndsTab content={customContent} placeholders={placeholders} onChange={setCustomContent} />}
+          {activeTab === "rsvp" && <RsvpTab content={customContent} placeholders={placeholders} onChange={setCustomContent} />}
           {activeTab === "music" && (
-            <MusicTab
-              music={customContent.music || {}}
-              onChange={(mus) => setCustomContent({ ...customContent, music: mus })}
-            />
+            <MusicTab music={customContent.music ?? {}} onChange={(music) => setCustomContent({ ...customContent, music })} />
           )}
         </div>
 

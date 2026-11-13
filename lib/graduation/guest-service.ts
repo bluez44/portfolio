@@ -24,7 +24,8 @@ export async function saveGuest(
     const errors: Partial<Record<GuestField, string>> = {};
     for (const issue of parsed.error.issues) {
       const field = issue.path[0] as GuestField;
-      errors[field] ??= issue.message;
+      const detail = issue.path.slice(1).map(String).join(".");
+      errors[field] ??= field === "customContent" && detail ? `${detail}: ${issue.message}` : issue.message;
     }
     return fail(errors);
   }
