@@ -27,7 +27,6 @@ export const enTexts: CopyTexts = {
     guest: "Guest",
   },
   card: {
-    label: "Invitation",
     greeting: "Hello,",
     body: "I'm Quang Vinh. After four years at HCMUT, I'm finally graduating — and I'd love for you to be there.",
     author: "— Vinh (Tom)",
@@ -35,7 +34,7 @@ export const enTexts: CopyTexts = {
     coverAlt: "Cover",
   },
   stage: {
-    coverKicker: "You're invited",
+    coverKicker: "You're invited to",
     cover: { lead: "Graduation", accent: "day." },
     greetKicker: "Hello",
     scrollHint: "Scroll to open",

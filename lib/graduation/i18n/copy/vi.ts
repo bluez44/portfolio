@@ -27,7 +27,6 @@ export const viTexts: CopyTexts = {
     guest: "Khách mời",
   },
   card: {
-    label: "Thiệp mời",
     greeting: "Xin chào,",
     body: "Mình là Quang Vinh. Sau bốn năm ở Bách Khoa, mình sắp khoác lên tấm áo cử nhân — và mình rất muốn có bạn ở đó.",
     author: "— Vinh (Tom)",
@@ -35,7 +34,7 @@ export const viTexts: CopyTexts = {
     coverAlt: "Ảnh bìa",
   },
   stage: {
-    coverKicker: "Bạn được mời",
+    coverKicker: "Bạn được mời đến",
     cover: { lead: "Ngày", accent: "tốt nghiệp." },
     greetKicker: "Lời chào",
     scrollHint: "Cuộn để mở thư",

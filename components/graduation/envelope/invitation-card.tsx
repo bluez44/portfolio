@@ -14,9 +14,6 @@ export function InvitationCard({
       className={`box-border flex flex-col justify-between gap-2.5 overflow-hidden rounded-[14px] border-[1.5px] border-ink bg-paper px-[clamp(18px,2.8vw,34px)] py-[clamp(16px,2.4vw,28px)] ${className}`}
       style={{ boxShadow: "var(--offset-tomato)", ...style }}
     >
-      <div className="flex items-center justify-between font-mono text-[10px] tracking-[0.26em] uppercase">
-        <span className="text-ink-3">{t.label}</span>
-      </div>
       <div className="flex items-start justify-between gap-3">
         <h2
           className="m-0 font-heading text-[clamp(22px,3vw,36px)] leading-[0.98] font-bold tracking-[-0.035em] text-balance"
