@@ -22,6 +22,7 @@ import {
 import { MetSection } from "./met/met-section";
 import { useYouTubePlayer } from "./music/use-youtube-player";
 import { useMusicCues } from "./music/use-music-cues";
+import { useTourSession } from "./ends/venue-guide/use-tour-session";
 import { RsvpSection } from "./rsvp/rsvp-section";
 import { HalftoneSeam } from "./shared/halftone-seam";
 import { WishesSection } from "./wishes/wishes-section";
@@ -63,7 +64,23 @@ function InvitationContent({ guest, initialRsvp }: InvitationProps) {
   const musicId = event.musicYoutubeId;
   const music = useYouTubePlayer(musicId, flashMusicNote, () => gate?.resolve(GATE.music));
   const { status: musicStatus, mountRef: musicMountRef, start: startMusic, toggle: toggleMusic, fadePause, fadeResume } = music;
-  useMusicCues(music);
+  const tour = useTourSession();
+  useMusicCues({ ...music, status: tour.open ? "paused" : musicStatus });
+
+  const startTour = () => {
+    tour.start();
+    fadePause();
+  };
+  const leaveTour = () => {
+    if (!tour.open) return;
+    tour.close();
+    fadeResume();
+  };
+  const onMusic = () => {
+    if (!tour.open) return toggleMusic();
+    tour.close();
+    startMusic();
+  };
 
   // No track configured means there is no music to wait for.
   useEffect(() => {
@@ -91,7 +108,7 @@ function InvitationContent({ guest, initialRsvp }: InvitationProps) {
 
       <LetterGate ready={!gate?.pending} guestName={guest.name} musicPlaying={musicStatus === "playing"} onOpen={startMusic} onOpened={onLetterOpened} />
       <div inert={!letterOpened}>
-        <InvitationHeader musicPlaying={musicStatus === "playing"} musicNote={musicNote} onMusic={toggleMusic} />
+        <InvitationHeader musicPlaying={musicStatus === "playing"} musicNote={musicNote} onMusic={onMusic} />
         <SideRails />
 
         <main>
@@ -99,7 +116,7 @@ function InvitationContent({ guest, initialRsvp }: InvitationProps) {
           <HalftoneSeam from="paper" to="paper-2" />
           <MetSection guestName={guest.name} togetherPhoto={images.togetherPhoto} />
           <HalftoneSeam from="paper-2" to="paper" />
-          <EndsSection onTourOpen={fadePause} onTourClose={fadeResume} />
+          <EndsSection tourKey={tour.key} onTourStart={startTour} onTourLeave={leaveTour} />
           <HalftoneSeam from="paper" to="paper-2" />
           <RsvpSection
             slug={guest.slug}

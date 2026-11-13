@@ -68,6 +68,7 @@ export function useYouTubePlayer(videoId: string, onError: () => void, onReady?:
   const begin = useCallback(
     (p: YTPlayer) => {
       wantsPlay.current = false;
+      resumeAfterDuck.current = false;
       p.unMute();
       setVolume(p, 0);
       p.playVideo();
