@@ -1,6 +1,6 @@
 import gsap from "gsap";
 import * as THREE from "three";
-import { outlineGeometry } from "../character/scene/mesh-kit";
+import { outlineGeometry } from "../shared/three/outline-geometry";
 import { BEE_HEAD_RADIUS, createBeeModel } from "../shared/three/bee-model";
 import type { RisoPalette } from "../shared/three/palette";
 import { toonGradient } from "../shared/three/toon";

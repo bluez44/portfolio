@@ -1,5 +1,5 @@
 import * as THREE from "three";
-import { outlineGeometry } from "../../character/scene/mesh-kit";
+import { outlineGeometry } from "./outline-geometry";
 import { inkAndPaperByDepth, type RisoPalette } from "./palette";
 
 type Vec3 = [number, number, number];
