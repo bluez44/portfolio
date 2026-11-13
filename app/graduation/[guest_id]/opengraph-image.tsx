@@ -1,11 +1,11 @@
 import { readFile } from "node:fs/promises";
 import { join } from "node:path";
 import { ImageResponse } from "next/og";
+import { loadGraduationContent } from "@/lib/graduation/content/load-content";
 import { getInvitationGuest } from "@/lib/graduation/get-invitation-guest";
-import { GRADUATION_COPY } from "@/lib/graduation/i18n";
+import { getGraduationLang } from "@/lib/graduation/i18n/get-lang";
+import type { InvitationGuest } from "@/lib/graduation/types";
 
-// Link previews are always Vietnamese: crawlers carry no language cookie.
-const copy = GRADUATION_COPY.vi;
 const SIZE = { width: 1200, height: 630 };
 /** Lives in public/ so the standalone build ships it; any font with Vietnamese glyphs works. */
 const FONT_PATH = join(process.cwd(), "public/fonts/BricolageGrotesque-Bold.ttf");
@@ -18,11 +18,11 @@ const TOMATO = "#ef4e2b";
 
 type Params = { guest_id: string };
 
-async function guestName(params: Params | Promise<Params>): Promise<string | null> {
+async function findGuest(params: Params | Promise<Params>): Promise<InvitationGuest | null> {
   const { guest_id } = await params;
   if (!guest_id) return null;
   try {
-    return (await getInvitationGuest(guest_id))?.guest.name ?? null;
+    return (await getInvitationGuest(guest_id))?.guest ?? null;
   } catch {
     // A DB hiccup should still leave the link with the generic preview, not a broken image.
     return null;
@@ -53,7 +53,9 @@ function loadFont(): Promise<ArrayBuffer | null> {
 }
 
 export default async function Image({ params }: { params: Promise<Params> }) {
-  const [name, font] = await Promise.all([guestName(params), loadFont()]);
+  const [guest, font, lang] = await Promise.all([findGuest(params), loadFont(), getGraduationLang()]);
+  const { copy } = await loadGraduationContent(lang, guest);
+  const name = guest?.name ?? null;
 
   return new ImageResponse(
     (
