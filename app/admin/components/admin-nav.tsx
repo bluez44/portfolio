@@ -8,7 +8,8 @@ export function AdminNav() {
 
   const navItems = [
     { href: "/admin", label: "Lượt truy cập (Visitors)", exact: true },
-    { href: "/admin/graduation", label: "Quản lý Lễ tốt nghiệp (Graduation)", exact: false },
+    { href: "/admin/graduation", label: "Quản lý Lễ tốt nghiệp (Graduation)", exact: true },
+    { href: "/admin/graduation/settings", label: "Cài đặt thiệp (Settings)", exact: true },
   ];
 
   return (
