@@ -4,12 +4,15 @@ import { useEffect, useState, type ReactNode } from "react";
 import gsap from "gsap";
 import ScrollTrigger from "gsap/ScrollTrigger";
 import Lenis from "lenis";
+import { usePathname } from "next/navigation";
 import { LenisContext } from "./lenis-context";
 
 export function SmoothScrollProvider({ children }: { children: ReactNode }) {
   const [lenis, setLenis] = useState<Lenis | null>(null);
+  const disabled = usePathname()?.startsWith("/admin") ?? false;
 
   useEffect(() => {
+    if (disabled) return;
     const reduceMotion = window.matchMedia(
       "(prefers-reduced-motion: reduce)",
     ).matches;
@@ -52,7 +55,7 @@ export function SmoothScrollProvider({ children }: { children: ReactNode }) {
       setLenis(null);
       instance.destroy();
     };
-  }, []);
+  }, [disabled]);
 
   return <LenisContext.Provider value={lenis}>{children}</LenisContext.Provider>;
 }

@@ -80,10 +80,7 @@ export function GuestEditorDialog({
   const globalError = state && !state.ok ? ("error" in state ? state.error : fieldErrors.customContent) ?? null : null;
 
   return (
-    /* data-lenis-prevent: the site-wide Lenis smooth scroll hijacks wheel
-       events and scrolls the page root; without it the dialog body's
-       overflow-y-auto never receives the wheel and cannot scroll. */
-    <div data-lenis-prevent className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 p-4 backdrop-blur-xs">
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 p-4 backdrop-blur-xs">
       <div className="relative flex max-h-[90dvh] w-full max-w-3xl flex-col overflow-hidden rounded-xl border border-zinc-800 bg-zinc-950 shadow-2xl">
         {/* Header */}
         <div className="flex items-center justify-between border-b border-zinc-800 px-6 py-4">
