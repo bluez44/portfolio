@@ -19,7 +19,6 @@ export const ENVELOPE_FIELDS = [
   envelope("envelope.faculty", "Khoa / lớp"),
   envelope("envelope.guest", "Chú thích dưới tên khách"),
   card("card.label", "Nhãn thiệp"),
-  card("card.fig", "Ký hiệu góc thiệp"),
   card("card.greeting", "Lời chào"),
   card("card.body", "Nội dung thiệp", { kind: "textarea" }),
   card("card.author", "Chữ ký"),

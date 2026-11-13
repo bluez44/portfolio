@@ -28,7 +28,6 @@ export const enTexts: CopyTexts = {
   },
   card: {
     label: "Invitation",
-    fig: "Fig · 01",
     greeting: "Hello,",
     body: "I'm Quang Vinh. After four years at HCMUT, I'm finally graduating — and I'd love for you to be there.",
     author: "— Vinh (Tom)",

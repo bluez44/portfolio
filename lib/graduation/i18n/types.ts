@@ -29,7 +29,7 @@ export type GraduationCopy = {
     /** Caption under a guest's name, on wish cards and the sealed reply. */
     guest: string;
   };
-  card: { label: string; fig: string; greeting: string; body: string; author: string; keepScrolling: string; coverAlt: string; coverImage?: string };
+  card: { label: string; greeting: string; body: string; author: string; keepScrolling: string; coverAlt: string; coverImage?: string };
   stage: { coverKicker: string; cover: Heading; greetKicker: string; scrollHint: string };
   met: { heading: Heading; intro: string; moments: Moment[]; andYou: (name: string) => string; defaultNote: string; togetherCaption: (name: string) => string; polaroidCaption: (name: string) => string };
   ends: {

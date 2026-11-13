@@ -16,7 +16,6 @@ export function InvitationCard({
     >
       <div className="flex items-center justify-between font-mono text-[10px] tracking-[0.26em] uppercase">
         <span className="text-ink-3">{t.label}</span>
-        <span className="text-tomato">{t.fig}</span>
       </div>
       <div className="flex items-start justify-between gap-3">
         <h2

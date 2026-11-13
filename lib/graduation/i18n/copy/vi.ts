@@ -28,7 +28,6 @@ export const viTexts: CopyTexts = {
   },
   card: {
     label: "Thiệp mời",
-    fig: "Fig · 01",
     greeting: "Xin chào,",
     body: "Mình là Quang Vinh. Sau bốn năm ở Bách Khoa, mình sắp khoác lên tấm áo cử nhân — và mình rất muốn có bạn ở đó.",
     author: "— Vinh (Tom)",
