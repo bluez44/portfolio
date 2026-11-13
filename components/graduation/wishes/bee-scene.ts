@@ -1,5 +1,6 @@
 import * as THREE from "three";
 import { createBeeModel } from "../shared/three/bee-model";
+import { createGeometryCache } from "../shared/three/geometry-cache";
 import type { RisoPalette } from "../shared/three/palette";
 import { toonGradient } from "../shared/three/toon";
 
@@ -36,7 +37,8 @@ export function createBeeScene(host: HTMLElement, palette: RisoPalette): BeeScen
 
   const grad = toonGradient([120, 200, 255]);
   const outM = new THREE.MeshBasicMaterial({ color: palette.ink, side: THREE.BackSide });
-  const model = createBeeModel(grad, outM, palette);
+  const geometries = createGeometryCache();
+  const model = createBeeModel(grad, outM, palette, geometries);
   const g = model.group;
   const wings = model.wings.map((w) => w.pivot);
   scene.add(g);
@@ -92,6 +94,7 @@ export function createBeeScene(host: HTMLElement, palette: RisoPalette): BeeScen
 
   const dispose = () => {
     model.dispose();
+    geometries.dispose();
     outM.dispose();
     grad.dispose();
     // Release the GL context now; otherwise it lingers until GC (StrictMode remounts would pile them up).

@@ -1,5 +1,6 @@
 import * as THREE from "three";
 import { createBeeModel, type BeeModel } from "../../shared/three/bee-model";
+import type { GeometryCache } from "../../shared/three/geometry-cache";
 import type { RisoPalette } from "../../shared/three/palette";
 import type { Materials } from "./materials";
 import type { MeshKit } from "./mesh-kit";
@@ -61,7 +62,7 @@ function buildProps(k: MeshKit, M: Materials, root: THREE.Group, hips: THREE.Gro
   return { cardProp, books, laptop };
 }
 
-export function buildRig(scene: THREE.Scene, k: MeshKit, M: Materials, palette: RisoPalette): Rig {
+export function buildRig(scene: THREE.Scene, k: MeshKit, M: Materials, palette: RisoPalette, geometries: GeometryCache): Rig {
   const root = k.group(scene);
   const shadow = new THREE.Mesh(new THREE.CircleGeometry(0.62, 32), M.shadow);
   shadow.rotation.x = -Math.PI / 2;
@@ -89,7 +90,7 @@ export function buildRig(scene: THREE.Scene, k: MeshKit, M: Materials, palette: 
   const B = buildArm(k, M, spine, -1);
   const props = buildProps(k, M, root, hips, spine, B.el);
   const bee = k.group(root);
-  const beeModel = createBeeModel(M.gradient, M.outline, palette);
+  const beeModel = createBeeModel(M.gradient, M.outline, palette, geometries);
   beeModel.group.scale.setScalar(BEE_SCALE);
   bee.add(beeModel.group);
   return { root, hips, legs, skirt, spine, ...head, A, B, ...props, bee, beeModel, shadow };

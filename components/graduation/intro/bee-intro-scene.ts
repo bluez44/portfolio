@@ -2,6 +2,7 @@ import gsap from "gsap";
 import * as THREE from "three";
 import { outlineGeometry } from "../shared/three/outline-geometry";
 import { BEE_HEAD_RADIUS, createBeeModel } from "../shared/three/bee-model";
+import { createGeometryCache } from "../shared/three/geometry-cache";
 import type { RisoPalette } from "../shared/three/palette";
 import { toonGradient } from "../shared/three/toon";
 import { applyFilmGrain, formatTimecode, shiftFilmGrain } from "./film-effects";
@@ -54,6 +55,7 @@ export function createBeeIntroScene(host: HTMLElement, opts: Options): BeeIntroS
   scene.add(keyLight);
 
   const gradient = toonGradient([122, 196, 255]);
+  const geometries = createGeometryCache();
   const outM = new THREE.MeshBasicMaterial({ side: THREE.BackSide });
   const toon = () => new THREE.MeshToonMaterial({ gradientMap: gradient });
   const sideM = toon();
@@ -85,7 +87,7 @@ export function createBeeIntroScene(host: HTMLElement, opts: Options): BeeIntroS
   inner.rotation.y = -Math.PI / 2;
   inner.scale.setScalar(BEE_SCALE);
   outer.add(inner);
-  const bee = createBeeModel(gradient, outM, opts.palette);
+  const bee = createBeeModel(gradient, outM, opts.palette, geometries);
   inner.add(bee.group);
   bee.eyes.forEach((e) => (e.scale.y = 0.18));
   bee.wings.forEach((w) => (w.pivot.rotation.x = w.side * 0.9));
@@ -254,6 +256,7 @@ export function createBeeIntroScene(host: HTMLElement, opts: Options): BeeIntroS
       removeEventListener("pointermove", onMove);
       gsap.killTweensOf([cam, S, flight]);
       bee.dispose();
+      geometries.dispose();
       scene.traverse((o) => {
         if (o instanceof THREE.Mesh || o instanceof THREE.Points) o.geometry.dispose();
       });

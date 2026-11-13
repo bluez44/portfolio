@@ -1,5 +1,6 @@
 import * as THREE from "three";
 import { targetPose } from "../choreography/target-pose";
+import { createGeometryCache } from "../../shared/three/geometry-cache";
 import { readRisoPalette, type RisoPalette } from "../../shared/three/palette";
 import { applyPalette, createMaterials, disposeMaterials, type Materials } from "./materials";
 import { createMeshKit } from "./mesh-kit";
@@ -38,7 +39,8 @@ export function createGradCharacter(host: HTMLElement, opts: { scale: number }):
     const palette = readRisoPalette();
     const M = createMaterials(palette);
     materials = M;
-    const rig = buildRig(scene, createMeshKit(M.outline), M, palette);
+    const geometries = createGeometryCache();
+    const rig = buildRig(scene, createMeshKit(M.outline), M, palette, geometries);
     const S: PoseState = { ...INITIAL_POSE };
     const view = { halfW: 1, halfH: 1, scale: opts.scale };
     let beats: Beat[] | null = null;
@@ -87,6 +89,7 @@ export function createGradCharacter(host: HTMLElement, opts: { scale: number }):
       dispose() {
         scene.traverse((o) => (o as THREE.Mesh).geometry?.dispose());
         rig.beeModel.dispose();
+        geometries.dispose();
         disposeMaterials(M);
         // Release the GL context now; otherwise it lingers until GC (StrictMode remounts would pile them up).
         renderer.forceContextLoss();
