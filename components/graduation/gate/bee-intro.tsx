@@ -1,7 +1,9 @@
 "use client";
 
 import { Fragment, useEffect, useRef } from "react";
+import { RisoThemeToggle } from "@/components/ui/riso/theme-toggle";
 import { playSfx, unlockSfx } from "@/lib/graduation/sfx";
+import { useIsDark } from "@/lib/hooks/use-is-dark";
 import { useReducedMotion } from "@/lib/hooks/use-reduced-motion";
 import { LangToggle } from "../i18n/lang-toggle";
 import { useCopy } from "../i18n/lang-context";
@@ -48,6 +50,7 @@ type Props = {
 /** The design's "bee" cinematic cover; `onEnter` must run inside the click for the music to start. */
 export function BeeIntro({ guestName, phase, musicPlaying, onEnter, onExited }: Props) {
   const { gate: t, header, stage, envelope } = useCopy();
+  const { dark, toggle: toggleTheme } = useIsDark();
   const reduced = useReducedMotion();
   const rootRef = useRef<HTMLDivElement>(null);
   const hostRef = useRef<HTMLDivElement>(null);
@@ -140,7 +143,10 @@ export function BeeIntro({ guestName, phase, musicPlaying, onEnter, onExited }: 
               00:00:00:00
             </span>
           </span>
-          <LangToggle />
+          <div className="flex items-center gap-2 sm:gap-3.5">
+            <LangToggle />
+            <RisoThemeToggle dark={dark} onToggle={toggleTheme} />
+          </div>
         </div>
       </div>
       <div data-intro-bar="bottom" className={`${bar} bottom-0 pb-[env(safe-area-inset-bottom)]`}>
