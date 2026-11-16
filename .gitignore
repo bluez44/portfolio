@@ -44,6 +44,9 @@ next-env.d.ts
 generated/prisma/
 # agent skill caches
 .agents/
+# nested skill repos (cloned separately, have their own .git)
+skills/img2threejs/
+.claude/skills/img2threejs/
 
 # subagent-driven-development scratch
 .superpowers/
