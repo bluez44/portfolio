@@ -1,3 +1,4 @@
+import Image from "next/image";
 import type { ComponentProps } from "react";
 import { useCopy } from "../i18n/lang-context";
 
@@ -26,8 +27,8 @@ export function InvitationCard({
         </h2>
         {t.coverImage && (
           <div className="relative h-14 w-14 shrink-0 overflow-hidden rounded-md border-[1.5px] border-ink bg-paper-2 shadow-xs">
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img src={t.coverImage} alt={t.coverAlt} className="h-full w-full object-cover" />
+            {/* Shown at 56px: let the optimizer shrink uploads; external https URLs are not in localPatterns, so they pass through. */}
+            <Image src={t.coverImage} alt={t.coverAlt} fill sizes="56px" unoptimized={!t.coverImage.startsWith("/")} className="object-cover" />
           </div>
         )}
       </div>
