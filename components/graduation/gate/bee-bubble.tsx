@@ -1,8 +1,15 @@
 "use client";
 
 import { useEffect, useRef, useState, useImperativeHandle, forwardRef } from "react";
+import { useMediaQuery } from "@/lib/hooks/use-media-query";
 import { useReducedMotion } from "@/lib/hooks/use-reduced-motion";
 import { useCopy } from "../i18n/lang-context";
+
+/** Matches the intro's phone layout (`max-[759px]` in bee-intro). */
+const PHONE_QUERY = "(max-width: 759px)";
+const TYPE_MS = 24;
+const NOTICE_HOLD_MS = 2600;
+const TIP_HOLD_MS = 4200;
 
 export type BeeBubbleHandle = {
   update: (pos: { x: number; y: number }, visible: boolean) => void;
@@ -18,6 +25,7 @@ type Props = {
 export const BeeBubble = forwardRef<BeeBubbleHandle, Props>(function BeeBubble({ guestName, loading }, ref) {
   const { gate: t } = useCopy();
   const reduced = useReducedMotion();
+  const phone = useMediaQuery(PHONE_QUERY);
   const rootRef = useRef<HTMLDivElement>(null);
   const [typedText, setTypedText] = useState("");
   const [started, setStarted] = useState(false);
@@ -62,23 +70,41 @@ export const BeeBubble = forwardRef<BeeBubbleHandle, Props>(function BeeBubble({
       setTypedText("");
       return;
     }
-    const fullText = loading ? t.beePreparing : t.beeNotice(guestName);
-    if (reduced) {
-      setTypedText(fullText);
-      return;
-    }
-    let i = 0;
-    setTypedText("");
-    const interval = window.setInterval(() => {
-      i++;
-      setTypedText(fullText.slice(0, i));
-      if (i >= fullText.length) {
-        window.clearInterval(interval);
-      }
-    }, 24);
+    const notice = t.beeNotice(guestName);
+    // On phones the bee slips in one nudge towards a bigger screen, then settles back on the notice.
+    // It plays once so the live region is not re-announced in a loop.
+    const lines = loading ? [t.beePreparing] : phone ? [notice, t.beeMobileTip, notice] : [notice];
+    let line = 0;
+    let timer = 0;
 
-    return () => window.clearInterval(interval);
-  }, [started, loading, guestName, t, reduced]);
+    const next = () => {
+      if (line >= lines.length - 1) return;
+      timer = window.setTimeout(() => {
+        line++;
+        type();
+      }, lines[line] === notice ? NOTICE_HOLD_MS : TIP_HOLD_MS);
+    };
+    const type = () => {
+      const text = lines[line];
+      if (reduced) {
+        setTypedText(text);
+        next();
+        return;
+      }
+      let i = 0;
+      setTypedText("");
+      const tick = () => {
+        i++;
+        setTypedText(text.slice(0, i));
+        if (i < text.length) timer = window.setTimeout(tick, TYPE_MS);
+        else next();
+      };
+      timer = window.setTimeout(tick, TYPE_MS);
+    };
+
+    type();
+    return () => window.clearTimeout(timer);
+  }, [started, loading, phone, guestName, t, reduced]);
 
   return (
     <div

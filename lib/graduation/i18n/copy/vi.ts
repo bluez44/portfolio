@@ -146,10 +146,10 @@ export const viTexts: CopyTexts = {
     tapBee: "chạm để mở thiệp",
     silent: "Vào không nhạc →",
     soundHint: "♪ Nên bật âm thanh",
-    desktopHint: "Xem trên máy tính để có trải nghiệm tốt nhất",
     nowPlaying: "♪ Đang phát",
     beePreparing: "Đang chuẩn bị thư…",
     beeNotice: "{name}, bạn có thư mới.",
+    beeMobileTip: "Psst… mở trên máy tính đi, mình bay đẹp hơn nhiều đó!",
   },
   marks: { school: "HCMUT", city: "TP.HCM", signature: "{initials} · {year}" },
   png: {

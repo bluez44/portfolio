@@ -120,12 +120,12 @@ export type GraduationCopy = {
     tapBee: string;
     silent: string;
     soundHint: string;
-    /** Shown on phone-sized screens only. */
-    desktopHint: string;
     nowPlaying: string;
     /** What the bee says while the invitation loads, then once it is ready. */
     beePreparing: string;
     beeNotice: (name: string) => string;
+    /** Phones only: the bee nudges towards a bigger screen between two notices. */
+    beeMobileTip: string;
   };
   marks: { school: string; city: string; signature: string };
   png: {

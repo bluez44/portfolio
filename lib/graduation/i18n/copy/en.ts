@@ -146,10 +146,10 @@ export const enTexts: CopyTexts = {
     tapBee: "tap to open",
     silent: "Enter silently →",
     soundHint: "♪ Sound on",
-    desktopHint: "Best viewed on a desktop",
     nowPlaying: "♪ Now playing",
     beePreparing: "Preparing your letter…",
     beeNotice: "{name}, you've got mail.",
+    beeMobileTip: "Psst… open me on a computer, I fly way better there!",
   },
   marks: { school: "HCMUT", city: "TP.HCM", signature: "{initials} · {year}" },
   png: {
