@@ -1,7 +1,8 @@
 import gsap from "gsap";
 import { MOBILE_BREAKPOINT } from "../../character/scene/constants";
-import type { FinaleElements } from "../elements";
-import { ARRIVE_LINE, GROW, GROW_EASE, HOLD, MEMORY_ENTER_FROM, MEMORY_LOOK, PIN_END, memorySlot, type MemorySlot } from "./constants";
+import { SELECTORS, type FinaleElements } from "../elements";
+import { ARRIVE_LINE, GROW, GROW_EASE, MEMORY_ENTER_FROM, MEMORY_LOOK, finaleUnits, pinEnd, type MemorySlot } from "./constants";
+import { memoryLayout } from "./memory-layout";
 import { noteScaleFor } from "./note-finale";
 
 function enterPhoto(tl: gsap.core.Timeline, el: HTMLElement, slot: MemorySlot, span: number, wide: () => boolean): void {
@@ -26,6 +27,10 @@ function enterPhoto(tl: gsap.core.Timeline, el: HTMLElement, slot: MemorySlot, s
  * Requires ScrollTrigger and DrawSVGPlugin to be registered.
  */
 export function createFinaleTimeline({ pin, note, dock, halves, photo, memoryLayer, memoryPhotos }: FinaleElements): gsap.core.Timeline {
+  const memories = memoryPhotos.filter((el) => !el.matches(SELECTORS.memoryTogether));
+  const together = memoryPhotos.find((el) => el.matches(SELECTORS.memoryTogether));
+  const memoryCount = memories.length;
+
   // Function values so `invalidateOnRefresh` recomputes them from the current viewport and layout.
   /** The note sits in the left column; slide it to the viewport's centre while it grows. */
   const shift = () => {
@@ -41,7 +46,7 @@ export function createFinaleTimeline({ pin, note, dock, halves, photo, memoryLay
       scrollTrigger: {
         trigger: pin,
         start: ARRIVE_LINE,
-        end: PIN_END,
+        end: pinEnd(memoryCount),
         pin: true,
         scrub: true,
         invalidateOnRefresh: true,
@@ -83,7 +88,7 @@ export function createFinaleTimeline({ pin, note, dock, halves, photo, memoryLay
     );
   }
 
-  tl.to({}, { duration: HOLD }); // the finished card stays pinned a little before the next section
+  tl.to({}, { duration: finaleUnits(memoryCount) - GROW }); // the finished card stays pinned a little before the next section
 
   if (memoryLayer) {
     // The pin sits in a column; pull the layer back to the viewport's left edge.
@@ -91,7 +96,11 @@ export function createFinaleTimeline({ pin, note, dock, halves, photo, memoryLay
     // Placed within the pin's existing length, so the photos never change it.
     const span = tl.duration();
     const wide = () => window.innerWidth >= MOBILE_BREAKPOINT;
-    memoryPhotos.forEach((el, i) => enterPhoto(tl, el, memorySlot(i), span, wide));
+    const layout = memoryLayout(memoryCount);
+    memories.forEach((el, i) => enterPhoto(tl, el, layout.slots[i], span, wide));
+    if (together) {
+      enterPhoto(tl, together, layout.together, span, wide);
+    }
   }
 
   return tl;
