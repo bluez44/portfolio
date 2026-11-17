@@ -73,9 +73,9 @@ export const MEMORY_MOTION_RANGE = {
   spin: [-12, 12],
 } as const satisfies Record<"rot" | "drift" | "spin", Range>;
 
-/** The guest's photo with the owner: last in, a touch larger, resting just above the note's top edge. */
+/** The guest's photo with the owner: last in, ~50% larger than normal memories, resting just above the note's top edge. */
 export const TOGETHER_PHOTO: MemorySlot = {
-  width: "clamp(100px, min(34vw, 22vh), 260px)",
+  width: "clamp(145px, min(42vw, 30vh), 380px)",
   rot: -2,
   phone: { x: -20, rest: 0.146 },
   wide: { x: -12, rest: 0.095 },

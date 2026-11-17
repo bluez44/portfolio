@@ -1,6 +1,15 @@
 import { describe, expect, it } from "vitest";
-import { BASE_MEMORIES, GROW, HOLD } from "@/components/graduation/met/finale/constants";
+import { BASE_MEMORIES, GROW, HOLD, MEMORY_WIDTHS, TOGETHER_PHOTO } from "@/components/graduation/met/finale/constants";
 import { noteFinaleScroll, noteScaleFor } from "@/components/graduation/met/finale/note-finale";
+
+describe("TOGETHER_PHOTO", () => {
+  it("has dimensions ~50% larger than normal memory photo widths", () => {
+    // Normal memory widths average ~96px min, ~28vw / 19.5vh responsive, ~245px max.
+    // Together photo is ~50% larger: 145px min (~1.5x), 42vw / 30vh (~1.5x), 380px max (~1.5x).
+    expect(TOGETHER_PHOTO.width).toBe("clamp(145px, min(42vw, 30vh), 380px)");
+    expect(MEMORY_WIDTHS).toContain("clamp(100px, min(30vw, 20vh), 260px)");
+  });
+});
 
 describe("noteScaleFor", () => {
   it("grows toward 30% of the viewport height, capped at 1.25", () => {

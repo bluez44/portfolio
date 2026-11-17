@@ -23,7 +23,7 @@ export function FinaleMemoryPhotos({ memories, together, guestName }: { memories
       ))}
       {together && (
         <MemoryPolaroid slot={layout.together} image={together} caption={t.togetherCaption(guestName)} together>
-          <Tape color="canary" width={58} height={18} rotate={38} className="z-10" style={{ top: -6, left: "auto", right: -18, marginLeft: 0 }} />
+          <Tape color="canary" width={72} height={22} rotate={38} className="z-10" style={{ top: -8, left: "auto", right: -20, marginLeft: 0 }} />
         </MemoryPolaroid>
       )}
     </div>

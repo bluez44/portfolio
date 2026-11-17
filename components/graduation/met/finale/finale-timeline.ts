@@ -121,8 +121,13 @@ export function createFinaleTimeline({ pin, note, dock, halves, photo, memoryLay
     if (together) {
       enterPhoto(tl, together, layout.together, span, wide);
     }
-    const dimmed = memories.slice(0, -1);
-    dimmed.forEach((el, i) => dimPhoto(tl, el, span * layout.slots[i + 1].enter[1], DIM_UNITS));
+    const dimmed = together ? memories : memories.slice(0, -1);
+    memories.forEach((el, i) => {
+      const nextEnter = layout.slots[i + 1]?.enter ?? (together ? layout.together : null);
+      if (nextEnter) {
+        dimPhoto(tl, el, span * nextEnter[1], DIM_UNITS);
+      }
+    });
     if (dimmed.length > 0) {
       revealPhotos(tl, dimmed, span * layout.revealAt, REVEAL_UNITS);
     }

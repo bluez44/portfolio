@@ -43,7 +43,7 @@ export function MomentCard({ moment: m, side }: { moment: Moment; side: "left" |
       <Tape color={m.color} width={84} height={22} rotate={-4} className="-top-3 z-1" />
       <div className="relative flex flex-col gap-2.5 px-5.5 pt-6.5 pb-5.5">
         <span className="font-mono text-[11px] tracking-[0.24em] uppercase" style={{ color: `var(--${m.color})` }}>
-          {m.year} · {m.n}
+          {m.year}
         </span>
         <h3 className="m-0 font-heading text-2xl leading-[1.05] font-bold tracking-tight" style={{ fontVariationSettings: '"wdth" 90, "opsz" 96' }}>
           {m.title}

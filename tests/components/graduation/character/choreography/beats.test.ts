@@ -21,9 +21,9 @@ describe("buildBeats", () => {
     expect(beats).toHaveLength(11);
     beats.slice(1).forEach((b, i) => expect(b.s - beats[i].s).toBeGreaterThanOrEqual(40));
   });
-  it("starts waving on the right, ends reading honeycomb", () => {
+  it("starts waving on the right, ends playing on honeycomb", () => {
     expect(beats[0]).toMatchObject({ act: "wave", x: 0.8, say: "wave" });
-    expect(beats.at(-1)).toMatchObject({ act: "read", x: 0.62, say: "read" });
+    expect(beats.at(-1)).toMatchObject({ act: "play", x: 0.62, say: "play" });
   });
   it("forces spacing when sections are tiny", () => {
     const tiny = buildBeats({ ...M, metHeight: 0, endsHeight: 0 }, 0.5);

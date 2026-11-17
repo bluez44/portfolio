@@ -21,10 +21,24 @@ export function MemoryPolaroid({ slot, image, caption, together, children }: { s
     >
       {children}
       <div className="relative aspect-4/5 overflow-hidden rounded-[2px]">
-        <Image src={image} alt="" fill sizes="(min-width: 760px) 320px, 38vw" className="object-cover" />
+        <Image
+          src={image}
+          alt=""
+          fill
+          sizes={together ? "(min-width: 760px) 420px, 46vw" : "(min-width: 760px) 320px, 38vw"}
+          className="object-cover"
+        />
       </div>
       <figcaption className="absolute inset-x-2 bottom-0 flex h-6 items-center justify-center min-[760px]:h-8">
-        <span className="truncate font-heading text-[10.5px] text-ink-2 italic min-[760px]:text-[12.5px]">{caption}</span>
+        <span
+          className={`truncate font-heading text-ink-2 italic ${
+            together
+              ? "text-[11.5px] min-[760px]:text-[13.5px] font-medium"
+              : "text-[10.5px] min-[760px]:text-[12.5px]"
+          }`}
+        >
+          {caption}
+        </span>
       </figcaption>
     </figure>
   );

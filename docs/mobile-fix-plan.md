@@ -325,5 +325,5 @@ Phase 1 → Phase 2 → Phase 3 → Phase 4
 - T4.4: không đổi `vh` ở 2 blob trang trí của hero, vì chúng `pointer-events-none` và không ảnh hưởng layout.
 
 **Còn tồn đọng:**
-- Ở cuối bước mở thiệp (G0/G1), bóng thoại của nhân vật vẫn đè lên dòng chữ ký trên mobile. Không đánh dấu `#card` bằng `data-character-avoid`, vì như vậy nhân vật sẽ bị ẩn suốt cả stage phong bì.
+- ~~Ở cuối bước mở thiệp (G0/G1), bóng thoại đè lên dòng chữ ký.~~ Đã sửa: bóng thoại tự ẩn khi chồng lên phần tử `[data-bubble-avoid]` (đã gắn cho `#card`). Nhân vật vẫn hiện.
 - G4: hành vi `touch-pan-y` chỉ kiểm chứng được trên thiết bị cảm ứng thật. Chrome desktop báo `pointer: fine`, nên chưa thử được.
