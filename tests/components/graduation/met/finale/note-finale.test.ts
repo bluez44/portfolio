@@ -9,6 +9,11 @@ describe("TOGETHER_PHOTO", () => {
     expect(TOGETHER_PHOTO.width).toBe("clamp(145px, min(42vw, 30vh), 380px)");
     expect(MEMORY_WIDTHS).toContain("clamp(100px, min(30vw, 20vh), 260px)");
   });
+
+  it("rests on the right side of the card so it does not cover the note text", () => {
+    expect(TOGETHER_PHOTO.phone.x).toBeGreaterThan(0);
+    expect(TOGETHER_PHOTO.wide.x).toBeGreaterThan(0);
+  });
 });
 
 describe("noteScaleFor", () => {
