@@ -6,7 +6,6 @@ export const LIMITS = {
   initials: 4,
   url: 500,
   phone: 30,
-  moments: 12,
   year: 10,
   momentTitle: 120,
   momentBody: 600,
@@ -75,6 +74,6 @@ export const momentSchema = z.object({
   en: momentTextSchema.optional(),
 });
 
-export const momentsSchema = z.array(momentSchema).max(LIMITS.moments, `Tối đa ${LIMITS.moments} kỷ niệm`);
+export const momentsSchema = z.array(momentSchema);
 
 export const musicSchema = z.object({ youtubeId: optionalField(youtubeIdSchema) });
