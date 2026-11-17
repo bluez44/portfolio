@@ -1,5 +1,6 @@
 import gsap from "gsap";
 import * as THREE from "three";
+import { seededRandom } from "@/lib/graduation/seeded-random";
 import { BEE_HEAD_RADIUS, createBeeModel } from "../shared/three/bee-model";
 import { createGeometryCache } from "../shared/three/geometry-cache";
 import type { RisoPalette } from "../shared/three/palette";
@@ -32,14 +33,9 @@ type Options = {
   onPosition?: (pos: BeeScreenPosition) => void;
 };
 
-const seeded = (seed: number) => () => {
-  seed = (seed * 16807) % 2147483647;
-  return (seed - 1) / 2147483646;
-};
-
 /** The design's "bee" intro: a toon honeycomb with a sleeping bee, a drifting camera and film overlays. */
 export function createBeeIntroScene(host: HTMLElement, opts: Options): BeeIntroScene {
-  const rnd = seeded(7);
+  const rnd = seededRandom(7);
   const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
   renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
   renderer.domElement.style.cssText = "display:block;width:100%;height:100%;";
