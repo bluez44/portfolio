@@ -14,18 +14,35 @@ export function FinaleMemoryPhotos({ memories, together, guestName }: { memories
   const { met: t } = useCopy();
   const list = memories.filter((m) => m.image.trim() !== "");
   const layout = useMemo(() => memoryLayout(list.length), [list.length]);
-  if (list.length === 0) return null;
+  if (list.length === 0 && !together) return null;
   return (
-    // Dimmed on the layer, not in the photos' tweened filter: GSAP can't interpolate var(), and here a theme switch applies at once.
-    <div data-memory-layer aria-hidden className="pointer-events-none absolute top-0 left-0 z-20 h-0 w-screen" style={{ filter: "brightness(var(--memory-brightness))" }}>
-      {list.map((m, i) => (
-        <MemoryPolaroid key={i} slot={layout.slots[i]} image={m.image} caption={`${m.year} · ${m.title}`} />
-      ))}
-      {together && (
-        <MemoryPolaroid slot={layout.together} image={together} caption={t.togetherCaption(guestName)} together>
-          <Tape color="canary" width={72} height={22} rotate={38} className="z-10" style={{ top: -8, left: "auto", right: -20, marginLeft: 0 }} />
-        </MemoryPolaroid>
+    <>
+      {/* Background layer: memory photos stay behind the finale card (z-0 < card z-10) */}
+      {list.length > 0 && (
+        <div
+          data-memory-layer
+          aria-hidden
+          className="pointer-events-none absolute top-0 left-0 z-0 h-0 w-screen"
+          style={{ filter: "brightness(var(--memory-brightness))" }}
+        >
+          {list.map((m, i) => (
+            <MemoryPolaroid key={i} slot={layout.slots[i]} image={m.image} caption={`${m.year} · ${m.title}`} />
+          ))}
+        </div>
       )}
-    </div>
+      {/* Foreground layer: only together photo sits on top of the finale card (z-20 > card z-10) */}
+      {together && (
+        <div
+          data-memory-layer
+          aria-hidden
+          className="pointer-events-none absolute top-0 left-0 z-20 h-0 w-screen"
+          style={{ filter: "brightness(var(--memory-brightness))" }}
+        >
+          <MemoryPolaroid slot={layout.together} image={together} caption={t.togetherCaption(guestName)} together>
+            <Tape color="canary" width={72} height={22} rotate={38} className="z-10" style={{ top: -8, left: "auto", right: -20, marginLeft: 0 }} />
+          </MemoryPolaroid>
+        </div>
+      )}
+    </>
   );
 }

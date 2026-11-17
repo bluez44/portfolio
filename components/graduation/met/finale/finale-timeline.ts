@@ -46,7 +46,16 @@ function revealPhotos(tl: gsap.core.Timeline, els: HTMLElement[], at: number, du
  * the badge while the note scales up and slides to the viewport centre, then holds briefly.
  * Requires ScrollTrigger and DrawSVGPlugin to be registered.
  */
-export function createFinaleTimeline({ pin, note, dock, halves, photo, memoryLayer, memoryPhotos }: FinaleElements): gsap.core.Timeline {
+export function createFinaleTimeline({
+  pin,
+  note,
+  dock,
+  halves,
+  photo,
+  memoryLayer,
+  memoryLayers = memoryLayer ? [memoryLayer] : [],
+  memoryPhotos,
+}: FinaleElements): gsap.core.Timeline {
   const memories = memoryPhotos.filter((el) => !el.matches(SELECTORS.memoryTogether));
   const together = memoryPhotos.find((el) => el.matches(SELECTORS.memoryTogether));
   const memoryCount = memories.length;
@@ -110,9 +119,9 @@ export function createFinaleTimeline({ pin, note, dock, halves, photo, memoryLay
 
   tl.to({}, { duration: finaleUnits(memoryCount) - GROW }); // the finished card stays pinned a little before the next section
 
-  if (memoryLayer) {
-    // The pin sits in a column; pull the layer back to the viewport's left edge.
-    tl.set(memoryLayer, { x: () => -pin.getBoundingClientRect().left }, 0);
+  if (memoryLayers.length > 0) {
+    // The pin sits in a column; pull the layers back to the viewport's left edge.
+    tl.set(memoryLayers, { x: () => -pin.getBoundingClientRect().left }, 0);
     // Placed within the pin's existing length, so the photos never change it.
     const span = tl.duration();
     const wide = () => window.innerWidth >= MOBILE_BREAKPOINT;

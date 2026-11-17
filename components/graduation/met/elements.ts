@@ -47,6 +47,7 @@ export type FinaleElements = {
   photo: HTMLElement | null;
   /** Full-width layer of memory photos gathering above the note; absent under reduced motion. */
   memoryLayer: HTMLElement | null;
+  memoryLayers: HTMLElement[];
   memoryPhotos: HTMLElement[];
 };
 
@@ -64,6 +65,7 @@ export function queryMomentTrail(root: HTMLElement): { trail: TrailElements; fin
   const halves = all<SVGPathElement>(SELECTORS.outlineHalf);
   const cards = all<HTMLElement>(SELECTORS.moment);
   const photo = one<HTMLElement>(SELECTORS.polaroidPhoto);
+  const memoryLayers = all<HTMLElement>(SELECTORS.memoryLayer);
   if (!base || !draw || !rider || !end || !pin || !note || !dock || !outline || halves.length !== 2 || cards.length === 0) {
     return null;
   }
@@ -76,7 +78,8 @@ export function queryMomentTrail(root: HTMLElement): { trail: TrailElements; fin
       outline,
       halves,
       photo,
-      memoryLayer: one<HTMLElement>(SELECTORS.memoryLayer),
+      memoryLayer: memoryLayers[0] ?? null,
+      memoryLayers,
       memoryPhotos: all<HTMLElement>(SELECTORS.memoryPhoto),
     },
   };
