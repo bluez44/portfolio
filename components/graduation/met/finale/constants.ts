@@ -45,13 +45,39 @@ export const NOTE_MAX_SCALE = 1.25;
  * by `drift` (vw) and turning by `spin` (deg) before it settles at `rot`.
  */
 type Spot = { x: number; rest: number };
+type Range = readonly [min: number, max: number];
+type MemoryZone = { rest: Range; x: { phone: Range | null; wide: Range } };
 export type MemorySlot = { width: string; rot: number; phone: Spot; wide: Spot; drift: number; spin: number; enter: readonly [number, number] };
 
+export const MEMORY_WIDTHS = [
+  "clamp(100px, min(30vw, 20vh), 260px)",
+  "clamp(95px, min(28vw, 20vh), 240px)",
+  "clamp(88px, min(26vw, 19vh), 220px)",
+  "clamp(100px, min(30vw, 19vh), 260px)",
+] as const;
+
+const BAND_X = { phone: [-28, 28], wide: [-38, 38] } as const satisfies MemoryZone["x"];
+const SIDE_REST: Range = [0.3, 0.55];
+
+export const MEMORY_ZONES = {
+  top: { rest: [0.04, 0.14], x: BAND_X },
+  // 0.74 ceiling keeps photos away from the section bottom.
+  bottom: { rest: [0.7, 0.74], x: BAND_X },
+  left: { rest: SIDE_REST, x: { phone: null, wide: [-38, -30] } },
+  right: { rest: SIDE_REST, x: { phone: null, wide: [30, 38] } },
+} as const satisfies Record<string, MemoryZone>;
+
+export const MEMORY_MOTION_RANGE = {
+  rot: [-6, 6],
+  drift: [-18, 18],
+  spin: [-12, 12],
+} as const satisfies Record<"rot" | "drift" | "spin", Range>;
+
 export const MEMORY_PHOTOS: readonly MemorySlot[] = [
-  { width: "clamp(100px, min(30vw, 20vh), 260px)", rot: -5, phone: { x: 25, rest: 0.105 }, wide: { x: -32, rest: 0.1 }, drift: -14, spin: -10, enter: [0.02, 0.3] },
-  { width: "clamp(95px, min(28vw, 20vh), 240px)", rot: 4, phone: { x: 2, rest: 0.1 }, wide: { x: 16, rest: 0.1 }, drift: 18, spin: 12, enter: [0.14, 0.48] },
-  { width: "clamp(88px, min(26vw, 19vh), 220px)", rot: 3, phone: { x: -28, rest: 0.77 }, wide: { x: -26, rest: 0.71 }, drift: 8, spin: -6, enter: [0.36, 0.62] },
-  { width: "clamp(100px, min(30vw, 19vh), 260px)", rot: -3, phone: { x: 2, rest: 0.78 }, wide: { x: 4, rest: 0.71 }, drift: -10, spin: 8, enter: [0.46, 0.84] },
+  { width: MEMORY_WIDTHS[0], rot: -5, phone: { x: 25, rest: 0.105 }, wide: { x: -32, rest: 0.1 }, drift: -14, spin: -10, enter: [0.02, 0.3] },
+  { width: MEMORY_WIDTHS[1], rot: 4, phone: { x: 2, rest: 0.1 }, wide: { x: 16, rest: 0.1 }, drift: 18, spin: 12, enter: [0.14, 0.48] },
+  { width: MEMORY_WIDTHS[2], rot: 3, phone: { x: -28, rest: 0.77 }, wide: { x: -26, rest: 0.71 }, drift: 8, spin: -6, enter: [0.36, 0.62] },
+  { width: MEMORY_WIDTHS[3], rot: -3, phone: { x: 2, rest: 0.78 }, wide: { x: 4, rest: 0.71 }, drift: -10, spin: 8, enter: [0.46, 0.84] },
 ];
 
 /** The guest's photo with the owner: last in, a touch larger, resting just above the note's top edge. */
@@ -74,4 +100,5 @@ export const MEMORY_ENTER_FROM = 1.05;
 export const MEMORY_LOOK = {
   from: { opacity: 0, filter: "blur(6px) sepia(0.85)" },
   to: { opacity: 0.95, filter: "blur(0px) sepia(0.25)" },
+  dimmed: { opacity: 0.45, filter: "blur(1.5px) sepia(0.7)" },
 } as const;
