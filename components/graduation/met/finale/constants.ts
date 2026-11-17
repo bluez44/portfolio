@@ -14,6 +14,16 @@ export const GROW = 1;
 export const HOLD = 2.5;
 export const GROW_EASE = "power1.inOut";
 
+export const BASE_MEMORIES = 4;
+export const EXTRA_PIN_VH_PER_MEMORY = 0.35;
+export const MAX_PIN_VH = 8;
+
+export const pinVh = (memoryCount: number): number =>
+  Math.min(MAX_PIN_VH, PIN_VH + Math.max(0, memoryCount - BASE_MEMORIES) * EXTRA_PIN_VH_PER_MEMORY);
+/** Scale total units with pin length so scroll speed per timeline unit stays constant. */
+export const finaleUnits = (memoryCount: number): number => ((GROW + HOLD) * pinVh(memoryCount)) / PIN_VH;
+export const pinEnd = (memoryCount: number): string => `+=${pinVh(memoryCount) * 100}%`;
+
 /** px between the card edge and the drawn outline; the outline's corner radius follows the card's. */
 export const OUTLINE_GAP = 8;
 const CARD_RADIUS = 14;
