@@ -8,7 +8,6 @@ const letter = defineFields("rsvp", "Thư hồi âm");
 export const RSVP_FIELDS = [
   ask("rsvp.heading.lead", "Tiêu đề (phần đầu)"),
   ask("rsvp.heading.accent", "Tiêu đề (phần nhấn)"),
-  ask("rsvp.prompt", "Câu hỏi", { call: "name" }),
   ask("rsvp.yes", "Nút sẽ đến"),
   ask("rsvp.no", "Nút không đến"),
   ask("rsvp.change", "Nút đổi ý"),

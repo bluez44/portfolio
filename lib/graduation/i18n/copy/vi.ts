@@ -77,7 +77,6 @@ export const viTexts: CopyTexts = {
   },
   rsvp: {
     heading: { lead: "Bạn sẽ", accent: "đến chứ?" },
-    prompt: "Báo mình một tiếng để mình giữ chỗ nhé, {name}.",
     yes: "Mình sẽ đến",
     no: "Tiếc quá, không kịp",
     error: "Không gửi được, thử lại nhé",

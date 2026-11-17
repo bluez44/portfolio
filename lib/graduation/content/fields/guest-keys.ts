@@ -14,7 +14,7 @@ export const GUEST_COPY_TABS = {
     "ends.notes",
     "ends.specialMessage",
   ],
-  rsvp: ["rsvp.heading.lead", "rsvp.heading.accent", "rsvp.prompt"],
+  rsvp: ["rsvp.heading.lead", "rsvp.heading.accent"],
 } as const satisfies Record<string, readonly string[]>;
 
 export const GUEST_COPY_KEYS: readonly string[] = Object.values(GUEST_COPY_TABS).flat();

@@ -77,7 +77,6 @@ export const enTexts: CopyTexts = {
   },
   rsvp: {
     heading: { lead: "Will you", accent: "be there?" },
-    prompt: "Let me know so I can save you a seat, {name}.",
     yes: "I'll be there",
     no: "Sorry, can't make it",
     error: "Couldn't send, please try again",

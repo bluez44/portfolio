@@ -22,7 +22,6 @@ const LEGACY_TEXT_KEYS: Readonly<Record<string, readonly string[]>> = {
   "ends.specialMessage": ["ends.specialMessage"],
   "rsvp.headingLead": ["rsvp.heading.lead"],
   "rsvp.headingAccent": ["rsvp.heading.accent"],
-  "rsvp.prompt": ["rsvp.prompt"],
 };
 
 export const isLegacyGuestContent = (raw: Record<string, unknown>) => LEGACY_SECTIONS.some((section) => section in raw);

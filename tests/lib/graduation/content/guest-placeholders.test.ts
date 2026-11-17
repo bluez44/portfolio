@@ -8,7 +8,7 @@ describe("guestPlaceholders", () => {
     const placeholders = guestPlaceholders({ copy: { vi: { "met.intro": "Chung" } } });
     expect(placeholders.texts.vi["met.intro"]).toBe("Chung");
     expect(placeholders.texts.en["met.intro"]).toBe(DEFAULT_TEXTS.en.met.intro);
-    expect(placeholders.texts.vi["rsvp.prompt"]).toContain("{name}");
+    expect(placeholders.texts.vi["met.andYou"]).toContain("{name}");
   });
   it("uses the shared memory cards and event time", () => {
     const placeholders = guestPlaceholders({ moments: [{ year: "2030", image: "", vi: { title: "Chung" } }] });

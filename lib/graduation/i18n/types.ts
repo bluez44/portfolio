@@ -51,7 +51,6 @@ export type GraduationCopy = {
   };
   rsvp: {
     heading: Heading;
-    prompt: (name: string) => string;
     yes: string;
     no: string;
     error: string;

@@ -19,7 +19,7 @@ describe("convertLegacyGuestContent", () => {
       moments: [{ year: "2023", title: "Đà Lạt", body: "Hồ", image: "/d.jpg", color: "jade" }],
     },
     ends: { venue: "Sân A", address: "Cổng 1", notes: ["A", "B"], dateShort: "20.12", timeRange: "14:00 — 16:00" },
-    rsvp: { prompt: "Đến nhé" },
+    rsvp: { headingLead: "Bạn sẽ" },
     music: { youtubeId: "hfavqkBrwXI" },
   };
   const result = convertLegacyGuestContent(legacy);
@@ -35,7 +35,7 @@ describe("convertLegacyGuestContent", () => {
       "ends.address": "Cổng 1",
       "rails.whereSub": "Cổng 1",
       "ends.notes": "A\nB",
-      "rsvp.prompt": "Đến nhé",
+      "rsvp.heading.lead": "Bạn sẽ",
     });
   });
   it("drops the free-text date and time", () => {

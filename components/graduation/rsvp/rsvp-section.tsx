@@ -42,9 +42,6 @@ export function RsvpSection({
     <GraduationSection id="rsvp" tone="paper-2" align="left" className="min-h-[78vh]">
       <div ref={ref} className="flex flex-col gap-7">
         <SectionHeading lead={t.heading.lead} accent={t.heading.accent} />
-        <p className="m-0 max-w-[46ch] text-[17px] leading-[1.72] text-pretty text-ink-2">
-          {t.prompt(guestName)}
-        </p>
         <div className="perspective-distant">
           <div ref={cardRef} className="transform-3d">
             <ReplyPostcard guestName={guestName} postmarked={postmarked} status={rsvp.saved?.status}>
