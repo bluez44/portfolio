@@ -1,7 +1,7 @@
 import gsap from "gsap";
 import { MOBILE_BREAKPOINT } from "../../character/scene/constants";
 import { SELECTORS, type FinaleElements } from "../elements";
-import { ARRIVE_LINE, GROW, GROW_EASE, MEMORY_ENTER_FROM, MEMORY_LOOK, finaleUnits, pinEnd, type MemorySlot } from "./constants";
+import { ARRIVE_LINE, DIM_UNITS, GROW, GROW_EASE, MEMORY_ENTER_FROM, MEMORY_LOOK, finaleUnits, pinEnd, type MemorySlot } from "./constants";
 import { memoryLayout } from "./memory-layout";
 import { noteScaleFor } from "./note-finale";
 
@@ -19,6 +19,11 @@ function enterPhoto(tl: gsap.core.Timeline, el: HTMLElement, slot: MemorySlot, s
     { x: 0, y: 0, xPercent: -50, rotation: slot.rot, ...MEMORY_LOOK.to, duration: span * (to - from), ease: "power2.out" },
     span * from,
   );
+}
+
+function dimPhoto(tl: gsap.core.Timeline, el: HTMLElement, at: number, duration: number): void {
+  // immediateRender: false prevents overriding the preceding enter tween before `at` and restores cleanly on reverse scrub.
+  tl.fromTo(el, { ...MEMORY_LOOK.to }, { ...MEMORY_LOOK.dimmed, duration, immediateRender: false }, at);
 }
 
 /**
@@ -101,6 +106,7 @@ export function createFinaleTimeline({ pin, note, dock, halves, photo, memoryLay
     if (together) {
       enterPhoto(tl, together, layout.together, span, wide);
     }
+    memories.slice(0, -1).forEach((el, i) => dimPhoto(tl, el, span * layout.slots[i + 1].enter[1], DIM_UNITS));
   }
 
   return tl;

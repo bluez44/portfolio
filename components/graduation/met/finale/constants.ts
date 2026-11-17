@@ -90,3 +90,4 @@ export const MEMORY_LOOK = {
   to: { opacity: 0.95, filter: "blur(0px) sepia(0.25)" },
   dimmed: { opacity: 0.45, filter: "blur(1.5px) sepia(0.7)" },
 } as const;
+export const DIM_UNITS = 0.25;
