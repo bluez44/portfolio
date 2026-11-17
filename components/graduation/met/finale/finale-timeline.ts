@@ -1,8 +1,24 @@
 import gsap from "gsap";
 import { MOBILE_BREAKPOINT } from "../../character/scene/constants";
 import type { FinaleElements } from "../elements";
-import { ARRIVE_LINE, GROW, GROW_EASE, HOLD, MEMORY_ENTER_FROM, MEMORY_LOOK, PIN_END, memorySlot } from "./constants";
+import { ARRIVE_LINE, GROW, GROW_EASE, HOLD, MEMORY_ENTER_FROM, MEMORY_LOOK, PIN_END, memorySlot, type MemorySlot } from "./constants";
 import { noteScaleFor } from "./note-finale";
+
+function enterPhoto(tl: gsap.core.Timeline, el: HTMLElement, slot: MemorySlot, span: number, wide: () => boolean): void {
+  const [from, to] = slot.enter;
+  tl.fromTo(
+    el,
+    {
+      x: () => (slot.drift * window.innerWidth) / 100,
+      y: () => (MEMORY_ENTER_FROM - (wide() ? slot.wide : slot.phone).rest) * window.innerHeight,
+      xPercent: -50,
+      rotation: slot.rot + slot.spin,
+      ...MEMORY_LOOK.from,
+    },
+    { x: 0, y: 0, xPercent: -50, rotation: slot.rot, ...MEMORY_LOOK.to, duration: span * (to - from), ease: "power2.out" },
+    span * from,
+  );
+}
 
 /**
  * Pins the note from the badge's arrival line and, scrubbed by scroll, draws the outline out from
@@ -75,22 +91,7 @@ export function createFinaleTimeline({ pin, note, dock, halves, photo, memoryLay
     // Placed within the pin's existing length, so the photos never change it.
     const span = tl.duration();
     const wide = () => window.innerWidth >= MOBILE_BREAKPOINT;
-    memoryPhotos.forEach((el, i) => {
-      const p = memorySlot(i);
-      const [from, to] = p.enter;
-      tl.fromTo(
-        el,
-        {
-          x: () => (p.drift * window.innerWidth) / 100,
-          y: () => (MEMORY_ENTER_FROM - (wide() ? p.wide : p.phone).rest) * window.innerHeight,
-          xPercent: -50,
-          rotation: p.rot + p.spin,
-          ...MEMORY_LOOK.from,
-        },
-        { x: 0, y: 0, xPercent: -50, rotation: p.rot, ...MEMORY_LOOK.to, duration: span * (to - from), ease: "power2.out" },
-        span * from,
-      );
-    });
+    memoryPhotos.forEach((el, i) => enterPhoto(tl, el, memorySlot(i), span, wide));
   }
 
   return tl;
