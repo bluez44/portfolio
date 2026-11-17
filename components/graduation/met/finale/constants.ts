@@ -45,8 +45,8 @@ export const NOTE_MAX_SCALE = 1.25;
  * by `drift` (vw) and turning by `spin` (deg) before it settles at `rot`.
  */
 type Spot = { x: number; rest: number };
-type Range = readonly [min: number, max: number];
-type MemoryZone = { rest: Range; x: { phone: Range | null; wide: Range } };
+export type Range = readonly [min: number, max: number];
+export type MemoryZone = { rest: Range; x: { phone: Range | null; wide: Range } };
 export type MemorySlot = { width: string; rot: number; phone: Spot; wide: Spot; drift: number; spin: number; enter: readonly [number, number] };
 
 export const MEMORY_WIDTHS = [
