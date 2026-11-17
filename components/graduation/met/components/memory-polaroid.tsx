@@ -3,10 +3,11 @@ import type { CSSProperties, ReactNode } from "react";
 import { ARRIVE_AT, type MemorySlot } from "../finale/constants";
 
 /** One memory photo as a polaroid: thin border on three sides, a deeper chin carrying the caption. */
-export function MemoryPolaroid({ slot, image, caption, children }: { slot: MemorySlot; image: string; caption: string; children?: ReactNode }) {
+export function MemoryPolaroid({ slot, image, caption, together, children }: { slot: MemorySlot; image: string; caption: string; together?: boolean; children?: ReactNode }) {
   return (
     <figure
       data-memory-photo
+      data-memory-together={together || undefined}
       className="absolute top-(--top-phone) left-[calc(50%+var(--x-phone))] m-0 rounded-[4px] border-[1.5px] border-ink bg-paper p-1.5 pb-6 opacity-0 shadow-(--offset-sm) min-[760px]:top-(--top-wide) min-[760px]:left-[calc(50%+var(--x-wide))] min-[760px]:pb-8"
       style={
         {

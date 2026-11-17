@@ -17,6 +17,7 @@ export const SELECTORS = {
   polaroidPhoto: "[data-polaroid-photo]",
   memoryLayer: "[data-memory-layer]",
   memoryPhoto: "[data-memory-photo]",
+  memoryTogether: "[data-memory-together]",
 } as const;
 
 export type TrailElements = {

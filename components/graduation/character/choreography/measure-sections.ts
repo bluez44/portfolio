@@ -18,7 +18,7 @@ export function measureSections(): SectionMetrics | null {
   const noteEnd = document.querySelector<HTMLElement>(SELECTORS.end);
   const note = document.querySelector<HTMLElement>(SELECTORS.note);
   const noteScale = note && noteScaleFor({ noteW: note.offsetWidth, noteH: note.offsetHeight, vw: window.innerWidth, vh });
-  const memoryCount = document.querySelectorAll(SELECTORS.memoryPhoto).length;
+  const memoryCount = document.querySelectorAll(`${SELECTORS.memoryPhoto}:not(${SELECTORS.memoryTogether})`).length;
   const noteFinale =
     noteEnd && note && noteScale
       ? { ...noteFinaleScroll(top(noteEnd), vh, memoryCount), width: (note.offsetWidth + OUTLINE_GAP * 2) * noteScale }
