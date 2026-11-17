@@ -8,7 +8,9 @@ export function MemoryPolaroid({ slot, image, caption, together, children }: { s
     <figure
       data-memory-photo
       data-memory-together={together || undefined}
-      className="absolute top-(--top-phone) left-[calc(50%+var(--x-phone))] m-0 rounded-[4px] border-[1.5px] border-ink bg-paper p-1.5 pb-6 opacity-0 shadow-(--offset-sm) min-[760px]:top-(--top-wide) min-[760px]:left-[calc(50%+var(--x-wide))] min-[760px]:pb-8"
+      className={`absolute top-(--top-phone) left-[calc(50%+var(--x-phone))] m-0 rounded-[4px] border-[1.5px] border-ink bg-paper p-1.5 pb-6 opacity-0 shadow-(--offset-sm) min-[760px]:top-(--top-wide) min-[760px]:left-[calc(50%+var(--x-wide))] min-[760px]:pb-8 ${
+        together ? "z-20" : "z-1"
+      }`}
       style={
         {
           "--x-phone": `${slot.phone.x}vw`,

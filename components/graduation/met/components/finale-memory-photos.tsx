@@ -17,7 +17,7 @@ export function FinaleMemoryPhotos({ memories, together, guestName }: { memories
   if (list.length === 0) return null;
   return (
     // Dimmed on the layer, not in the photos' tweened filter: GSAP can't interpolate var(), and here a theme switch applies at once.
-    <div data-memory-layer aria-hidden className="pointer-events-none absolute top-0 left-0 h-0 w-screen" style={{ filter: "brightness(var(--memory-brightness))" }}>
+    <div data-memory-layer aria-hidden className="pointer-events-none absolute top-0 left-0 z-20 h-0 w-screen" style={{ filter: "brightness(var(--memory-brightness))" }}>
       {list.map((m, i) => (
         <MemoryPolaroid key={i} slot={layout.slots[i]} image={m.image} caption={`${m.year} · ${m.title}`} />
       ))}

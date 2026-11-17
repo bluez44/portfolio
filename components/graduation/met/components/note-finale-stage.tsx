@@ -23,7 +23,7 @@ export function NoteFinaleStage({ guestName, label, note, memories, together }: 
         style={{ "--pin-min-h": `${(1 - ARRIVE_AT) * 100}vh` } as CSSProperties}
       >
         <FinaleMemoryPhotos memories={memories} together={together} guestName={guestName} />
-        <div data-note-scale className="relative origin-top">
+        <div data-note-scale className="relative z-1 origin-top">
           <PolaroidFrame guestName={guestName}>
             <PersonalNoteCard label={label} note={note} />
           </PolaroidFrame>
