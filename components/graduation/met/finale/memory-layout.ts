@@ -1,5 +1,6 @@
 import { seededRandom } from "@/lib/graduation/seeded-random";
 import {
+  MEMORY_JITTER,
   MEMORY_MOTION_RANGE,
   MEMORY_WIDTHS,
   MEMORY_ZONES,
@@ -13,6 +14,8 @@ import {
 type PhoneZone = MemoryZone & { x: { phone: Range } };
 
 const LAYOUT_SEED = 42;
+const GOLDEN = 0.6180339887;
+const RING_START = 0.1;
 const FIRST_ENTER_UNITS = 0.07;
 const ENTER_UNITS = 1.05;
 const REVEAL_GAP_UNITS = 0.07;
@@ -20,29 +23,56 @@ const REVEAL_HOLD_UNITS = 0.5;
 const WIDE_ZONES: readonly MemoryZone[] = Object.values(MEMORY_ZONES);
 const PHONE_ZONES: readonly PhoneZone[] = WIDE_ZONES.filter((z): z is PhoneZone => z.x.phone !== null);
 
-const between = (rnd: () => number, [min, max]: Range): number => min + rnd() * (max - min);
+const frac = (n: number): number => ((n % 1) + 1) % 1;
+
+const lerp = ([min, max]: Range, t: number): number => min + t * (max - min);
+
+const between = (rnd: () => number, range: Range): number => lerp(range, rnd());
 
 const pickOne = <T>(rnd: () => number, list: readonly T[]): T => list[Math.floor(rnd() * list.length)];
 
-const pickZoneExcept = <T>(rnd: () => number, zones: readonly T[], previous?: T): T =>
-  pickOne(rnd, previous === undefined ? zones : zones.filter((z) => z !== previous));
+const ringSpot = <Z extends MemoryZone>(
+  zones: readonly Z[],
+  t: number,
+  rnd: () => number,
+  xRange: (zone: Z) => Range,
+): { x: number; rest: number } => {
+  const totalWeight = zones.reduce((sum, z) => sum + z.weight, 0);
+  let target = t * totalWeight;
+  let zoneIndex = zones.length - 1;
+  for (let i = 0; i < zones.length; i++) {
+    if (target < zones[i].weight || i === zones.length - 1) {
+      zoneIndex = i;
+      break;
+    }
+    target -= zones[i].weight;
+  }
+  const zone = zones[zoneIndex];
+  const rawU = Math.min(1, target / zone.weight);
+  const u = zoneIndex >= zones.length / 2 ? 1 - rawU : rawU;
+  const xr = xRange(zone);
+  return zone.axis === "x"
+    ? { x: lerp(xr, u), rest: between(rnd, zone.rest) }
+    : { x: between(rnd, xr), rest: lerp(zone.rest, u) };
+};
 
+/**
+ * Places photos along the note's perimeter ring using the golden-ratio sequence so any count
+ * spreads evenly without clumping and consecutive photos land far apart.
+ */
 export function memorySpots(count: number): Omit<MemorySlot, "enter">[] {
   const rnd = seededRandom(LAYOUT_SEED);
-  let prevWide: MemoryZone | undefined;
-  let prevPhone: PhoneZone | undefined;
 
-  return Array.from({ length: count }, () => {
-    const wideZone = pickZoneExcept(rnd, WIDE_ZONES, prevWide);
-    const phoneZone = pickZoneExcept(rnd, PHONE_ZONES, prevPhone);
-    prevWide = wideZone;
-    prevPhone = phoneZone;
+  return Array.from({ length: count }, (_, i) => {
+    const t = frac(RING_START + i * GOLDEN + ((rnd() - 0.5) * MEMORY_JITTER) / count);
+    const wide = ringSpot(WIDE_ZONES, t, rnd, (z) => z.x.wide);
+    const phone = ringSpot(PHONE_ZONES, t, rnd, (z) => z.x.phone);
 
     return {
       width: pickOne(rnd, MEMORY_WIDTHS),
       rot: between(rnd, MEMORY_MOTION_RANGE.rot),
-      phone: { x: between(rnd, phoneZone.x.phone), rest: between(rnd, phoneZone.rest) },
-      wide: { x: between(rnd, wideZone.x.wide), rest: between(rnd, wideZone.rest) },
+      phone,
+      wide,
       drift: between(rnd, MEMORY_MOTION_RANGE.drift),
       spin: between(rnd, MEMORY_MOTION_RANGE.spin),
     };
