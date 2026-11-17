@@ -44,7 +44,7 @@ export const NOTE_MAX_SCALE = 1.25;
  */
 type Spot = { x: number; rest: number };
 export type Range = readonly [min: number, max: number];
-export type MemoryZone = { rest: Range; x: { phone: Range | null; wide: Range } };
+export type MemoryZone = { axis: "x" | "rest"; weight: number; rest: Range; x: { phone: Range | null; wide: Range } };
 export type MemorySlot = { width: string; rot: number; phone: Spot; wide: Spot; drift: number; spin: number; enter: readonly [number, number] };
 
 export const MEMORY_WIDTHS = [
@@ -58,12 +58,14 @@ const BAND_X = { phone: [-28, 28], wide: [-38, 38] } as const satisfies MemoryZo
 const SIDE_REST: Range = [0.3, 0.55];
 
 export const MEMORY_ZONES = {
-  top: { rest: [0.04, 0.14], x: BAND_X },
+  top: { axis: "x", weight: 0.35, rest: [0.04, 0.14], x: BAND_X },
+  right: { axis: "rest", weight: 0.15, rest: SIDE_REST, x: { phone: null, wide: [30, 38] } },
   // 0.74 ceiling keeps photos away from the section bottom.
-  bottom: { rest: [0.7, 0.74], x: BAND_X },
-  left: { rest: SIDE_REST, x: { phone: null, wide: [-38, -30] } },
-  right: { rest: SIDE_REST, x: { phone: null, wide: [30, 38] } },
+  bottom: { axis: "x", weight: 0.35, rest: [0.7, 0.74], x: BAND_X },
+  left: { axis: "rest", weight: 0.15, rest: SIDE_REST, x: { phone: null, wide: [-38, -30] } },
 } as const satisfies Record<string, MemoryZone>;
+/** Share of the gap between neighbouring ring points a photo may shift, so it never crosses into its neighbour. */
+export const MEMORY_JITTER = 0.3;
 
 export const MEMORY_MOTION_RANGE = {
   rot: [-6, 6],
