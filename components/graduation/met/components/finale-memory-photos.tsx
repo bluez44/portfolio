@@ -1,7 +1,8 @@
+import { useMemo } from "react";
 import type { Moment } from "@/lib/graduation/i18n";
 import { useCopy } from "../../i18n/lang-context";
 import { Tape } from "../../shared/tape";
-import { MEMORY_PHOTOS, TOGETHER_PHOTO } from "../finale/constants";
+import { memoryLayout } from "../finale/memory-layout";
 import { MemoryPolaroid } from "./memory-polaroid";
 
 /**
@@ -11,16 +12,17 @@ import { MemoryPolaroid } from "./memory-polaroid";
  */
 export function FinaleMemoryPhotos({ memories, together, guestName }: { memories: Moment[]; together?: string; guestName: string }) {
   const { met: t } = useCopy();
-  if (memories.length === 0) return null;
+  const list = memories.filter((m) => m.image.trim() !== "");
+  const layout = useMemo(() => memoryLayout(list.length), [list.length]);
+  if (list.length === 0) return null;
   return (
     // Dimmed on the layer, not in the photos' tweened filter: GSAP can't interpolate var(), and here a theme switch applies at once.
     <div data-memory-layer aria-hidden className="pointer-events-none absolute top-0 left-0 h-0 w-screen" style={{ filter: "brightness(var(--memory-brightness))" }}>
-      {MEMORY_PHOTOS.map((slot, i) => {
-        const m = memories[i % memories.length];
-        return <MemoryPolaroid key={i} slot={slot} image={m.image} caption={`${m.year} · ${m.title}`} />;
-      })}
+      {list.map((m, i) => (
+        <MemoryPolaroid key={i} slot={layout.slots[i]} image={m.image} caption={`${m.year} · ${m.title}`} />
+      ))}
       {together && (
-        <MemoryPolaroid slot={TOGETHER_PHOTO} image={together} caption={t.togetherCaption(guestName)}>
+        <MemoryPolaroid slot={layout.together} image={together} caption={t.togetherCaption(guestName)} together>
           <Tape color="canary" width={58} height={18} rotate={38} className="z-10" style={{ top: -6, left: "auto", right: -18, marginLeft: 0 }} />
         </MemoryPolaroid>
       )}
