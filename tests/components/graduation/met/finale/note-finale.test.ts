@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { GROW, HOLD } from "@/components/graduation/met/finale/constants";
+import { BASE_MEMORIES, GROW, HOLD } from "@/components/graduation/met/finale/constants";
 import { noteFinaleScroll, noteScaleFor } from "@/components/graduation/met/finale/note-finale";
 
 describe("noteScaleFor", () => {
@@ -17,7 +17,7 @@ describe("noteScaleFor", () => {
 
 describe("noteFinaleScroll", () => {
   it("pins at 40% of the viewport and lasts 2.8 viewports", () => {
-    const f = noteFinaleScroll(5000, 1000);
+    const f = noteFinaleScroll(5000, 1000, BASE_MEMORIES);
     expect(f.start).toBe(4600);
     expect(f.end).toBe(7400);
     expect(f.grown).toBeCloseTo(4600 + (2800 * GROW) / (GROW + HOLD));
