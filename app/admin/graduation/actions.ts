@@ -49,7 +49,9 @@ export async function saveGraduationGuestAction(
   );
 
   if (result.ok) {
+    revalidatePath("/admin/graduation/guest");
     revalidatePath("/admin/graduation");
+    revalidatePath("/admin/graduation/images");
     revalidatePath("/admin");
     revalidatePath("/graduation/[guest_id]", "page");
   }
@@ -62,6 +64,8 @@ export async function deleteGraduationGuestAction(formData: FormData): Promise<v
   const id = field(formData, "id");
   if (!id) return;
   await guestRepository.remove(id);
+  revalidatePath("/admin/graduation/guest");
   revalidatePath("/admin/graduation");
+  revalidatePath("/admin/graduation/images");
   revalidatePath("/admin");
 }

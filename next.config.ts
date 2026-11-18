@@ -9,6 +9,35 @@ const nextConfig: NextConfig = {
     root: path.resolve(__dirname),
   },
   output: "standalone",
+  async redirects() {
+    return [
+      {
+        source: "/graduation/guest",
+        destination: "/admin/graduation/guest",
+        permanent: false,
+      },
+      {
+        source: "/graduation/settings",
+        destination: "/admin/graduation/settings",
+        permanent: false,
+      },
+      {
+        source: "/graduation/images",
+        destination: "/admin/graduation/images",
+        permanent: false,
+      },
+      {
+        source: "/admin/graduation/media",
+        destination: "/admin/graduation/images",
+        permanent: false,
+      },
+      {
+        source: "/admin/graduation",
+        destination: "/admin/graduation/guest",
+        permanent: false,
+      },
+    ];
+  },
   images: {
     localPatterns: [
       // Uploaded graduation photos are proxied with the blob pathname in the query string.

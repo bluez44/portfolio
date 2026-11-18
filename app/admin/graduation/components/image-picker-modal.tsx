@@ -14,6 +14,7 @@ import {
 } from "lucide-react";
 import type { StoredBlobItem } from "@/lib/blob/manage";
 import { formatBytes } from "@/lib/blob/manage";
+import type { EnrichedStoredBlobItem } from "@/lib/graduation/image-usage";
 
 interface ImagePickerModalProps {
   isOpen: boolean;
@@ -28,14 +29,14 @@ export function ImagePickerModal({
   onSelect,
   currentValue,
 }: ImagePickerModalProps) {
-  const [images, setImages] = useState<StoredBlobItem[]>([]);
+  const [images, setImages] = useState<EnrichedStoredBlobItem[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [search, setSearch] = useState("");
   const [uploading, setUploading] = useState(false);
   const [uploadProgress, setUploadProgress] = useState<string | null>(null);
   const [deletingPathname, setDeletingPathname] = useState<string | null>(null);
-  const [confirmDelete, setConfirmDelete] = useState<StoredBlobItem | null>(null);
+  const [confirmDelete, setConfirmDelete] = useState<EnrichedStoredBlobItem | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const fetchImages = async () => {
@@ -334,13 +335,17 @@ export function ImagePickerModal({
                         className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
                       />
 
-                      {/* Selected checkmark badge */}
-                      {isSelected && (
+                      {/* Selected checkmark badge or usage indicator */}
+                      {isSelected ? (
                         <div className="absolute top-2 left-2 flex items-center gap-1 rounded bg-sky-500 px-1.5 py-0.5 text-[10px] font-bold text-white shadow-md">
                           <Check className="h-3 w-3 stroke-[3]" />
-                          <span>Đang dùng</span>
+                          <span>Đang chọn</span>
                         </div>
-                      )}
+                      ) : img.usageCount > 0 ? (
+                        <div className="absolute top-2 left-2 flex items-center gap-1 rounded bg-emerald-950/80 border border-emerald-500/40 px-1.5 py-0.5 text-[10px] font-medium text-emerald-300 shadow-md backdrop-blur-xs">
+                          <span>Dùng ({img.usageCount})</span>
+                        </div>
+                      ) : null}
 
                       {/* Delete button (hover overlay) */}
                       <div className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity">
@@ -434,6 +439,15 @@ export function ImagePickerModal({
                   <p className="text-zinc-500 mt-0.5">{formatBytes(confirmDelete.size)}</p>
                 </div>
               </div>
+
+              {confirmDelete.usageCount > 0 ? (
+                <div className="mb-4 rounded-lg border border-red-500/30 bg-red-950/30 p-2 text-[11px] text-red-300">
+                  <p className="font-semibold text-red-400">Ảnh này đang được dùng trong {confirmDelete.usageCount} vị trí!</p>
+                  <p className="mt-0.5 text-zinc-400">Nếu xóa, ảnh trên thiệp sẽ bị mất hiển thị.</p>
+                </div>
+              ) : (
+                <p className="mb-4 text-xs text-zinc-400">Ảnh này chưa được gán vào thiệp nào. Xóa hoàn toàn an toàn.</p>
+              )}
 
               <div className="flex items-center justify-end gap-2">
                 <button

@@ -22,7 +22,9 @@ export async function saveGraduationSettingsAction(formData: FormData): Promise<
   if (!result.ok) return { ok: false, fieldErrors: result.fieldErrors, error: "Một số trường chưa hợp lệ" };
 
   revalidatePath("/graduation", "layout");
+  revalidatePath("/admin/graduation/guest");
   revalidatePath("/admin/graduation");
   revalidatePath("/admin/graduation/settings");
+  revalidatePath("/admin/graduation/images");
   return { ok: true };
 }

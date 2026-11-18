@@ -1,6 +1,9 @@
 import { NextRequest, NextResponse } from "next/server";
 import { isAdminSession } from "@/lib/admin-auth/session";
 import { listUploadedImages, deleteUploadedImage } from "@/lib/blob/manage";
+import { guestRepository } from "@/lib/graduation/guest-repository";
+import { loadGraduationSettings } from "@/lib/graduation/content/load-settings";
+import { computeImageUsages } from "@/lib/graduation/image-usage";
 
 export const dynamic = "force-dynamic";
 
@@ -10,8 +13,13 @@ export async function GET() {
   }
 
   try {
-    const images = await listUploadedImages("graduation/");
-    return NextResponse.json({ images });
+    const [images, guests, settings] = await Promise.all([
+      listUploadedImages("graduation/"),
+      guestRepository.list(),
+      loadGraduationSettings(),
+    ]);
+    const enriched = computeImageUsages(images, guests, settings);
+    return NextResponse.json({ images: enriched });
   } catch (error) {
     const message = error instanceof Error ? error.message : "Không thể tải danh sách ảnh";
     return NextResponse.json({ error: message }, { status: 500 });
