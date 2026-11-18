@@ -1,7 +1,8 @@
 "use client";
 
 import { useState, useRef } from "react";
-import { Upload, X, Loader2, Image as ImageIcon } from "lucide-react";
+import { Upload, X, Loader2, Images } from "lucide-react";
+import { ImagePickerModal } from "./image-picker-modal";
 
 interface ImageUploaderProps {
   label: string;
@@ -14,10 +15,11 @@ export function ImageUploader({
   label,
   value,
   onChange,
-  helperText = "Tải ảnh từ máy tính lên Vercel Blob hoặc dán URL",
+  helperText = "Tải ảnh từ máy tính lên Vercel Blob, chọn từ thư viện hoặc dán URL",
 }: ImageUploaderProps) {
   const [uploading, setUploading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [showPicker, setShowPicker] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -60,7 +62,7 @@ export function ImageUploader({
   return (
     <div className="flex flex-col gap-1.5">
       <span className="text-xs font-semibold text-zinc-300">{label}</span>
-      
+
       {value ? (
         <div className="relative flex items-center gap-3 rounded-lg border border-zinc-700 bg-zinc-900/80 p-2">
           <div className="relative h-14 w-14 shrink-0 overflow-hidden rounded border border-zinc-700 bg-zinc-800">
@@ -71,22 +73,43 @@ export function ImageUploader({
             <p className="truncate text-xs font-mono text-zinc-300" title={value}>
               {value}
             </p>
-            <p className="text-[11px] text-emerald-400">✓ Đã tải ảnh lên</p>
+            <p className="text-[11px] text-emerald-400">✓ Đã chọn ảnh</p>
           </div>
-          <button
-            type="button"
-            onClick={handleClear}
-            className="rounded p-1 text-zinc-400 hover:bg-zinc-800 hover:text-red-400"
-            title="Xoá ảnh"
-          >
-            <X className="h-4 w-4" />
-          </button>
+          <div className="flex items-center gap-1">
+            <button
+              type="button"
+              onClick={() => setShowPicker(true)}
+              className="rounded p-1.5 text-zinc-400 hover:bg-zinc-800 hover:text-sky-400 transition-colors"
+              title="Đổi ảnh từ thư viện"
+            >
+              <Images className="h-4 w-4" />
+            </button>
+            <button
+              type="button"
+              onClick={handleClear}
+              className="rounded p-1.5 text-zinc-400 hover:bg-zinc-800 hover:text-red-400 transition-colors"
+              title="Xoá ảnh"
+            >
+              <X className="h-4 w-4" />
+            </button>
+          </div>
         </div>
       ) : (
         <div className="flex flex-col gap-2">
+          {/* Button to open library modal */}
+          <button
+            type="button"
+            onClick={() => setShowPicker(true)}
+            className="flex items-center justify-center gap-2 rounded-lg border border-sky-500/30 bg-sky-500/10 py-2.5 px-3 text-xs font-medium text-sky-300 hover:bg-sky-500/20 hover:border-sky-500/50 transition-colors shadow-xs"
+          >
+            <Images className="h-4 w-4" />
+            <span>Chọn từ thư viện ảnh đã tải lên</span>
+          </button>
+
+          {/* Upload dropzone */}
           <div
             onClick={() => fileInputRef.current?.click()}
-            className={`flex cursor-pointer flex-col items-center justify-center rounded-lg border border-dashed p-4 transition-colors ${
+            className={`flex cursor-pointer flex-col items-center justify-center rounded-lg border border-dashed p-3.5 transition-colors ${
               uploading
                 ? "border-zinc-600 bg-zinc-900/50"
                 : "border-zinc-700 bg-zinc-900 hover:border-zinc-500 hover:bg-zinc-850"
@@ -108,9 +131,9 @@ export function ImageUploader({
               </div>
             ) : (
               <div className="flex flex-col items-center gap-1 text-center">
-                <Upload className="h-5 w-5 text-zinc-400" />
+                <Upload className="h-4 w-4 text-zinc-400" />
                 <span className="text-xs font-medium text-zinc-300">
-                  Chọn file từ máy tính
+                  Hoặc chọn file tải lên từ máy tính
                 </span>
                 <span className="text-[11px] text-zinc-500">PNG, JPG, WEBP tối đa 5MB</span>
               </div>
@@ -118,7 +141,7 @@ export function ImageUploader({
           </div>
 
           <div className="flex items-center gap-2">
-            <span className="text-[11px] text-zinc-500">hoặc dán URL:</span>
+            <span className="text-[11px] text-zinc-500 shrink-0">hoặc dán URL:</span>
             <input
               type="text"
               placeholder="https://..."
@@ -132,6 +155,14 @@ export function ImageUploader({
 
       {error && <span className="text-xs text-red-400">{error}</span>}
       {helperText && !error && <span className="text-[11px] text-zinc-500">{helperText}</span>}
+
+      {/* Image Picker Modal */}
+      <ImagePickerModal
+        isOpen={showPicker}
+        onClose={() => setShowPicker(false)}
+        onSelect={(url) => onChange(url)}
+        currentValue={value}
+      />
     </div>
   );
 }
