@@ -26,9 +26,15 @@ export function InvitationCard({
           </span>
         </h2>
         {t.coverImage && (
-          <div className="relative h-14 w-14 shrink-0 overflow-hidden rounded-md border-[1.5px] border-ink bg-paper-2 shadow-xs">
-            {/* unoptimized: keep 100% original upload quality without downscaling or compression */}
-            <Image src={t.coverImage} alt={t.coverAlt} fill unoptimized className="object-cover" />
+          <div className="relative h-20 w-20 shrink-0 overflow-hidden rounded-lg border-[1.5px] border-ink bg-paper-2 shadow-xs [transform:translateZ(0)] [backface-visibility:hidden]">
+            <Image
+              src={t.coverImage}
+              alt={t.coverAlt}
+              fill
+              unoptimized
+              priority
+              className="object-cover"
+            />
           </div>
         )}
       </div>
