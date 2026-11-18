@@ -27,8 +27,8 @@ export function InvitationCard({
         </h2>
         {t.coverImage && (
           <div className="relative h-14 w-14 shrink-0 overflow-hidden rounded-md border-[1.5px] border-ink bg-paper-2 shadow-xs">
-            {/* Shown at 56px: let the optimizer shrink uploads; external https URLs are not in localPatterns, so they pass through. */}
-            <Image src={t.coverImage} alt={t.coverAlt} fill sizes="56px" unoptimized={!t.coverImage.startsWith("/")} className="object-cover" />
+            {/* unoptimized: keep 100% original upload quality without downscaling or compression */}
+            <Image src={t.coverImage} alt={t.coverAlt} fill unoptimized className="object-cover" />
           </div>
         )}
       </div>
