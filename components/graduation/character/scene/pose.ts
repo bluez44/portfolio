@@ -15,6 +15,9 @@ const HEAD_Y = 2.13;
 const BEE_LOOP = 3.3;
 const BOOP_EVERY = 2;
 
+/** Base Y position of the cap on the head so the head/hair sphere never pokes through. */
+const CAP_BASE_Y = 0.28;
+
 /** play: a bee loops around the head; the character follows it with its eyes, reaches for it, sways and hops. */
 function playWithBee(R: Rig, play: number, T: number) {
   if (play < 0.001) return;
@@ -57,10 +60,10 @@ function playWithBee(R: Rig, play: number, T: number) {
   R.A.sh.rotation.x -= play * (0.2 + 0.5 * reachA);
   R.A.el.rotation.x -= play * 0.5 * reachA;
   R.A.el.rotation.z += play * (0.35 + tickle) * reachA;
-  R.B.sh.rotation.z -= play * (0.15 + 2.1 * reachB);
+  R.B.sh.rotation.z += play * (0.15 + 2.1 * reachB);
   R.B.sh.rotation.x -= play * (0.2 + 0.5 * reachB);
   R.B.el.rotation.x -= play * 0.5 * reachB;
-  R.B.el.rotation.z -= play * (0.35 + tickle) * reachB;
+  R.B.el.rotation.z += play * (0.35 + tickle) * reachB;
   // Both hands come up to catch it when it boops.
   R.A.sh.rotation.x -= play * 0.6 * boop;
   R.B.sh.rotation.x -= play * 0.6 * boop;
@@ -87,7 +90,8 @@ export function applyPose(
   R.legs[1].knee.rotation.x = 1.45 * sit + Math.max(0, -Math.sin(phase)) * 0.7 * walk;
   R.skirt.scale.y = 1 - 0.55 * sit;
 
-  R.spine.rotation.x = bow * (0.5 + 0.12 * Math.sin(T * 1.6)) + 0.08 * sit + Math.sin(T * 1.8) * 0.015 - 0.08 * cheer;
+  R.spine.rotation.x =
+    bow * (0.5 + 0.12 * Math.sin(T * 1.6)) + 0.08 * sit + Math.sin(T * 1.8) * 0.015 - 0.08 * cheer;
   R.spine.rotation.z = Math.sin(T * 2.75) * 0.07 * cheer;
   R.headG.rotation.x = 0.28 * sit + 0.1 * bow - 0.12 * toss - 0.18 * cheer;
   R.headG.rotation.y = -R.root.rotation.y * 0.45 + Math.sin(T * 0.7) * 0.05;
@@ -96,18 +100,18 @@ export function applyPose(
   const type = Math.sin(T * 16) * 0.08 * sit;
   // cheer: both arms up in a V, hands shaking.
   R.A.sh.rotation.z = 0.12 + wave * 2.5 + point * 1.45 + lift + cheer * 2.6;
-  R.A.sh.rotation.x = -0.5 * sit - sw * 0.9 - 0.15 * point;
+  R.A.sh.rotation.x = -0.55 * sit - sw * 0.9 - 0.15 * point;
   R.A.el.rotation.z = wave * (0.35 + Math.sin(T * 7) * 0.45) + 0.1 * point + cheer * (0.25 + Math.sin(T * 11) * 0.3);
-  R.A.el.rotation.x = -1.0 * sit + type;
+  R.A.el.rotation.x = -0.9 * sit + type;
   R.B.sh.rotation.z = -0.12 - lift + 0.05 * bow - cheer * 2.6;
-  R.B.sh.rotation.x = -0.7 * wave - 0.5 * sit - 0.35 * bow + sw * 0.9;
-  R.B.el.rotation.x = -1.0 * wave - 1.0 * sit - 1.75 * bow - type;
+  R.B.sh.rotation.x = -0.7 * wave - 0.55 * sit - 0.35 * bow + sw * 0.9;
+  R.B.el.rotation.x = -1.0 * wave - 0.9 * sit - 1.75 * bow - type;
   R.B.el.rotation.z = 0.25 * bow - cheer * (0.25 + Math.sin(T * 11 + 1.2) * 0.3);
 
   playWithBee(R, play, T);
 
   const p = (T % 2.2) / 2.2;
-  R.capG.position.y = 0.2 + toss * Math.max(0, Math.sin(Math.PI * p)) * 2.6;
+  R.capG.position.y = CAP_BASE_Y + toss * Math.max(0, Math.sin(Math.PI * p)) * 2.6;
   R.capG.rotation.y = toss * p * Math.PI * 4;
   R.capG.rotation.z = toss * Math.sin(p * Math.PI * 2) * 0.35;
   R.tassel.rotation.z = Math.sin(T * 2.2) * 0.12 + walk * Math.sin(phase * 2) * 0.3;

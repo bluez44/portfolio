@@ -49,22 +49,22 @@ function buildHead(k: MeshKit, M: Materials, spine: THREE.Group) {
   });
   k.add(headG, k.geo.torus(0.06, 0.014, 6, 14, Math.PI), M.hair, [0, -0.09, 0.285], [0, 0, Math.PI], 0);
 
-  // Graduation Cap (Nón tốt nghiệp HCMUT)
-  const capG = k.group(headG, [0, 0.2, 0]);
-  // Navy skull cap (chóp nón)
-  k.add(capG, k.geo.cylinder(0.29, 0.31, 0.16, 24), M.cap, [0, 0, 0]);
+  // Graduation Cap (Nón tốt nghiệp HCMUT) - raised high enough so hair never pokes through
+  const capG = k.group(headG, [0, 0.28, 0]);
+  // Navy skull cap (chóp nón) - deeper cylinder covering head down to forehead
+  k.add(capG, k.geo.cylinder(0.3, 0.32, 0.22, 24), M.cap, [0, 0.01, 0]);
 
   // BK TP.HCM Logo badge on the skull cap
-  const badgeGeo = k.cache.get("cap_badge", () => new THREE.PlaneGeometry(0.12, 0.12));
-  k.add(capG, badgeGeo, M.capBadge, [0.15, 0.01, 0.26], [-0.05, 0.52, 0], 0);
+  const badgeGeo = k.cache.get("cap_badge", () => new THREE.PlaneGeometry(0.13, 0.13));
+  k.add(capG, badgeGeo, M.capBadge, [0.16, 0.01, 0.27], [-0.05, 0.52, 0], 0);
 
-  // Navy square board (tấm nón vuông)
-  k.add(capG, k.geo.box(0.84, 0.045, 0.84), M.cap, [0, 0.1, 0], [0.06, Math.PI / 4, 0], 0.018);
+  // Navy square board (tấm nón vuông) - thicker and higher
+  k.add(capG, k.geo.box(0.86, 0.08, 0.86), M.cap, [0, 0.13, 0], [0.06, Math.PI / 4, 0], 0.018);
   // Center button (nút đỉnh nón) in navy
-  k.add(capG, k.geo.sphere(0.042, 10, 8), M.cap, [0, 0.135, 0], null, 0);
+  k.add(capG, k.geo.sphere(0.045, 10, 8), M.cap, [0, 0.175, 0], null, 0);
 
   // Tassel (Tua rua xanh cyan với khuyên vàng gold)
-  const tassel = k.group(capG, [0.4, 0.12, 0.12]);
+  const tassel = k.group(capG, [0.42, 0.15, 0.12]);
   // Cyan cord
   k.add(tassel, k.down(0.013, 0.013, 0.3, 6), M.tassel, null, null, 0.008);
   // Gold ferrule ring
@@ -106,12 +106,13 @@ function buildProps(
   ).forEach(([w, m, r], i) =>
     k.add(books, k.geo.box(w, 0.19, 0.58), m, [0, 0.095 + i * 0.19, 0], [0, r, 0], 0.018),
   );
-  const laptop = k.group(hips, [0, 0.2, 0.58]);
-  k.add(laptop, k.geo.box(0.62, 0.035, 0.42), M.laptop, null, null, 0.015);
-  const lid = k.group(laptop, [0, 0.02, -0.2]);
-  lid.rotation.x = -1.85;
-  k.add(lid, k.geo.box(0.62, 0.03, 0.42), M.laptop, [0, 0, 0.21], null, 0.015);
-  k.add(lid, k.geo.plane(0.54, 0.34), M.screen, [0, 0.017, 0.21], [-Math.PI / 2, 0, 0], 0);
+  // Laptop: position pushed forward and resting nicely on thighs, eliminating gown clipping
+  const laptop = k.group(hips, [0, 0.08, 0.66]);
+  k.add(laptop, k.geo.box(0.6, 0.035, 0.38), M.laptop, null, null, 0.015);
+  const lid = k.group(laptop, [0, 0.02, -0.18]);
+  lid.rotation.x = -1.75;
+  k.add(lid, k.geo.box(0.6, 0.03, 0.38), M.laptop, [0, 0, 0.19], null, 0.015);
+  k.add(lid, k.geo.plane(0.52, 0.31), M.screen, [0, 0.017, 0.19], [-Math.PI / 2, 0, 0], 0);
   return { cardProp, books, laptop };
 }
 
@@ -174,11 +175,11 @@ export function buildRig(scene: THREE.Scene, k: MeshKit, M: Materials, palette: 
 
   // Graduation Stole (Khăn tốt nghiệp): Low-poly blue mosaic + BK TP.HCM logo
   const stoleG = k.group(spine);
-  const stoleGeo = k.cache.get("stole_band", () => new THREE.BoxGeometry(0.11, 0.74, 0.025));
+  const stoleGeo = k.cache.get("stole_band", () => new THREE.BoxGeometry(0.12, 0.76, 0.025));
   // Left band (without logo)
-  k.add(stoleG, stoleGeo, M.stolePlain, [0.13, 0.38, 0.335], [-0.1, 0, 0.06], 0.015);
-  // Right band (with BK TP.HCM logo at the bottom)
-  k.add(stoleG, stoleGeo, M.stolePattern, [-0.13, 0.38, 0.335], [-0.1, 0, -0.06], 0.015);
+  k.add(stoleG, stoleGeo, M.stolePlain, [0.13, 0.38, 0.34], [-0.08, 0, 0.06], 0.015);
+  // Right band (with BK TP.HCM logo at the chest and bottom)
+  k.add(stoleG, stoleGeo, M.stolePattern, [-0.13, 0.38, 0.34], [-0.08, 0, -0.06], 0.015);
   // Neck connection loop for the stole
   const stoleLoopGeo = k.cache.get("stole_loop", () => new THREE.TorusGeometry(0.18, 0.026, 6, 16, Math.PI));
   k.add(stoleG, stoleLoopGeo, M.stole, [0, 0.74, 0.14], [-Math.PI * 0.44, 0, 0], 0.012);
