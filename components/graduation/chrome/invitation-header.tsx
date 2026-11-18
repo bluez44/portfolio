@@ -1,9 +1,6 @@
 "use client";
 
 import Link from "next/link";
-import { RisoThemeToggle } from "@/components/ui/riso/theme-toggle";
-import { useIsDark } from "@/lib/hooks/use-is-dark";
-import { LangToggle } from "../i18n/lang-toggle";
 import { MusicToggle } from "../music/music-toggle";
 import { useCopy } from "../i18n/lang-context";
 
@@ -16,7 +13,6 @@ export function InvitationHeader({
   musicNote: boolean;
   onMusic: () => void;
 }) {
-  const { dark, toggle } = useIsDark();
   const t = useCopy();
   return (
     <header className="fixed inset-x-0 top-0 z-40 border-b-[1.5px] pt-[env(safe-area-inset-top)] border-ink bg-header-bg backdrop-blur-[14px] backdrop-saturate-[1.2]">
@@ -31,9 +27,7 @@ export function InvitationHeader({
               {t.header.musicUnavailable}
             </span>
           )}
-          <LangToggle />
           <MusicToggle playing={musicPlaying} onClick={onMusic} />
-          <RisoThemeToggle dark={dark} onToggle={toggle} />
         </div>
       </div>
     </header>
