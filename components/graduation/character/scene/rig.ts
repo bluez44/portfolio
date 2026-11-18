@@ -9,29 +9,70 @@ const BEE_SCALE = 0.016;
 
 export type Arm = { sh: THREE.Group; el: THREE.Group };
 export type Rig = {
-  root: THREE.Group; hips: THREE.Group; legs: { leg: THREE.Group; knee: THREE.Group }[];
-  skirt: THREE.Mesh; spine: THREE.Group; headG: THREE.Group; capG: THREE.Group; tassel: THREE.Group;
-  A: Arm; B: Arm; cardProp: THREE.Group; books: THREE.Group; laptop: THREE.Group;
+  root: THREE.Group;
+  hips: THREE.Group;
+  legs: { leg: THREE.Group; knee: THREE.Group }[];
+  skirt: THREE.Mesh;
+  spine: THREE.Group;
+  headG: THREE.Group;
+  capG: THREE.Group;
+  tassel: THREE.Group;
+  A: Arm;
+  B: Arm;
+  cardProp: THREE.Group;
+  books: THREE.Group;
+  laptop: THREE.Group;
   /** Bee the character plays with on the wishes wall: `bee` is posed in rig space, `beeModel` sits inside it. */
-  bee: THREE.Group; beeModel: BeeModel; shadow: THREE.Mesh;
+  bee: THREE.Group;
+  beeModel: BeeModel;
+  shadow: THREE.Mesh;
 };
 
 function buildHead(k: MeshKit, M: Materials, spine: THREE.Group) {
   const headG = k.group(spine, [0, 1.13, 0]);
   k.add(headG, k.geo.sphere(0.3, 28, 20), M.skin);
-  k.add(headG, k.geo.sphere(0.318, 28, 20, 0, Math.PI * 2, 0, Math.PI * 0.52), M.hair, [0, 0.03, -0.025], [-0.28, 0, 0], 0.018);
+  k.add(
+    headG,
+    k.geo.sphere(0.318, 28, 20, 0, Math.PI * 2, 0, Math.PI * 0.52),
+    M.hair,
+    [0, 0.03, -0.025],
+    [-0.28, 0, 0],
+    0.018,
+  );
   [0.105, -0.105].forEach((x) => {
     k.add(headG, k.geo.sphere(0.036, 12, 10), M.hair, [x, 0, 0.275], null, 0);
-    k.add(headG, k.geo.sphere(0.05, 12, 10), M.blush, [x * 1.5, -0.09, 0.24], null, 0).scale.set(1, 0.6, 0.4);
+    k.add(headG, k.geo.sphere(0.05, 12, 10), M.blush, [x * 1.5, -0.09, 0.24], null, 0).scale.set(
+      1,
+      0.6,
+      0.4,
+    );
   });
   k.add(headG, k.geo.torus(0.06, 0.014, 6, 14, Math.PI), M.hair, [0, -0.09, 0.285], [0, 0, Math.PI], 0);
+
+  // Graduation Cap (Nón tốt nghiệp HCMUT)
   const capG = k.group(headG, [0, 0.2, 0]);
+  // Navy skull cap (chóp nón)
   k.add(capG, k.geo.cylinder(0.29, 0.31, 0.16, 24), M.cap, [0, 0, 0]);
+
+  // BK TP.HCM Logo badge on the skull cap
+  const badgeGeo = k.cache.get("cap_badge", () => new THREE.PlaneGeometry(0.12, 0.12));
+  k.add(capG, badgeGeo, M.capBadge, [0.15, 0.01, 0.26], [-0.05, 0.52, 0], 0);
+
+  // Navy square board (tấm nón vuông)
   k.add(capG, k.geo.box(0.84, 0.045, 0.84), M.cap, [0, 0.1, 0], [0.06, Math.PI / 4, 0], 0.018);
-  k.add(capG, k.geo.sphere(0.04, 10, 8), M.tassel, [0, 0.135, 0], null, 0);
+  // Center button (nút đỉnh nón) in navy
+  k.add(capG, k.geo.sphere(0.042, 10, 8), M.cap, [0, 0.135, 0], null, 0);
+
+  // Tassel (Tua rua xanh cyan với khuyên vàng gold)
   const tassel = k.group(capG, [0.4, 0.12, 0.12]);
+  // Cyan cord
   k.add(tassel, k.down(0.013, 0.013, 0.3, 6), M.tassel, null, null, 0.008);
-  k.add(tassel, k.down(0.025, 0.055, 0.12, 10), M.tassel, [0, -0.3, 0], null, 0.012);
+  // Gold ferrule ring
+  const ringGeo = k.cache.get("tassel_ring", () => new THREE.CylinderGeometry(0.024, 0.024, 0.025, 10));
+  k.add(tassel, ringGeo, M.tasselRing, [0, -0.3, 0], null, 0);
+  // Cyan tassel brush
+  k.add(tassel, k.down(0.026, 0.058, 0.13, 10), M.tassel, [0, -0.32, 0], null, 0.012);
+
   return { headG, capG, tassel };
 }
 
@@ -44,12 +85,25 @@ function buildArm(k: MeshKit, M: Materials, spine: THREE.Group, side: 1 | -1): A
   return { sh, el };
 }
 
-function buildProps(k: MeshKit, M: Materials, root: THREE.Group, hips: THREE.Group, spine: THREE.Group, hand: THREE.Group) {
+function buildProps(
+  k: MeshKit,
+  M: Materials,
+  root: THREE.Group,
+  hips: THREE.Group,
+  spine: THREE.Group,
+  hand: THREE.Group,
+) {
   const cardProp = k.group(hand, [0, -0.46, 0.08]);
   k.add(cardProp, k.geo.box(0.42, 0.28, 0.015), M.paper, [0, -0.06, 0.04], [0.2, 0, 0.1], 0.015);
   k.add(cardProp, k.geo.circle(0.045, 14), M.stole, [0, -0.06, 0.06], [0.2, 0, 0], 0);
   const books = k.group(root, [0, 0, -0.05]);
-  ([[0.86, M.b1, 0.05], [0.78, M.b2, -0.08], [0.82, M.b3, 0.12]] as const).forEach(([w, m, r], i) =>
+  (
+    [
+      [0.86, M.b1, 0.05],
+      [0.78, M.b2, -0.08],
+      [0.82, M.b3, 0.12],
+    ] as const
+  ).forEach(([w, m, r], i) =>
     k.add(books, k.geo.box(w, 0.19, 0.58), m, [0, 0.095 + i * 0.19, 0], [0, r, 0], 0.018),
   );
   const laptop = k.group(hips, [0, 0.2, 0.58]);
@@ -59,6 +113,43 @@ function buildProps(k: MeshKit, M: Materials, root: THREE.Group, hips: THREE.Gro
   k.add(lid, k.geo.box(0.62, 0.03, 0.42), M.laptop, [0, 0, 0.21], null, 0.015);
   k.add(lid, k.geo.plane(0.54, 0.34), M.screen, [0, 0.017, 0.21], [-Math.PI / 2, 0, 0], 0);
   return { cardProp, books, laptop };
+}
+
+/**
+ * Builds the academic hood (Túi càn khôn) draped over the neck and along the back.
+ * Features 3 layers: outer navy shell with crossing tails, cyan trim border, and silver lining with folded collar tips.
+ */
+function buildHood(k: MeshKit, M: Materials, spine: THREE.Group): THREE.Group {
+  const hoodG = k.group(spine);
+
+  // Shoulder loop connecting over the shoulders
+  const loopGeo = k.cache.get("hood_loop", () => new THREE.TorusGeometry(0.21, 0.024, 6, 16, Math.PI));
+  k.add(hoodG, loopGeo, M.cowlNavy, [0, 0.75, -0.06], [Math.PI * 0.42, 0, 0], 0.012);
+
+  // Outer navy back drape
+  const backGeo = k.cache.get("hood_back", () => new THREE.BoxGeometry(0.26, 0.42, 0.025));
+  k.add(hoodG, backGeo, M.cowlNavy, [0, 0.52, -0.32], [0.08, 0, 0], 0.015);
+
+  // Cyan accent trim stripes along the sides of the cowl
+  const stripeGeo = k.cache.get("hood_stripe", () => new THREE.BoxGeometry(0.038, 0.4, 0.026));
+  k.add(hoodG, stripeGeo, M.cowlCyan, [0.1, 0.52, -0.321], [0.08, 0, 0.04], 0.01);
+  k.add(hoodG, stripeGeo, M.cowlCyan, [-0.1, 0.52, -0.321], [0.08, 0, -0.04], 0.01);
+
+  // Inner silver lining
+  const liningGeo = k.cache.get("hood_lining", () => new THREE.BoxGeometry(0.13, 0.35, 0.027));
+  k.add(hoodG, liningGeo, M.cowlSilver, [0, 0.53, -0.32], [0.08, 0, 0], 0.01);
+
+  // Folded silver collar tips at the nape
+  const tipGeo = k.cache.get("hood_tip", () => new THREE.ConeGeometry(0.045, 0.12, 4));
+  k.add(hoodG, tipGeo, M.cowlSilver, [0.065, 0.74, -0.29], [0.38, 0, -0.35], 0.01);
+  k.add(hoodG, tipGeo, M.cowlSilver, [-0.065, 0.74, -0.29], [0.38, 0, 0.35], 0.01);
+
+  // Tapered tails crossing each other at the lower end
+  const tailGeo = k.cache.get("hood_tail", () => new THREE.BoxGeometry(0.08, 0.2, 0.022));
+  k.add(hoodG, tailGeo, M.cowlNavy, [0.03, 0.27, -0.323], [0.08, 0, -0.26], 0.012);
+  k.add(hoodG, tailGeo, M.cowlNavy, [-0.03, 0.25, -0.326], [0.08, 0, 0.24], 0.012);
+
+  return hoodG;
 }
 
 export function buildRig(scene: THREE.Scene, k: MeshKit, M: Materials, palette: RisoPalette): Rig {
@@ -80,8 +171,21 @@ export function buildRig(scene: THREE.Scene, k: MeshKit, M: Materials, palette: 
   const skirt = k.add(hips, k.down(0.37, 0.52, 0.62, 22), M.gown, [0, 0.03, 0]);
   const spine = k.group(hips);
   k.add(spine, k.up(0.3, 0.38, 0.8), M.gown);
-  k.add(spine, k.geo.box(0.1, 0.72, 0.04), M.stole, [0.13, 0.38, 0.335], [-0.1, 0, 0.06], 0.015);
-  k.add(spine, k.geo.box(0.1, 0.72, 0.04), M.stole, [-0.13, 0.38, 0.335], [-0.1, 0, -0.06], 0.015);
+
+  // Graduation Stole (Khăn tốt nghiệp): Low-poly blue mosaic + BK TP.HCM logo
+  const stoleG = k.group(spine);
+  const stoleGeo = k.cache.get("stole_band", () => new THREE.BoxGeometry(0.11, 0.74, 0.025));
+  // Left band (without logo)
+  k.add(stoleG, stoleGeo, M.stolePlain, [0.13, 0.38, 0.335], [-0.1, 0, 0.06], 0.015);
+  // Right band (with BK TP.HCM logo at the bottom)
+  k.add(stoleG, stoleGeo, M.stolePattern, [-0.13, 0.38, 0.335], [-0.1, 0, -0.06], 0.015);
+  // Neck connection loop for the stole
+  const stoleLoopGeo = k.cache.get("stole_loop", () => new THREE.TorusGeometry(0.18, 0.026, 6, 16, Math.PI));
+  k.add(stoleG, stoleLoopGeo, M.stole, [0, 0.74, 0.14], [-Math.PI * 0.44, 0, 0], 0.012);
+
+  // Túi càn khôn (Academic Hood)
+  buildHood(k, M, spine);
+
   k.add(spine, k.up(0.11, 0.12, 0.18, 14), M.skin, [0, 0.78, 0]);
 
   const head = buildHead(k, M, spine);
