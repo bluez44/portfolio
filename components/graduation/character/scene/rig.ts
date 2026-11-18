@@ -3,6 +3,7 @@ import { createBeeModel, type BeeModel } from "../../shared/three/bee-model";
 import type { RisoPalette } from "../../shared/three/palette";
 import type { Materials } from "./materials";
 import type { MeshKit } from "./mesh-kit";
+import { STOLE_BAND } from "./textures";
 
 /** Bee model units (body radius 14) to rig units: about half a head long. */
 const BEE_SCALE = 0.016;
@@ -106,49 +107,92 @@ function buildProps(
   ).forEach(([w, m, r], i) =>
     k.add(books, k.geo.box(w, 0.19, 0.58), m, [0, 0.095 + i * 0.19, 0], [0, r, 0], 0.018),
   );
-  // Laptop: position pushed forward and resting nicely on thighs, eliminating gown clipping
-  const laptop = k.group(hips, [0, 0.08, 0.66]);
-  k.add(laptop, k.geo.box(0.6, 0.035, 0.38), M.laptop, null, null, 0.015);
-  const lid = k.group(laptop, [0, 0.02, -0.18]);
-  lid.rotation.x = -1.75;
-  k.add(lid, k.geo.box(0.6, 0.03, 0.38), M.laptop, [0, 0, 0.19], null, 0.015);
-  k.add(lid, k.geo.plane(0.52, 0.31), M.screen, [0, 0.017, 0.19], [-Math.PI / 2, 0, 0], 0);
+  // Laptop on the lap: shallow enough to sit mostly on the thighs, hinge kept clear of the gown and stole.
+  const laptop = k.group(hips, [0, 0.12, 0.6]);
+  k.add(laptop, k.geo.box(0.56, 0.035, 0.32), M.laptop, null, null, 0.015);
+  const lid = k.group(laptop, [0, 0.02, -0.15]);
+  lid.rotation.x = -1.68;
+  k.add(lid, k.geo.box(0.56, 0.03, 0.32), M.laptop, [0, 0, 0.16], null, 0.015);
+  k.add(lid, k.geo.plane(0.48, 0.26), M.screen, [0, 0.017, 0.16], [-Math.PI / 2, 0, 0], 0);
   return { cardProp, books, laptop };
 }
 
+/** Radius of the gown torso (`k.up(0.3, 0.38, 0.8)`) at height `y` in spine space. */
+const torsoRadius = (y: number) => 0.38 - 0.1 * y;
+
+type Pt = [number, number];
+
 /**
- * Builds the academic hood (Túi càn khôn) draped over the neck and along the back.
- * Features 3 layers: outer navy shell with crossing tails, cyan trim border, and silver lining with folded collar tips.
+ * A flat strip from `from` to `to` (spine-space x/y seen from behind), `w0` wide at the top and `w1`
+ * at the bottom, `thick` deep, lifted `gap` off the gown and wrapped around the torso so it lies on
+ * the cloth instead of cutting into it.
+ */
+function backBand(from: Pt, to: Pt, w0: number, w1: number, gap: number, thick: number, across = 4): THREE.BufferGeometry {
+  const geo = new THREE.BoxGeometry(1, 1, 1, across, 12, 1);
+  const p = geo.attributes.position;
+  const dx = to[0] - from[0];
+  const dy = to[1] - from[1];
+  const len = Math.hypot(dx, dy);
+  const nx = -dy / len;
+  const ny = dx / len;
+  for (let i = 0; i < p.count; i++) {
+    const s = 0.5 - p.getY(i);
+    const w = w0 + (w1 - w0) * s;
+    const x = from[0] + dx * s + nx * p.getX(i) * w;
+    const y = from[1] + dy * s + ny * p.getX(i) * w;
+    const r0 = torsoRadius(y);
+    const r = r0 + gap + (p.getZ(i) + 0.5) * thick;
+    const a = x / r0;
+    // Behind the figure: -z is the back; x is mirrored so the strip reads left-to-right from behind.
+    p.setXYZ(i, -r * Math.sin(a), y, -r * Math.cos(a));
+  }
+  geo.computeVertexNormals();
+  return geo;
+}
+
+/**
+ * Builds the academic hood (Túi càn khôn) seen from behind, after the reference photo:
+ * two navy arms forming a V whose tails cross at the bottom, a cyan trim on the inner edge of
+ * each arm, a silver lining filling the V, and a folded silver collar at the nape.
  */
 function buildHood(k: MeshKit, M: Materials, spine: THREE.Group): THREE.Group {
   const hoodG = k.group(spine);
+  const TOP = 0.77;
+  const BOTTOM = 0.3;
 
-  // Shoulder loop connecting over the shoulders
-  const loopGeo = k.cache.get("hood_loop", () => new THREE.TorusGeometry(0.21, 0.024, 6, 16, Math.PI));
-  k.add(hoodG, loopGeo, M.cowlNavy, [0, 0.75, -0.06], [Math.PI * 0.42, 0, 0], 0.012);
+  // Silver lining filling the V (lowest layer).
+  const lining = k.cache.get("hood_lining_v", () => backBand([0, TOP], [0, 0.4], 0.2, 0.02, 0.003, 0.006, 6));
+  k.add(hoodG, lining, M.cowlSilver, null, null, 0.008);
 
-  // Outer navy back drape
-  const backGeo = k.cache.get("hood_back", () => new THREE.BoxGeometry(0.26, 0.42, 0.025));
-  k.add(hoodG, backGeo, M.cowlNavy, [0, 0.52, -0.32], [0.08, 0, 0], 0.015);
+  // Navy arms: each runs from a shoulder blade down past the centre line, so the tails cross.
+  ([1, -1] as const).forEach((side, i) => {
+    const from: Pt = [side * 0.15, TOP];
+    const to: Pt = [-side * 0.035, BOTTOM - i * 0.03];
+    const gap = 0.01 + i * 0.014;
+    const arm = k.cache.get(`hood_arm_${side}`, () => backBand(from, to, 0.1, 0.075, gap, 0.012));
+    k.add(hoodG, arm, M.cowlNavy, null, null, 0.01);
+    // Cyan trim along the inner edge of the arm, stopping before the crossing.
+    const dx = to[0] - from[0];
+    const dy = to[1] - from[1];
+    const len = Math.hypot(dx, dy);
+    const inset = side * 0.034;
+    const ox = (dy / len) * inset;
+    const oy = (-dx / len) * inset;
+    const trim = k.cache.get(`hood_trim_${side}`, () =>
+      backBand([from[0] + ox, from[1] + oy], [from[0] + dx * 0.62 + ox, from[1] + dy * 0.62 + oy], 0.03, 0.024, gap + 0.0125, 0.003, 2),
+    );
+    k.add(hoodG, trim, M.cowlCyan, null, null, 0);
+  });
 
-  // Cyan accent trim stripes along the sides of the cowl
-  const stripeGeo = k.cache.get("hood_stripe", () => new THREE.BoxGeometry(0.038, 0.4, 0.026));
-  k.add(hoodG, stripeGeo, M.cowlCyan, [0.1, 0.52, -0.321], [0.08, 0, 0.04], 0.01);
-  k.add(hoodG, stripeGeo, M.cowlCyan, [-0.1, 0.52, -0.321], [0.08, 0, -0.04], 0.01);
+  // Collar band around the base of the neck, resting on the shoulders.
+  const collar = k.cache.get("hood_collar", () => new THREE.TorusGeometry(0.19, 0.026, 6, 18, Math.PI));
+  k.add(hoodG, collar, M.cowlNavy, [0, 0.83, 0], [-Math.PI / 2, 0, 0], 0.012);
 
-  // Inner silver lining
-  const liningGeo = k.cache.get("hood_lining", () => new THREE.BoxGeometry(0.13, 0.35, 0.027));
-  k.add(hoodG, liningGeo, M.cowlSilver, [0, 0.53, -0.32], [0.08, 0, 0], 0.01);
-
-  // Folded silver collar tips at the nape
-  const tipGeo = k.cache.get("hood_tip", () => new THREE.ConeGeometry(0.045, 0.12, 4));
-  k.add(hoodG, tipGeo, M.cowlSilver, [0.065, 0.74, -0.29], [0.38, 0, -0.35], 0.01);
-  k.add(hoodG, tipGeo, M.cowlSilver, [-0.065, 0.74, -0.29], [0.38, 0, 0.35], 0.01);
-
-  // Tapered tails crossing each other at the lower end
-  const tailGeo = k.cache.get("hood_tail", () => new THREE.BoxGeometry(0.08, 0.2, 0.022));
-  k.add(hoodG, tailGeo, M.cowlNavy, [0.03, 0.27, -0.323], [0.08, 0, -0.26], 0.012);
-  k.add(hoodG, tailGeo, M.cowlNavy, [-0.03, 0.25, -0.326], [0.08, 0, 0.24], 0.012);
+  // Folded silver collar tips at the nape, pointing down.
+  const tip = k.cache.get("hood_tip_flat", () => new THREE.ConeGeometry(0.04, 0.11, 4).scale(1, 1, 0.35));
+  ([1, -1] as const).forEach((side) => {
+    k.add(hoodG, tip, M.cowlSilver, [side * 0.055, 0.73, -(torsoRadius(0.73) + 0.035)], [Math.PI, 0, side * 0.45], 0.008);
+  });
 
   return hoodG;
 }
@@ -175,11 +219,10 @@ export function buildRig(scene: THREE.Scene, k: MeshKit, M: Materials, palette: 
 
   // Graduation Stole (Khăn tốt nghiệp): Low-poly blue mosaic + BK TP.HCM logo
   const stoleG = k.group(spine);
-  const stoleGeo = k.cache.get("stole_band", () => new THREE.BoxGeometry(0.12, 0.76, 0.025));
-  // Left band (without logo)
-  k.add(stoleG, stoleGeo, M.stolePlain, [0.13, 0.38, 0.34], [-0.08, 0, 0.06], 0.015);
-  // Right band (with BK TP.HCM logo at the chest and bottom)
-  k.add(stoleG, stoleGeo, M.stolePattern, [-0.13, 0.38, 0.34], [-0.08, 0, -0.06], 0.015);
+  const stoleGeo = k.cache.get("stole_band", () => new THREE.BoxGeometry(STOLE_BAND.width, STOLE_BAND.height, 0.025));
+  // As in the reference photo, the logo is on the band on the viewer's right (the figure's left, +x).
+  k.add(stoleG, stoleGeo, M.stolePattern, [0.13, 0.38, 0.347], [-0.08, 0, 0.06], 0.015);
+  k.add(stoleG, stoleGeo, M.stolePlain, [-0.13, 0.38, 0.347], [-0.08, 0, -0.06], 0.015);
   // Neck connection loop for the stole
   const stoleLoopGeo = k.cache.get("stole_loop", () => new THREE.TorusGeometry(0.18, 0.026, 6, 16, Math.PI));
   k.add(stoleG, stoleLoopGeo, M.stole, [0, 0.74, 0.14], [-Math.PI * 0.44, 0, 0], 0.012);

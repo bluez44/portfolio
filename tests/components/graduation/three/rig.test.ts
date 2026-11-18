@@ -31,6 +31,6 @@ describe("buildRig", () => {
     buildRig(scene, createMeshKit(M.outline, createGeometryCache()), M, PALETTE);
     let meshes = 0;
     scene.traverse((o) => (o instanceof THREE.Mesh ? meshes++ : undefined));
-    expect(meshes).toBe(107);
+    expect(meshes).toBe(103);
   });
 });

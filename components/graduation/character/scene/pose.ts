@@ -60,10 +60,10 @@ function playWithBee(R: Rig, play: number, T: number) {
   R.A.sh.rotation.x -= play * (0.2 + 0.5 * reachA);
   R.A.el.rotation.x -= play * 0.5 * reachA;
   R.A.el.rotation.z += play * (0.35 + tickle) * reachA;
-  R.B.sh.rotation.z += play * (0.15 + 2.1 * reachB);
+  R.B.sh.rotation.z -= play * (0.15 + 2.1 * reachB);
   R.B.sh.rotation.x -= play * (0.2 + 0.5 * reachB);
   R.B.el.rotation.x -= play * 0.5 * reachB;
-  R.B.el.rotation.z += play * (0.35 + tickle) * reachB;
+  R.B.el.rotation.z -= play * (0.35 + tickle) * reachB;
   // Both hands come up to catch it when it boops.
   R.A.sh.rotation.x -= play * 0.6 * boop;
   R.B.sh.rotation.x -= play * 0.6 * boop;

@@ -44,11 +44,11 @@ export type Materials = Record<ToonKey, THREE.MeshToonMaterial> & {
 const FIXED: Record<FixedKey, string> = {
   skin: "#f4cfb2",
   hair: "#1c1b1f",
-  cap: "#1a2f68", // Deep navy blue (HCMUT cap)
-  tassel: "#00b4d8", // Bright cyan (HCMUT tassel)
+  cap: "#1e3a8a", // Royal navy (HCMUT cap)
+  tassel: "#38bdf8", // Light sky blue (HCMUT tassel)
   tasselRing: "#f59e0b", // Gold ferrule ring
-  cowlNavy: "#1a2f68", // Deep navy blue (túi càn khôn outer shell)
-  cowlCyan: "#0284c7", // Cerulean cyan (túi càn khôn accent stripe)
+  cowlNavy: "#1e3a8a", // Royal navy (túi càn khôn outer shell)
+  cowlCyan: "#38bdf8", // Light cyan (túi càn khôn inner trim)
   cowlSilver: "#e2e8f0", // Silver / off-white (túi càn khôn lining & collar)
   stole: "#0284c7", // Fallback / base stole color
   pants: "#4a4a52",

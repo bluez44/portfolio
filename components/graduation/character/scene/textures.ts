@@ -162,6 +162,9 @@ export function drawBKHcmutLogo(
  * - Solid bright blue panel at the bottom (lower 25%) with logo on the end
  * - Asynchronous loader for `/01_logobachkhoatoi.webp` for 100% pixel-perfect matching with `BkBadge`
  */
+/** Stole band face in rig units (see `stole_band` in rig.ts); the canvas keeps this aspect so the logo is not squashed. */
+export const STOLE_BAND = { width: 0.12, height: 0.76 } as const;
+
 export function createStoleTexture(withLogo = true): THREE.Texture {
   if (typeof document === "undefined") {
     const tex = new THREE.DataTexture(new Uint8Array([0, 100, 200, 255]), 1, 1);
@@ -170,7 +173,7 @@ export function createStoleTexture(withLogo = true): THREE.Texture {
   }
 
   const width = 256;
-  const height = 1024;
+  const height = Math.round((width * STOLE_BAND.height) / STOLE_BAND.width);
   const canvas = document.createElement("canvas");
   canvas.width = width;
   canvas.height = height;
@@ -197,7 +200,7 @@ export function createStoleTexture(withLogo = true): THREE.Texture {
 
     // 4 columns x 14 rows for distinct, clear low-poly facets
     const cols = 4;
-    const rows = 14;
+    const rows = 22;
     const dx = width / cols;
     const dy = meshHeight / rows;
 
