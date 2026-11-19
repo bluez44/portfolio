@@ -15,12 +15,14 @@ export function useFinaleTimeline(rootRef: RefObject<HTMLElement | null>, enable
         // In reduced motion, show envelope in its settled closed state
         gsap.set("#finaleCard", { yPercent: 0, zIndex: 1 });
         gsap.set("#finaleFlap", { rotationX: 0, zIndex: 4, transformOrigin: "50% 0%" });
+        gsap.set("#finaleHeader", { y: 72 });
         return;
       }
 
       // Initial state before scrub: flap open, card sticking out
       gsap.set("#finaleFlap", { rotationX: 180, zIndex: 0, transformOrigin: "50% 0%", transformPerspective: 900 });
-      gsap.set("#finaleCard", { yPercent: -65, zIndex: 1 });
+      gsap.set("#finaleCard", { yPercent: -35, zIndex: 1 });
+      gsap.set("#finaleHeader", { y: 0 });
 
       gsap
         .timeline({
@@ -37,7 +39,9 @@ export function useFinaleTimeline(rootRef: RefObject<HTMLElement | null>, enable
         // 2. Fold flap down over the card and pocket
         .to("#finaleFlap", { rotationX: 0, duration: 0.4, ease: "power2.inOut" }, 0.5)
         .set("#finaleFlap", { zIndex: 4 }, 0.7)
-        // 3. Settle envelope
+        // 3. Move countdown header down closer to the closed envelope
+        .to("#finaleHeader", { y: 72, duration: 0.4, ease: "power1.inOut" }, 0.5)
+        // 4. Settle envelope
         .to("#finaleWrap", { scale: 0.98, duration: 0.1, ease: "power1.out" }, 0.9);
     }, root);
 

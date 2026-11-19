@@ -52,10 +52,10 @@ export function FinaleSection({
       className="relative bg-paper"
       style={{ height: reduced ? "100vh" : "220vh" }}
     >
-      <div className="sticky top-0 box-border flex h-screen flex-col items-center justify-between overflow-hidden px-6 pt-[clamp(80px,11vh,104px)] pb-[clamp(20px,3.5vh,36px)] lg:px-[clamp(72px,8vw,128px)]">
-        {/* Top: Section Heading & Real-time Countdown (sits on top of the open flap) */}
-        <div className="relative z-10 flex flex-col items-center gap-4 text-center shrink-0">
-          <SectionHeading lead={t.heading.lead} accent={t.heading.accent} />
+      <div className="sticky top-0 box-border flex h-screen flex-col items-center justify-between overflow-hidden px-6 pt-[clamp(68px,8.5vh,88px)] pb-[clamp(16px,2.5vh,28px)] lg:px-[clamp(72px,8vw,128px)]">
+        {/* Top: Section Heading & Real-time Countdown */}
+        <div id="finaleHeader" className="relative z-10 flex flex-col items-center gap-3 text-center shrink-0">
+          <SectionHeading size="cover" lead={t.heading.lead} accent={t.heading.accent} />
 
           {countdown?.phase === "before" && (
             <div className="flex items-center gap-1.5 font-mono sm:gap-3">

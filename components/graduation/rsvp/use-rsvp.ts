@@ -14,7 +14,7 @@ const hasErrors = (errors: RsvpFieldErrors) => Object.keys(errors).length > 0;
 export function useRsvp(guestId: string, initial: RsvpAnswer | null, opts: { onSaved?: (answer: RsvpAnswer) => void } = {}) {
   const [saved, setSaved] = useState(initial);
   const [editing, setEditing] = useState(initial === null);
-  const [choice, setChoice] = useState<RsvpStatus | null>(initial?.status ?? null);
+  const [choice, setChoice] = useState<RsvpStatus | null>(initial?.status ?? "yes");
   const [fieldErrors, setFieldErrors] = useState<RsvpFieldErrors>({});
   const [failed, setFailed] = useState(false);
   const [pending, startTransition] = useTransition();

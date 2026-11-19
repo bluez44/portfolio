@@ -1,3 +1,4 @@
+import { RisoButton } from "@/components/ui/riso/button";
 import { RisoPill } from "@/components/ui/riso/pill";
 import type { RsvpStatus } from "@/lib/graduation/types";
 import { useCopy } from "../i18n/lang-context";
@@ -6,19 +7,20 @@ import { AddToCalendar } from "../shared/add-to-calendar";
 export function RsvpResult({ status, onReset }: { status: RsvpStatus; onReset: () => void }) {
   const { rsvp: t } = useCopy();
   return (
-    <div className="flex flex-col items-start gap-3.5">
+    <div className="flex flex-col items-start gap-4">
       <RisoPill color={status === "no" ? "tomato" : "jade"} tilt={-2} wrap>
         {t.result[status]}
       </RisoPill>
-      <div className="flex flex-wrap items-start gap-x-6 gap-y-3">
+      <div className="flex flex-wrap items-center gap-3 pt-1">
         {status === "yes" && <AddToCalendar />}
-        <button
-          type="button"
+        <RisoButton
+          variant="secondary"
+          size="md"
+          icon="↺"
           onClick={onReset}
-          className="riso-focus hit-area relative cursor-pointer border-0 bg-transparent p-0 font-mono text-[11px] tracking-[0.2em] text-ink-3 uppercase underline underline-offset-[5px] hover:text-tomato"
         >
           {t.change}
-        </button>
+        </RisoButton>
       </div>
     </div>
   );

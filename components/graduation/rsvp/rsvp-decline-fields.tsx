@@ -10,7 +10,7 @@ export function RsvpDeclineFields({ saved, errors }: { saved: Decline | null; er
   return (
     <>
       <RsvpField name="reason" field={t.reason} multiline defaultValue={saved?.reason} error={errors.reason && t.fieldErrors[errors.reason]} />
-      <RsvpField name="wish" field={t.wish} optionalLabel={t.optional} multiline defaultValue={saved?.wish} error={errors.wish && t.fieldErrors[errors.wish]} />
+      <RsvpField name="wish" field={t.wish} multiline defaultValue={saved?.wish} error={errors.wish && t.fieldErrors[errors.wish]} />
     </>
   );
 }

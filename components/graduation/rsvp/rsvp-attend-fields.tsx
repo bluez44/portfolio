@@ -10,7 +10,7 @@ export function RsvpAttendFields({ saved, errors }: { saved: Attend | null; erro
   return (
     <>
       <RsvpField name="contact" field={t.contact} defaultValue={saved?.contact} error={errors.contact && t.fieldErrors[errors.contact]} />
-      <RsvpField name="wish" field={t.wish} optionalLabel={t.optional} multiline defaultValue={saved?.wish} error={errors.wish && t.fieldErrors[errors.wish]} />
+      <RsvpField name="wish" field={t.wish} multiline defaultValue={saved?.wish} error={errors.wish && t.fieldErrors[errors.wish]} />
     </>
   );
 }
