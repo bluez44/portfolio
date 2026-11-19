@@ -39,7 +39,7 @@ export function HoneycombViewport({
       ref={viewportRef}
       {...handlers}
       onClickCapture={engage}
-      className={`relative box-border h-[clamp(360px,52svh,600px)] min-w-0 flex-[2_1_520px] cursor-grab ${coarse && !engaged ? "touch-pan-y" : "touch-none"} overflow-hidden min-[760px]:h-[clamp(440px,64vh,600px)] rounded-[14px] border-[1.5px] border-ink bg-paper-2 select-none`}
+      className={`relative box-border h-[clamp(360px,52svh,600px)] min-w-0 flex-[2_1_520px] cursor-grab ${coarse && !engaged ? "touch-pan-y" : "touch-none"} overflow-hidden md:h-[clamp(440px,64vh,600px)] rounded-[14px] border-[1.5px] border-ink bg-paper-2 select-none`}
       style={{ boxShadow: "6px 6px 0 var(--ink)" }}
     >
       <svg width="0" height="0" className="absolute">

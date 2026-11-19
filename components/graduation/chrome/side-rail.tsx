@@ -25,7 +25,7 @@ export function SideRail({
   progress?: boolean;
 }) {
   return (
-    <aside className={`pointer-events-none fixed top-16 bottom-0 z-20 hidden w-[clamp(56px,6vw,88px)] items-center justify-center min-[760px]:flex ${side === "left" ? "left-0" : "right-0"}`}>
+    <aside className={`pointer-events-none fixed top-16 bottom-0 z-20 hidden w-[clamp(56px,6vw,88px)] items-center justify-center lg:flex ${side === "left" ? "left-0" : "right-0"}`}>
       <div className={`flex items-center gap-[clamp(8px,1.8vh,18px)] whitespace-nowrap [writing-mode:vertical-rl] ${side === "left" ? "rotate-180" : ""}`}>
         <span className={`${mono} tracking-[0.24em] text-ink-3`}>{label}</span>
         <span className="relative h-[clamp(20px,5vh,56px)] w-[1.5px] overflow-hidden bg-ink/20">{progress && <ProgressBar />}</span>

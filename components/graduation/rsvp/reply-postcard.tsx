@@ -43,7 +43,7 @@ export function ReplyPostcard({ guestName, postmarked = false, status, children 
         </div>
         <div className="relative shrink-0">
           <Stamp className="scale-85 origin-top-right" />
-          {postmarked && status === "yes" && <AttendingStamp label={t.stamp} className="top-10 right-0 z-10 min-[760px]:top-9 min-[760px]:right-14" />}
+          {postmarked && status === "yes" && <AttendingStamp label={t.stamp} className="top-10 right-0 z-10 md:top-9 md:right-14" />}
           {postmarked && status !== "yes" && (
             <Postmark
               color="tomato"

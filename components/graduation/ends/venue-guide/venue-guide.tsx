@@ -74,7 +74,7 @@ export function VenueGuide({
       {panels.map((p) => (
         <div key={p.id} id={idFor(p.id).panel} role="tabpanel" aria-labelledby={idFor(p.id).tab} hidden={p.id !== active} className="flex flex-col gap-2.5">
           <div
-            className="relative aspect-4/3 overflow-hidden rounded-[14px] border-[1.5px] border-ink bg-paper-2 min-[760px]:aspect-16/10"
+            className="relative aspect-4/3 overflow-hidden rounded-[14px] border-[1.5px] border-ink bg-paper-2 md:aspect-16/10"
             style={{ boxShadow: "var(--offset-md)" }}
           >
             {p.frame}

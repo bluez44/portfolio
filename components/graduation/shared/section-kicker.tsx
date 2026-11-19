@@ -6,19 +6,19 @@ type Align = "start" | "center" | "end";
 const LEFT: Record<Align, string> = { start: "hidden", center: "w-12", end: "max-w-40 flex-1" };
 const RIGHT: Record<Align, string> = { start: "max-w-40 flex-1", center: "w-12", end: "hidden" };
 const DESKTOP_LEFT: Record<Align, string> = {
-  start: "min-[760px]:hidden",
-  center: "min-[760px]:block min-[760px]:w-12 min-[760px]:max-w-none min-[760px]:flex-none",
-  end: "min-[760px]:block min-[760px]:w-auto min-[760px]:max-w-40 min-[760px]:flex-1",
+  start: "md:hidden",
+  center: "md:block md:w-12 md:max-w-none md:flex-none",
+  end: "md:block md:w-auto md:max-w-40 md:flex-1",
 };
 const DESKTOP_RIGHT: Record<Align, string> = {
-  start: "min-[760px]:block min-[760px]:w-auto min-[760px]:max-w-40 min-[760px]:flex-1",
-  center: "min-[760px]:block min-[760px]:w-12 min-[760px]:max-w-none min-[760px]:flex-none",
-  end: "min-[760px]:hidden",
+  start: "md:block md:w-auto md:max-w-40 md:flex-1",
+  center: "md:block md:w-12 md:max-w-none md:flex-none",
+  end: "md:hidden",
 };
 const DESKTOP_JUSTIFY: Record<Align, string> = {
-  start: "min-[760px]:justify-start",
-  center: "min-[760px]:justify-center",
-  end: "min-[760px]:justify-end",
+  start: "md:justify-start",
+  center: "md:justify-center",
+  end: "md:justify-end",
 };
 
 const Rule = ({ className }: { className: string }) => <span aria-hidden className={`h-px bg-ink/20 ${className}`} />;

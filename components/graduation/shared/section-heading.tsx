@@ -11,11 +11,12 @@ export function SectionHeading({
 }: { lead: string; accent: string; as?: "h1" | "h2"; size?: keyof typeof SIZE }) {
   return (
     <Tag
+      aria-label={`${lead} ${accent}`}
       className="m-0 font-heading font-bold leading-[0.95] tracking-[-0.035em] text-ink"
       style={{ fontSize: SIZE[size], fontVariationSettings: '"wdth" 90, "opsz" 96' }}
     >
-      {lead}{" "}
-      <span className="italic text-tomato" style={{ fontVariationSettings: '"wdth" 82' }}>
+      <span aria-hidden="true">{lead} </span>
+      <span aria-hidden="true" className="italic text-tomato" style={{ fontVariationSettings: '"wdth" 82' }}>
         {accent}
       </span>
     </Tag>

@@ -8,7 +8,7 @@ export function TicketWhen() {
   const { ends: t } = useCopy();
   const E = useGradEvent();
   return (
-    <div className="flex flex-col gap-3.5 border-b-[1.5px] border-dashed border-ink px-7 py-8 min-[760px]:border-r-[1.5px] min-[760px]:border-b-0">
+    <div className="flex flex-col gap-3.5 border-b-[1.5px] border-dashed border-ink px-7 py-8 md:border-r-[1.5px] md:border-b-0">
       <span className={label}>{t.when}</span>
       <span className="font-heading text-[clamp(56px,6vw,84px)] leading-[0.9] font-bold tracking-[-0.04em] text-tomato" style={{ fontVariationSettings: '"wdth" 80, "opsz" 96' }}>
         {E.dateShort}

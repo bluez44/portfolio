@@ -17,10 +17,11 @@ export function InvitationCard({
     >
       <div className="flex items-start justify-between gap-3">
         <h2
+          aria-label={`${t.greeting} ${guestName}.`}
           className="m-0 font-heading text-[clamp(22px,3vw,36px)] leading-[0.98] font-bold tracking-[-0.035em] text-balance"
           style={{ fontVariationSettings: '"wdth" 88, "opsz" 96' }}
         >
-          {t.greeting}{" "}
+          <span aria-hidden="true">{t.greeting} </span>
           <span className="italic text-tomato" style={{ fontVariationSettings: '"wdth" 82' }}>
             {guestName}.
           </span>

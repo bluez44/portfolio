@@ -8,7 +8,7 @@ export function MemoryPolaroid({ slot, image, caption, together, children }: { s
     <figure
       data-memory-photo
       data-memory-together={together || undefined}
-      className={`absolute top-(--top-phone) left-[calc(50%+var(--x-phone))] m-0 rounded-[4px] border-[1.5px] border-ink bg-paper p-1.5 pb-6 opacity-0 shadow-(--offset-sm) min-[760px]:top-(--top-wide) min-[760px]:left-[calc(50%+var(--x-wide))] min-[760px]:pb-8 ${
+      className={`absolute top-(--top-phone) left-[calc(50%+var(--x-phone))] m-0 rounded-[4px] border-[1.5px] border-ink bg-paper p-1.5 pb-6 opacity-0 shadow-(--offset-sm) md:top-(--top-wide) md:left-[calc(50%+var(--x-wide))] md:pb-8 ${
         together ? "z-20" : "z-1"
       }`}
       style={
@@ -27,16 +27,16 @@ export function MemoryPolaroid({ slot, image, caption, together, children }: { s
           src={image}
           alt=""
           fill
-          sizes={together ? "(min-width: 760px) 420px, 46vw" : "(min-width: 760px) 320px, 38vw"}
+          sizes={together ? "(min-width: 768px) 420px, 46vw" : "(min-width: 768px) 320px, 38vw"}
           className="object-cover"
         />
       </div>
-      <figcaption className="absolute inset-x-2 bottom-0 flex h-6 items-center justify-center min-[760px]:h-8">
+      <figcaption className="absolute inset-x-2 bottom-0 flex h-6 items-center justify-center md:h-8">
         <span
           className={`truncate font-heading text-ink-2 italic ${
             together
-              ? "text-[11.5px] min-[760px]:text-[13.5px] font-medium"
-              : "text-[10.5px] min-[760px]:text-[12.5px]"
+              ? "text-[11.5px] md:text-[13.5px] font-medium"
+              : "text-[10.5px] md:text-[12.5px]"
           }`}
         >
           {caption}

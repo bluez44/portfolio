@@ -28,7 +28,7 @@ export function useEnvelopeTimeline(rootRef: RefObject<HTMLElement | null>, enab
           },
           defaults: { ease: "none" },
         })
-        .to("#hint", { opacity: 0, y: -12, duration: 0.08 }, 0)
+        .to("#hint", { autoAlpha: 0, y: -12, duration: 0.08 }, 0)
         .to(
           "#envWrap",
           { rotationX: 0, rotationZ: 0, duration: 0.12, ease: "power1.out" },

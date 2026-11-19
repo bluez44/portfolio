@@ -19,9 +19,9 @@ const pad = (n: number) => String(n).padStart(2, "0");
 
 function Cell({ value, label }: { value: string; label: string }) {
   return (
-    <div className="flex min-w-13 flex-col items-center rounded-lg border-[1.5px] border-ink bg-paper px-2.5 py-1.5 min-[420px]:px-3" style={{ boxShadow: "var(--offset-xs)" }}>
-      <span className="font-heading text-2xl leading-none font-bold text-ink tabular-nums min-[420px]:text-3xl">{value}</span>
-      <span className="text-[9px] tracking-[0.2em] text-ink-3 uppercase min-[420px]:text-[10px]">{label}</span>
+    <div className="flex min-w-13 flex-col items-center rounded-lg border-[1.5px] border-ink bg-paper px-2.5 py-1.5 sm:px-3" style={{ boxShadow: "var(--offset-xs)" }}>
+      <span className="font-heading text-2xl leading-none font-bold text-ink tabular-nums sm:text-3xl">{value}</span>
+      <span className="text-[9px] tracking-[0.2em] text-ink-3 uppercase sm:text-[10px]">{label}</span>
     </div>
   );
 }
@@ -52,13 +52,13 @@ export function FinaleSection({
       className="relative bg-paper"
       style={{ height: reduced ? "100vh" : "220vh" }}
     >
-      <div className="sticky top-0 box-border flex h-screen flex-col items-center justify-between overflow-hidden px-6 pt-[clamp(80px,11vh,104px)] pb-[clamp(20px,3.5vh,36px)] min-[760px]:px-[clamp(72px,8vw,128px)]">
+      <div className="sticky top-0 box-border flex h-screen flex-col items-center justify-between overflow-hidden px-6 pt-[clamp(80px,11vh,104px)] pb-[clamp(20px,3.5vh,36px)] lg:px-[clamp(72px,8vw,128px)]">
         {/* Top: Section Heading & Real-time Countdown (sits on top of the open flap) */}
         <div className="relative z-10 flex flex-col items-center gap-4 text-center shrink-0">
           <SectionHeading lead={t.heading.lead} accent={t.heading.accent} />
 
           {countdown?.phase === "before" && (
-            <div className="flex items-center gap-1.5 font-mono min-[420px]:gap-3">
+            <div className="flex items-center gap-1.5 font-mono sm:gap-3">
               <Cell value={String(countdown.days)} label={t.countdown.days} />
               <Dot />
               <Cell value={pad(countdown.hours)} label={t.countdown.hours} />
