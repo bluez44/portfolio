@@ -25,6 +25,42 @@ const NOUNS = [
   "Ong",
 ];
 
+export const BEE_NAMES: readonly string[] = ADJECTIVES.map((adj) => `Ong ${adj}`);
+
+/**
+ * Fisher-Yates shuffle returning a new array copy.
+ */
+function shuffle<T>(array: readonly T[]): T[] {
+  const result = [...array];
+  for (let i = result.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [result[i], result[j]] = [result[j], result[i]];
+  }
+  return result;
+}
+
+/**
+ * Returns `count` randomly selected bee names.
+ * Names are guaranteed not to duplicate unless all available names in the pool
+ * have been used, at which point a new shuffled cycle begins.
+ */
+export function getRandomBeeNames(count: number, pool: readonly string[] = BEE_NAMES): string[] {
+  if (count <= 0 || pool.length === 0) return [];
+
+  const result: string[] = [];
+  while (result.length < count) {
+    const shuffled = shuffle(pool);
+    // Prevent immediate repeat at cycle boundary if pool has > 1 items
+    if (result.length > 0 && pool.length > 1 && shuffled[0] === result[result.length - 1]) {
+      const swapIdx = Math.floor(Math.random() * (shuffled.length - 1)) + 1;
+      [shuffled[0], shuffled[swapIdx]] = [shuffled[swapIdx], shuffled[0]];
+    }
+    const needed = count - result.length;
+    result.push(...shuffled.slice(0, needed));
+  }
+  return result;
+}
+
 /** Lightweight 32-bit hash of a string (FNV-1a variant). */
 function fnv32(str: string): number {
   let hash = 0x811c9dc5;

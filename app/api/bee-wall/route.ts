@@ -1,7 +1,7 @@
 import { createHash } from "node:crypto";
 import { NextRequest, NextResponse } from "next/server";
 import prisma from "@/lib/prisma";
-import { beeAlias } from "@/lib/bee-alias";
+import { getRandomBeeNames, beeAlias } from "@/lib/bee-alias";
 import { UUID_REGEX } from "@/lib/graduation/uuid";
 
 /** What the wall shows per wish; never the guest's id, since that id is their invitation link. */
@@ -33,11 +33,15 @@ export async function GET(req: NextRequest) {
     orderBy: { createdAt: "asc" },
   });
 
-  const bees: BeeWallEntry[] = rows.flatMap((r) =>
-    r.rsvp?.wish
-      ? [{ key: opaqueKey(r.id), name: beeAlias(r.id), wish: r.rsvp.wish, at: r.rsvp.updatedAt.toISOString(), mine: r.id === viewer.id }]
-      : [],
-  );
+  const validRows = rows.filter((r) => Boolean(r.rsvp?.wish));
+  const names = getRandomBeeNames(validRows.length);
+  const bees: BeeWallEntry[] = validRows.map((r, i) => ({
+    key: opaqueKey(r.id),
+    name: names[i] ?? beeAlias(r.id),
+    wish: r.rsvp!.wish!,
+    at: r.rsvp!.updatedAt.toISOString(),
+    mine: r.id === viewer.id,
+  }));
 
   return NextResponse.json(bees, { headers: { "Cache-Control": "private, no-store" } });
 }

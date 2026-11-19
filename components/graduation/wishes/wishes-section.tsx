@@ -9,6 +9,7 @@ import { HoneycombViewport } from "./honeycomb-viewport";
 import type { HoneycombLayout } from "./honeycomb-layout";
 import { WishPostcard, WISH_CARD_ID } from "./wish-postcard";
 import { wishAccent, type CardStyle, type CellStyle, type WishBee } from "./types";
+import { getRandomBeeNames } from "@/lib/bee-alias";
 import type { BeeWallEntry } from "@/app/api/bee-wall/route";
 
 /** "idle" until the first answer arrives; a refetch keeps showing the current bees meanwhile. */
@@ -18,19 +19,24 @@ const CELL_STYLE: CellStyle = "tone";
 const LAYOUT: HoneycombLayout = "organic";
 const CARD_STYLE: CardStyle = "index";
 
-function toWishBee(row: BeeWallEntry, index: number): WishBee {
-  const { name } = row;
+function toWishBee(row: BeeWallEntry, index: number, name?: string): WishBee {
+  const beeName = name ?? row.name;
   const d = new Date(row.at);
   const pad = (v: number) => String(v).padStart(2, "0");
   return {
     key: row.key,
     mine: row.mine,
-    name,
-    init: (name.split(" ")[1]?.[0] ?? name[0]).toUpperCase(),
+    name: beeName,
+    init: (beeName.split(" ")[1]?.[0] ?? beeName[0]).toUpperCase(),
     date: Number.isNaN(d.getTime()) ? "··.··" : `${pad(d.getDate())}.${pad(d.getMonth() + 1)}`,
     msg: row.wish,
     ...wishAccent(index),
   };
+}
+
+function toWishBees(entries: BeeWallEntry[]): WishBee[] {
+  const names = getRandomBeeNames(entries.length);
+  return entries.map((row, index) => toWishBee(row, index, names[index]));
 }
 
 /** The bee wall's wishes; `null` without a guest, since only invited guests may read the wall. */
@@ -39,7 +45,7 @@ async function requestBees(guestId?: string): Promise<WishBee[] | null> {
   const res = await fetch("/api/bee-wall", { headers: { Authorization: `Bearer ${guestId}` } });
   if (!res.ok) throw new Error("fetch failed");
   const data: BeeWallEntry[] = await res.json();
-  return data.map(toWishBee);
+  return toWishBees(data);
 }
 
 function StatusNote({ tone, children }: { tone?: "error"; children: string }) {
