@@ -5,7 +5,7 @@ import type { Moment } from "@/lib/graduation/i18n";
 import type { MomentCarouselCopy } from "@/lib/graduation/i18n/types";
 import { RisoDialog } from "../../shared/riso-dialog";
 import { useMomentCarousel } from "../carousel/use-moment-carousel";
-import { MomentCarouselNav } from "../components/moment-carousel-nav";
+import { MomentCarouselNav } from "./moment-carousel-nav";
 import { MomentCarouselList } from "./moment-carousel-list";
 
 type Props = { moments: Moment[]; startIndex: number; copy: MomentCarouselCopy; onClose: () => void };
