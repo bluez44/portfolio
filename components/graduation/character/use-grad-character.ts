@@ -3,6 +3,7 @@
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { useEffect, useRef, type RefObject } from "react";
+import { useMediaQuery } from "@/lib/hooks/use-media-query";
 import { usePerfTier } from "@/lib/hooks/use-perf-tier";
 import { useReducedMotion } from "@/lib/hooks/use-reduced-motion";
 import { openedCardScale } from "../envelope/opened-card";
@@ -11,8 +12,11 @@ import { lineAt } from "./choreography/narration";
 import { measureEnvelopeWidth, measureSections } from "./choreography/measure-sections";
 import { besideX, envelopeSideX } from "./choreography/placement";
 import { usePaletteSync } from "../shared/three/use-palette-sync";
+import { MOBILE_BREAKPOINT } from "./scene/constants";
 import { createGradCharacter, type GradCharacter } from "./scene/grad-character";
 import type { Beat, NarrationKey } from "./types";
+
+const COMPACT_QUERY = `(max-width: ${MOBILE_BREAKPOINT - 1}px)`;
 
 export type CharacterFrameHandler = (head: { x: number; y: number }, line: NarrationKey | null) => void;
 
@@ -25,6 +29,7 @@ export function useGradCharacter(
   }: { scale?: number; onReady?: () => void; onFrame?: CharacterFrameHandler } = {},
 ) {
   const reduced = useReducedMotion();
+  const compact = useMediaQuery(COMPACT_QUERY);
   const tier = usePerfTier();
   const charRef = useRef<GradCharacter | null>(null);
   const onReadyRef = useRef(onReady);
@@ -36,7 +41,8 @@ export function useGradCharacter(
 
   useEffect(() => {
     const host = hostRef.current;
-    if (reduced || !host) {
+    // Read the query directly: the hook's first render uses the server snapshot, which would mount WebGL on phones.
+    if (reduced || compact || window.matchMedia(COMPACT_QUERY).matches || !host) {
       onReadyRef.current?.();
       return;
     }
@@ -84,7 +90,7 @@ export function useGradCharacter(
       character.dispose();
       charRef.current = null;
     };
-  }, [hostRef, reduced, scale, tier]);
+  }, [hostRef, reduced, compact, scale, tier]);
 
   usePaletteSync(charRef);
 }

@@ -101,7 +101,7 @@ export const NarratorBubble = forwardRef<NarratorBubbleHandle, Props>(function N
     <div
       ref={rootRef}
       aria-live="polite"
-      className="pointer-events-none fixed top-0 left-0 z-30 transition-opacity duration-200"
+      className="pointer-events-none fixed top-0 left-0 z-30 transition-opacity duration-200 max-[759px]:hidden"
       style={{ opacity: 0 }}
     >
       <div className="relative max-w-[calc(100vw-24px)] rounded-xl border-[1.5px] border-ink bg-paper px-4 py-2 text-[14px] font-medium text-ink shadow-[2px_2px_0_var(--ink)]">

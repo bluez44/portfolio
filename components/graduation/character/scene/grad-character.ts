@@ -9,7 +9,7 @@ import { createMeshKit } from "./mesh-kit";
 import { applyPose, type PoseState } from "./pose";
 import { buildRig } from "./rig";
 import type { Beat } from "../types";
-import { CAMERA_Y, CAMERA_Z, FOV, INITIAL_POSE, MOBILE_BREAKPOINT, MOBILE_SCALE } from "./constants";
+import { CAMERA_Y, CAMERA_Z, FOV, INITIAL_POSE } from "./constants";
 
 export type GradCharacter = {
   frame(time: number, scrollY: number): void;
@@ -71,7 +71,7 @@ export function createGradCharacter(host: HTMLElement, opts: { scale: number; ti
         camera.updateProjectionMatrix();
         view.halfH = CAMERA_Z * Math.tan(((FOV / 2) * Math.PI) / 180);
         view.halfW = view.halfH * camera.aspect;
-        view.scale = opts.scale * (w < MOBILE_BREAKPOINT ? MOBILE_SCALE : 1);
+        view.scale = opts.scale;
         beats = nextBeats;
       },
       applyPalette(p) {
