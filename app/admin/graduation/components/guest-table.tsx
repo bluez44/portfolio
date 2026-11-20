@@ -39,6 +39,8 @@ export function GuestTable({ guests, placeholders }: GuestTableProps) {
               <th className="px-4 py-3">Khách mời</th>
               <th className="px-4 py-3">Guest ID (UUID) & Slug</th>
               <th className="px-4 py-3">Trạng thái RSVP</th>
+              <th className="px-4 py-3">Contact</th>
+              <th className="px-4 py-3">Reason</th>
               <th className="px-4 py-3">Lời chúc</th>
               <th className="px-4 py-3">Custom Content</th>
               <th className="px-4 py-3 text-right">Thao tác</th>
@@ -47,7 +49,7 @@ export function GuestTable({ guests, placeholders }: GuestTableProps) {
           <tbody className="divide-y divide-zinc-800/80 text-zinc-300">
             {guests.length === 0 ? (
               <tr>
-                <td colSpan={6} className="py-8 text-center text-zinc-500">
+                <td colSpan={8} className="py-8 text-center text-zinc-500">
                   Chưa có khách mời nào. Nhấn &ldquo;Thêm khách mời mới&rdquo; để bắt đầu.
                 </td>
               </tr>
@@ -97,6 +99,32 @@ export function GuestTable({ guests, placeholders }: GuestTableProps) {
                         </div>
                       ) : (
                         <span className="text-[11px] text-zinc-500 italic">Chưa phản hồi</span>
+                      )}
+                    </td>
+
+                    <td className="px-4 py-3.5 max-w-[180px]">
+                      {guest.rsvpStatus === "yes" && guest.rsvpContact ? (
+                        <span
+                          className="line-clamp-2 font-mono text-[11px] text-zinc-300 break-words"
+                          title={guest.rsvpContact}
+                        >
+                          {guest.rsvpContact}
+                        </span>
+                      ) : (
+                        <span className="text-[11px] text-zinc-600">—</span>
+                      )}
+                    </td>
+
+                    <td className="px-4 py-3.5 max-w-[200px]">
+                      {guest.rsvpStatus === "no" && guest.rsvpReason ? (
+                        <div
+                          className="line-clamp-2 text-[11px] text-zinc-300 break-words"
+                          title={guest.rsvpReason}
+                        >
+                          {guest.rsvpReason}
+                        </div>
+                      ) : (
+                        <span className="text-[11px] text-zinc-600">—</span>
                       )}
                     </td>
 

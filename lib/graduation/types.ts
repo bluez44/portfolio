@@ -23,6 +23,8 @@ export type GuestListItem = GuestRecord & {
   rsvpStatus: RsvpStatus | null;
   rsvpUpdatedAt: string | null;
   rsvpWish: string | null;
+  rsvpContact: string | null;
+  rsvpReason: string | null;
 };
 
 /** Validated data written by admin create/update. */

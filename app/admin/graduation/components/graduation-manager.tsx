@@ -19,7 +19,9 @@ export function GraduationManager({ initialGuests, placeholders }: { initialGues
         search === "" ||
         g.name.toLowerCase().includes(search.toLowerCase()) ||
         g.slug.toLowerCase().includes(search.toLowerCase()) ||
-        g.id.toLowerCase().includes(search.toLowerCase());
+        g.id.toLowerCase().includes(search.toLowerCase()) ||
+        (g.rsvpContact ? g.rsvpContact.toLowerCase().includes(search.toLowerCase()) : false) ||
+        (g.rsvpReason ? g.rsvpReason.toLowerCase().includes(search.toLowerCase()) : false);
 
       const matchRsvp =
         filterRsvp === "all" ||
