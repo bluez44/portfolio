@@ -5,6 +5,7 @@ import { Tape } from "../../shared/tape";
 import { memoryLayout } from "../finale/memory-layout";
 import { pickMemories } from "../finale/pick-memories";
 import type { FinaleProfile } from "../finale/profile";
+import type { MemoryTarget } from "../moment-viewer/memory-viewer";
 import { MemoryPolaroid } from "./memory-polaroid";
 
 /**
@@ -12,42 +13,52 @@ import { MemoryPolaroid } from "./memory-polaroid";
  * finale timeline shifts the layer to the viewport's left edge and owns each photo's transform:
  * centring on its spot, tilt and the way in). The together photo comes last so it paints on top.
  * At most `profile.maxMemories` photos are shown, sampled evenly across the timeline.
+ * With `onOpen` (phones) every photo is a button above the note that opens the memory.
  */
-type Props = { memories: Moment[]; together?: string; guestName: string; profile: FinaleProfile };
+type Props = { memories: Moment[]; together?: string; guestName: string; profile: FinaleProfile; onOpen?: (target: MemoryTarget) => void };
 
-export function FinaleMemoryPhotos({ memories, together, guestName, profile }: Props) {
+const LAYER = "pointer-events-none absolute top-0 left-0 h-0 w-screen lite:filter-none!";
+
+export function FinaleMemoryPhotos({ memories, together, guestName, profile, onOpen }: Props) {
   const { met: t } = useCopy();
   const list = pickMemories(
-    memories.filter((m) => m.image.trim() !== ""),
+    memories.map((moment, index) => ({ moment, index })).filter(({ moment }) => moment.image.trim() !== ""),
     profile.maxMemories,
   );
   const layout = useMemo(() => memoryLayout(list.length, profile), [list.length, profile]);
   if (list.length === 0 && !together) return null;
+  const interactive = Boolean(onOpen);
+  const small = profile.layout === "bands";
+  const layerProps = { "data-memory-layer": "", "aria-hidden": interactive ? undefined : true, style: { filter: "brightness(var(--memory-brightness))" } };
   return (
     <>
-      {/* Background layer: memory photos stay behind the finale card (z-0 < card z-10) */}
+      {/* Behind the finale card (z-0 < card z-10), or above it while the photos are tappable */}
       {list.length > 0 && (
-        <div
-          data-memory-layer
-          aria-hidden
-          className="pointer-events-none absolute top-0 left-0 z-0 h-0 w-screen lite:filter-none!"
-          style={{ filter: "brightness(var(--memory-brightness))" }}
-        >
-          {list.map((m, i) => (
-            <MemoryPolaroid key={i} slot={layout.slots[i]} image={m.image} caption={`${m.year} · ${m.title}`} />
+        <div {...layerProps} className={`${LAYER} ${interactive ? "z-20" : "z-0"}`}>
+          {list.map(({ moment: m, index }, i) => (
+            <MemoryPolaroid
+              key={index}
+              slot={layout.slots[i]}
+              image={m.image}
+              caption={`${m.year} · ${m.title}`}
+              small={small}
+              onOpen={onOpen && (() => onOpen({ kind: "moment", index }))}
+            />
           ))}
         </div>
       )}
-      {/* Foreground layer: only together photo sits on top of the finale card (z-20 > card z-10) */}
+      {/* The together photo always sits on top of the finale card (z-20 > card z-10) */}
       {together && (
-        <div
-          data-memory-layer
-          aria-hidden
-          className="pointer-events-none absolute top-0 left-0 z-20 h-0 w-screen lite:filter-none!"
-          style={{ filter: "brightness(var(--memory-brightness))" }}
-        >
-          <MemoryPolaroid slot={layout.together} image={together} caption={t.togetherCaption(guestName)} together>
-            <Tape color="canary" width={72} height={22} rotate={38} className="z-10" style={{ top: -8, left: "auto", right: -20, marginLeft: 0 }} />
+        <div {...layerProps} className={`${LAYER} z-20`}>
+          <MemoryPolaroid
+            slot={layout.together}
+            image={together}
+            caption={t.togetherCaption(guestName)}
+            together
+            small={small}
+            onOpen={onOpen && (() => onOpen({ kind: "together" }))}
+          >
+            <Tape color="canary" width={small ? 40 : 72} height={small ? 14 : 22} rotate={38} className="z-10" style={{ top: -8, left: "auto", right: -20, marginLeft: 0 }} />
           </MemoryPolaroid>
         </div>
       )}

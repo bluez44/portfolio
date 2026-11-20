@@ -22,21 +22,29 @@ const scrollerCenter = (list: HTMLElement) => list.getBoundingClientRect().left 
 
 const cardsIn = (list: HTMLElement) => Array.from(list.querySelectorAll<HTMLElement>(SELECTORS.moment));
 
+/** Scrolls `list` so `card` sits at its centre. */
+function centerCard(list: HTMLElement, card: HTMLElement, behavior: ScrollBehavior): void {
+  const offset = centerOf(card.getBoundingClientRect()) - scrollerCenter(list);
+  list.scrollTo({ left: list.scrollLeft + offset, behavior });
+}
+
 /**
- * Phone carousel of moment cards: while `enabled`, the card nearest the scroller's centre is
- * focused (its `--a` rises toward 1, which lifts the card and its text) as the list scrolls
- * sideways. `go` steps to a neighbouring card. The trail drives `--a` instead on wider screens.
+ * Carousel of moment cards: the card nearest the scroller's centre is focused (its `--a` rises
+ * toward 1, which lifts the card and its text) as the list scrolls sideways. It opens on
+ * `startIndex`; `go` steps to a neighbouring card.
  */
-export function useMomentCarousel(listRef: RefObject<HTMLElement | null>, enabled: boolean): MomentCarousel {
+export function useMomentCarousel(listRef: RefObject<HTMLElement | null>, startIndex = 0): MomentCarousel {
   const reduced = useReducedMotion();
-  const [active, setActive] = useState(0);
+  const [active, setActive] = useState(startIndex);
   const [count, setCount] = useState(0);
 
   useEffect(() => {
     const list = listRef.current;
-    if (!enabled || !list) return;
+    if (!list) return;
     const cards = cardsIn(list);
     setCount(cards.length);
+    const start = cards[stepIndex(startIndex, 0, cards.length)];
+    if (start) centerCard(list, start, "auto");
 
     let frame = 0;
     const update = () => {
@@ -59,7 +67,7 @@ export function useMomentCarousel(listRef: RefObject<HTMLElement | null>, enable
       list.removeEventListener("scroll", schedule);
       window.removeEventListener("resize", schedule);
     };
-  }, [listRef, enabled]);
+  }, [listRef, startIndex]);
 
   const go = useCallback(
     (step: number) => {
@@ -67,9 +75,7 @@ export function useMomentCarousel(listRef: RefObject<HTMLElement | null>, enable
       if (!list) return;
       const cards = cardsIn(list);
       const target = cards[stepIndex(active, step, cards.length)];
-      if (!target) return;
-      const offset = centerOf(target.getBoundingClientRect()) - scrollerCenter(list);
-      list.scrollTo({ left: list.scrollLeft + offset, behavior: reduced ? "auto" : "smooth" });
+      if (target) centerCard(list, target, reduced ? "auto" : "smooth");
     },
     [listRef, active, reduced],
   );

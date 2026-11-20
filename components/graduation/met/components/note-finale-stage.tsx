@@ -2,6 +2,7 @@ import type { CSSProperties } from "react";
 import type { Moment } from "@/lib/graduation/i18n";
 import { ARRIVE_AT } from "../finale/constants";
 import type { FinaleProfile } from "../finale/profile";
+import type { MemoryTarget } from "../moment-viewer/memory-viewer";
 import { BkBadge } from "./bk-badge";
 import { FinaleMemoryPhotos } from "./finale-memory-photos";
 import { PersonalNoteCard } from "./personal-note-card";
@@ -13,9 +14,17 @@ const outlineStroke = { fill: "none", stroke: "var(--tomato)", strokeWidth: 3, s
  * The trail's last stop. The outer wrapper stays in flow (the trail measures it); the inner element
  * is what gets pinned, holding the scalable note with its outline and the docked badge.
  */
-type Props = { guestName: string; label: string; note: string; memories: Moment[]; together?: string; profile: FinaleProfile };
+type Props = {
+  guestName: string;
+  label: string;
+  note: string;
+  memories: Moment[];
+  together?: string;
+  profile: FinaleProfile;
+  onOpen?: (target: MemoryTarget) => void;
+};
 
-export function NoteFinaleStage({ guestName, label, note, memories, together, profile }: Props) {
+export function NoteFinaleStage({ guestName, label, note, memories, together, profile, onOpen }: Props) {
   return (
     <div data-trail-end className="relative">
       <div
@@ -23,7 +32,7 @@ export function NoteFinaleStage({ guestName, label, note, memories, together, pr
         className="relative motion-safe:min-h-(--pin-min-h)"
         style={{ "--pin-min-h": `${(1 - ARRIVE_AT) * 100}vh` } as CSSProperties}
       >
-        <FinaleMemoryPhotos memories={memories} together={together} guestName={guestName} profile={profile} />
+        <FinaleMemoryPhotos memories={memories} together={together} guestName={guestName} profile={profile} onOpen={onOpen} />
         <div data-note-scale className="relative z-10 origin-top">
           <PolaroidFrame guestName={guestName}>
             <PersonalNoteCard label={label} note={note} />

@@ -1,9 +1,9 @@
-/** Phone carousel of moment cards (below the 760px breakpoint). */
+/** Carousel of moment cards in the phone moment viewer. */
 
 /** Resting card width (vw); the side padding centres the first and last card. */
-export const CARD_VW = 76;
+export const CARD_VW = 72;
 /** Space (vw) between cards, wide enough that a focused card's lift never overlaps its neighbours. */
-export const GAP_VW = 5;
+export const GAP_VW = 12;
 /** Extra scale the focused card gains on phones (desktop keeps its own, smaller lift). */
 export const CARD_LIFT = 0.1;
 /** Extra scale the focused card's text gains: 1 + 0.25 = 1.25×. */

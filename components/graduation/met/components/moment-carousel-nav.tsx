@@ -5,15 +5,12 @@ import type { MomentCarousel } from "../carousel/use-moment-carousel";
 
 const pad = (n: number) => String(n).padStart(2, "0");
 
-/**
- * Phones only: previous / next arrows around a "03 / 16" counter and a progress bar for the
- * moment carousel. Hidden from the 760px breakpoint up, where the cards form a column.
- */
+/** Previous / next arrows around a "03 / 16" counter and a progress bar for the moment carousel. */
 export function MomentCarouselNav({ active, count, go, copy }: MomentCarousel & { copy: MomentCarouselCopy }) {
   if (count <= 1) return null;
   const progress = (active + 1) / count;
   return (
-    <div className="-mt-6 flex items-center gap-4 min-[760px]:hidden">
+    <div className="flex items-center gap-4 px-6">
       <RisoIconButton label={copy.prev} onClick={() => go(-1)} disabled={active <= 0} className="disabled:cursor-default disabled:opacity-40">
         <ChevronLeft size={18} aria-hidden />
       </RisoIconButton>
