@@ -1,6 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useRef, useState } from "react";
+import { DEFAULT_TRACK } from "@/lib/graduation/audio-track";
 import type { GraduationSettingsContent, GuestContent } from "@/lib/graduation/content/settings-types";
 import type { Lang } from "@/lib/graduation/i18n";
 import type { InvitationGuest, RsvpAnswer } from "@/lib/graduation/types";
@@ -20,7 +21,7 @@ import {
   useResourceGate,
 } from "./loading/resource-gate";
 import { MetSection } from "./met/met-section";
-import { useYouTubePlayer } from "./music/use-youtube-player";
+import { useAudioPlayer } from "./music/use-audio-player";
 import { useMusicCues } from "./music/use-music-cues";
 import { useTourSession } from "./ends/venue-guide/use-tour-session";
 import { RsvpSection } from "./rsvp/rsvp-section";
@@ -52,7 +53,7 @@ export function GraduationInvitation(props: InvitationProps) {
 }
 
 function InvitationContent({ guest, initialRsvp }: InvitationProps) {
-  const { owner, images, event } = useLang();
+  const { owner, images } = useLang();
   const gate = useResourceGate();
   const canvasHost = useRef<HTMLDivElement>(null);
   const bubbleRef = useRef<NarratorBubbleHandle>(null);
@@ -61,9 +62,9 @@ function InvitationContent({ guest, initialRsvp }: InvitationProps) {
     onFrame: (head, line) => bubbleRef.current?.update(head, line),
   });
   const [musicNote, flashMusicNote] = useTransientFlag(2600);
-  const musicId = event.musicYoutubeId;
-  const music = useYouTubePlayer(musicId, flashMusicNote, () => gate?.resolve(GATE.music));
-  const { status: musicStatus, mountRef: musicMountRef, start: startMusic, toggle: toggleMusic, fadePause, fadeResume } = music;
+  const musicTrack: string = DEFAULT_TRACK;
+  const music = useAudioPlayer(musicTrack, flashMusicNote, () => gate?.resolve(GATE.music));
+  const { status: musicStatus, start: startMusic, toggle: toggleMusic, fadePause, fadeResume } = music;
   const tour = useTourSession();
   useMusicCues({ ...music, status: tour.open ? "paused" : musicStatus });
 
@@ -84,8 +85,8 @@ function InvitationContent({ guest, initialRsvp }: InvitationProps) {
 
   // No track configured means there is no music to wait for.
   useEffect(() => {
-    if (!musicId) gate?.resolve(GATE.music);
-  }, [musicId, gate]);
+    if (!musicTrack) gate?.resolve(GATE.music);
+  }, [musicTrack, gate]);
 
   const [letterOpened, setLetterOpened] = useState(false);
   const onLetterOpened = useCallback(() => setLetterOpened(true), []);
@@ -133,9 +134,6 @@ function InvitationContent({ guest, initialRsvp }: InvitationProps) {
         </main>
 
         {/* <InvitationFooter /> */}
-        <div aria-hidden className="sr-only">
-          <div ref={musicMountRef} />
-        </div>
       </div>
     </div>
   );

@@ -3,7 +3,7 @@
 import { useEffect, useRef } from "react";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
-import type { MusicStatus } from "./use-youtube-player";
+import type { MusicStatus } from "./music-status";
 import { volumeFor, type CueId } from "./music-cues";
 
 export type FadeableAudio = {
