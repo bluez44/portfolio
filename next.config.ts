@@ -39,6 +39,7 @@ const nextConfig: NextConfig = {
     ];
   },
   images: {
+    qualities: [75, 90],
     localPatterns: [
       // Uploaded graduation photos are proxied with the blob pathname in the query string.
       { pathname: "/api/graduation/image" },

@@ -2,6 +2,7 @@ import Image from "next/image";
 import type { CSSProperties } from "react";
 import type { Moment } from "@/lib/graduation/i18n";
 import { Tape } from "../../shared/tape";
+import { PHOTO_QUALITY } from "../photo-quality";
 
 /** Extra scale a card gains when the badge reaches it. */
 const LIFT = 0.07;
@@ -35,7 +36,7 @@ export function MomentCard({ moment: m, side }: { moment: Moment; side: "left" |
     >
       <div aria-hidden className="absolute inset-0 overflow-hidden rounded-[13px]">
         <div className="absolute -inset-3" style={{ filter: "blur(calc((1 - var(--a)) * 7px)) saturate(calc(0.35 + var(--a) * 0.65))" }}>
-          <Image src={m.image} alt="" fill sizes="(min-width: 760px) 400px, 90vw" className="object-cover" />
+          <Image src={m.image} alt="" fill sizes="(min-width: 760px) 400px, 90vw" className="object-cover" quality={PHOTO_QUALITY} />
         </div>
         <div className="absolute inset-0 bg-paper" style={{ opacity: "calc((1 - var(--a)) * 0.55)" }} />
         <div className="absolute inset-x-0 bottom-0 h-[72%]" style={{ background: "linear-gradient(to bottom, transparent, var(--paper) )" }} />
