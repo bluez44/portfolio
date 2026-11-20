@@ -8,14 +8,14 @@ import { GROUP_TITLE_CLASS, PANEL_CLASS } from "../../components/fields/field-cl
 import { PlainField } from "../../components/fields/plain-field";
 import type { SettingsDraftAction } from "../draft/settings-draft";
 
-type LinkKey = "mapEmbedUrl" | "mapLinkUrl" | "virtualTourUrl" | "virtualTourOwnerUrl" | "musicYoutubeId";
+type LinkKey = "mapEmbedUrl" | "mapLinkUrl" | "virtualTourUrl" | "virtualTourOwnerUrl" | "musicTrack";
 
 const LINKS: { key: LinkKey; label: string; hint: string }[] = [
   { key: "mapEmbedUrl", label: "Link nhúng bản đồ", hint: "Google Maps → Chia sẻ → Nhúng bản đồ → chỉ dán phần trong src=\"…\"" },
   { key: "mapLinkUrl", label: "Link chỉ đường", hint: "Mở khi quét mã QR chỉ đường trên ảnh thiệp PNG" },
   { key: "virtualTourUrl", label: "Link tour 360°", hint: "Phải bắt đầu bằng https://" },
   { key: "virtualTourOwnerUrl", label: "Link đơn vị sở hữu tour", hint: "Dùng cho dòng ghi nguồn dưới tour" },
-  { key: "musicYoutubeId", label: "ID nhạc nền YouTube", hint: "11 ký tự sau ?v= trên link YouTube" },
+  { key: "musicTrack", label: "ID nhạc nền YouTube", hint: "11 ký tự sau ?v= trên link YouTube" },
 ];
 
 type EventPanelProps = { event?: EventSettings; errors: Record<string, string>; dispatch: Dispatch<SettingsDraftAction> };

@@ -11,7 +11,7 @@ describe("summarizeGuestContent", () => {
         en: { "card.greeting": "Hi" },
         moments: [{ year: "1", image: "" }],
         event: { start: "2026-12-20T07:00:00.000Z" },
-        music: { youtubeId: "abcdefghijk" },
+        music: { track: "audio/a.mp3" },
       }),
     ).toEqual({ envelope: true, met: true, moments: 1, ends: true, music: true });
   });

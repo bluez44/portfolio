@@ -38,6 +38,6 @@ describe("resolveEvent", () => {
   it("layers links and music", () => {
     expect(event.virtualTourUrl).toBe("https://tour.example");
     expect(event.mapEmbedUrl).toBe(GRADUATION_EVENT.mapEmbedUrl);
-    expect(resolveEvent({ times, vars: eventVars(times, "vi"), copy: GRADUATION_COPY.vi, musicOverride: "abcdefghijk" }).musicYoutubeId).toBe("abcdefghijk");
+    expect(resolveEvent({ times, vars: eventVars(times, "vi"), copy: GRADUATION_COPY.vi, musicOverride: "audio/other.mp3" }).musicTrack).toBe("audio/other.mp3");
   });
 });

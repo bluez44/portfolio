@@ -32,7 +32,12 @@ describe("resolveGraduationContent", () => {
     expect(copy.card.coverImage).toBe("/c.jpg");
   });
   it("uses the guest's music", () => {
-    const { event } = resolveGraduationContent({ lang: "vi", guest: { music: { youtubeId: "abcdefghijk" } } });
-    expect(event.musicYoutubeId).toBe("abcdefghijk");
+    const { event } = resolveGraduationContent({ lang: "vi", guest: { music: { track: "audio/other.mp3" } } });
+    expect(event.musicTrack).toBe("audio/other.mp3");
+  });
+  it("ignores legacy musicYoutubeId and falls back to the default track", () => {
+    const legacySettings = { event: { musicYoutubeId: "hfavqkBrwXI" } } as Parameters<typeof resolveGraduationContent>[0]["settings"];
+    const { event } = resolveGraduationContent({ lang: "vi", settings: legacySettings });
+    expect(event.musicTrack).toBe("audio/underwater-city.mp3");
   });
 });

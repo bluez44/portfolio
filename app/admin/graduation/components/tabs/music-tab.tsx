@@ -21,8 +21,8 @@ export function MusicTab({ music, onChange }: MusicTabProps) {
           <label className={LABEL_CLASS}>YouTube Video ID</label>
           <input
             type="text"
-            value={music.youtubeId || ""}
-            onChange={(e) => onChange({ ...music, youtubeId: e.target.value })}
+            value={music.track || ""}
+            onChange={(e) => onChange({ ...music, track: e.target.value })}
             placeholder="Ví dụ: dQw4w9WgXcQ (bỏ trống để dùng nhạc mặc định)"
             className={INPUT_CLASS}
           />

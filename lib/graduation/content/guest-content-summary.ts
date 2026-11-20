@@ -14,6 +14,6 @@ export function summarizeGuestContent(content: GuestContent | null): GuestConten
     met: hasText(content, GUEST_COPY_TABS.met) || Boolean(content.images?.togetherPhoto) || moments > 0,
     moments,
     ends: hasText(content, GUEST_COPY_TABS.ends) || Boolean(content.event?.start || content.event?.end),
-    music: Boolean(content.music?.youtubeId),
+    music: Boolean(content.music?.track),
   };
 }

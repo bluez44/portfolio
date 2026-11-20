@@ -26,6 +26,6 @@ export function resolveGraduationContent({ lang, settings, guest, envPhone = nul
   const vars = copyVars(lang, times, owner);
   const moments = resolveMoments({ lang, defaults: DEFAULT_MOMENTS[lang], settings: settings?.moments, guest: guest?.moments });
   const copy = composeCopy(layerTexts(lang, settings, guest), moments, vars, images.coverImage);
-  const event = resolveEvent({ times, vars, copy, settings: settings?.event, musicOverride: guest?.music?.youtubeId });
+  const event = resolveEvent({ times, vars, copy, settings: settings?.event, musicOverride: guest?.music?.track });
   return { copy, event, owner, images };
 }

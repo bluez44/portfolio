@@ -5,8 +5,8 @@ import {
   isoDateTimeSchema,
   mapEmbedUrlSchema,
   momentSchema,
+  musicSchema,
   ownerSchema,
-  youtubeIdSchema,
 } from "@/lib/graduation/content/settings-rules";
 
 describe("settings rules", () => {
@@ -25,9 +25,13 @@ describe("settings rules", () => {
     expect(isoDateTimeSchema.safeParse("2026-11-28T09:30:00.000Z").success).toBe(true);
     expect(isoDateTimeSchema.safeParse("28/11/2026").success).toBe(false);
   });
-  it("requires an 11-character YouTube id", () => {
-    expect(youtubeIdSchema.safeParse("hfavqkBrwXI").success).toBe(true);
-    expect(youtubeIdSchema.safeParse("https://youtu.be/hfavqkBrwXI").success).toBe(false);
+  it("validates audio track pathnames and ignores legacy youtube keys", () => {
+    expect(eventSchema.safeParse({ musicTrack: "audio/underwater-city.mp3" }).success).toBe(true);
+    expect(eventSchema.safeParse({ musicTrack: "hfavqkBrwXI" }).success).toBe(false);
+    expect(eventSchema.parse({ musicYoutubeId: "hfavqkBrwXI" })).toEqual({});
+    expect(musicSchema.safeParse({ track: "audio/other.mp3" }).success).toBe(true);
+    expect(musicSchema.safeParse({ track: "invalid" }).success).toBe(false);
+    expect(musicSchema.parse({ youtubeId: "hfavqkBrwXI" })).toEqual({});
   });
   it("requires a Google Maps embed link for the map", () => {
     expect(mapEmbedUrlSchema.safeParse("https://www.google.com/maps/embed?pb=1").success).toBe(true);

@@ -20,7 +20,7 @@ describe("convertLegacyGuestContent", () => {
     },
     ends: { venue: "Sân A", address: "Cổng 1", notes: ["A", "B"], dateShort: "20.12", timeRange: "14:00 — 16:00" },
     rsvp: { headingLead: "Bạn sẽ" },
-    music: { youtubeId: "hfavqkBrwXI" },
+    music: { track: "audio/other.mp3" },
   };
   const result = convertLegacyGuestContent(legacy);
 
@@ -45,6 +45,6 @@ describe("convertLegacyGuestContent", () => {
   it("moves images, moments and music", () => {
     expect(result.images).toEqual({ coverImage: "/c.jpg", togetherPhoto: "/us.jpg" });
     expect(result.moments).toEqual([{ year: "2023", image: "/d.jpg", color: "jade", vi: { title: "Đà Lạt", body: "Hồ" } }]);
-    expect(result.music).toEqual({ youtubeId: "hfavqkBrwXI" });
+    expect(result.music).toEqual({ track: "audio/other.mp3" });
   });
 });

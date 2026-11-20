@@ -1,3 +1,5 @@
+import { DEFAULT_TRACK } from "./audio-track";
+
 export type RisoColor = "tomato" | "blue" | "jade" | "canary";
 
 /** Language-neutral event data. UI copy lives in `./i18n`. */
@@ -18,7 +20,7 @@ export type GraduationEvent = {
   virtualTourUrl: string;
   /** The tour's owner, credited under it. */
   virtualTourOwnerUrl: string;
-  musicYoutubeId: string;
+  musicTrack: string;
 };
 
 export const eventLocation = (event: GraduationEvent) => `${event.venue}, ${event.address}`;
@@ -37,5 +39,5 @@ export const GRADUATION_EVENT: GraduationEvent = {
   mapLinkUrl: "https://www.google.com/maps?cid=6655704857669367757",
   virtualTourUrl: "https://hcmut.edu.vn/virtual-tour/",
   virtualTourOwnerUrl: "https://hcmut.edu.vn/",
-  musicYoutubeId: "hfavqkBrwXI", // owner fills in the YouTube video ID
+  musicTrack: DEFAULT_TRACK,
 };

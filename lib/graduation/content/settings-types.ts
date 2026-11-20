@@ -21,7 +21,7 @@ export type EventSettings = {
   mapLinkUrl?: string;
   virtualTourUrl?: string;
   virtualTourOwnerUrl?: string;
-  musicYoutubeId?: string;
+  musicTrack?: string;
 };
 
 export type ImageSettings = { coverImage?: string; togetherPhoto?: string; badgeLogo?: string };
@@ -40,5 +40,5 @@ export type GuestContent = {
   images?: Pick<ImageSettings, "coverImage" | "togetherPhoto">;
   moments?: SettingsMoment[];
   event?: Pick<EventSettings, "start" | "end">;
-  music?: { youtubeId?: string };
+  music?: { track?: string };
 };

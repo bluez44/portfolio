@@ -1,7 +1,6 @@
 "use client";
 
 import { useCallback, useEffect, useRef, useState } from "react";
-import { DEFAULT_TRACK } from "@/lib/graduation/audio-track";
 import type { GraduationSettingsContent, GuestContent } from "@/lib/graduation/content/settings-types";
 import type { Lang } from "@/lib/graduation/i18n";
 import type { InvitationGuest, RsvpAnswer } from "@/lib/graduation/types";
@@ -53,7 +52,7 @@ export function GraduationInvitation(props: InvitationProps) {
 }
 
 function InvitationContent({ guest, initialRsvp }: InvitationProps) {
-  const { owner, images } = useLang();
+  const { event, owner, images } = useLang();
   const gate = useResourceGate();
   const canvasHost = useRef<HTMLDivElement>(null);
   const bubbleRef = useRef<NarratorBubbleHandle>(null);
@@ -62,7 +61,7 @@ function InvitationContent({ guest, initialRsvp }: InvitationProps) {
     onFrame: (head, line) => bubbleRef.current?.update(head, line),
   });
   const [musicNote, flashMusicNote] = useTransientFlag(2600);
-  const musicTrack: string = DEFAULT_TRACK;
+  const musicTrack = event.musicTrack;
   const music = useAudioPlayer(musicTrack, flashMusicNote, () => gate?.resolve(GATE.music));
   const { status: musicStatus, start: startMusic, toggle: toggleMusic, fadePause, fadeResume } = music;
   const tour = useTourSession();

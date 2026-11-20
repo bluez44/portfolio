@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { trackPathnameSchema } from "../audio-track";
 
 export const LIMITS = {
   copy: 2000,
@@ -22,7 +23,6 @@ export const risoColorSchema = z.enum(["tomato", "blue", "jade", "canary"]);
 export const httpsUrlSchema = text(LIMITS.url).regex(/^https:\/\/\S+$/, "Link phải bắt đầu bằng https://");
 export const imageUrlSchema = text(LIMITS.url).regex(IMAGE_PATH, "Ảnh phải là đường dẫn bắt đầu bằng / hoặc https://");
 export const isoDateTimeSchema = z.iso.datetime({ error: "Thời gian không hợp lệ" });
-export const youtubeIdSchema = z.string().trim().regex(/^[A-Za-z0-9_-]{11}$/, "ID YouTube gồm đúng 11 ký tự");
 export const mapEmbedUrlSchema = httpsUrlSchema.refine(
   (value) => value.startsWith("https://www.google.com/maps/embed"),
   "Dùng link nhúng của Google Maps (Chia sẻ → Nhúng bản đồ)",
@@ -46,7 +46,7 @@ export const eventSchema = z.object({
   mapLinkUrl: optionalField(httpsUrlSchema),
   virtualTourUrl: optionalField(httpsUrlSchema),
   virtualTourOwnerUrl: optionalField(httpsUrlSchema),
-  musicYoutubeId: optionalField(youtubeIdSchema),
+  musicTrack: optionalField(trackPathnameSchema),
 });
 
 export const imagesSchema = z.object({
@@ -76,4 +76,4 @@ export const momentSchema = z.object({
 
 export const momentsSchema = z.array(momentSchema);
 
-export const musicSchema = z.object({ youtubeId: optionalField(youtubeIdSchema) });
+export const musicSchema = z.object({ track: optionalField(trackPathnameSchema) });

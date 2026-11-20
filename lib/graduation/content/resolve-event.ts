@@ -26,5 +26,5 @@ export const resolveEvent = ({ times, vars, copy, settings, musicOverride }: Eve
   mapLinkUrl: settings?.mapLinkUrl || GRADUATION_EVENT.mapLinkUrl,
   virtualTourUrl: settings?.virtualTourUrl || GRADUATION_EVENT.virtualTourUrl,
   virtualTourOwnerUrl: settings?.virtualTourOwnerUrl || GRADUATION_EVENT.virtualTourOwnerUrl,
-  musicYoutubeId: musicOverride || settings?.musicYoutubeId || GRADUATION_EVENT.musicYoutubeId,
+  musicTrack: musicOverride || settings?.musicTrack || GRADUATION_EVENT.musicTrack,
 });
