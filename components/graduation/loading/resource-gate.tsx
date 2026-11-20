@@ -18,6 +18,7 @@ export const GRADUATION_GATE_RESOURCES = {
   music: "music",
   map: "map",
   character: "character",
+  images: "images",
 } as const;
 
 type ResourceGateValue = {
@@ -42,19 +43,21 @@ const defaultOverlay = (ready: boolean) => <LoadingOverlay ready={ready} />;
 export function ResourceGateProvider({
   resources,
   overlay = defaultOverlay,
+  timeoutMs = READY_TIMEOUT_MS,
   children,
 }: {
   resources: readonly string[];
   overlay?: (ready: boolean) => ReactNode;
+  timeoutMs?: number;
   children: ReactNode;
 }) {
   const [pendingIds, setPendingIds] = useState<ReadonlySet<string>>(() => new Set(resources));
   const [timedOut, setTimedOut] = useState(false);
 
   useEffect(() => {
-    const t = window.setTimeout(() => setTimedOut(true), READY_TIMEOUT_MS);
+    const t = window.setTimeout(() => setTimedOut(true), timeoutMs);
     return () => window.clearTimeout(t);
-  }, []);
+  }, [timeoutMs]);
 
   const resolve = useCallback((id: string) => {
     setPendingIds((prev) => {

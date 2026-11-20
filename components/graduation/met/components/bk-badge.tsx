@@ -25,6 +25,7 @@ export function BkBadge({ docked = false }: { docked?: boolean }) {
           alt=""
           width={1822}
           height={1822}
+          sizes="40px"
           // next.config only allows local paths through the image optimizer.
           unoptimized={!badgeLogo.startsWith("/")}
           className="-translate-y-1 aspect-square"

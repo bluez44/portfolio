@@ -19,6 +19,7 @@ import {
   ResourceGateProvider,
   useResourceGate,
 } from "./loading/resource-gate";
+import { IMAGE_WAIT_MS, useImageGate } from "./loading/use-image-gate";
 import { MetSection } from "./met/met-section";
 import { useAudioPlayer } from "./music/use-audio-player";
 import { useMusicCues } from "./music/use-music-cues";
@@ -42,7 +43,7 @@ const NO_OVERLAY = () => null;
 export function GraduationInvitation(props: InvitationProps) {
   return (
     <LangProvider initialLang={props.initialLang} settings={props.settings} guest={props.guestContent} guestId={props.guest.id} envPhone={props.envPhone}>
-      <ResourceGateProvider resources={Object.values(GATE)} overlay={NO_OVERLAY}>
+      <ResourceGateProvider resources={Object.values(GATE)} overlay={NO_OVERLAY} timeoutMs={IMAGE_WAIT_MS}>
         <CourierBeeProvider>
           <InvitationContent {...props} />
         </CourierBeeProvider>
@@ -54,6 +55,8 @@ export function GraduationInvitation(props: InvitationProps) {
 function InvitationContent({ guest, initialRsvp }: InvitationProps) {
   const { event, owner, images } = useLang();
   const gate = useResourceGate();
+  const pageRef = useRef<HTMLDivElement>(null);
+  useImageGate(pageRef, () => gate?.resolve(GATE.images));
   const canvasHost = useRef<HTMLDivElement>(null);
   const bubbleRef = useRef<NarratorBubbleHandle>(null);
   useGradCharacter(canvasHost, {
@@ -101,7 +104,7 @@ function InvitationContent({ guest, initialRsvp }: InvitationProps) {
   }, []);
 
   return (
-    <div id="top" className="relative bg-paper font-sans text-ink">
+    <div ref={pageRef} id="top" className="relative bg-paper font-sans text-ink">
       <div aria-hidden className="pointer-events-none fixed inset-0 z-15" style={{ backgroundImage: "radial-gradient(var(--halftone) 1px, transparent 1px)", backgroundSize: "28px 28px" }} />
       <div ref={canvasHost} aria-hidden className="pointer-events-none fixed inset-0 z-25" />
       <NarratorBubble ref={bubbleRef} guestName={guest.name} />
