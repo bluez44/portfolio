@@ -15,7 +15,7 @@ const grow = (px: number) => `calc(${px}px * (1 + var(--a) * ${TEXT_LIFT}))`;
 export function MomentPrint({ moment: m }: { moment: Moment }) {
   const label = (
     <div
-      className="absolute bottom-0 left-0 m-8 flex max-w-[calc(100%-4rem)] flex-col gap-0.5 rounded-md border-[1.5px] border-ink px-2.5 py-1.5 shadow-(--offset-xs)"
+      className="absolute bottom-0 left-0 m-2 flex max-w-[calc(100%-4rem)] flex-col gap-0.5 rounded-md border-[1.5px] border-ink px-2.5 py-1.5 shadow-(--offset-xs)"
       style={{ background: `var(--${m.color})`, color: m.color === "canary" ? "var(--on-canary)" : "var(--paper)" }}
     >
       <span className="font-mono tracking-[0.22em] uppercase" style={{ fontSize: grow(9) }}>
