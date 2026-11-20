@@ -6,6 +6,7 @@ import type { RisoColor } from "@/lib/graduation/event";
 import type { Lang, Moment, MomentText } from "@/lib/graduation/i18n";
 import { ImageUploader } from "../image-uploader";
 import { BilingualRow } from "./bilingual-row";
+import { ImageFocusPicker } from "./image-focus-picker";
 import { INPUT_CLASS, LABEL_CLASS, SMALL_BUTTON_CLASS } from "./field-classes";
 import { setMomentText } from "./moment-list";
 import { PlainField } from "./plain-field";
@@ -27,6 +28,7 @@ type MomentEditorCardProps = {
 };
 
 export function MomentEditorCard({ index, count, moment, fallback, onChange, onMove, onRemove }: MomentEditorCardProps) {
+  const previewImage = moment.image || fallback.vi?.image;
   return (
     <div className="rounded-lg border border-zinc-800 bg-zinc-900/60 p-3.5">
       <div className="mb-3 flex items-center justify-between border-b border-zinc-800 pb-2">
@@ -64,6 +66,7 @@ export function MomentEditorCard({ index, count, moment, fallback, onChange, onM
       </div>
 
       <ImageUploader label="Ảnh thẻ kỷ niệm" value={moment.image} onChange={(image) => onChange({ image })} helperText="Bỏ trống để dùng ảnh mặc định của thẻ này" />
+      {previewImage && <ImageFocusPicker image={previewImage} value={moment.focus} onChange={(focus) => onChange({ focus })} />}
 
       {TEXT_PARTS.map(({ part, label, multiline }) => (
         <BilingualRow

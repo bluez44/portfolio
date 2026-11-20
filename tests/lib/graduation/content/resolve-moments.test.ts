@@ -36,4 +36,11 @@ describe("resolveMoments", () => {
     const result = resolveMoments({ lang: "vi", defaults: DEFAULT_MOMENTS.vi, guest });
     expect(result[5]).toMatchObject({ n: "06", title: "", body: "", image: "", color: "blue", rot: 1.4 });
   });
+  it("keeps the photo focus, the guest's over the shared one", () => {
+    const settings = [{ year: "2030", image: "/x.jpg", focus: { phone: "top" as const } }];
+    expect(resolveMoments({ lang: "en", defaults, settings })[0].focus).toEqual({ phone: "top" });
+    const guest = [{ year: "2031", image: "", focus: { wide: "bottom-right" as const } }];
+    expect(resolveMoments({ lang: "en", defaults, settings, guest })[0].focus).toEqual({ wide: "bottom-right" });
+    expect(resolveMoments({ lang: "en", defaults, settings, guest: [{ year: "2031", image: "" }] })[0].focus).toEqual({ phone: "top" });
+  });
 });

@@ -1,4 +1,5 @@
 import type { RisoColor } from "../event";
+import type { MomentFocus } from "../image-focus";
 import type { Lang, MomentText } from "../i18n/types";
 import type { CopyOverrides } from "./overrides";
 
@@ -8,6 +9,8 @@ export type SettingsMoment = {
   year: string;
   image: string;
   color?: RisoColor;
+  /** Where the photo is anchored when cropped, per layout. */
+  focus?: MomentFocus;
   vi?: LocalizedMomentText;
   en?: LocalizedMomentText;
 };

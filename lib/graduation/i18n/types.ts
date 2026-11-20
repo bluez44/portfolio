@@ -1,10 +1,11 @@
 import type { RisoColor } from "../event";
+import type { MomentFocus } from "../image-focus";
 import type { RsvpFieldError } from "../rsvp-schema";
 import type { NarrationKey } from "@/components/graduation/character/types";
 
 export type Lang = "vi" | "en";
 
-export type Moment = { n: string; year: string; title: string; body: string; color: RisoColor; rot: number; image: string };
+export type Moment = { n: string; year: string; title: string; body: string; color: RisoColor; rot: number; image: string; focus?: MomentFocus };
 export type MomentText = Pick<Moment, "title" | "body">;
 export type Heading = { lead: string; accent: string };
 export type Field = { label: string; placeholder: string };

@@ -42,5 +42,7 @@ describe("settings rules", () => {
   });
   it("lets a moment keep an empty image", () => {
     expect(momentSchema.parse({ year: "2024", image: "" })).toEqual({ year: "2024", image: "" });
+    expect(momentSchema.parse({ year: "2024", image: "", focus: { phone: "top-left", wide: "bottom" } }).focus).toEqual({ phone: "top-left", wide: "bottom" });
+    expect(momentSchema.safeParse({ year: "2024", image: "", focus: { phone: "middle" } }).success).toBe(false);
   });
 });

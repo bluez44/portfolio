@@ -28,6 +28,7 @@ export const momentsFromResolved = (fallback: Record<Lang, readonly Moment[]>): 
     year: moment.year,
     image: moment.image,
     color: moment.color,
+    focus: moment.focus,
     vi: { title: moment.title, body: moment.body },
     en: { title: fallback.en[i]?.title ?? "", body: fallback.en[i]?.body ?? "" },
   }));

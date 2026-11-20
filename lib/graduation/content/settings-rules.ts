@@ -1,5 +1,6 @@
 import { z } from "zod";
 import { trackPathnameSchema } from "../audio-track";
+import { IMAGE_FOCI } from "../image-focus";
 
 export const LIMITS = {
   copy: 2000,
@@ -70,6 +71,7 @@ export const momentSchema = z.object({
     .max(LIMITS.url)
     .refine((value) => value === "" || IMAGE_PATH.test(value), "Ảnh phải là đường dẫn bắt đầu bằng / hoặc https://"),
   color: risoColorSchema.optional(),
+  focus: z.object({ phone: z.enum(IMAGE_FOCI).optional(), wide: z.enum(IMAGE_FOCI).optional() }).optional(),
   vi: momentTextSchema.optional(),
   en: momentTextSchema.optional(),
 });

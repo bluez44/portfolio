@@ -28,6 +28,7 @@ export function resolveMoments({ lang, defaults, settings, guest }: MomentsInput
       image: moment.image || base?.image || "",
       color: moment.color ?? style.color,
       rot: style.rot,
+      focus: moment.focus ?? shared?.[i]?.focus,
     };
   });
 }
