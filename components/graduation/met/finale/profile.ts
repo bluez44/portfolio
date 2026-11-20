@@ -10,8 +10,6 @@ export type FinaleProfile = {
   extraVhPerMemory: number;
   /** Ceiling on the pin length (without `batch`). */
   maxVh: number;
-  /** Most memory photos shown around the note; `Infinity` shows them all. */
-  maxMemories: number;
   /** How phone-width photos are placed: on a ring around the note, or in a pile above and below it (see pile-layout). */
   layout: "ring" | "pile";
   /** How far (share of the viewport height) a photo rises as it fades in; `null` rises from below the viewport. */
@@ -20,8 +18,8 @@ export type FinaleProfile = {
   batch: number | null;
 };
 
-export const WIDE_FINALE: FinaleProfile = { baseVh: 2.8, extraVhPerMemory: 0.35, maxVh: 8, maxMemories: Infinity, layout: "ring", rise: null, batch: null };
+export const WIDE_FINALE: FinaleProfile = { baseVh: 2.8, extraVhPerMemory: 0.35, maxVh: 8, layout: "ring", rise: null, batch: null };
 
-export const COMPACT_FINALE: FinaleProfile = { baseVh: 1.8, extraVhPerMemory: 0, maxVh: 1.8, maxMemories: Infinity, layout: "pile", rise: 0.06, batch: 4 };
+export const COMPACT_FINALE: FinaleProfile = { baseVh: 1.8, extraVhPerMemory: 0, maxVh: 1.8, layout: "pile", rise: 0.06, batch: 4 };
 
 export const finaleProfile = (compact: boolean): FinaleProfile => (compact ? COMPACT_FINALE : WIDE_FINALE);

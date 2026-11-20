@@ -3,7 +3,6 @@ import type { Moment } from "@/lib/graduation/i18n";
 import { useCopy } from "../../i18n/lang-context";
 import { Tape } from "../../shared/tape";
 import { memoryLayout } from "../finale/memory-layout";
-import { pickMemories } from "../finale/pick-memories";
 import type { FinaleProfile } from "../finale/profile";
 import type { MemoryTarget } from "../moment-viewer/memory-viewer";
 import { MemoryPolaroid } from "./memory-polaroid";
@@ -11,8 +10,7 @@ import { MemoryPolaroid } from "./memory-polaroid";
 /**
  * Memory photos that gather around the pinned note, laid out across the full viewport width (the
  * finale timeline shifts the layers to the viewport's left edge and owns each photo's transform:
- * centring on its spot, tilt and the way in). At most `profile.maxMemories` photos are shown,
- * sampled evenly across the timeline.
+ * centring on its spot, tilt and the way in). Every moment with a photo is shown.
  * - Ring (wide): photos behind the note, the together photo in its own layer on top of it.
  * - Pile (phones): one layer above the note; later photos lie on top, the together photo above all.
  * With `onOpen` every photo is a button that opens the memory.
@@ -24,10 +22,7 @@ const LAYER_STYLE = { filter: "brightness(var(--memory-brightness))" };
 
 export function FinaleMemoryPhotos({ memories, together, guestName, profile, onOpen }: Props) {
   const { met: t } = useCopy();
-  const list = pickMemories(
-    memories.map((moment, index) => ({ moment, index })).filter(({ moment }) => moment.image.trim() !== ""),
-    profile.maxMemories,
-  );
+  const list = memories.map((moment, index) => ({ moment, index })).filter(({ moment }) => moment.image.trim() !== "");
   const layout = useMemo(() => memoryLayout(list.length, profile), [list.length, profile]);
   if (list.length === 0 && !together) return null;
   const pile = profile.layout === "pile";

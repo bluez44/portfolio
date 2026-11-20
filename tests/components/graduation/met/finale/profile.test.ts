@@ -44,7 +44,6 @@ describe("compact finale (phones)", () => {
     expect(together.phone).not.toBeNull();
   });
   it("shows every photo, in a pile, four at a time", () => {
-    expect(COMPACT_FINALE.maxMemories).toBe(Infinity);
     expect(COMPACT_FINALE.layout).toBe("pile");
     expect(COMPACT_FINALE.batch).toBe(4);
   });
