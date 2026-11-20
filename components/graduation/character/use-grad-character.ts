@@ -12,11 +12,9 @@ import { lineAt } from "./choreography/narration";
 import { measureEnvelopeWidth, measureSections } from "./choreography/measure-sections";
 import { besideX, envelopeSideX } from "./choreography/placement";
 import { usePaletteSync } from "../shared/three/use-palette-sync";
-import { MOBILE_BREAKPOINT } from "./scene/constants";
+import { COMPACT_QUERY } from "../shared/breakpoints";
 import { createGradCharacter, type GradCharacter } from "./scene/grad-character";
 import type { Beat, NarrationKey } from "./types";
-
-const COMPACT_QUERY = `(max-width: ${MOBILE_BREAKPOINT - 1}px)`;
 
 export type CharacterFrameHandler = (head: { x: number; y: number }, line: NarrationKey | null) => void;
 
