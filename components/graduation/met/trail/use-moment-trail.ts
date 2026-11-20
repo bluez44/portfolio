@@ -90,7 +90,7 @@ export function useMomentTrail(rootRef: RefObject<HTMLElement | null>, reduced: 
     // would measure without its spacing and run a pin's length too early.
     ScrollTrigger.sort();
     requestRefresh();
-    const stopSpin = startBadgeSpin(trail.spinners);
+    const stopSpin = startBadgeSpin(trail.spinners, root);
     const stopObserving = observeLayout(root);
 
     // Re-lay paths from fresh layout before ScrollTrigger re-measures (resize, fonts, images).
