@@ -35,7 +35,7 @@ export function MetSection({ guestName, togetherPhoto }: { guestName: string; to
           <p className="m-0 max-w-[52ch] text-[17px] leading-[1.72] text-pretty text-ink-2">{t.intro}</p>
         </div>
 
-        <MomentList moments={t.moments} variant="trail" />
+        <MomentList moments={t.moments} />
 
         <NoteFinaleStage
           guestName={guestName}
