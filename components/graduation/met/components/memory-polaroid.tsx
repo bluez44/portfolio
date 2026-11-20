@@ -1,6 +1,7 @@
 import Image from "next/image";
 import type { CSSProperties, ReactNode } from "react";
-import { FOCUS_CLASS, focusVars, type MomentFocus } from "@/lib/graduation/image-focus";
+import type { MomentFocus } from "@/lib/graduation/image-focus";
+import { FOCUS_CLASS, focusVars } from "../../shared/image-focus-style";
 import { ARRIVE_AT, type MemorySlot } from "../finale/constants";
 import { PHOTO_QUALITY } from "../photo-quality";
 

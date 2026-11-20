@@ -1,6 +1,6 @@
 import type { CSSProperties } from "react";
 import type { Moment } from "@/lib/graduation/i18n";
-import { FOCUS_CLASS, focusVars } from "@/lib/graduation/image-focus";
+import { FOCUS_CLASS, focusVars } from "../../shared/image-focus-style";
 import { CARD_LIFT, CARD_VW, TEXT_LIFT } from "../carousel/constants";
 import { PolaroidPrint } from "../components/polaroid-print";
 

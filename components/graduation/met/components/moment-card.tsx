@@ -1,7 +1,7 @@
 import Image from "next/image";
 import type { CSSProperties } from "react";
 import type { Moment } from "@/lib/graduation/i18n";
-import { FOCUS_CLASS, focusVars } from "@/lib/graduation/image-focus";
+import { FOCUS_CLASS, focusVars } from "../../shared/image-focus-style";
 import { Tape } from "../../shared/tape";
 import { PHOTO_QUALITY } from "../photo-quality";
 
