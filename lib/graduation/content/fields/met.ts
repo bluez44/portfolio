@@ -10,4 +10,7 @@ export const MET_FIELDS = [
   field("met.defaultNote", "Lời nhắn cá nhân", { kind: "textarea" }),
   field("met.togetherCaption", "Chú thích ảnh chụp chung", { call: "name" }),
   field("met.polaroidCaption", "Chú thích khung polaroid", { call: "name" }),
+  field("met.carousel.label", "Tên carousel cột mốc (điện thoại)"),
+  field("met.carousel.prev", "Nút kỷ niệm trước (điện thoại)"),
+  field("met.carousel.next", "Nút kỷ niệm sau (điện thoại)"),
 ];

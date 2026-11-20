@@ -6,17 +6,24 @@ import { useScrollReveal } from "@/lib/hooks/use-scroll-reveal";
 import { useCopy } from "../i18n/lang-context";
 import { GraduationSection } from "../shared/graduation-section";
 import { SectionHeading } from "../shared/section-heading";
+import { useCompactLayout } from "../shared/use-compact-layout";
+import { useMomentCarousel } from "./carousel/use-moment-carousel";
 import { BkBadge } from "./components/bk-badge";
-import { MomentCard } from "./components/moment-card";
+import { MomentCarouselNav } from "./components/moment-carousel-nav";
+import { MomentList } from "./components/moment-list";
 import { NoteFinaleStage } from "./components/note-finale-stage";
 import { TrailLine } from "./components/trail-line";
+import { finaleProfile } from "./finale/profile";
 import { useMomentTrail } from "./trail/use-moment-trail";
 
 export function MetSection({ guestName, togetherPhoto }: { guestName: string; togetherPhoto?: string }) {
   const trailRef = useRef<HTMLDivElement>(null);
+  const listRef = useRef<HTMLOListElement>(null);
   const headRef = useScrollReveal<HTMLDivElement>();
   const reduced = useReducedMotion();
-  useMomentTrail(trailRef, reduced);
+  const compact = useCompactLayout();
+  useMomentTrail(trailRef, reduced, compact);
+  const carousel = useMomentCarousel(listRef, compact);
   const { met: t } = useCopy();
 
   return (
@@ -30,11 +37,8 @@ export function MetSection({ guestName, togetherPhoto }: { guestName: string; to
           <p className="m-0 max-w-[52ch] text-[17px] leading-[1.72] text-pretty text-ink-2">{t.intro}</p>
         </div>
 
-        <ol className="m-0 flex list-none flex-col gap-32 p-0">
-          {t.moments.map((m, i) => (
-            <MomentCard key={m.n} moment={m} side={i % 2 === 0 ? "left" : "right"} />
-          ))}
-        </ol>
+        <MomentList ref={listRef} moments={t.moments} label={t.carousel.label} focusable={compact} />
+        <MomentCarouselNav {...carousel} copy={t.carousel} />
 
         <NoteFinaleStage
           guestName={guestName}
@@ -42,6 +46,7 @@ export function MetSection({ guestName, togetherPhoto }: { guestName: string; to
           note={t.defaultNote}
           memories={reduced ? [] : t.moments}
           together={togetherPhoto}
+          profile={finaleProfile(compact)}
         />
       </div>
     </GraduationSection>

@@ -46,6 +46,7 @@ export const viTexts: CopyTexts = {
     togetherCaption: "Mình & {name}",
     polaroidCaption: "{name} · {year}",
     defaultNote: "Ở đâu đó trên hành trình ấy, mình đã gặp bạn. Cảm ơn vì đã là một phần của câu chuyện.",
+    carousel: { label: "Các cột mốc", prev: "Kỷ niệm trước", next: "Kỷ niệm sau" },
   },
   ends: {
     heading: { lead: "Và rồi,", accent: "tốt nghiệp." },

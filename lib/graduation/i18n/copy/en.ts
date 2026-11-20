@@ -46,6 +46,7 @@ export const enTexts: CopyTexts = {
     togetherCaption: "Us · {name}",
     polaroidCaption: "{name} · {year}",
     defaultNote: "Somewhere along the way, I met you. Thank you for being part of the story.",
+    carousel: { label: "Milestones", prev: "Previous moment", next: "Next moment" },
   },
   ends: {
     heading: { lead: "And then,", accent: "graduation." },

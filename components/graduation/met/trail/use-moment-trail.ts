@@ -8,6 +8,7 @@ import { useLayoutEffect, type RefObject } from "react";
 import { usePerfTier } from "@/lib/hooks/use-perf-tier";
 import { queryMomentTrail } from "../elements";
 import { createFinaleTimeline } from "../finale/finale-timeline";
+import { finaleProfile } from "../finale/profile";
 import { layoutOutline } from "../finale/layout-outline";
 import { handOverBadge } from "./badge-handover";
 import { startBadgeSpin } from "./badge-spin";
@@ -24,8 +25,10 @@ import { createTrailTimeline } from "./trail-timeline";
  * 2. On reaching the personal note it hands over to a badge docked there, and the note pins while
  *    its outline draws and it grows.
  * The badge spins slowly at rest and faster with scroll speed.
+ * On phones (`compact`) the cards form a carousel that focuses them itself (use-moment-carousel), so
+ * the trail skips them, and the finale uses the shorter phone profile.
  */
-export function useMomentTrail(rootRef: RefObject<HTMLElement | null>, reduced: boolean) {
+export function useMomentTrail(rootRef: RefObject<HTMLElement | null>, reduced: boolean, compact: boolean) {
   const tier = usePerfTier();
   useLayoutEffect(() => {
     const root = rootRef.current;
@@ -36,13 +39,14 @@ export function useMomentTrail(rootRef: RefObject<HTMLElement | null>, reduced: 
 
     let metrics: TrailMetrics = { docks: [], stops: [], total: 0 };
     const layout = () => {
-      metrics = layoutTrail(trail);
+      metrics = layoutTrail(trail, { dockCards: !compact });
       layoutOutline(finale);
     };
     layout();
 
     if (reduced) {
       handOverBadge(trail.rider, finale.dock, true);
+      if (compact) return;
       setCardsActivation(trail.cards, 1);
       return () => setCardsActivation(trail.cards, 0);
     }
@@ -60,10 +64,10 @@ export function useMomentTrail(rootRef: RefObject<HTMLElement | null>, reduced: 
     };
     const ctx = gsap.context(() => {
       createTrailTimeline(trail, keysFor, (fraction) => {
-        activateCards(trail.cards, metrics, fraction);
+        if (!compact) activateCards(trail.cards, metrics, fraction);
         handOverBadge(trail.rider, finale.dock, fraction >= ARRIVED_AT);
       });
-      createFinaleTimeline({ ...finale, tier });
+      createFinaleTimeline({ ...finale, tier, profile: finaleProfile(compact) });
     }, root);
     const stopSpin = startBadgeSpin(trail.spinners);
 
@@ -73,7 +77,7 @@ export function useMomentTrail(rootRef: RefObject<HTMLElement | null>, reduced: 
       ScrollTrigger.removeEventListener("refreshInit", layout);
       stopSpin();
       ctx.revert();
-      setCardsActivation(trail.cards, 0);
+      if (!compact) setCardsActivation(trail.cards, 0);
     };
-  }, [rootRef, reduced, tier]);
+  }, [rootRef, reduced, compact, tier]);
 }

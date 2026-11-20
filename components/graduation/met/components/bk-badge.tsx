@@ -6,6 +6,7 @@ import { useImages } from "../../i18n/lang-context";
  * - rider: travels the trail (MotionPath owns its transform); hidden until placed on the path.
  * - docked: sits on the pinned note card's top edge once the rider arrives, so it stays with the card.
  * Only the inner `[data-badge-spin]` disc rotates, leaving the outer transform free for the path.
+ * On phones the rider passes behind the moment carousel, so it never covers a card's text.
  */
 export function BkBadge({ docked = false }: { docked?: boolean }) {
   const { badgeLogo } = useImages();
@@ -13,7 +14,7 @@ export function BkBadge({ docked = false }: { docked?: boolean }) {
     <div
       {...(docked ? { "data-trail-dock": "" } : { "data-trail-badge": "" })}
       aria-hidden
-      className={`pointer-events-none absolute top-0 z-16 grid h-14 w-14 place-items-center rounded-full border-[1.5px] border-ink bg-blue invisible ${docked ? "left-1/2 -mt-8 -ml-6" : "left-0"}`}
+      className={`pointer-events-none absolute top-0 z-16 grid h-14 w-14 place-items-center rounded-full border-[1.5px] border-ink bg-blue invisible ${docked ? "left-1/2 -mt-8 -ml-6" : "left-0 max-[759px]:z-0"}`}
       style={{ boxShadow: "var(--offset-sm)" }}
     >
       <div

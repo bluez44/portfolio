@@ -33,10 +33,11 @@ function noteTop({ root, end }: TrailElements): Point {
 
 /**
  * Lays the trail out from current layout: from the section's top-right corner it winds past each
- * card and ends on the note. Measures where each card sits along it.
+ * card and ends on the note. Measures where each card sits along it. Without `dockCards` (the phone
+ * carousel, whose cards sit side by side) it runs straight from the corner to the note.
  */
-export function layoutTrail(els: TrailElements): TrailMetrics {
-  const docks = cardDocks(els);
+export function layoutTrail(els: TrailElements, { dockCards = true }: { dockCards?: boolean } = {}): TrailMetrics {
+  const docks = dockCards ? cardDocks(els) : [];
   const { d, prefixes } = buildTrail([sectionCorner(els), ...docks, noteTop(els)], els.root.offsetWidth);
 
   const { base, draw } = els;

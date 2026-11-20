@@ -12,6 +12,8 @@ export type Field = { label: string; placeholder: string };
 export type GuideTab = { tab: string; frameTitle: string };
 /** Attribution for content owned by someone else. */
 export type Credit = { label: string; owner: string };
+/** Phone carousel of moment cards: its accessible name and the arrow buttons. */
+export type MomentCarouselCopy = { label: string; prev: string; next: string };
 export type VenueGuideCopy = { tabsLabel: string; loading: string; map: GuideTab & { hint: string; touchHint: string }; tour: GuideTab & { load: string; open: string; credit: Credit } };
 
 export type GraduationCopy = {
@@ -31,7 +33,7 @@ export type GraduationCopy = {
   };
   card: { greeting: string; body: string; author: string; keepScrolling: string; coverAlt: string; coverImage?: string };
   stage: { coverKicker: string; cover: Heading; greetKicker: string; scrollHint: string };
-  met: { heading: Heading; intro: string; moments: Moment[]; andYou: (name: string) => string; defaultNote: string; togetherCaption: (name: string) => string; polaroidCaption: (name: string) => string };
+  met: { heading: Heading; intro: string; moments: Moment[]; andYou: (name: string) => string; defaultNote: string; togetherCaption: (name: string) => string; polaroidCaption: (name: string) => string; carousel: MomentCarouselCopy };
   ends: {
     heading: Heading;
     intro: string;

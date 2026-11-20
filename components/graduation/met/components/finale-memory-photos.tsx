@@ -3,17 +3,25 @@ import type { Moment } from "@/lib/graduation/i18n";
 import { useCopy } from "../../i18n/lang-context";
 import { Tape } from "../../shared/tape";
 import { memoryLayout } from "../finale/memory-layout";
+import { pickMemories } from "../finale/pick-memories";
+import type { FinaleProfile } from "../finale/profile";
 import { MemoryPolaroid } from "./memory-polaroid";
 
 /**
  * Memory photos that gather around the pinned note, laid out across the full viewport width (the
  * finale timeline shifts the layer to the viewport's left edge and owns each photo's transform:
  * centring on its spot, tilt and the way in). The together photo comes last so it paints on top.
+ * At most `profile.maxMemories` photos are shown, sampled evenly across the timeline.
  */
-export function FinaleMemoryPhotos({ memories, together, guestName }: { memories: Moment[]; together?: string; guestName: string }) {
+type Props = { memories: Moment[]; together?: string; guestName: string; profile: FinaleProfile };
+
+export function FinaleMemoryPhotos({ memories, together, guestName, profile }: Props) {
   const { met: t } = useCopy();
-  const list = memories.filter((m) => m.image.trim() !== "");
-  const layout = useMemo(() => memoryLayout(list.length), [list.length]);
+  const list = pickMemories(
+    memories.filter((m) => m.image.trim() !== ""),
+    profile.maxMemories,
+  );
+  const layout = useMemo(() => memoryLayout(list.length, profile), [list.length, profile]);
   if (list.length === 0 && !together) return null;
   return (
     <>
