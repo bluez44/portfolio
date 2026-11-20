@@ -5,12 +5,16 @@ import { FOCUS_CLASS, focusVars } from "../../shared/image-focus-style";
 import { Tape } from "../../shared/tape";
 import { PHOTO_QUALITY } from "../photo-quality";
 
-/** Extra scale a card gains when the badge reaches it. */
+/** Extra scale a card gains when the badge reaches it… */
 const LIFT = 0.07;
+/** …and its text on top of that. The text is laid out at 1 / (1 + TEXT_LIFT) of the card's width and
+ * grows from its bottom-left corner, so at full focus it fills the card without reflowing. */
+const TEXT_LIFT = 0.2;
 
 /**
  * `--a` (0..1) is driven by the BK badge's distance along the trail (see use-moment-trail):
- * 0 = idle (blurred, veiled photo), 1 = focused (sharp photo, card lifted and straightened).
+ * 0 = idle (blurred, veiled photo), 1 = focused (sharp photo, card lifted and straightened, larger
+ * text on a backdrop tinted with the moment's colour so it stays readable over the sharp photo).
  */
 export function MomentCard({ moment: m, side }: { moment: Moment; side: "left" | "right" }) {
   return (
@@ -30,9 +34,19 @@ export function MomentCard({ moment: m, side }: { moment: Moment; side: "left" |
         </div>
         <div className="absolute inset-0 bg-paper" style={{ opacity: "calc((1 - var(--a)) * 0.55)" }} />
         <div className="absolute inset-x-0 bottom-0 h-[72%]" style={{ background: "linear-gradient(to bottom, transparent, var(--paper) )" }} />
+        <div
+          className="absolute inset-x-0 bottom-0 h-[45%]"
+          style={{
+            opacity: "var(--a)",
+            background: `linear-gradient(to bottom, transparent, color-mix(in oklab, var(--paper) 88%, var(--${m.color})) 55%)`,
+          }}
+        />
       </div>
       <Tape color={m.color} width={84} height={22} rotate={-4} className="-top-3 z-1" />
-      <div className="relative flex flex-col gap-2.5 px-5.5 pt-6.5 pb-5.5">
+      <div
+        className="relative flex origin-bottom-left flex-col gap-2.5 px-5.5 pt-6.5 pb-5.5"
+        style={{ width: `calc(100% / ${1 + TEXT_LIFT})`, scale: `calc(1 + var(--a) * ${TEXT_LIFT})` }}
+      >
         <span className="font-mono text-[11px] tracking-[0.24em] uppercase" style={{ color: `var(--${m.color})` }}>
           {m.year}
         </span>
