@@ -2,6 +2,7 @@
 
 import gsap from "gsap";
 import { createContext, useCallback, useContext, useEffect, useRef, type ReactNode } from "react";
+import { usePerfTier } from "@/lib/hooks/use-perf-tier";
 import { useReducedMotion } from "@/lib/hooks/use-reduced-motion";
 import { readRisoPalette } from "../shared/three/palette";
 import { usePaletteSync } from "../shared/three/use-palette-sync";
@@ -41,13 +42,14 @@ export function CourierBeeProvider({ children }: { children: ReactNode }) {
   const beeRef = useRef<BeeState | null>(null);
   const tlRef = useRef<gsap.core.Timeline | null>(null);
   const reduced = useReducedMotion();
+  const tier = usePerfTier();
 
   useEffect(() => {
     const host = hostRef.current;
     if (reduced || !host) return;
     let scene: BeeScene;
     try {
-      scene = createBeeScene(host, readRisoPalette());
+      scene = createBeeScene(host, readRisoPalette(), tier);
     } catch {
       return;
     }
@@ -64,7 +66,7 @@ export function CourierBeeProvider({ children }: { children: ReactNode }) {
       scene.dispose();
       sceneRef.current = null;
     };
-  }, [reduced]);
+  }, [reduced, tier]);
   usePaletteSync(sceneRef);
 
   const canFly = useCallback(() => sceneRef.current !== null, []);

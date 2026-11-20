@@ -1,13 +1,15 @@
 import * as THREE from "three";
+import type { PerfTier } from "@/lib/browser/perf-tier";
 import { targetPose } from "../choreography/target-pose";
 import { createGeometryCache } from "../../shared/three/geometry-cache";
 import { readRisoPalette, type RisoPalette } from "../../shared/three/palette";
+import { createRenderer } from "../../shared/three/renderer";
 import { applyPalette, createMaterials, disposeMaterials, type Materials } from "./materials";
 import { createMeshKit } from "./mesh-kit";
 import { applyPose, type PoseState } from "./pose";
 import { buildRig } from "./rig";
 import type { Beat } from "../types";
-import { CAMERA_Y, CAMERA_Z, FOV, INITIAL_POSE, MAX_PIXEL_RATIO, MOBILE_BREAKPOINT, MOBILE_SCALE } from "./constants";
+import { CAMERA_Y, CAMERA_Z, FOV, INITIAL_POSE, MOBILE_BREAKPOINT, MOBILE_SCALE } from "./constants";
 
 export type GradCharacter = {
   frame(time: number, scrollY: number): void;
@@ -18,13 +20,12 @@ export type GradCharacter = {
   dispose(): void;
 };
 
-export function createGradCharacter(host: HTMLElement, opts: { scale: number }): GradCharacter {
+export function createGradCharacter(host: HTMLElement, opts: { scale: number; tier: PerfTier }): GradCharacter {
   // Throws if WebGL is unavailable; nothing has been created yet, so there is nothing to dispose.
-  const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+  const renderer = createRenderer(opts.tier);
   let materials: Materials | undefined;
 
   try {
-    renderer.setPixelRatio(Math.min(window.devicePixelRatio, MAX_PIXEL_RATIO));
     host.appendChild(renderer.domElement);
 
     const scene = new THREE.Scene();

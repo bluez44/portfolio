@@ -3,7 +3,6 @@ import type { PoseState } from "./pose";
 export const FOV = 28;
 export const CAMERA_Y = 1.2;
 export const CAMERA_Z = 14;
-export const MAX_PIXEL_RATIO = 2;
 
 /** Below this viewport width (px) the character is drawn smaller. */
 export const MOBILE_BREAKPOINT = 760;

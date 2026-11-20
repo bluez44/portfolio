@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef, type RefObject } from "react";
+import { usePerfTier } from "@/lib/hooks/use-perf-tier";
 import { readRisoPalette } from "../shared/three/palette";
 import { usePaletteSync } from "../shared/three/use-palette-sync";
 import { createBeeIntroScene, type BeeIntroScene, type BeeScreenPosition } from "./bee-intro-scene";
@@ -15,6 +16,7 @@ type Refs = {
 
 /** Mounts the intro's 3D scene into `hostRef`; the ref stays null when WebGL is unavailable. */
 export function useBeeIntroScene(hostRef: RefObject<HTMLElement | null>, { reduced, timecodeRef, grainRef, onFlap, onPosition }: Refs) {
+  const tier = usePerfTier();
   const sceneRef = useRef<BeeIntroScene | null>(null);
   const onFlapRef = useRef(onFlap);
   const onPositionRef = useRef(onPosition);
@@ -32,6 +34,7 @@ export function useBeeIntroScene(hostRef: RefObject<HTMLElement | null>, { reduc
     try {
       scene = createBeeIntroScene(host, {
         reduced,
+        tier,
         palette: readRisoPalette(),
         timecode: timecodeRef.current,
         grain: grainRef.current,
@@ -47,7 +50,7 @@ export function useBeeIntroScene(hostRef: RefObject<HTMLElement | null>, { reduc
       scene.dispose();
       sceneRef.current = null;
     };
-  }, [hostRef, timecodeRef, grainRef, reduced]);
+  }, [hostRef, timecodeRef, grainRef, reduced, tier]);
   usePaletteSync(sceneRef);
 
   return sceneRef;

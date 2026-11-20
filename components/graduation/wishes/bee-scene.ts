@@ -1,7 +1,9 @@
 import * as THREE from "three";
+import type { PerfTier } from "@/lib/browser/perf-tier";
 import { createBeeModel } from "../shared/three/bee-model";
 import { createGeometryCache } from "../shared/three/geometry-cache";
 import type { RisoPalette } from "../shared/three/palette";
+import { createRenderer } from "../shared/three/renderer";
 import { toonGradient } from "../shared/three/toon";
 
 /** Screen-space position/state of the courier bee, mutated by the flight timeline. */
@@ -23,9 +25,8 @@ export type BeeScene = {
 };
 
 /** Toon-shaded 3D courier bee rendered full-screen in an orthographic camera (1 unit = 1 css px). */
-export function createBeeScene(host: HTMLElement, palette: RisoPalette): BeeScene {
-  const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
-  renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
+export function createBeeScene(host: HTMLElement, palette: RisoPalette, tier: PerfTier): BeeScene {
+  const renderer = createRenderer(tier);
   host.appendChild(renderer.domElement);
 
   const scene = new THREE.Scene();

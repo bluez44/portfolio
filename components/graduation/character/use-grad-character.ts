@@ -3,6 +3,7 @@
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { useEffect, useRef, type RefObject } from "react";
+import { usePerfTier } from "@/lib/hooks/use-perf-tier";
 import { useReducedMotion } from "@/lib/hooks/use-reduced-motion";
 import { openedCardScale } from "../envelope/opened-card";
 import { buildBeats } from "./choreography/beats";
@@ -24,6 +25,7 @@ export function useGradCharacter(
   }: { scale?: number; onReady?: () => void; onFrame?: CharacterFrameHandler } = {},
 ) {
   const reduced = useReducedMotion();
+  const tier = usePerfTier();
   const charRef = useRef<GradCharacter | null>(null);
   const onReadyRef = useRef(onReady);
   const onFrameRef = useRef(onFrame);
@@ -41,7 +43,7 @@ export function useGradCharacter(
     gsap.registerPlugin(ScrollTrigger);
     let character: GradCharacter;
     try {
-      character = createGradCharacter(host, { scale });
+      character = createGradCharacter(host, { scale, tier });
     } catch (error) {
       console.error("Graduation character disabled (WebGL unavailable):", error);
       onReadyRef.current?.();
@@ -82,7 +84,7 @@ export function useGradCharacter(
       character.dispose();
       charRef.current = null;
     };
-  }, [hostRef, reduced, scale]);
+  }, [hostRef, reduced, scale, tier]);
 
   usePaletteSync(charRef);
 }

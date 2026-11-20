@@ -1,9 +1,11 @@
 import gsap from "gsap";
 import * as THREE from "three";
+import type { PerfTier } from "@/lib/browser/perf-tier";
 import { seededRandom } from "@/lib/graduation/seeded-random";
 import { BEE_HEAD_RADIUS, createBeeModel } from "../shared/three/bee-model";
 import { createGeometryCache } from "../shared/three/geometry-cache";
 import type { RisoPalette } from "../shared/three/palette";
+import { createRenderer } from "../shared/three/renderer";
 import { toonGradient } from "../shared/three/toon";
 import { applyFilmGrain, formatTimecode, shiftFilmGrain } from "./film-effects";
 import { hexGrid } from "./hex-grid";
@@ -26,6 +28,7 @@ export type BeeScreenPosition = { x: number; y: number; head: { x: number; y: nu
 
 type Options = {
   reduced: boolean;
+  tier: PerfTier;
   palette: RisoPalette;
   timecode?: HTMLElement | null;
   grain?: HTMLElement | null;
@@ -36,8 +39,7 @@ type Options = {
 /** The design's "bee" intro: a toon honeycomb with a sleeping bee, a drifting camera and film overlays. */
 export function createBeeIntroScene(host: HTMLElement, opts: Options): BeeIntroScene {
   const rnd = seededRandom(7);
-  const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
-  renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
+  const renderer = createRenderer(opts.tier);
   renderer.domElement.style.cssText = "display:block;width:100%;height:100%;";
   host.appendChild(renderer.domElement);
 
