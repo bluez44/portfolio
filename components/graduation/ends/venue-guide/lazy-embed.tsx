@@ -1,5 +1,6 @@
 "use client";
 
+import { Play } from "lucide-react";
 import { useState, type ReactNode } from "react";
 import { RisoButton } from "@/components/ui/riso/button";
 import { EmbedFrame } from "./embed-frame";
@@ -32,7 +33,7 @@ export function LazyEmbed({
       <RisoButton
         variant="primary"
         size="md"
-        icon="▶"
+        icon={<Play size={15} strokeWidth={2.2} />}
         onClick={() => {
           onLoadClick?.();
           setLoaded(true);
