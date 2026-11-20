@@ -14,7 +14,7 @@ import { MemoryPolaroid } from "./memory-polaroid";
  * centring on its spot, tilt and the way in). At most `profile.maxMemories` photos are shown,
  * sampled evenly across the timeline.
  * - Ring (wide): photos behind the note, the together photo in its own layer on top of it.
- * - Bands (phones): one layer above the note, so the rows stack by their own order.
+ * - Pile (phones): one layer above the note; later photos lie on top, the together photo above all.
  * With `onOpen` every photo is a button that opens the memory.
  */
 type Props = { memories: Moment[]; together?: string; guestName: string; profile: FinaleProfile; onOpen?: (target: MemoryTarget) => void };
@@ -30,7 +30,7 @@ export function FinaleMemoryPhotos({ memories, together, guestName, profile, onO
   );
   const layout = useMemo(() => memoryLayout(list.length, profile), [list.length, profile]);
   if (list.length === 0 && !together) return null;
-  const small = profile.layout === "bands";
+  const pile = profile.layout === "pile";
   const layer = (className: string, children: ReactNode) => (
     <div data-memory-layer aria-hidden={onOpen ? undefined : true} className={`${LAYER} ${className}`} style={LAYER_STYLE}>
       {children}
@@ -43,9 +43,9 @@ export function FinaleMemoryPhotos({ memories, together, guestName, profile, onO
       slot={layout.slots[i]}
       image={m.image}
       focus={m.focus}
-      year={m.year}
+      year={pile ? undefined : m.year}
       title={m.title}
-      small={small}
+      small={pile}
       onOpen={onOpen && (() => onOpen({ kind: "moment", index }))}
     />
   ));
@@ -56,14 +56,13 @@ export function FinaleMemoryPhotos({ memories, together, guestName, profile, onO
       image={together}
       title={t.togetherCaption(guestName)}
       together
-      small={small}
       onOpen={onOpen && (() => onOpen({ kind: "together" }))}
     >
-      <Tape color="canary" width={small ? 40 : 72} height={small ? 14 : 22} rotate={38} className="z-10" style={{ top: -8, left: "auto", right: -20, marginLeft: 0 }} />
+      <Tape color="canary" width={72} height={22} rotate={38} className="z-10" style={{ top: -8, left: "auto", right: -20, marginLeft: 0 }} />
     </MemoryPolaroid>
   );
 
-  if (small) return layer("z-20", [...photos, togetherPhoto]);
+  if (pile) return layer("z-20", [...photos, togetherPhoto]);
   return (
     <>
       {list.length > 0 && layer(onOpen ? "z-20" : "z-0", photos)}

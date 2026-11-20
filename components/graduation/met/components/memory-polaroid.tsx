@@ -8,11 +8,11 @@ type Props = {
   slot: MemorySlot;
   image: string;
   focus?: MomentFocus;
-  /** Shown above the title on phones, before it on wide screens. */
+  /** Shown before the title in the caption. */
   year?: string;
   title: string;
   together?: boolean;
-  /** Phone rows: a smaller square print whose chin stacks the year over the title. */
+  /** Phone pile: a smaller square print captioned with the title alone; its size and spot are set by place-pile. */
   small?: boolean;
   onOpen?: () => void;
   children?: ReactNode;
@@ -30,15 +30,14 @@ export function MemoryPolaroid({ slot, image, focus, year, title, together, smal
       data-memory-together={together || undefined}
       className={`absolute top-(--top-phone) left-[calc(50%+var(--x-phone))] m-0 rounded-[4px] border-[1.5px] border-ink bg-paper p-1.5 opacity-0 shadow-(--offset-sm) min-[760px]:top-(--top-wide) min-[760px]:left-[calc(50%+var(--x-wide))] min-[760px]:pb-8 ${
         small ? "" : "pb-6"
-      } ${together && !slot.band ? "z-20" : "z-1"}`}
+      } ${together ? "z-999" : "z-1"}`}
       style={
         {
           "--x-phone": `${slot.phone.x}vw`,
           "--x-wide": `${slot.wide.x}vw`,
-          "--top-phone": slot.band?.top ?? `${(slot.phone.rest - ARRIVE_AT) * 100}vh`,
+          "--top-phone": `${(slot.phone.rest - ARRIVE_AT) * 100}vh`,
           "--top-wide": `${(slot.wide.rest - ARRIVE_AT) * 100}vh`,
           width: slot.width,
-          zIndex: slot.band?.layer,
         } as CSSProperties
       }
     >
@@ -58,9 +57,8 @@ export function MemoryPolaroid({ slot, image, focus, year, title, together, smal
         />
       </div>
       {small ? (
-        <figcaption className="flex h-[29px] flex-col justify-center text-center leading-[1.15]">
-          {year && <span className="font-mono text-[8.5px] tracking-[0.16em] text-ink-3">{year}</span>}
-          <span className="truncate font-heading text-[10.5px] font-medium text-ink-2 italic">{title}</span>
+        <figcaption className="flex h-6 items-center justify-center px-0.5">
+          <span className="truncate font-heading text-[11px] font-medium text-ink-2 italic">{caption}</span>
         </figcaption>
       ) : (
         <figcaption className="absolute inset-x-2 bottom-0 flex h-6 items-center justify-center min-[760px]:h-8">

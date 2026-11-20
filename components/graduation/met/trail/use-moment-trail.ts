@@ -10,7 +10,7 @@ import { queryMomentTrail } from "../elements";
 import { createFinaleTimeline, restMemories } from "../finale/finale-timeline";
 import { finaleProfile } from "../finale/profile";
 import { layoutOutline } from "../finale/layout-outline";
-import { setNoteHeight } from "../finale/note-height";
+import { placePile } from "../finale/place-pile";
 import { handOverBadge } from "./badge-handover";
 import { startBadgeSpin } from "./badge-spin";
 import { activateCards, setCardsActivation } from "./card-activation";
@@ -43,14 +43,17 @@ export function useMomentTrail(rootRef: RefObject<HTMLElement | null>, reduced: 
     const layout = () => {
       metrics = layoutTrail(trail, { dockCards: !compact });
       layoutOutline(finale);
-      setNoteHeight(finale);
+      if (compact) placePile(finale);
     };
     layout();
 
     if (reduced) {
       handOverBadge(trail.rider, finale.dock, true);
       if (compact) {
-        const rest = () => restMemories(finale, tier);
+        const rest = () => {
+          placePile(finale);
+          restMemories(finale, tier);
+        };
         rest();
         window.addEventListener("resize", rest);
         return () => window.removeEventListener("resize", rest);

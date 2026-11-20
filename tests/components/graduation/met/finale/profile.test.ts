@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { finaleUnits, pinEnd, pinVh } from "@/components/graduation/met/finale/constants";
+import { BATCH_ENTER_UNITS, BATCH_GAP_UNITS, batchUnits, finaleUnits, pinEnd, pinVh } from "@/components/graduation/met/finale/constants";
 import { memorySchedule } from "@/components/graduation/met/finale/memory-layout";
 import { noteFinaleScroll } from "@/components/graduation/met/finale/note-finale";
 import { COMPACT_FINALE, WIDE_FINALE, finaleProfile } from "@/components/graduation/met/finale/profile";
@@ -12,6 +12,12 @@ describe("finaleProfile", () => {
 });
 
 describe("wide finale (desktop) keeps its pin length", () => {
+  it("dims each photo as the next one settles, the last one as the together photo does", () => {
+    const { enters, dims, together } = memorySchedule(5);
+    expect(dims[0][0]).toBe(enters[1][1]);
+    expect(dims[4][0]).toBe(together[1]);
+    for (const [from, to] of dims) expect(Number.isFinite(from) && to > from).toBe(true);
+  });
   it("grows with the memory count up to 8 viewports", () => {
     expect(pinVh(4)).toBeCloseTo(2.8);
     expect(pinVh(16)).toBeCloseTo(7);
@@ -27,13 +33,24 @@ describe("wide finale (desktop) keeps its pin length", () => {
 });
 
 describe("compact finale (phones)", () => {
-  it("stays short whatever the memory count", () => {
-    expect(pinVh(4, COMPACT_FINALE)).toBeLessThanOrEqual(2);
-    expect(pinVh(16, COMPACT_FINALE)).toBe(pinVh(4, COMPACT_FINALE));
+  it("pins long enough for every group, and no shorter than its base", () => {
+    expect(pinVh(1, COMPACT_FINALE)).toBe(COMPACT_FINALE.baseVh);
+    expect(pinVh(16, COMPACT_FINALE)).toBeGreaterThan(pinVh(8, COMPACT_FINALE));
+    expect(finaleUnits(16, COMPACT_FINALE)).toBeCloseTo(batchUnits(16, 4));
   });
-  it("shows every photo, in rows", () => {
+  it("shows every photo, in a pile, four at a time", () => {
     expect(COMPACT_FINALE.maxMemories).toBe(Infinity);
-    expect(COMPACT_FINALE.layout).toBe("bands");
+    expect(COMPACT_FINALE.layout).toBe("pile");
+    expect(COMPACT_FINALE.batch).toBe(4);
+  });
+  it("gives each group its rise, then a gap before the next, dimming it as the next one rises", () => {
+    const units = finaleUnits(16, COMPACT_FINALE);
+    const { enters, dims, together } = memorySchedule(16, COMPACT_FINALE);
+    expect(enters[3][1]).toBe(enters[0][1]);
+    expect((enters[0][1] - enters[0][0]) * units).toBeCloseTo(BATCH_ENTER_UNITS);
+    expect((enters[4][0] - enters[0][1]) * units).toBeCloseTo(BATCH_GAP_UNITS);
+    expect(dims[0][0]).toBeCloseTo(enters[4][0]);
+    expect(dims[15][0]).toBeCloseTo(together[0]);
   });
   it("schedules every photo inside the timeline, in order", () => {
     const { enters, together, revealAt } = memorySchedule(16, COMPACT_FINALE);

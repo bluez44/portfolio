@@ -20,8 +20,23 @@ export const GROW_EASE = "power1.inOut";
 
 export const BASE_MEMORIES = 4;
 
-export const pinVh = (memoryCount: number, profile: FinaleProfile = WIDE_FINALE): number =>
-  Math.min(profile.maxVh, profile.baseVh + Math.max(0, memoryCount - BASE_MEMORIES) * profile.extraVhPerMemory);
+/** Timeline units before the first photo rises, and after the last one: a gap, then all clear until the pin releases. */
+export const FIRST_ENTER_UNITS = 0.07;
+export const REVEAL_GAP_UNITS = 0.07;
+export const REVEAL_HOLD_UNITS = 0.5;
+/** Photos arriving in groups (`profile.batch`): each group rises over this many units, then the next waits this long. */
+export const BATCH_ENTER_UNITS = 0.52;
+export const BATCH_GAP_UNITS = 0.2;
+
+/** Timeline units the grouped photos need: every group (the together photo last) with the gaps between them. */
+export const batchUnits = (memoryCount: number, size: number): number =>
+  FIRST_ENTER_UNITS + Math.ceil(memoryCount / size) * (BATCH_ENTER_UNITS + BATCH_GAP_UNITS) + BATCH_ENTER_UNITS + REVEAL_GAP_UNITS + REVEAL_HOLD_UNITS;
+
+/** Pin length (viewport heights); with groups it grows until every group gets its full time. */
+export const pinVh = (memoryCount: number, profile: FinaleProfile = WIDE_FINALE): number => {
+  if (profile.batch) return Math.max(profile.baseVh, (batchUnits(memoryCount, profile.batch) * PIN_VH) / (GROW + HOLD));
+  return Math.min(profile.maxVh, profile.baseVh + Math.max(0, memoryCount - BASE_MEMORIES) * profile.extraVhPerMemory);
+};
 /** Scale total units with pin length so scroll speed per timeline unit stays constant. */
 export const finaleUnits = (memoryCount: number, profile: FinaleProfile = WIDE_FINALE): number =>
   ((GROW + HOLD) * pinVh(memoryCount, profile)) / PIN_VH;
@@ -57,8 +72,6 @@ export type MemorySlot = {
   drift: number;
   spin: number;
   enter: readonly [number, number];
-  /** Phone rows (see band-layout): top edge relative to the note (CSS length, replaces `phone.rest`) and stacking order. */
-  band?: { top: string; layer: number };
 };
 
 export const MEMORY_WIDTHS = [
@@ -91,7 +104,8 @@ export const MEMORY_MOTION_RANGE = {
 export const TOGETHER_PHOTO: MemorySlot = {
   width: "clamp(145px, min(42vw, 30vh), 380px)",
   rot: 2,
-  phone: { x: 16, rest: 0.146 },
+  // On phones: right of the docked badge, so it never hides the caption, and clear of the note's text.
+  phone: { x: 20, rest: 0.12 },
   wide: { x: 14, rest: 0.095 },
   drift: -5,
   spin: 6,

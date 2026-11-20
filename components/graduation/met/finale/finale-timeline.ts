@@ -4,7 +4,6 @@ import { MOBILE_BREAKPOINT } from "../../shared/breakpoints";
 import { SELECTORS, type FinaleElements } from "../elements";
 import {
   ARRIVE_LINE,
-  DIM_UNITS,
   GROW,
   GROW_EASE,
   MEMORY_ENTER_FROM,
@@ -150,15 +149,12 @@ export function createFinaleTimeline({
     if (together) {
       enterPhoto(tl, together, layout.together, span, wide, look, profile.rise);
     }
+    // Without a together photo nothing arrives after the last one, so it stays clear.
     const dimmed = together ? memories : memories.slice(0, -1);
-    memories.forEach((el, i) => {
-      const nextEnter = layout.slots[i + 1]?.enter ?? (together ? layout.together : null);
-      if (nextEnter) {
-        dimPhoto(tl, el, span * nextEnter[1], DIM_UNITS, look);
-      }
-    });
+    const { dims, revealAt } = layout.schedule;
+    dimmed.forEach((el, i) => dimPhoto(tl, el, span * dims[i][0], span * (dims[i][1] - dims[i][0]), look));
     if (dimmed.length > 0) {
-      revealPhotos(tl, dimmed, span * layout.revealAt, REVEAL_UNITS, look);
+      revealPhotos(tl, dimmed, span * revealAt, REVEAL_UNITS, look);
     }
   }
 

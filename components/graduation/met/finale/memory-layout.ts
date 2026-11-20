@@ -1,7 +1,12 @@
 import { seededRandom } from "@/lib/graduation/seeded-random";
-import { bandLayout } from "./band-layout";
 import {
   ARRIVE_AT,
+  BATCH_ENTER_UNITS,
+  BATCH_GAP_UNITS,
+  DIM_UNITS,
+  FIRST_ENTER_UNITS,
+  REVEAL_GAP_UNITS,
+  REVEAL_HOLD_UNITS,
   MEMORY_JITTER,
   MEMORY_MOTION_RANGE,
   MEMORY_WIDTHS,
@@ -19,10 +24,7 @@ type PhoneZone = MemoryZone & { x: { phone: Range } };
 const LAYOUT_SEED = 42;
 const GOLDEN = 0.6180339887;
 const RING_START = 0.1;
-const FIRST_ENTER_UNITS = 0.07;
 const ENTER_UNITS = 1.05;
-const REVEAL_GAP_UNITS = 0.07;
-const REVEAL_HOLD_UNITS = 0.5;
 const WIDE_ZONES: readonly MemoryZone[] = Object.values(MEMORY_ZONES);
 const PHONE_ZONES: readonly PhoneZone[] = WIDE_ZONES.filter((z): z is PhoneZone => z.x.phone !== null);
 
@@ -82,47 +84,76 @@ export function memorySpots(count: number): Omit<MemorySlot, "enter">[] {
   });
 }
 
-export function memorySchedule(count: number, profile: FinaleProfile = WIDE_FINALE): {
-  enters: (readonly [number, number])[];
-  together: readonly [number, number];
+type Window = readonly [number, number];
+
+export type MemorySchedule = {
+  /** When each photo rises in, and the together photo after them (timeline fractions). */
+  enters: Window[];
+  together: Window;
+  /** When each photo dims as later ones arrive (the last one: as the together photo arrives). */
+  dims: Window[];
+  /** When every dimmed photo clears again. */
   revealAt: number;
-} {
+};
+
+/** Share of a group's rise by which its photos start one after another. */
+const BATCH_STAGGER = 0.12;
+
+export function memorySchedule(count: number, profile: FinaleProfile = WIDE_FINALE): MemorySchedule {
   // Convert fixed timeline-unit durations to fractions so each photo's scroll distance stays constant.
   const units = finaleUnits(count, profile);
   const firstStart = FIRST_ENTER_UNITS / units;
-  const enterSpan = ENTER_UNITS / units;
   const revealAt = 1 - REVEAL_HOLD_UNITS / units;
   const togetherEnd = revealAt - REVEAL_GAP_UNITS / units;
+  if (profile.batch) return batchSchedule(count, profile.batch, units, revealAt);
+
+  const enterSpan = ENTER_UNITS / units;
   const togetherStart = togetherEnd - enterSpan;
   const step = (togetherStart - firstStart) / Math.max(1, count);
-
   const enters = Array.from({ length: count }, (_, i) => {
     const start = firstStart + i * step;
     return [start, start + enterSpan] as const;
   });
-
-  return { enters, together: [togetherStart, togetherEnd], revealAt };
-}
-
-/** Share of the ring tilt kept in the rows, so a tilted corner adds little to the overlap. */
-const BAND_TILT = 0.35;
-
-/** Band layout on phones: each photo (the together photo last) takes a band spot and rises straight up. */
-function withBands(slots: Omit<MemorySlot, "enter">[]): Omit<MemorySlot, "enter">[] {
-  const bands = bandLayout(slots.length);
-  return slots.map((slot, i) => {
-    const { x, top, width, layer } = bands[i];
-    return { ...slot, width, rot: slot.rot * BAND_TILT, phone: { x, rest: ARRIVE_AT }, band: { top, layer }, drift: 0, spin: 0 };
+  const together = [togetherStart, togetherEnd] as const;
+  // Each photo dims once the next one has settled.
+  const dims = enters.map((_, i) => {
+    const at = (enters[i + 1] ?? together)[1];
+    return [at, at + DIM_UNITS / units] as const;
   });
+  return { enters, together, dims, revealAt };
 }
 
-export function memoryLayout(count: number, profile: FinaleProfile = WIDE_FINALE): { slots: MemorySlot[]; together: MemorySlot; revealAt: number } {
-  const ring = [...memorySpots(count), TOGETHER_PHOTO];
-  const spots = profile.layout === "bands" ? withBands(ring) : ring;
+/**
+ * Groups of `size` photos take turns (the together photo last): each rises over `BATCH_ENTER_UNITS`,
+ * the next waits `BATCH_GAP_UNITS` more, and a group dims as the next one rises.
+ */
+function batchSchedule(count: number, size: number, units: number, revealAt: number): MemorySchedule {
+  const groups = Math.ceil(count / size);
+  const rise = BATCH_ENTER_UNITS / units;
+  const groupStart = (g: number) => (FIRST_ENTER_UNITS + g * (BATCH_ENTER_UNITS + BATCH_GAP_UNITS)) / units;
+  const enters = Array.from({ length: count }, (_, i) => {
+    const g = Math.floor(i / size);
+    return [groupStart(g) + (i % size) * rise * BATCH_STAGGER, groupStart(g) + rise] as const;
+  });
+  const dims = enters.map((_, i) => {
+    const next = groupStart(Math.floor(i / size) + 1);
+    return [next, next + rise / 2] as const;
+  });
+  return { enters, together: [groupStart(groups), groupStart(groups) + rise], dims, revealAt };
+}
+
+/** Pile layout on phones: positions are measured at runtime (see place-pile); photos rise straight up. */
+function forPile(slots: Omit<MemorySlot, "enter">[]): Omit<MemorySlot, "enter">[] {
+  return slots.map((slot) => ({ ...slot, phone: { x: 0, rest: ARRIVE_AT }, drift: 0, spin: 0 }));
+}
+
+export function memoryLayout(count: number, profile: FinaleProfile = WIDE_FINALE): { slots: MemorySlot[]; together: MemorySlot; schedule: MemorySchedule } {
+  const ring = memorySpots(count);
+  const pile = profile.layout === "pile";
   const schedule = memorySchedule(count, profile);
   return {
-    slots: spots.slice(0, count).map((spot, i) => ({ ...spot, enter: schedule.enters[i] })),
-    together: { ...spots[count], enter: schedule.together },
-    revealAt: schedule.revealAt,
+    slots: (pile ? forPile(ring) : ring).map((spot, i) => ({ ...spot, enter: schedule.enters[i] })),
+    together: { ...TOGETHER_PHOTO, ...(pile ? { drift: 0, spin: 0 } : {}), enter: schedule.together },
+    schedule,
   };
 }
