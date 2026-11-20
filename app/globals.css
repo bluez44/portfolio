@@ -50,7 +50,6 @@
   --halo: var(--paper);
   --on-canary: var(--ink);
   --highlight: var(--canary);
-  --memory-brightness: 1;
 
   /* elevation — riso offset shadows (no blur, no glow) */
   --offset-sm: 3px 3px 0 var(--ink);
@@ -244,6 +243,10 @@
   [data-theme="dark"] body::before {
     mix-blend-mode: screen;
     opacity: 0.35;
+  }
+
+  [data-theme="dark"] [data-memory-layer] {
+    filter: brightness(var(--memory-brightness));
   }
 
   a {

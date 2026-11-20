@@ -18,7 +18,6 @@ import { MemoryPolaroid } from "./memory-polaroid";
 type Props = { memories: Moment[]; together?: string; guestName: string; profile: FinaleProfile; onOpen?: (target: MemoryTarget) => void };
 
 const LAYER = "pointer-events-none absolute top-0 left-0 h-0 w-screen lite:filter-none!";
-const LAYER_STYLE = { filter: "brightness(var(--memory-brightness))" };
 
 export function FinaleMemoryPhotos({ memories, together, guestName, profile, onOpen }: Props) {
   const { met: t } = useCopy();
@@ -27,7 +26,7 @@ export function FinaleMemoryPhotos({ memories, together, guestName, profile, onO
   if (list.length === 0 && !together) return null;
   const pile = profile.layout === "pile";
   const layer = (className: string, children: ReactNode) => (
-    <div data-memory-layer aria-hidden={onOpen ? undefined : true} className={`${LAYER} ${className}`} style={LAYER_STYLE}>
+    <div data-memory-layer aria-hidden={onOpen ? undefined : true} className={`${LAYER} ${className}`}>
       {children}
     </div>
   );
