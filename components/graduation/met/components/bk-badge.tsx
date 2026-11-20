@@ -15,7 +15,7 @@ export function BkBadge({ docked = false }: { docked?: boolean }) {
     <div
       {...(docked ? { "data-trail-dock": "" } : { "data-trail-badge": "" })}
       aria-hidden
-      className={`pointer-events-none absolute top-0 z-16 grid h-14 w-14 place-items-center rounded-full border-[1.5px] border-ink bg-blue invisible ${docked ? "left-1/2 -mt-7 -ml-7" : "left-0"}`}
+      className={`pointer-events-none absolute top-0 grid h-14 w-14 place-items-center rounded-full border-[1.5px] border-ink bg-blue invisible ${docked ? "left-1/2 z-30 -mt-7 -ml-7" : "left-0 z-16"}`}
       style={{ boxShadow: "var(--offset-sm)" }}
     >
       <div

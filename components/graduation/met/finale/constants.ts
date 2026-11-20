@@ -49,7 +49,17 @@ export const NOTE_MAX_SCALE = 1.25;
 type Spot = { x: number; rest: number };
 export type Range = readonly [min: number, max: number];
 export type MemoryZone = { axis: "x" | "rest"; weight: number; rest: Range; x: { phone: Range | null; wide: Range } };
-export type MemorySlot = { width: string; rot: number; phone: Spot; wide: Spot; drift: number; spin: number; enter: readonly [number, number] };
+export type MemorySlot = {
+  width: string;
+  rot: number;
+  phone: Spot;
+  wide: Spot;
+  drift: number;
+  spin: number;
+  enter: readonly [number, number];
+  /** Phone rows (see band-layout): top edge relative to the note (CSS length, replaces `phone.rest`) and stacking order. */
+  band?: { top: string; layer: number };
+};
 
 export const MEMORY_WIDTHS = [
   "clamp(100px, min(30vw, 20vh), 260px)",

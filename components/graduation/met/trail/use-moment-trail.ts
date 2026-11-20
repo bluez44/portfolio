@@ -10,6 +10,7 @@ import { queryMomentTrail } from "../elements";
 import { createFinaleTimeline, restMemories } from "../finale/finale-timeline";
 import { finaleProfile } from "../finale/profile";
 import { layoutOutline } from "../finale/layout-outline";
+import { setNoteHeight } from "../finale/note-height";
 import { handOverBadge } from "./badge-handover";
 import { startBadgeSpin } from "./badge-spin";
 import { activateCards, setCardsActivation } from "./card-activation";
@@ -42,6 +43,7 @@ export function useMomentTrail(rootRef: RefObject<HTMLElement | null>, reduced: 
     const layout = () => {
       metrics = layoutTrail(trail, { dockCards: !compact });
       layoutOutline(finale);
+      setNoteHeight(finale);
     };
     layout();
 

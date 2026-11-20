@@ -1,6 +1,7 @@
 import { seededRandom } from "@/lib/graduation/seeded-random";
 import { bandLayout } from "./band-layout";
 import {
+  ARRIVE_AT,
   MEMORY_JITTER,
   MEMORY_MOTION_RANGE,
   MEMORY_WIDTHS,
@@ -103,10 +104,16 @@ export function memorySchedule(count: number, profile: FinaleProfile = WIDE_FINA
   return { enters, together: [togetherStart, togetherEnd], revealAt };
 }
 
+/** Share of the ring tilt kept in the rows, so a tilted corner adds little to the overlap. */
+const BAND_TILT = 0.35;
+
 /** Band layout on phones: each photo (the together photo last) takes a band spot and rises straight up. */
 function withBands(slots: Omit<MemorySlot, "enter">[]): Omit<MemorySlot, "enter">[] {
   const bands = bandLayout(slots.length);
-  return slots.map((slot, i) => ({ ...slot, width: bands[i].width, phone: { x: bands[i].x, rest: bands[i].rest }, drift: 0, spin: 0 }));
+  return slots.map((slot, i) => {
+    const { x, top, width, layer } = bands[i];
+    return { ...slot, width, rot: slot.rot * BAND_TILT, phone: { x, rest: ARRIVE_AT }, band: { top, layer }, drift: 0, spin: 0 };
+  });
 }
 
 export function memoryLayout(count: number, profile: FinaleProfile = WIDE_FINALE): { slots: MemorySlot[]; together: MemorySlot; revealAt: number } {
