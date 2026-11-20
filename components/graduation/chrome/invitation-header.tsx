@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { MusicToggle } from "../music/music-toggle";
+import { CalendarIcon } from "../shared/calendar-icon";
 import { useCopy } from "../i18n/lang-context";
 
 export function InvitationHeader({
@@ -27,6 +28,13 @@ export function InvitationHeader({
               {t.header.musicUnavailable}
             </span>
           )}
+          <a
+            href="#ends-ticket"
+            className="riso-focus hit-area relative inline-flex items-center gap-1.5 font-mono text-[11px] tracking-[0.22em] whitespace-nowrap text-ink-2 uppercase hover:text-tomato"
+          >
+            <CalendarIcon size={14} />
+            <span className="max-sm:sr-only">{t.header.when}</span>
+          </a>
           <MusicToggle playing={musicPlaying} onClick={onMusic} />
         </div>
       </div>

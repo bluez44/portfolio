@@ -12,4 +12,7 @@ export const GATE_FIELDS = [
   field("gate.beeMobileTip", "Ong nhắc mở trên máy tính (chỉ trên điện thoại)"),
   field("gate.dialogLabel", "Tên hộp thoại (trình đọc màn hình)"),
   field("gate.wake", "Tên nút đánh thức ong (trình đọc màn hình)"),
+  field("gate.quickInfo", "Nút xem nhanh ngày giờ ở intro"),
+  field("gate.quickBack", "Nút quay lại intro"),
+  field("gate.quickOpen", "Nút mở thiệp từ bảng xem nhanh"),
 ];

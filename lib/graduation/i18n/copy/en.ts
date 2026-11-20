@@ -8,7 +8,7 @@ export const enTexts: CopyTexts = {
     description: "You're invited to celebrate my graduation.",
     eventTitle: "Graduation — {owner}",
   },
-  header: { title: "Graduation {year}", back: "Portfolio", musicUnavailable: "Music unavailable", music: "Background music", switchLang: "Choose language" },
+  header: { title: "Graduation {year}", back: "Portfolio", musicUnavailable: "Music unavailable", music: "Background music", switchLang: "Choose language", when: "When" },
   rails: {
     when: "When",
     whenValue: "{weekdayShort} · {date}, {year}",
@@ -149,6 +149,9 @@ export const enTexts: CopyTexts = {
     beePreparing: "Preparing your letter…",
     beeNotice: "{name}, you've got mail.",
     beeMobileTip: "Psst… open me on a computer, I fly way better there!",
+    quickInfo: "When & where",
+    quickBack: "← Back",
+    quickOpen: "Open invitation",
   },
   marks: { school: "HCMUT", city: "TP.HCM", signature: "{initials} · {year}" },
   png: {

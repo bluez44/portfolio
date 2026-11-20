@@ -8,7 +8,7 @@ export const viTexts: CopyTexts = {
     description: "Bạn được mời đến dự lễ tốt nghiệp của mình.",
     eventTitle: "Lễ tốt nghiệp — {owner}",
   },
-  header: { title: "Tốt nghiệp {year}", back: "Portfolio", musicUnavailable: "Không phát được nhạc", music: "Nhạc nền", switchLang: "Chọn ngôn ngữ" },
+  header: { title: "Tốt nghiệp {year}", back: "Portfolio", musicUnavailable: "Không phát được nhạc", music: "Nhạc nền", switchLang: "Chọn ngôn ngữ", when: "Ngày giờ" },
   rails: {
     when: "Thời gian",
     whenValue: "{weekday} {date}.{year}",
@@ -149,6 +149,9 @@ export const viTexts: CopyTexts = {
     beePreparing: "Đang chuẩn bị thư…",
     beeNotice: "{name}, bạn có thư mới.",
     beeMobileTip: "Psst… mở trên máy tính đi, mình bay đẹp hơn nhiều đó!",
+    quickInfo: "Ngày giờ",
+    quickBack: "← Quay lại",
+    quickOpen: "Mở thiệp",
   },
   marks: { school: "HCMUT", city: "TP.HCM", signature: "{initials} · {year}" },
   png: {

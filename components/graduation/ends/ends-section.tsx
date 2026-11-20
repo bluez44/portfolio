@@ -36,13 +36,16 @@ export function EndsSection({
           {t.intro}
         </p>
       </div>
-      <div ref={cardRef}>
-        <TicketCard
-          onDirections={() => {
-            onTourLeave();
-            showMap();
-          }}
-        />
+      {/* The anchor sits outside the reveal, whose entrance transform would offset the jump. */}
+      <div id="ends-ticket">
+        <div ref={cardRef}>
+          <TicketCard
+            onDirections={() => {
+              onTourLeave();
+              showMap();
+            }}
+          />
+        </div>
       </div>
       <div ref={guideRef}>
         <VenueGuide

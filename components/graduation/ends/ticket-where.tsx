@@ -4,7 +4,7 @@ import { RisoButton } from "@/components/ui/riso/button";
 import { useCopy, useGradEvent } from "../i18n/lang-context";
 import { AddToCalendar } from "../shared/add-to-calendar";
 
-export function TicketWhere({ onDirections }: { onDirections: () => void }) {
+export function TicketWhere({ onDirections }: { onDirections?: () => void }) {
   const { ends: t } = useCopy();
   const E = useGradEvent();
 
@@ -20,9 +20,11 @@ export function TicketWhere({ onDirections }: { onDirections: () => void }) {
         <span className="text-ink-3 italic">{t.venueSub}</span>
       </span>
       <div className="mt-1.5 flex flex-wrap items-start gap-3">
-        <RisoButton variant="primary" size="md" onClick={onDirections} icon="↓">
-          {t.directions}
-        </RisoButton>
+        {onDirections && (
+          <RisoButton variant="primary" size="md" onClick={onDirections} icon="↓">
+            {t.directions}
+          </RisoButton>
+        )}
         <AddToCalendar />
       </div>
     </div>

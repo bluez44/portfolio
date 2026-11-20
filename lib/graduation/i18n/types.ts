@@ -16,7 +16,7 @@ export type VenueGuideCopy = { tabsLabel: string; loading: string; map: GuideTab
 
 export type GraduationCopy = {
   meta: { title: string; guestTitle: (name: string) => string; description: string; eventTitle: string };
-  header: { title: string; back: string; musicUnavailable: string; music: string; switchLang: string };
+  header: { title: string; back: string; musicUnavailable: string; music: string; switchLang: string; when: string };
   rails: { when: string; whenValue: string; where: string; whereValue: string; whereSub: string };
   envelope: {
     airMail: string;
@@ -125,6 +125,10 @@ export type GraduationCopy = {
     beeNotice: (name: string) => string;
     /** Phones only: the bee nudges towards a bigger screen between two notices. */
     beeMobileTip: string;
+    /** Quick look at date, time and venue without opening the invitation. */
+    quickInfo: string;
+    quickBack: string;
+    quickOpen: string;
   };
   marks: { school: string; city: string; signature: string };
   png: {

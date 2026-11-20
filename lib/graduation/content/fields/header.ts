@@ -9,6 +9,7 @@ export const HEADER_FIELDS = [
   header("header.music", "Nhãn nút nhạc"),
   header("header.musicUnavailable", "Thông báo không phát được nhạc"),
   header("header.switchLang", "Nhãn chọn ngôn ngữ"),
+  header("header.when", "Nút xem nhanh ngày giờ"),
   rails("rails.when", "Nhãn thời gian"),
   rails("rails.whenValue", "Giá trị thời gian"),
   rails("rails.where", "Nhãn địa điểm"),

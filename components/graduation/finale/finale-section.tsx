@@ -1,11 +1,11 @@
 "use client";
 
 import { useRef } from "react";
-import { cardFileName } from "@/lib/graduation/card-file-name";
 import type { RsvpAnswer } from "@/lib/graduation/types";
 import { useReducedMotion } from "@/lib/hooks/use-reduced-motion";
 import { useCopy, useGradEvent } from "../i18n/lang-context";
 import { RisoButton } from "@/components/ui/riso/button";
+import { DownloadCardButton } from "../shared/download-card-button";
 import { FINALE_ENVELOPE_SIZE } from "../shared/envelope-size";
 import { SectionHeading } from "../shared/section-heading";
 import { EnvelopeBody } from "../envelope/envelope-body";
@@ -115,35 +115,7 @@ export function FinaleSection({
             {footerText}
           </p>
           <div className="flex flex-wrap items-center justify-center gap-3">
-            {guestId && (
-              <RisoButton
-                variant="secondary"
-                size="md"
-                href={`/graduation/${guestId}/card`}
-                download={cardFileName(guestName)}
-                target="_blank"
-                rel="noopener noreferrer"
-                icon={
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    width="15"
-                    height="15"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth="2.2"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                  >
-                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
-                    <polyline points="7 10 12 15 17 10" />
-                    <line x1="12" y1="15" x2="12" y2="3" />
-                  </svg>
-                }
-              >
-                {t.downloadCard}
-              </RisoButton>
-            )}
+            {guestId && <DownloadCardButton guestId={guestId} guestName={guestName} label={t.downloadCard} />}
             <RisoButton
               variant="ink"
               size="md"
