@@ -15,7 +15,7 @@ const LINKS: { key: LinkKey; label: string; hint: string }[] = [
   { key: "mapLinkUrl", label: "Link chỉ đường", hint: "Mở khi quét mã QR chỉ đường trên ảnh thiệp PNG" },
   { key: "virtualTourUrl", label: "Link tour 360°", hint: "Phải bắt đầu bằng https://" },
   { key: "virtualTourOwnerUrl", label: "Link đơn vị sở hữu tour", hint: "Dùng cho dòng ghi nguồn dưới tour" },
-  { key: "musicTrack", label: "ID nhạc nền YouTube", hint: "11 ký tự sau ?v= trên link YouTube" },
+  { key: "musicTrack", label: "File nhạc nền", hint: "Đường dẫn trong Vercel Blob, ví dụ audio/underwater-city.mp3" },
 ];
 
 type EventPanelProps = { event?: EventSettings; errors: Record<string, string>; dispatch: Dispatch<SettingsDraftAction> };
