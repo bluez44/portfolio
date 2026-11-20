@@ -2,16 +2,14 @@
 
 import { useEffect, useRef, useState, useImperativeHandle, forwardRef } from "react";
 import { useCopy } from "../i18n/lang-context";
+import { useCompactLayout } from "../shared/use-compact-layout";
+import { placeBubble } from "./bubble-placement";
+import { characterProfile } from "./choreography/profile";
 import type { NarrationKey } from "./types";
 
 export type NarratorBubbleHandle = {
   update: (head: { x: number; y: number }, line: NarrationKey | null) => void;
 };
-
-const EDGE_MARGIN = 12;
-const TAIL_INSET = 16;
-
-const clamp = (v: number, lo: number, hi: number) => Math.min(Math.max(v, lo), hi);
 
 type Box = { left: number; top: number; right: number; bottom: number };
 
@@ -38,6 +36,7 @@ export const NarratorBubble = forwardRef<NarratorBubbleHandle, Props>(function N
   ref,
 ) {
   const { narrator: t } = useCopy();
+  const { bubble } = characterProfile(useCompactLayout());
   const rootRef = useRef<HTMLDivElement>(null);
   const [activeLine, setActiveLine] = useState<NarrationKey | null>(null);
   const [typedText, setTypedText] = useState("");
@@ -50,7 +49,8 @@ export const NarratorBubble = forwardRef<NarratorBubbleHandle, Props>(function N
         const root = rootRef.current;
         if (!root) return;
 
-        if (!line) {
+        // Off stage (phones walk it out during the note finale): nothing to point at.
+        if (!line || head.x < 0 || head.x > window.innerWidth) {
           root.style.opacity = "0";
           root.style.pointerEvents = "none";
           if (activeLineRef.current !== null) {
@@ -60,14 +60,13 @@ export const NarratorBubble = forwardRef<NarratorBubbleHandle, Props>(function N
           return;
         }
 
-        // Keep the bubble on screen; the tail shifts the other way so it still points at the head.
-        const half = root.offsetWidth / 2;
-        const x = clamp(head.x, half + EDGE_MARGIN, window.innerWidth - half - EDGE_MARGIN);
-        const bottom = head.y - 70;
-        const tail = clamp(head.x - x, TAIL_INSET - half, half - TAIL_INSET);
-        root.style.setProperty("--tail", `${Math.round(tail)}px`);
-        root.style.transform = `translate3d(${Math.round(x)}px, ${Math.round(bottom)}px, 0) translate(-50%, -100%)`;
-        root.style.opacity = coversAvoided({ left: x - half, right: x + half, top: bottom - root.offsetHeight, bottom }) ? "0" : "1";
+        const w = root.offsetWidth;
+        const h = root.offsetHeight;
+        const { left, top, tail, tailOffset } = placeBubble(head, { w, h }, window.innerWidth, bubble);
+        root.dataset.tail = tail;
+        root.style.setProperty("--tail", `${Math.round(tailOffset)}px`);
+        root.style.transform = `translate3d(${Math.round(left)}px, ${Math.round(top)}px, 0)`;
+        root.style.opacity = coversAvoided({ left, right: left + w, top, bottom: top + h }) ? "0" : "1";
 
         if (activeLineRef.current !== line) {
           activeLineRef.current = line;
@@ -75,7 +74,7 @@ export const NarratorBubble = forwardRef<NarratorBubbleHandle, Props>(function N
         }
       },
     }),
-    [],
+    [bubble],
   );
 
   useEffect(() => {
@@ -101,20 +100,25 @@ export const NarratorBubble = forwardRef<NarratorBubbleHandle, Props>(function N
     <div
       ref={rootRef}
       aria-live="polite"
-      className="pointer-events-none fixed top-0 left-0 z-30 transition-opacity duration-200 max-[759px]:hidden"
+      data-tail="bottom"
+      className="group pointer-events-none fixed top-0 left-0 z-30 transition-opacity duration-200"
       style={{ opacity: 0 }}
     >
-      <div className="relative max-w-[calc(100vw-24px)] rounded-xl border-[1.5px] border-ink bg-paper px-4 py-2 text-[14px] font-medium text-ink shadow-[2px_2px_0_var(--ink)]">
+      <div className="relative w-max max-w-[calc(100vw-24px)] rounded-xl border-[1.5px] border-ink bg-paper px-4 py-2 text-[14px] font-medium text-ink shadow-[2px_2px_0_var(--ink)] max-[759px]:max-w-[60vw] max-[759px]:rounded-lg max-[759px]:px-2.5 max-[759px]:py-1.5 max-[759px]:text-[12px] max-[759px]:leading-snug">
         <span>{typedText}</span>
-        {/* Pointer tail pointing down towards the character's head */}
-        <div
-          aria-hidden
-          className="absolute -bottom-2 left-[calc(50%+var(--tail,0px))] h-0 w-0 -translate-x-1/2 border-x-[6px] border-t-[8px] border-x-transparent border-t-ink"
-        />
-        <div
-          aria-hidden
-          className="absolute -bottom-[6.5px] left-[calc(50%+var(--tail,0px))] h-0 w-0 -translate-x-1/2 border-x-[5px] border-t-[7px] border-x-transparent border-t-paper"
-        />
+        {/* Pointer tail towards the character's head: down from below the bubble, or sideways beside it */}
+        <div aria-hidden className="hidden group-data-[tail=bottom]:block">
+          <div className="absolute -bottom-2 left-[calc(50%+var(--tail,0px))] h-0 w-0 -translate-x-1/2 border-x-[6px] border-t-[8px] border-x-transparent border-t-ink" />
+          <div className="absolute -bottom-[6.5px] left-[calc(50%+var(--tail,0px))] h-0 w-0 -translate-x-1/2 border-x-[5px] border-t-[7px] border-x-transparent border-t-paper" />
+        </div>
+        <div aria-hidden className="hidden group-data-[tail=right]:block">
+          <div className="absolute top-1/2 -right-2 h-0 w-0 -translate-y-1/2 border-y-[6px] border-l-[8px] border-y-transparent border-l-ink" />
+          <div className="absolute top-1/2 -right-[6.5px] h-0 w-0 -translate-y-1/2 border-y-[5px] border-l-[7px] border-y-transparent border-l-paper" />
+        </div>
+        <div aria-hidden className="hidden group-data-[tail=left]:block">
+          <div className="absolute top-1/2 -left-2 h-0 w-0 -translate-y-1/2 border-y-[6px] border-r-[8px] border-y-transparent border-r-ink" />
+          <div className="absolute top-1/2 -left-[6.5px] h-0 w-0 -translate-y-1/2 border-y-[5px] border-r-[7px] border-y-transparent border-r-paper" />
+        </div>
       </div>
     </div>
   );

@@ -29,10 +29,12 @@ export const BODY_MARGIN = 1.3;
 export const BODY_GAP = 0.7;
 
 /** Stations as horizontal slot (−1..1), facing (rad) and action. */
-type Station = { x: number; ry: number; act: Action };
+export type Station = { x: number; ry: number; act: Action };
 export const DESK: Station = { x: 0.66, ry: -0.35, act: "sit" };
 export const POINTING: Station = { x: -0.66, ry: 0.1, act: "point" };
 export const TOSSING: Station = { x: 0.62, ry: 0, act: "toss" };
 export const PLAYING: Station = { x: 0.62, ry: -0.15, act: "play" };
+export type Stations = { desk: Station; pointing: Station; tossing: Station; playing: Station };
+export const WIDE_STATIONS: Stations = { desk: DESK, pointing: POINTING, tossing: TOSSING, playing: PLAYING };
 /** Facing while cheering beside the note (toward the centred card). */
 export const CHEER_RY = -0.45;

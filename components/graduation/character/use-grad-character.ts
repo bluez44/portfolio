@@ -11,6 +11,8 @@ import { buildBeats } from "./choreography/beats";
 import { lineAt } from "./choreography/narration";
 import { measureEnvelopeWidth, measureSections } from "./choreography/measure-sections";
 import { besideX, envelopeSideX } from "./choreography/placement";
+import { characterProfile, type CharacterProfile } from "./choreography/profile";
+import { finaleProfile } from "../met/finale/profile";
 import { usePaletteSync } from "../shared/three/use-palette-sync";
 import { COMPACT_QUERY } from "../shared/breakpoints";
 import { createGradCharacter, type GradCharacter } from "./scene/grad-character";
@@ -18,13 +20,17 @@ import type { Beat, NarrationKey } from "./types";
 
 export type CharacterFrameHandler = (head: { x: number; y: number }, line: NarrationKey | null) => void;
 
+/** Slots beside the opened envelope (`sx`) and the grown note (`cheerX`), or the profile's fixed slots on phones. */
+function sideSlots(profile: CharacterProfile, view: { halfW: number; scale: number }, noteW: number | undefined): { sx: number; cheerX?: number } {
+  if (profile.slots) return { sx: profile.slots.side, cheerX: profile.slots.cheer };
+  const viewportW = window.innerWidth;
+  const sx = envelopeSideX({ viewportW, envelopeW: measureEnvelopeWidth(), cardScale: openedCardScale(), ...view });
+  return { sx, cheerX: noteW ? besideX({ viewportW, objectW: noteW, ...view }) : undefined };
+}
+
 export function useGradCharacter(
   hostRef: RefObject<HTMLDivElement | null>,
-  {
-    scale = 0.85,
-    onReady,
-    onFrame,
-  }: { scale?: number; onReady?: () => void; onFrame?: CharacterFrameHandler } = {},
+  { onReady, onFrame }: { onReady?: () => void; onFrame?: CharacterFrameHandler } = {},
 ) {
   const reduced = useReducedMotion();
   const compact = useMediaQuery(COMPACT_QUERY);
@@ -39,15 +45,17 @@ export function useGradCharacter(
 
   useEffect(() => {
     const host = hostRef.current;
-    // Read the query directly: the hook's first render uses the server snapshot, which would mount WebGL on phones.
-    if (reduced || compact || window.matchMedia(COMPACT_QUERY).matches || !host) {
+    if (reduced || !host) {
       onReadyRef.current?.();
       return;
     }
     gsap.registerPlugin(ScrollTrigger);
+    // Read the query directly: the hook's first render uses the server snapshot (wide) on phones too.
+    const phone = window.matchMedia(COMPACT_QUERY).matches;
+    const profile = characterProfile(phone);
     let character: GradCharacter;
     try {
-      character = createGradCharacter(host, { scale, tier });
+      character = createGradCharacter(host, { scale: profile.scale, tier });
     } catch (error) {
       console.error("Graduation character disabled (WebGL unavailable):", error);
       onReadyRef.current?.();
@@ -60,12 +68,9 @@ export function useGradCharacter(
 
     const relayout = () => {
       character.resize(null);
-      const metrics = measureSections();
-      const { halfW, scale: s } = character.view();
-      const sx = envelopeSideX({ viewportW: window.innerWidth, envelopeW: measureEnvelopeWidth(), cardScale: openedCardScale(), halfW, scale: s });
-      const noteW = metrics?.noteFinale?.width;
-      const cheerX = noteW ? besideX({ viewportW: window.innerWidth, objectW: noteW, halfW, scale: s }) : undefined;
-      beats = metrics ? buildBeats(metrics, sx, cheerX) : null;
+      const metrics = measureSections(finaleProfile(phone));
+      const { sx, cheerX } = sideSlots(profile, character.view(), metrics?.noteFinale?.width);
+      beats = metrics ? buildBeats(metrics, sx, cheerX, profile.stations) : null;
       character.resize(beats);
     };
 
@@ -88,7 +93,7 @@ export function useGradCharacter(
       character.dispose();
       charRef.current = null;
     };
-  }, [hostRef, reduced, compact, scale, tier]);
+  }, [hostRef, reduced, compact, tier]);
 
   usePaletteSync(charRef);
 }

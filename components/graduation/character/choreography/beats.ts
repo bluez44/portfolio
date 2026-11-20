@@ -1,5 +1,5 @@
 import type { Action, Beat, NarrationKey, SectionMetrics } from "../types";
-import { ARRIVE_ENDS_AT, CHEER_BY, CHEER_RY, DESK, FADE, LEAVE_MET_INSET, MIN_GAP, POINTING, PLAYING, RSVP_RELEASE_AT, TOSSING } from "./constants";
+import { ARRIVE_ENDS_AT, CHEER_BY, CHEER_RY, FADE, LEAVE_MET_INSET, MIN_GAP, RSVP_RELEASE_AT, WIDE_STATIONS, type Station, type Stations } from "./constants";
 
 type RawBeat = [scroll: number, x: number, ry: number, act: Action, say?: NarrationKey];
 
@@ -22,11 +22,11 @@ function toEnds(m: SectionMetrics): [leave: number, arrive: number] {
  * End of the "How we met" section. With the note finale the character sits until the note pins,
  * stands and walks to `cheerX` beside it while it grows, then cheers until it `leave`s.
  */
-function metEndBeats(m: SectionMetrics, cheerX: number, leave: number): RawBeat[] {
+function metEndBeats(m: SectionMetrics, desk: Station, cheerX: number, leave: number): RawBeat[] {
   const f = m.noteFinale;
-  if (!f) return [[leave, DESK.x, DESK.ry, DESK.act, "desk"]];
+  if (!f) return [[leave, desk.x, desk.ry, desk.act, "desk"]];
   return [
-    [f.start, DESK.x, DESK.ry, DESK.act, "desk"],
+    [f.start, desk.x, desk.ry, desk.act, "desk"],
     [f.start + (f.grown - f.start) * CHEER_BY, cheerX, CHEER_RY, "cheer", "cheer"],
     [leave, cheerX, CHEER_RY, "cheer", "cheer"],
   ];
@@ -44,25 +44,29 @@ function wishesEnd(m: SectionMetrics, finaleTop: number): number {
   return bottom - m.vh;
 }
 
-/** Scroll-keyed poses for the whole invitation; `sx` is the slot beside the opened envelope card. */
-export function buildBeats(m: SectionMetrics, sx: number, cheerX = DESK.x): Beat[] {
+/**
+ * Scroll-keyed poses for the whole invitation; `sx` is the slot beside the opened envelope card,
+ * `cheerX` the slot beside the grown note.
+ */
+export function buildBeats(m: SectionMetrics, sx: number, cheerX?: number, stations: Stations = WIDE_STATIONS): Beat[] {
   const { vh, stageTop: s0, stageScroll: sl } = m;
+  const { desk, pointing, tossing, playing } = stations;
   const [leave, arrive] = toEnds(m);
   const raw: RawBeat[] = [
     [s0, sx, -0.5, "wave", "wave"],
     [s0 + sl * 0.3, sx, -0.5, "wave", "wave"],
     [s0 + sl * 0.6, -sx, 0.5, "bow", "bow"],
     [s0 + sl, -sx, 0.5, "bow", "bow"],
-    [m.metTop - vh * 0.1, DESK.x, DESK.ry, DESK.act, "desk"],
-    ...metEndBeats(m, cheerX, leave),
-    [arrive, POINTING.x, POINTING.ry, POINTING.act, "point"],
-    [m.endsTop + m.endsHeight - vh * 0.9, POINTING.x, POINTING.ry, POINTING.act, "point"],
-    [m.rsvpTop - vh * 0.25, TOSSING.x, TOSSING.ry, TOSSING.act, "toss"],
-    [rsvpEnd(m), TOSSING.x, TOSSING.ry, TOSSING.act, "toss"],
-    [m.wishesTop - vh * 0.2, PLAYING.x, PLAYING.ry, PLAYING.act, "play"],
+    [m.metTop - vh * 0.1, desk.x, desk.ry, desk.act, "desk"],
+    ...metEndBeats(m, desk, cheerX ?? desk.x, leave),
+    [arrive, pointing.x, pointing.ry, pointing.act, "point"],
+    [m.endsTop + m.endsHeight - vh * 0.9, pointing.x, pointing.ry, pointing.act, "point"],
+    [m.rsvpTop - vh * 0.25, tossing.x, tossing.ry, tossing.act, "toss"],
+    [rsvpEnd(m), tossing.x, tossing.ry, tossing.act, "toss"],
+    [m.wishesTop - vh * 0.2, playing.x, playing.ry, playing.act, "play"],
     ...(m.finaleTop != null
       ? ([
-          [wishesEnd(m, m.finaleTop), PLAYING.x, PLAYING.ry, PLAYING.act, "play"],
+          [wishesEnd(m, m.finaleTop), playing.x, playing.ry, playing.act, "play"],
           [m.finaleTop, sx, -0.5, "wave", "farewell"],
         ] as RawBeat[])
       : []),

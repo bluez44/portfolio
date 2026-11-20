@@ -1,12 +1,13 @@
 import { OUTLINE_GAP } from "../../met/finale/constants";
 import { noteFinaleScroll, noteScaleFor } from "../../met/finale/note-finale";
+import type { FinaleProfile } from "../../met/finale/profile";
 import { SELECTORS } from "../../met/elements";
 import type { SectionMetrics } from "../types";
 import { ENVELOPE_MAX_W, ENVELOPE_VW_SHARE } from "./constants";
 
 const top = (el: HTMLElement) => el.getBoundingClientRect().top + window.scrollY;
 
-export function measureSections(): SectionMetrics | null {
+export function measureSections(finale: FinaleProfile): SectionMetrics | null {
   const get = (id: string) => document.getElementById(id);
   const stage = get("stage");
   const met = get("met");
@@ -21,7 +22,7 @@ export function measureSections(): SectionMetrics | null {
   const memoryCount = document.querySelectorAll(`${SELECTORS.memoryPhoto}:not(${SELECTORS.memoryTogether})`).length;
   const noteFinale =
     noteEnd && note && noteScale
-      ? { ...noteFinaleScroll(top(noteEnd), vh, memoryCount), width: (note.offsetWidth + OUTLINE_GAP * 2) * noteScale }
+      ? { ...noteFinaleScroll(top(noteEnd), vh, memoryCount, finale), width: (note.offsetWidth + OUTLINE_GAP * 2) * noteScale }
       : null;
   return {
     vh,
