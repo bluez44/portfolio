@@ -9,7 +9,7 @@ const HALVES = [
 export function WaxSeal({ className = "", split = false }: { className?: string; split?: boolean }) {
   const { initials } = useOwner();
   return (
-    <div className={`h-16 w-16 -rotate-10 ${className}`}>
+    <div data-wax-seal className={`h-16 w-16 -rotate-10 ${className}`}>
       {HALVES.map(({ clip, apart }) => (
         <div
           key={clip}
