@@ -4,6 +4,7 @@ import { useEffect, useRef, useState, useImperativeHandle, forwardRef } from "re
 import { useCopy } from "../i18n/lang-context";
 import { useCompactLayout } from "../shared/use-compact-layout";
 import { placeBubble } from "./bubble-placement";
+import { BubbleTails } from "./bubble-tails";
 import { characterProfile } from "./choreography/profile";
 import type { NarrationKey } from "./types";
 
@@ -106,19 +107,7 @@ export const NarratorBubble = forwardRef<NarratorBubbleHandle, Props>(function N
     >
       <div className="relative w-max max-w-[calc(100vw-24px)] rounded-xl border-[1.5px] border-ink bg-paper px-4 py-2 text-[14px] font-medium text-ink shadow-[2px_2px_0_var(--ink)] max-[759px]:max-w-[60vw] max-[759px]:rounded-lg max-[759px]:px-2.5 max-[759px]:py-1.5 max-[759px]:text-[12px] max-[759px]:leading-snug">
         <span>{typedText}</span>
-        {/* Pointer tail towards the character's head: down from below the bubble, or sideways beside it */}
-        <div aria-hidden className="hidden group-data-[tail=bottom]:block">
-          <div className="absolute -bottom-2 left-[calc(50%+var(--tail,0px))] h-0 w-0 -translate-x-1/2 border-x-[6px] border-t-[8px] border-x-transparent border-t-ink" />
-          <div className="absolute -bottom-[6.5px] left-[calc(50%+var(--tail,0px))] h-0 w-0 -translate-x-1/2 border-x-[5px] border-t-[7px] border-x-transparent border-t-paper" />
-        </div>
-        <div aria-hidden className="hidden group-data-[tail=right]:block">
-          <div className="absolute top-1/2 -right-2 h-0 w-0 -translate-y-1/2 border-y-[6px] border-l-[8px] border-y-transparent border-l-ink" />
-          <div className="absolute top-1/2 -right-[6.5px] h-0 w-0 -translate-y-1/2 border-y-[5px] border-l-[7px] border-y-transparent border-l-paper" />
-        </div>
-        <div aria-hidden className="hidden group-data-[tail=left]:block">
-          <div className="absolute top-1/2 -left-2 h-0 w-0 -translate-y-1/2 border-y-[6px] border-r-[8px] border-y-transparent border-r-ink" />
-          <div className="absolute top-1/2 -left-[6.5px] h-0 w-0 -translate-y-1/2 border-y-[5px] border-r-[7px] border-y-transparent border-r-paper" />
-        </div>
+        <BubbleTails />
       </div>
     </div>
   );
