@@ -18,7 +18,9 @@ const TRAIL_POINTS = 600;
 export type BeeIntroScene = {
   /** Adds the bee waking and flying off to `tl`; returns when (s) the scene's part ends. */
   wake(tl: gsap.core.Timeline): number;
+  /** Stops updating and rendering; `resume` picks up where it stopped. */
   pause(): void;
+  resume(): void;
   applyPalette(p: RisoPalette): void;
   dispose(): void;
 };
@@ -241,6 +243,9 @@ export function createBeeIntroScene(host: HTMLElement, opts: Options): BeeIntroS
     },
     pause() {
       paused = true;
+    },
+    resume() {
+      paused = false;
     },
     applyPalette,
     dispose() {

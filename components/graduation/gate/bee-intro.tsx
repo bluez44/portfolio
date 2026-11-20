@@ -86,6 +86,12 @@ export function BeeIntro({ guestName, phase, musicPlaying, onEnter, onExited }: 
     if (audible) unlockSfx();
     exit(withMusic ? sceneRef.current : null, onExited, () => audible && playSfx("rustle"));
   };
+  useEffect(() => {
+    const scene = sceneRef.current;
+    if (quick) scene?.pause();
+    else scene?.resume();
+  }, [quick, sceneRef]);
+
   const waiting = phase !== "ready";
   const closeQuick = () => {
     setQuick(false);
