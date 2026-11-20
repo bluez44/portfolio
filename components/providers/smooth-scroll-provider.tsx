@@ -16,7 +16,8 @@ export function SmoothScrollProvider({ children }: { children: ReactNode }) {
     const reduceMotion = window.matchMedia(
       "(prefers-reduced-motion: reduce)",
     ).matches;
-    if (reduceMotion) return;
+    const coarsePointer = window.matchMedia("(pointer: coarse)").matches;
+    if (reduceMotion || coarsePointer) return;
 
     const instance = new Lenis({
       // <html> is h-full, so its box never resizes; observe <body> so the scroll limit follows content height.
