@@ -46,7 +46,8 @@ export function SmoothScrollProvider({ children }: { children: ReactNode }) {
       const target = document.querySelector<HTMLElement>(href);
       if (!target) return;
       event.preventDefault();
-      instance.scrollTo(target, { offset: -64, duration: 1.15 });
+      // Lenis already subtracts the root's scroll-padding-top, which reserves room for the fixed header.
+      instance.scrollTo(target, { duration: 1.15 });
     };
     document.addEventListener("click", onAnchorClick);
 
