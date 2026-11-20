@@ -154,16 +154,15 @@ export function drawBKHcmutLogo(
   ctx.restore();
 }
 
-/**
- * Creates the procedural texture for the graduation stole (khăn tốt nghiệp).
- * Includes:
- * - Bold geometric low-poly triangles in blue shades (upper 75%)
- * - Prominent BK TP.HCM logo placed on the upper chest so it is visible even when sitting with laptop
- * - Solid bright blue panel at the bottom (lower 25%) with logo on the end
- * - Asynchronous loader for `/01_logobachkhoatoi.webp` for 100% pixel-perfect matching with `BkBadge`
- */
 /** Stole band face in rig units (see `stole_band` in rig.ts); the canvas keeps this aspect so the logo is not squashed. */
 export const STOLE_BAND = { width: 0.12, height: 0.76 } as const;
+
+/**
+ * Creates the procedural texture for the graduation stole (khăn tốt nghiệp):
+ * - Bold geometric low-poly triangles in blue shades (upper 75%)
+ * - Solid bright blue panel at the bottom (lower 25%), with the BK TP.HCM logo on that end only
+ * - Asynchronous loader for `/01_logobachkhoatoi.webp` for pixel-perfect matching with `BkBadge`
+ */
 
 export function createStoleTexture(withLogo = true): THREE.Texture {
   if (typeof document === "undefined") {
@@ -274,20 +273,6 @@ export function createStoleTexture(withLogo = true): THREE.Texture {
     };
 
     if (withLogo) {
-      // 1. Prominent chest badge (upper chest ~30% from top):
-      // Always clearly visible, even when character is sitting and typing on laptop!
-      const chestY = Math.round(height * 0.3);
-      const chestSize = width * 0.68;
-
-      // Soft circular backing to guarantee maximum logo clarity over triangles
-      ctx.beginPath();
-      ctx.arc(width * 0.5, chestY, chestSize * 0.52, 0, Math.PI * 2);
-      ctx.fillStyle = "rgba(255, 255, 255, 0.95)";
-      ctx.fill();
-
-      drawLogoAt(width * 0.5, chestY, chestSize);
-
-      // 2. Bottom panel logo (for standing/walking full-view):
       const bottomY = meshHeight + (height - meshHeight) * 0.5;
       const bottomSize = width * 0.62;
       drawLogoAt(width * 0.5, bottomY, bottomSize);
