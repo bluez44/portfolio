@@ -13,13 +13,14 @@ import {
   pinEnd,
   type MemoryLook,
   type MemorySlot,
+  type Spot,
 } from "./constants";
 import { memoryLayout } from "./memory-layout";
 import { WIDE_FINALE, type FinaleProfile } from "./profile";
 import { noteScaleFor } from "./note-finale";
 
-/** Distance (share of the viewport height) a photo resting at `rest` rises: from below the viewport, or by `rise`. */
-const riseFrom = (rest: number, rise: number | null) => rise ?? MEMORY_ENTER_FROM - rest;
+/** Distance (share of the viewport height) a photo rises: by `rise`, or from below the viewport to its spot. */
+const riseFrom = (spot: Spot | null, rise: number | null) => rise ?? (spot ? MEMORY_ENTER_FROM - spot.rest : 0);
 
 function enterPhoto(
   tl: gsap.core.Timeline,
@@ -35,7 +36,7 @@ function enterPhoto(
     el,
     {
       x: () => (slot.drift * window.innerWidth) / 100,
-      y: () => riseFrom((wide() ? slot.wide : slot.phone).rest, rise) * window.innerHeight,
+      y: () => riseFrom(wide() ? slot.wide : slot.phone, rise) * window.innerHeight,
       xPercent: -50,
       rotation: slot.rot + slot.spin,
       ...look.from,

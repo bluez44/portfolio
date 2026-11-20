@@ -13,8 +13,8 @@ type Props = {
   year?: string;
   title: string;
   together?: boolean;
-  /** Phone pile: a smaller square print captioned with the title alone; its size and spot are set by place-pile. */
-  small?: boolean;
+  /** Phone pile: a square print; its size and spot come from place-pile. */
+  pile?: boolean;
   onOpen?: () => void;
   children?: ReactNode;
 };
@@ -23,41 +23,39 @@ type Props = {
  * One memory photo as a polaroid: thin border on three sides, a deeper chin carrying the caption.
  * With `onOpen` the whole polaroid is a button.
  */
-export function MemoryPolaroid({ slot, image, focus, year, title, together, small, onOpen, children }: Props) {
+export function MemoryPolaroid({ slot, image, focus, year, title, together, pile, onOpen, children }: Props) {
   const caption = year ? `${year} · ${title}` : title;
+  // Without a phone spot, place-pile alone writes the phone position and the width.
+  const phone = slot.phone && {
+    "--x-phone": `${slot.phone.x}vw`,
+    "--top-phone": `${(slot.phone.rest - ARRIVE_AT) * 100}vh`,
+    width: slot.width,
+  };
   return (
     <figure
       data-memory-photo
       data-memory-together={together || undefined}
       className={`absolute top-(--top-phone) left-[calc(50%+var(--x-phone))] m-0 rounded-[4px] border-[1.5px] border-ink bg-paper p-1.5 opacity-0 shadow-(--offset-sm) min-[760px]:top-(--top-wide) min-[760px]:left-[calc(50%+var(--x-wide))] min-[760px]:pb-8 ${
-        small ? "" : "pb-6"
+        pile ? "" : "pb-6"
       } ${together ? "z-999" : "z-1"}`}
-      style={
-        {
-          "--x-phone": `${slot.phone.x}vw`,
-          "--x-wide": `${slot.wide.x}vw`,
-          "--top-phone": `${(slot.phone.rest - ARRIVE_AT) * 100}vh`,
-          "--top-wide": `${(slot.wide.rest - ARRIVE_AT) * 100}vh`,
-          width: slot.width,
-        } as CSSProperties
-      }
+      style={{ "--x-wide": `${slot.wide.x}vw`, "--top-wide": `${(slot.wide.rest - ARRIVE_AT) * 100}vh`, ...phone } as CSSProperties}
     >
       {children}
       {onOpen && (
         <button type="button" aria-label={caption} onClick={onOpen} className="riso-focus pointer-events-auto absolute inset-0 z-1 cursor-pointer rounded-[4px] border-0 bg-transparent p-0" />
       )}
-      <div className={`relative overflow-hidden rounded-[2px] ${small ? "aspect-square" : "aspect-4/5"}`}>
+      <div className={`relative overflow-hidden rounded-[2px] ${pile ? "aspect-square" : "aspect-4/5"}`}>
         <Image
           src={image}
           alt=""
           fill
-          sizes={small ? "26vw" : together ? "(min-width: 768px) 420px, 46vw" : "(min-width: 768px) 320px, 38vw"}
+          sizes={pile ? "26vw" : together ? "(min-width: 768px) 420px, 46vw" : "(min-width: 768px) 320px, 38vw"}
           className={`object-cover ${FOCUS_CLASS}`}
           style={focusVars(focus)}
           quality={PHOTO_QUALITY}
         />
       </div>
-      {small ? (
+      {pile ? (
         <figcaption className="flex h-6 items-center justify-center px-0.5">
           <span className="truncate font-heading text-[11px] font-medium text-ink-2 italic">{caption}</span>
         </figcaption>

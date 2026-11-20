@@ -45,7 +45,7 @@ export function FinaleMemoryPhotos({ memories, together, guestName, profile, onO
       focus={m.focus}
       year={pile ? undefined : m.year}
       title={m.title}
-      small={pile}
+      pile={pile}
       onOpen={onOpen && (() => onOpen({ kind: "moment", index }))}
     />
   ));

@@ -61,13 +61,14 @@ export const NOTE_MAX_SCALE = 1.25;
  * `rest` share of viewport height); each rises from below the viewport over `enter` (share of
  * the timeline), drifting by `drift` (vw) and turning by `spin` (deg) to settle at `rot`.
  */
-type Spot = { x: number; rest: number };
+export type Spot = { x: number; rest: number };
 export type Range = readonly [min: number, max: number];
 export type MemoryZone = { axis: "x" | "rest"; weight: number; rest: Range; x: { phone: Range | null; wide: Range } };
 export type MemorySlot = {
   width: string;
   rot: number;
-  phone: Spot;
+  /** `null`: placed at runtime instead, spot and width (the phone pile, see place-pile). */
+  phone: Spot | null;
   wide: Spot;
   drift: number;
   spin: number;
@@ -101,7 +102,7 @@ export const MEMORY_MOTION_RANGE = {
 } as const satisfies Record<"rot" | "drift" | "spin", Range>;
 
 /** The guest's photo with the owner: last in, ~50% larger than normal memories, resting on the right side of the note's top edge. */
-export const TOGETHER_PHOTO: MemorySlot = {
+export const TOGETHER_PHOTO = {
   width: "clamp(145px, min(42vw, 30vh), 380px)",
   rot: 2,
   // On phones: right of the docked badge, so it never hides the caption, and clear of the note's text.
@@ -110,7 +111,7 @@ export const TOGETHER_PHOTO: MemorySlot = {
   drift: -5,
   spin: 6,
   enter: [0.72, 0.96],
-};
+} satisfies MemorySlot;
 
 /** Top of a memory photo before it rises, as a share of the viewport height (just below it). */
 export const MEMORY_ENTER_FROM = 1.05;

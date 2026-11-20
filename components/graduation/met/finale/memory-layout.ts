@@ -1,6 +1,5 @@
 import { seededRandom } from "@/lib/graduation/seeded-random";
 import {
-  ARRIVE_AT,
   BATCH_ENTER_UNITS,
   BATCH_GAP_UNITS,
   DIM_UNITS,
@@ -142,9 +141,9 @@ function batchSchedule(count: number, size: number, units: number, revealAt: num
   return { enters, together: [groupStart(groups), groupStart(groups) + rise], dims, revealAt };
 }
 
-/** Pile layout on phones: positions are measured at runtime (see place-pile); photos rise straight up. */
+/** Pile layout on phones: spots and widths are measured at runtime (see place-pile); photos rise straight up. */
 function forPile(slots: Omit<MemorySlot, "enter">[]): Omit<MemorySlot, "enter">[] {
-  return slots.map((slot) => ({ ...slot, phone: { x: 0, rest: ARRIVE_AT }, drift: 0, spin: 0 }));
+  return slots.map((slot) => ({ ...slot, phone: null, drift: 0, spin: 0 }));
 }
 
 export function memoryLayout(count: number, profile: FinaleProfile = WIDE_FINALE): { slots: MemorySlot[]; together: MemorySlot; schedule: MemorySchedule } {

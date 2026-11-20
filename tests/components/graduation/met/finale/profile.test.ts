@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { BATCH_ENTER_UNITS, BATCH_GAP_UNITS, batchUnits, finaleUnits, pinEnd, pinVh } from "@/components/graduation/met/finale/constants";
-import { memorySchedule } from "@/components/graduation/met/finale/memory-layout";
+import { memoryLayout, memorySchedule } from "@/components/graduation/met/finale/memory-layout";
 import { noteFinaleScroll } from "@/components/graduation/met/finale/note-finale";
 import { COMPACT_FINALE, WIDE_FINALE, finaleProfile } from "@/components/graduation/met/finale/profile";
 
@@ -37,6 +37,11 @@ describe("compact finale (phones)", () => {
     expect(pinVh(1, COMPACT_FINALE)).toBe(COMPACT_FINALE.baseVh);
     expect(pinVh(16, COMPACT_FINALE)).toBeGreaterThan(pinVh(8, COMPACT_FINALE));
     expect(finaleUnits(16, COMPACT_FINALE)).toBeCloseTo(batchUnits(16, 4));
+  });
+  it("leaves the pile's spots to place-pile, keeping the together photo's own", () => {
+    const { slots, together } = memoryLayout(6, COMPACT_FINALE);
+    expect(slots.every((s) => s.phone === null && s.drift === 0 && s.spin === 0)).toBe(true);
+    expect(together.phone).not.toBeNull();
   });
   it("shows every photo, in a pile, four at a time", () => {
     expect(COMPACT_FINALE.maxMemories).toBe(Infinity);
