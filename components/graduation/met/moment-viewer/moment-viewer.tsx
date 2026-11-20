@@ -8,17 +8,30 @@ import { useMomentCarousel } from "../carousel/use-moment-carousel";
 import { MomentCarouselNav } from "./moment-carousel-nav";
 import { MomentCarouselList } from "./moment-carousel-list";
 
-type Props = { moments: Moment[]; startIndex: number; copy: MomentCarouselCopy; onClose: () => void };
+type Props = {
+  moments: Moment[];
+  /** Shown past the last moment. */
+  together?: { image: string; caption: string };
+  /** Slide to open on: a moment's index, or `moments.length` for the together photo. */
+  startIndex: number;
+  copy: MomentCarouselCopy;
+  onClose: () => void;
+};
 
-/** Every moment as a full card in a sideways carousel, opened on the memory the guest tapped. */
-export function MomentViewer({ moments, startIndex, copy, onClose }: Props) {
+/**
+ * Every moment as a full card in a sideways carousel, then the together photo, opened on the memory
+ * the guest tapped. The arrows step through the moments only and step aside on the together photo.
+ */
+export function MomentViewer({ moments, together, startIndex, copy, onClose }: Props) {
   const listRef = useRef<HTMLOListElement>(null);
   const carousel = useMomentCarousel(listRef, startIndex);
+  const onTogether = carousel.active >= moments.length;
   return (
     <RisoDialog label={copy.label} closeLabel={copy.close} onClose={onClose}>
-      <MomentCarouselList ref={listRef} moments={moments} label={copy.label} />
-      <div className="mx-4 rounded-2xl border-[1.5px] border-ink bg-paper py-2 shadow-(--offset-sm)">
-        <MomentCarouselNav {...carousel} copy={copy} />
+      <MomentCarouselList ref={listRef} moments={moments} together={together} label={copy.label} />
+      {/* Hidden rather than removed, so the carousel above keeps its place. */}
+      <div className={`mx-4 rounded-2xl border-[1.5px] border-ink bg-paper py-2 shadow-(--offset-sm) ${onTogether ? "invisible" : ""}`}>
+        <MomentCarouselNav {...carousel} active={Math.min(carousel.active, moments.length - 1)} count={moments.length} copy={copy} />
       </div>
     </RisoDialog>
   );

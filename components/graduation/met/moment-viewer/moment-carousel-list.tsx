@@ -2,16 +2,17 @@ import type { CSSProperties, Ref } from "react";
 import type { Moment } from "@/lib/graduation/i18n";
 import { CARD_VW, GAP_VW } from "../carousel/constants";
 import { MomentPrint } from "./moment-print";
+import { TogetherPrint } from "./together-print";
 
 /**
- * Full-bleed sideways scroller that snaps each moment to the centre. The side padding lets the
+ * Full-bleed sideways scroller that snaps each moment, then the together photo, to the centre. The side padding lets the
  * first and last centre too; the vertical padding leaves room for a focused print's lift and shadow.
  */
 const SPACING = { "--gap": `${GAP_VW}vw`, "--pad": `${(100 - CARD_VW) / 2}vw` } as CSSProperties;
 
-type Props = { ref?: Ref<HTMLOListElement>; moments: Moment[]; label: string };
+type Props = { ref?: Ref<HTMLOListElement>; moments: Moment[]; together?: { image: string; caption: string }; label: string };
 
-export function MomentCarouselList({ ref, moments, label }: Props) {
+export function MomentCarouselList({ ref, moments, together, label }: Props) {
   return (
     <ol
       ref={ref}
@@ -23,6 +24,7 @@ export function MomentCarouselList({ ref, moments, label }: Props) {
       {moments.map((m) => (
         <MomentPrint key={m.n} moment={m} />
       ))}
+      {together && <TogetherPrint {...together} />}
     </ol>
   );
 }
