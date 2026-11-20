@@ -3,7 +3,7 @@
 import { useRef } from "react";
 import type { RsvpAnswer } from "@/lib/graduation/types";
 import { useReducedMotion } from "@/lib/hooks/use-reduced-motion";
-import { useCopy, useGradEvent } from "../i18n/lang-context";
+import { useCopy } from "../i18n/lang-context";
 import { RisoButton } from "@/components/ui/riso/button";
 import { DownloadCardButton } from "../shared/download-card-button";
 import { FINALE_ENVELOPE_SIZE } from "../shared/envelope-size";
@@ -11,22 +11,9 @@ import { SectionHeading } from "../shared/section-heading";
 import { EnvelopeBody } from "../envelope/envelope-body";
 import { EnvelopeFlap } from "../envelope/envelope-flap";
 import { EnvelopePocket } from "../envelope/envelope-pocket";
+import { FinaleCountdown } from "./finale-countdown";
 import { FinaleReplyCard } from "./finale-reply-card";
-import { useCountdown } from "./use-countdown";
 import { useFinaleTimeline } from "./use-finale-timeline";
-
-const pad = (n: number) => String(n).padStart(2, "0");
-
-function Cell({ value, label }: { value: string; label: string }) {
-  return (
-    <div className="flex min-w-13 flex-col items-center rounded-lg border-[1.5px] border-ink bg-paper px-2.5 py-1.5 sm:px-3" style={{ boxShadow: "var(--offset-xs)" }}>
-      <span className="font-heading text-2xl leading-none font-bold text-ink tabular-nums sm:text-3xl">{value}</span>
-      <span className="text-[9px] tracking-[0.2em] text-ink-3 uppercase sm:text-[10px]">{label}</span>
-    </div>
-  );
-}
-
-const Dot = () => <span className="font-bold text-ink-3">·</span>;
 
 export function FinaleSection({
   guestName,
@@ -40,8 +27,6 @@ export function FinaleSection({
   const rootRef = useRef<HTMLElement>(null);
   const reduced = useReducedMotion();
   const { finale: t, footer: footerText, envelope: envCopy } = useCopy();
-  const event = useGradEvent();
-  const countdown = useCountdown(event.startUtc, event.endUtc);
 
   useFinaleTimeline(rootRef, !reduced);
 
@@ -56,36 +41,7 @@ export function FinaleSection({
         {/* Top: Section Heading & Real-time Countdown */}
         <div id="finaleHeader" className="relative z-10 flex flex-col items-center gap-3 text-center shrink-0">
           <SectionHeading size="cover" lead={t.heading.lead} accent={t.heading.accent} />
-
-          {countdown?.phase === "before" && (
-            <div className="flex items-center gap-1.5 font-mono sm:gap-3">
-              <Cell value={String(countdown.days)} label={t.countdown.days} />
-              <Dot />
-              <Cell value={pad(countdown.hours)} label={t.countdown.hours} />
-              <Dot />
-              <Cell value={pad(countdown.minutes)} label={t.countdown.minutes} />
-              <Dot />
-              <Cell value={pad(countdown.seconds)} label={t.countdown.seconds} />
-            </div>
-          )}
-
-          {countdown?.phase === "during" && (
-            <span
-              className="rounded-full border-[1.5px] border-ink bg-canary px-4 py-1.5 font-mono text-[11px] font-bold tracking-[0.16em] text-(--on-canary) uppercase"
-              style={{ boxShadow: "var(--offset-xs)" }}
-            >
-              {t.countdown.during}
-            </span>
-          )}
-
-          {countdown?.phase === "after" && (
-            <span
-              className="rounded-full border-[1.5px] border-ink bg-paper-2 px-4 py-1.5 font-mono text-[11px] font-bold tracking-[0.16em] text-ink-2 uppercase"
-              style={{ boxShadow: "var(--offset-xs)" }}
-            >
-              {t.countdown.after}
-            </span>
-          )}
+          <FinaleCountdown />
         </div>
 
         {/* Center: Envelope sealing stage */}
