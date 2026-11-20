@@ -4,6 +4,7 @@ import { MOBILE_BREAKPOINT } from "../../shared/breakpoints";
 import { SELECTORS, type FinaleElements } from "../elements";
 import {
   ARRIVE_LINE,
+  animatesFilters,
   GROW,
   GROW_EASE,
   MEMORY_ENTER_FROM,
@@ -56,9 +57,13 @@ function revealPhotos(tl: gsap.core.Timeline, els: HTMLElement[], at: number, du
 }
 
 /** Without the timeline (reduced motion), shows the memory photos settled on their spots. */
-export function restMemories({ pin, memoryLayers, memoryPhotos }: Pick<FinaleElements, "pin" | "memoryLayers" | "memoryPhotos">, tier: PerfTier): void {
+export function restMemories(
+  { pin, memoryLayers, memoryPhotos }: Pick<FinaleElements, "pin" | "memoryLayers" | "memoryPhotos">,
+  tier: PerfTier,
+  profile: FinaleProfile,
+): void {
   gsap.set(memoryLayers, { x: -pin.getBoundingClientRect().left });
-  gsap.set(memoryPhotos, { xPercent: -50, ...memoryLook(tier).to });
+  gsap.set(memoryPhotos, { xPercent: -50, ...memoryLook(tier, profile).to });
 }
 
 /**
@@ -131,8 +136,9 @@ export function createFinaleTimeline({
     );
 
   if (photo) {
-    const photoFrom = tier === "lite" ? { opacity: 0.35 } : { filter: "sepia(1) blur(6px) brightness(1.6)", opacity: 0.35 };
-    const photoTo = tier === "lite" ? { opacity: 1 } : { filter: "sepia(0) blur(0px) brightness(1)", opacity: 1 };
+    const filters = animatesFilters(tier, profile);
+    const photoFrom = filters ? { filter: "sepia(1) blur(6px) brightness(1.6)", opacity: 0.35 } : { opacity: 0.35 };
+    const photoTo = filters ? { filter: "sepia(0) blur(0px) brightness(1)", opacity: 1 } : { opacity: 1 };
     tl.fromTo(photo, photoFrom, { ...photoTo, duration: GROW, ease: GROW_EASE }, 0);
   }
 
@@ -145,7 +151,7 @@ export function createFinaleTimeline({
     const span = tl.duration();
     const wide = () => window.innerWidth >= MOBILE_BREAKPOINT;
     const layout = memoryLayout(memoryCount, profile);
-    const look = memoryLook(tier);
+    const look = memoryLook(tier, profile);
     memories.forEach((el, i) => enterPhoto(tl, el, layout.slots[i], span, wide, look, profile.rise));
     if (together) {
       enterPhoto(tl, together, layout.together, span, wide, look, profile.rise);

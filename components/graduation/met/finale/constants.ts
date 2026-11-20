@@ -134,8 +134,11 @@ const MEMORY_LOOK_LITE: MemoryLook = {
   dimmed: { opacity: MEMORY_LOOK.dimmed.opacity },
 };
 
-export function memoryLook(tier: PerfTier): MemoryLook {
-  return tier === "lite" ? MEMORY_LOOK_LITE : MEMORY_LOOK;
+/** Whether finale photos animate filters: never on the lite tier, nor where the profile turns them off. */
+export const animatesFilters = (tier: PerfTier, profile: FinaleProfile): boolean => tier !== "lite" && profile.filters;
+
+export function memoryLook(tier: PerfTier, profile: FinaleProfile): MemoryLook {
+  return animatesFilters(tier, profile) ? MEMORY_LOOK : MEMORY_LOOK_LITE;
 }
 export const DIM_UNITS = 0.25;
 export const REVEAL_UNITS = 0.3;

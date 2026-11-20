@@ -31,8 +31,8 @@ export function MomentPrint({ moment: m }: { moment: Moment }) {
         sizes={`${CARD_VW}vw`}
         className="max-h-[70svh]"
         style={{ boxShadow: `calc(4px + var(--a) * 4px) calc(4px + var(--a) * 4px) 0 var(--${m.color})` }}
-        imageClassName={`${FOCUS_CLASS} lite:filter-none!`}
-        imageStyle={{ ...focusVars(m.focus), filter: "blur(calc((1 - var(--a)) * 3px)) saturate(calc(0.5 + var(--a) * 0.5))" }}
+        imageClassName={FOCUS_CLASS}
+        imageStyle={{ ...focusVars(m.focus), opacity: "calc(0.55 + var(--a) * 0.45)" }}
       >
         <figcaption className="flex min-h-0 flex-1 flex-col gap-1.5 overflow-y-auto overscroll-contain px-1 pt-3 pb-1 text-ink">
           <span className="font-mono tracking-[0.22em] uppercase" style={{ color: `var(--${m.color})`, fontSize: grow(10) }}>

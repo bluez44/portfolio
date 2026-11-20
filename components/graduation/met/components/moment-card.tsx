@@ -15,6 +15,7 @@ const TEXT_LIFT = 0.2;
  * `--a` (0..1) is driven by the BK badge's distance along the trail (see use-moment-trail):
  * 0 = idle (blurred, veiled photo), 1 = focused (sharp photo, card lifted and straightened, larger
  * text on a backdrop tinted with the moment's colour so it stays readable over the sharp photo).
+ * Blur cross-fades a static filtered layer over the sharp image rather than recomputing the filter.
  */
 export function MomentCard({ moment: m, side }: { moment: Moment; side: "left" | "right" }) {
   return (
@@ -29,7 +30,13 @@ export function MomentCard({ moment: m, side }: { moment: Moment; side: "left" |
       } as CSSProperties}
     >
       <div aria-hidden className="absolute inset-0 overflow-hidden rounded-[13px]">
-        <div className="absolute -inset-3 lite:filter-none!" style={{ filter: "blur(calc((1 - var(--a)) * 7px)) saturate(calc(0.35 + var(--a) * 0.65))" }}>
+        <div className="absolute -inset-3">
+          <Image src={m.image} alt="" fill sizes="400px" className={`object-cover ${FOCUS_CLASS}`} style={focusVars(m.focus)} quality={PHOTO_QUALITY} />
+        </div>
+        <div
+          className="absolute -inset-3 lite:hidden"
+          style={{ filter: "blur(7px) saturate(0.35)", opacity: "calc(1 - var(--a))", willChange: "opacity" }}
+        >
           <Image src={m.image} alt="" fill sizes="400px" className={`object-cover ${FOCUS_CLASS}`} style={focusVars(m.focus)} quality={PHOTO_QUALITY} />
         </div>
         <div className="absolute inset-0 bg-paper" style={{ opacity: "calc((1 - var(--a)) * 0.55)" }} />

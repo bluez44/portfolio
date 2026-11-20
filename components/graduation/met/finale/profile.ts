@@ -16,10 +16,12 @@ export type FinaleProfile = {
   rise: number | null;
   /** Photos arrive in groups of this many, the previous group dimming as the next one comes in; `null` staggers them one by one. */
   batch: number | null;
+  /** Animate photo filters (blur/sepia); phones fade opacity only. */
+  filters: boolean;
 };
 
-export const WIDE_FINALE: FinaleProfile = { baseVh: 2.8, extraVhPerMemory: 0.35, maxVh: 8, layout: "ring", rise: null, batch: null };
+export const WIDE_FINALE: FinaleProfile = { baseVh: 2.8, extraVhPerMemory: 0.35, maxVh: 8, layout: "ring", rise: null, batch: null, filters: true };
 
-export const COMPACT_FINALE: FinaleProfile = { baseVh: 1.8, extraVhPerMemory: 0, maxVh: 1.8, layout: "pile", rise: 0.06, batch: 4 };
+export const COMPACT_FINALE: FinaleProfile = { baseVh: 1.8, extraVhPerMemory: 0, maxVh: 1.8, layout: "pile", rise: 0.06, batch: 4, filters: false };
 
 export const finaleProfile = (compact: boolean): FinaleProfile => (compact ? COMPACT_FINALE : WIDE_FINALE);

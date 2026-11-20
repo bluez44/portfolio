@@ -42,6 +42,7 @@ export function useMomentTrail(rootRef: RefObject<HTMLElement | null>, reduced: 
     const els = hydrated && root && queryMomentTrail(root);
     if (!root || !els) return;
     const { trail, finale } = els;
+    const profile = finaleProfile(compact);
     gsap.registerPlugin(ScrollTrigger, MotionPathPlugin, DrawSVGPlugin);
 
     let metrics: TrailMetrics = { docks: [], stops: [], total: 0 };
@@ -57,7 +58,7 @@ export function useMomentTrail(rootRef: RefObject<HTMLElement | null>, reduced: 
       if (compact) {
         const rest = () => {
           placePile(finale);
-          restMemories(finale, tier);
+          restMemories(finale, tier, profile);
         };
         rest();
         window.addEventListener("resize", rest);
@@ -83,7 +84,7 @@ export function useMomentTrail(rootRef: RefObject<HTMLElement | null>, reduced: 
         if (!compact) activateCards(trail.cards, metrics, fraction);
         handOverBadge(trail.rider, finale.dock, fraction >= ARRIVED_AT);
       });
-      createFinaleTimeline({ ...finale, tier, profile: finaleProfile(compact) });
+      createFinaleTimeline({ ...finale, tier, profile });
     }, root);
     // These triggers are created after those of later sections (this effect waits for hydration).
     // ScrollTrigger refreshes in creation order, so put the note pin back ahead of them, or they
