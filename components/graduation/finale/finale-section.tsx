@@ -96,6 +96,8 @@ export function FinaleSection({
             label={envCopy.returnTo}
             senderName={guestName}
             subText={envCopy.guest}
+            // Off to the side, clear of the seal that lands on the pocket's centre when the flap closes.
+            labelPlacement="bottom-[8%] right-[6%] rotate-2"
           />
           <EnvelopeFlap id="finaleFlap" sealed={true} />
           <FinaleReplyCard
@@ -106,8 +108,8 @@ export function FinaleSection({
           />
         </div>
 
-        {/* Bottom: Warm closing appreciation & Download invitation card */}
-        <div className="flex flex-col items-center gap-3.5 text-center shrink-0">
+        {/* Bottom: Warm closing appreciation & Download invitation card; the narrator's bubble keeps off it */}
+        <div id="finaleFooter" data-bubble-avoid className="flex flex-col items-center gap-3.5 text-center shrink-0">
           <p
             className="m-0 max-w-[44ch] font-heading text-[clamp(15px,1.6vw,18px)] leading-relaxed text-pretty text-ink-2"
             style={{ fontVariationSettings: '"wdth" 88' }}
