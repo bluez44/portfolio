@@ -12,7 +12,8 @@ import { MemoryPolaroid } from "./memory-polaroid";
  * finale timeline shifts the layers to the viewport's left edge and owns each photo's transform:
  * centring on its spot, tilt and the way in). Every moment with a photo is shown.
  * - Ring (wide): photos behind the note, the together photo in its own layer on top of it.
- * - Pile (phones): one layer above the note; later photos lie on top, the together photo above all.
+ * - Pile (phones): one layer above the note and its docked badge (z-30); later photos lie on top,
+ *   the together photo above all.
  * With `onOpen` every photo is a button that opens the memory.
  */
 type Props = { memories: Moment[]; together?: string; guestName: string; profile: FinaleProfile; onOpen?: (target: MemoryTarget) => void };
@@ -56,7 +57,7 @@ export function FinaleMemoryPhotos({ memories, together, guestName, profile, onO
     </MemoryPolaroid>
   );
 
-  if (pile) return layer("z-20", [...photos, togetherPhoto]);
+  if (pile) return layer("z-40", [...photos, togetherPhoto]);
   return (
     <>
       {list.length > 0 && layer(onOpen ? "z-20" : "z-0", photos)}
