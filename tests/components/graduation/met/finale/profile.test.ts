@@ -31,11 +31,12 @@ describe("compact finale (phones)", () => {
     expect(pinVh(4, COMPACT_FINALE)).toBeLessThanOrEqual(2);
     expect(pinVh(16, COMPACT_FINALE)).toBe(pinVh(4, COMPACT_FINALE));
   });
-  it("caps the photos around the note", () => {
-    expect(COMPACT_FINALE.maxMemories).toBe(8);
+  it("shows every photo, in rows", () => {
+    expect(COMPACT_FINALE.maxMemories).toBe(Infinity);
+    expect(COMPACT_FINALE.layout).toBe("bands");
   });
   it("schedules every photo inside the timeline, in order", () => {
-    const { enters, together, revealAt } = memorySchedule(COMPACT_FINALE.maxMemories, COMPACT_FINALE);
+    const { enters, together, revealAt } = memorySchedule(16, COMPACT_FINALE);
     for (const [from, to] of [...enters, together]) {
       expect(from).toBeGreaterThanOrEqual(0);
       expect(to).toBeLessThanOrEqual(1);

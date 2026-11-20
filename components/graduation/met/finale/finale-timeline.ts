@@ -19,6 +19,9 @@ import { memoryLayout } from "./memory-layout";
 import { WIDE_FINALE, type FinaleProfile } from "./profile";
 import { noteScaleFor } from "./note-finale";
 
+/** Distance (share of the viewport height) a photo resting at `rest` rises: from below the viewport, or by `rise`. */
+const riseFrom = (rest: number, rise: number | null) => rise ?? MEMORY_ENTER_FROM - rest;
+
 function enterPhoto(
   tl: gsap.core.Timeline,
   el: HTMLElement,
@@ -26,13 +29,14 @@ function enterPhoto(
   span: number,
   wide: () => boolean,
   look: MemoryLook,
+  rise: number | null,
 ): void {
   const [from, to] = slot.enter;
   tl.fromTo(
     el,
     {
       x: () => (slot.drift * window.innerWidth) / 100,
-      y: () => (MEMORY_ENTER_FROM - (wide() ? slot.wide : slot.phone).rest) * window.innerHeight,
+      y: () => riseFrom((wide() ? slot.wide : slot.phone).rest, rise) * window.innerHeight,
       xPercent: -50,
       rotation: slot.rot + slot.spin,
       ...look.from,
@@ -49,6 +53,12 @@ function dimPhoto(tl: gsap.core.Timeline, el: HTMLElement, at: number, duration:
 
 function revealPhotos(tl: gsap.core.Timeline, els: HTMLElement[], at: number, duration: number, look: MemoryLook): void {
   tl.fromTo(els, { ...look.dimmed }, { ...look.to, duration, immediateRender: false }, at);
+}
+
+/** Without the timeline (reduced motion), shows the memory photos settled on their spots. */
+export function restMemories({ pin, memoryLayers, memoryPhotos }: Pick<FinaleElements, "pin" | "memoryLayers" | "memoryPhotos">, tier: PerfTier): void {
+  gsap.set(memoryLayers, { x: -pin.getBoundingClientRect().left });
+  gsap.set(memoryPhotos, { xPercent: -50, ...memoryLook(tier).to });
 }
 
 /**
@@ -136,9 +146,9 @@ export function createFinaleTimeline({
     const wide = () => window.innerWidth >= MOBILE_BREAKPOINT;
     const layout = memoryLayout(memoryCount, profile);
     const look = memoryLook(tier);
-    memories.forEach((el, i) => enterPhoto(tl, el, layout.slots[i], span, wide, look));
+    memories.forEach((el, i) => enterPhoto(tl, el, layout.slots[i], span, wide, look, profile.rise));
     if (together) {
-      enterPhoto(tl, together, layout.together, span, wide, look);
+      enterPhoto(tl, together, layout.together, span, wide, look, profile.rise);
     }
     const dimmed = together ? memories : memories.slice(0, -1);
     memories.forEach((el, i) => {

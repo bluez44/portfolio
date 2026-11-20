@@ -1,4 +1,5 @@
 import { seededRandom } from "@/lib/graduation/seeded-random";
+import { bandLayout } from "./band-layout";
 import {
   MEMORY_JITTER,
   MEMORY_MOTION_RANGE,
@@ -102,12 +103,19 @@ export function memorySchedule(count: number, profile: FinaleProfile = WIDE_FINA
   return { enters, together: [togetherStart, togetherEnd], revealAt };
 }
 
+/** Band layout on phones: each photo (the together photo last) takes a band spot and rises straight up. */
+function withBands(slots: Omit<MemorySlot, "enter">[]): Omit<MemorySlot, "enter">[] {
+  const bands = bandLayout(slots.length);
+  return slots.map((slot, i) => ({ ...slot, width: bands[i].width, phone: { x: bands[i].x, rest: bands[i].rest }, drift: 0, spin: 0 }));
+}
+
 export function memoryLayout(count: number, profile: FinaleProfile = WIDE_FINALE): { slots: MemorySlot[]; together: MemorySlot; revealAt: number } {
-  const spots = memorySpots(count);
+  const ring = [...memorySpots(count), TOGETHER_PHOTO];
+  const spots = profile.layout === "bands" ? withBands(ring) : ring;
   const schedule = memorySchedule(count, profile);
   return {
-    slots: spots.map((spot, i) => ({ ...spot, enter: schedule.enters[i] })),
-    together: { ...TOGETHER_PHOTO, enter: schedule.together },
+    slots: spots.slice(0, count).map((spot, i) => ({ ...spot, enter: schedule.enters[i] })),
+    together: { ...spots[count], enter: schedule.together },
     revealAt: schedule.revealAt,
   };
 }
