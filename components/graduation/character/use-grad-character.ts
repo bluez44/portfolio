@@ -7,12 +7,11 @@ import { useHydrated } from "@/lib/hooks/use-hydrated";
 import { useMediaQuery } from "@/lib/hooks/use-media-query";
 import { usePerfTier } from "@/lib/hooks/use-perf-tier";
 import { useReducedMotion } from "@/lib/hooks/use-reduced-motion";
-import { openedCardScale } from "../envelope/opened-card";
-import { buildBeats, type BeatSlots } from "./choreography/beats";
+import { beatSlots } from "./choreography/beat-slots";
+import { buildBeats } from "./choreography/beats";
 import { lineAt } from "./choreography/narration";
-import { measureEnvelopeWidth, measureSections } from "./choreography/measure-sections";
-import { besideX, envelopeSideX } from "./choreography/placement";
-import { characterProfile, type CharacterProfile } from "./choreography/profile";
+import { measureSections } from "./choreography/measure-sections";
+import { characterProfile } from "./choreography/profile";
 import { finaleProfile } from "../met/finale/profile";
 import { usePaletteSync } from "../shared/three/use-palette-sync";
 import { COMPACT_QUERY } from "../shared/breakpoints";
@@ -20,14 +19,6 @@ import { createGradCharacter, type GradCharacter } from "./scene/grad-character"
 import type { Beat, NarrationKey } from "./types";
 
 export type CharacterFrameHandler = (head: { x: number; y: number }, line: NarrationKey | null) => void;
-
-/** Slots beside the opened envelope (`sx`) and the grown note (`cheerX`), or the profile's fixed slots on phones. */
-function sideSlots(profile: CharacterProfile, view: { halfW: number; scale: number }, noteW: number | undefined): BeatSlots {
-  if (profile.slots) return { sx: profile.slots.side, cheerX: profile.slots.cheer, farewellX: profile.slots.farewell };
-  const viewportW = window.innerWidth;
-  const sx = envelopeSideX({ viewportW, envelopeW: measureEnvelopeWidth(), cardScale: openedCardScale(), ...view });
-  return { sx, cheerX: noteW ? besideX({ viewportW, objectW: noteW, ...view }) : undefined };
-}
 
 export function useGradCharacter(
   hostRef: RefObject<HTMLDivElement | null>,
@@ -72,7 +63,7 @@ export function useGradCharacter(
     const relayout = () => {
       character.resize(null);
       const metrics = measureSections(finaleProfile(compact));
-      beats = metrics ? buildBeats(metrics, sideSlots(profile, character.view(), metrics.noteFinale?.width), profile.stations) : null;
+      beats = metrics ? buildBeats(metrics, beatSlots(profile, character.view(), metrics.noteFinale?.width), profile.stations) : null;
       character.resize(beats);
     };
 
