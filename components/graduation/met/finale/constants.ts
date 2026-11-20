@@ -115,30 +115,37 @@ export const TOGETHER_PHOTO = {
 
 /** Top of a memory photo before it rises, as a share of the viewport height (just below it). */
 export const MEMORY_ENTER_FROM = 1.05;
+type PhotoStyle = { opacity: number; filter?: string };
+
+export type MemoryLook = {
+  from: PhotoStyle;
+  to: PhotoStyle;
+  /**
+   * How an earlier photo steps back as later ones arrive: its whole card restyled, or a paper veil
+   * over its photo alone, which keeps the card opaque so overlapping cards never show through.
+   */
+  dim: { card: PhotoStyle } | { veil: number };
+};
+
 /** A photo surfaces faded like an old memory and settles clear. */
 export const MEMORY_LOOK = {
   from: { opacity: 0, filter: "blur(6px) sepia(0.85)" },
   to: { opacity: 0.95, filter: "blur(0px) sepia(0.25)" },
-  dimmed: { opacity: 0.45, filter: "blur(0px) sepia(0.7)" },
-} as const;
+  dim: { card: { opacity: 0.45, filter: "blur(0px) sepia(0.7)" } },
+} as const satisfies MemoryLook;
 
-export type MemoryLook = {
-  from: { opacity: number; filter?: string };
-  to: { opacity: number; filter?: string };
-  dimmed: { opacity: number; filter?: string };
-};
-
-const MEMORY_LOOK_LITE: MemoryLook = {
-  from: { opacity: MEMORY_LOOK.from.opacity },
-  to: { opacity: MEMORY_LOOK.to.opacity },
-  dimmed: { opacity: MEMORY_LOOK.dimmed.opacity },
+/** Without filters: the photo fades in, and stepping back veils it instead of fading the card. */
+const MEMORY_LOOK_PLAIN: MemoryLook = {
+  from: { opacity: 0 },
+  to: { opacity: 1 },
+  dim: { veil: 0.55 },
 };
 
 /** Whether finale photos animate filters: never on the lite tier, nor where the profile turns them off. */
 export const animatesFilters = (tier: PerfTier, profile: FinaleProfile): boolean => tier !== "lite" && profile.filters;
 
 export function memoryLook(tier: PerfTier, profile: FinaleProfile): MemoryLook {
-  return animatesFilters(tier, profile) ? MEMORY_LOOK : MEMORY_LOOK_LITE;
+  return animatesFilters(tier, profile) ? MEMORY_LOOK : MEMORY_LOOK_PLAIN;
 }
 export const DIM_UNITS = 0.25;
 export const REVEAL_UNITS = 0.3;

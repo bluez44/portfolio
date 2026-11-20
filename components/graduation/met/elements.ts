@@ -17,6 +17,7 @@ export const SELECTORS = {
   polaroidPhoto: "[data-polaroid-photo]",
   memoryLayer: "[data-memory-layer]",
   memoryPhoto: "[data-memory-photo]",
+  memoryVeil: "[data-memory-veil]",
   memoryTogether: "[data-memory-together]",
 } as const;
 

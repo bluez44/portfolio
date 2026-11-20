@@ -5,7 +5,7 @@ import { COMPACT_FINALE, WIDE_FINALE } from "@/components/graduation/met/finale/
 describe("MEMORY_LOOK", () => {
   it("leaves photos sharp at rest without non-zero blur", () => {
     expect(MEMORY_LOOK.to.filter).not.toMatch(/blur\((?!0px)/);
-    expect(MEMORY_LOOK.dimmed.filter).not.toMatch(/blur\((?!0px)/);
+    expect(MEMORY_LOOK.dim.card.filter).not.toMatch(/blur\((?!0px)/);
   });
 });
 
@@ -14,19 +14,11 @@ describe("memoryLook", () => {
     expect(memoryLook("full", WIDE_FINALE)).toBe(MEMORY_LOOK);
   });
 
-  it("drops filter keys while preserving opacities for lite tier", () => {
-    const lite = memoryLook("lite", WIDE_FINALE);
-    for (const key of ["from", "to", "dimmed"] as const) {
-      expect("filter" in lite[key]).toBe(false);
-      expect(lite[key].opacity).toBe(MEMORY_LOOK[key].opacity);
-    }
-  });
-
-  it("drops filter keys while preserving opacities for full tier with COMPACT_FINALE", () => {
-    const compact = memoryLook("full", COMPACT_FINALE);
-    for (const key of ["from", "to", "dimmed"] as const) {
-      expect("filter" in compact[key]).toBe(false);
-      expect(compact[key].opacity).toBe(MEMORY_LOOK[key].opacity);
+  it("uses no filters and dims with a veil, keeping cards opaque, on the lite tier and on phones", () => {
+    for (const look of [memoryLook("lite", WIDE_FINALE), memoryLook("full", COMPACT_FINALE)]) {
+      expect("filter" in look.from || "filter" in look.to).toBe(false);
+      expect(look.to.opacity).toBe(1);
+      expect(look.dim).toEqual({ veil: expect.any(Number) });
     }
   });
 });

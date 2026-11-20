@@ -47,13 +47,19 @@ function enterPhoto(
   );
 }
 
-function dimPhoto(tl: gsap.core.Timeline, el: HTMLElement, at: number, duration: number, look: MemoryLook): void {
-  // immediateRender: false prevents overriding the preceding enter tween before `at` and restores cleanly on reverse scrub.
-  tl.fromTo(el, { ...look.to }, { ...look.dimmed, duration, immediateRender: false }, at);
-}
+const veilsOf = (els: HTMLElement[]) => els.flatMap((el) => [...el.querySelectorAll<HTMLElement>(SELECTORS.memoryVeil)]);
 
-function revealPhotos(tl: gsap.core.Timeline, els: HTMLElement[], at: number, duration: number, look: MemoryLook): void {
-  tl.fromTo(els, { ...look.dimmed }, { ...look.to, duration, immediateRender: false }, at);
+/** Steps photos back (`back`) or forward again: restyling their cards, or raising and lowering their veils. */
+function stepPhotos(tl: gsap.core.Timeline, els: HTMLElement[], back: boolean, at: number, duration: number, look: MemoryLook): void {
+  // immediateRender: false prevents overriding the preceding tweens before `at` and restores cleanly on reverse scrub.
+  const vars = { duration, immediateRender: false };
+  if ("veil" in look.dim) {
+    const [from, to] = back ? [0, look.dim.veil] : [look.dim.veil, 0];
+    tl.fromTo(veilsOf(els), { opacity: from }, { opacity: to, ...vars }, at);
+    return;
+  }
+  const [from, to] = back ? [look.to, look.dim.card] : [look.dim.card, look.to];
+  tl.fromTo(els, { ...from }, { ...to, ...vars }, at);
 }
 
 /** Without the timeline (reduced motion), shows the memory photos settled on their spots. */
@@ -159,9 +165,9 @@ export function createFinaleTimeline({
     // Without a together photo nothing arrives after the last one, so it stays clear.
     const dimmed = together ? memories : memories.slice(0, -1);
     const { dims, revealAt } = layout.schedule;
-    dimmed.forEach((el, i) => dimPhoto(tl, el, span * dims[i][0], span * (dims[i][1] - dims[i][0]), look));
+    dimmed.forEach((el, i) => stepPhotos(tl, [el], true, span * dims[i][0], span * (dims[i][1] - dims[i][0]), look));
     if (dimmed.length > 0) {
-      revealPhotos(tl, dimmed, span * revealAt, REVEAL_UNITS, look);
+      stepPhotos(tl, dimmed, false, span * revealAt, REVEAL_UNITS, look);
     }
   }
 

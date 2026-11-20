@@ -54,6 +54,8 @@ export function MemoryPolaroid({ slot, image, focus, year, title, together, pile
           style={focusVars(focus)}
           quality={PHOTO_QUALITY}
         />
+        {/* Raised by the finale timeline to step an earlier photo back without fading its card. */}
+        <div data-memory-veil aria-hidden className="absolute inset-0 bg-paper opacity-0" />
       </div>
       {pile ? (
         <figcaption className="flex h-6 items-center justify-center px-0.5">
