@@ -10,6 +10,7 @@ import {
   type MemoryZone,
   type Range,
 } from "./constants";
+import { WIDE_FINALE, type FinaleProfile } from "./profile";
 
 type PhoneZone = MemoryZone & { x: { phone: Range } };
 
@@ -79,13 +80,13 @@ export function memorySpots(count: number): Omit<MemorySlot, "enter">[] {
   });
 }
 
-export function memorySchedule(count: number): {
+export function memorySchedule(count: number, profile: FinaleProfile = WIDE_FINALE): {
   enters: (readonly [number, number])[];
   together: readonly [number, number];
   revealAt: number;
 } {
   // Convert fixed timeline-unit durations to fractions so each photo's scroll distance stays constant.
-  const units = finaleUnits(count);
+  const units = finaleUnits(count, profile);
   const firstStart = FIRST_ENTER_UNITS / units;
   const enterSpan = ENTER_UNITS / units;
   const revealAt = 1 - REVEAL_HOLD_UNITS / units;
@@ -101,9 +102,9 @@ export function memorySchedule(count: number): {
   return { enters, together: [togetherStart, togetherEnd], revealAt };
 }
 
-export function memoryLayout(count: number): { slots: MemorySlot[]; together: MemorySlot; revealAt: number } {
+export function memoryLayout(count: number, profile: FinaleProfile = WIDE_FINALE): { slots: MemorySlot[]; together: MemorySlot; revealAt: number } {
   const spots = memorySpots(count);
-  const schedule = memorySchedule(count);
+  const schedule = memorySchedule(count, profile);
   return {
     slots: spots.map((spot, i) => ({ ...spot, enter: schedule.enters[i] })),
     together: { ...TOGETHER_PHOTO, enter: schedule.together },

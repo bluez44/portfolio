@@ -1,13 +1,15 @@
 import type { PerfTier } from "@/lib/browser/perf-tier";
+import { WIDE_FINALE, type FinaleProfile } from "./profile";
 
 /**
  * The personal-note finale: the note pins when its top reaches `ARRIVE_AT` of the viewport, then
- * over `pinVh` viewport heights of scroll (growing with memory count) it grows (outline + scale)
+ * over `pinVh` viewport heights of scroll (per `FinaleProfile`) it grows (outline + scale)
  * and holds. Shared by the trail animation and the graduation character so the character moves in
  * step with the card.
  */
 export const ARRIVE_AT = 0.4;
-export const PIN_VH = 2.8;
+/** Reference pin length: timeline units are scaled against it so scroll speed per unit stays constant. */
+export const PIN_VH = WIDE_FINALE.baseVh;
 /** ScrollTrigger line where the badge reaches the note and the note pins. */
 export const ARRIVE_LINE = `top ${ARRIVE_AT * 100}%`;
 
@@ -17,14 +19,14 @@ export const HOLD = 2.5;
 export const GROW_EASE = "power1.inOut";
 
 export const BASE_MEMORIES = 4;
-export const EXTRA_PIN_VH_PER_MEMORY = 0.35;
-export const MAX_PIN_VH = 8;
 
-export const pinVh = (memoryCount: number): number =>
-  Math.min(MAX_PIN_VH, PIN_VH + Math.max(0, memoryCount - BASE_MEMORIES) * EXTRA_PIN_VH_PER_MEMORY);
+export const pinVh = (memoryCount: number, profile: FinaleProfile = WIDE_FINALE): number =>
+  Math.min(profile.maxVh, profile.baseVh + Math.max(0, memoryCount - BASE_MEMORIES) * profile.extraVhPerMemory);
 /** Scale total units with pin length so scroll speed per timeline unit stays constant. */
-export const finaleUnits = (memoryCount: number): number => ((GROW + HOLD) * pinVh(memoryCount)) / PIN_VH;
-export const pinEnd = (memoryCount: number): string => `+=${pinVh(memoryCount) * 100}%`;
+export const finaleUnits = (memoryCount: number, profile: FinaleProfile = WIDE_FINALE): number =>
+  ((GROW + HOLD) * pinVh(memoryCount, profile)) / PIN_VH;
+export const pinEnd = (memoryCount: number, profile: FinaleProfile = WIDE_FINALE): string =>
+  `+=${pinVh(memoryCount, profile) * 100}%`;
 
 /** px between the card edge and the drawn outline; the outline's corner radius follows the card's. */
 export const OUTLINE_GAP = 8;

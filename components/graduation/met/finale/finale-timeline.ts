@@ -1,6 +1,6 @@
 import gsap from "gsap";
 import type { PerfTier } from "@/lib/browser/perf-tier";
-import { MOBILE_BREAKPOINT } from "../../character/scene/constants";
+import { MOBILE_BREAKPOINT } from "../../shared/breakpoints";
 import { SELECTORS, type FinaleElements } from "../elements";
 import {
   ARRIVE_LINE,
@@ -16,6 +16,7 @@ import {
   type MemorySlot,
 } from "./constants";
 import { memoryLayout } from "./memory-layout";
+import { WIDE_FINALE, type FinaleProfile } from "./profile";
 import { noteScaleFor } from "./note-finale";
 
 function enterPhoto(
@@ -65,7 +66,8 @@ export function createFinaleTimeline({
   memoryLayers = memoryLayer ? [memoryLayer] : [],
   memoryPhotos,
   tier = "full",
-}: FinaleElements & { tier?: PerfTier }): gsap.core.Timeline {
+  profile = WIDE_FINALE,
+}: FinaleElements & { tier?: PerfTier; profile?: FinaleProfile }): gsap.core.Timeline {
   const memories = memoryPhotos.filter((el) => !el.matches(SELECTORS.memoryTogether));
   const together = memoryPhotos.find((el) => el.matches(SELECTORS.memoryTogether));
   const memoryCount = memories.length;
@@ -85,7 +87,7 @@ export function createFinaleTimeline({
       scrollTrigger: {
         trigger: pin,
         start: ARRIVE_LINE,
-        end: pinEnd(memoryCount),
+        end: pinEnd(memoryCount, profile),
         pin: true,
         scrub: true,
         invalidateOnRefresh: true,
@@ -124,7 +126,7 @@ export function createFinaleTimeline({
     tl.fromTo(photo, photoFrom, { ...photoTo, duration: GROW, ease: GROW_EASE }, 0);
   }
 
-  tl.to({}, { duration: finaleUnits(memoryCount) - GROW }); // the finished card stays pinned a little before the next section
+  tl.to({}, { duration: finaleUnits(memoryCount, profile) - GROW }); // the finished card stays pinned a little before the next section
 
   if (memoryLayers.length > 0) {
     // The pin sits in a column; pull the layers back to the viewport's left edge.
@@ -132,7 +134,7 @@ export function createFinaleTimeline({
     // Placed within the pin's existing length, so the photos never change it.
     const span = tl.duration();
     const wide = () => window.innerWidth >= MOBILE_BREAKPOINT;
-    const layout = memoryLayout(memoryCount);
+    const layout = memoryLayout(memoryCount, profile);
     const look = memoryLook(tier);
     memories.forEach((el, i) => enterPhoto(tl, el, layout.slots[i], span, wide, look));
     if (together) {
