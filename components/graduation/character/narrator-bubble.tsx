@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState, useImperativeHandle, forwardRef } from "react";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { useCopy } from "../i18n/lang-context";
 import { useCompactLayout } from "../shared/use-compact-layout";
 import { placeBubble } from "./bubble-placement";
@@ -14,13 +15,9 @@ export type NarratorBubbleHandle = {
 
 type Box = { left: number; top: number; right: number; bottom: number };
 
-/** Whether a box overlaps any visible `[data-bubble-avoid]` element, i.e. content the bubble must not cover. */
-function coversAvoided(box: Box): boolean {
-  return [...document.querySelectorAll("[data-bubble-avoid]")].some((el) => {
-    if (el.checkVisibility?.({ visibilityProperty: true }) === false) return false;
-    const r = el.getBoundingClientRect();
-    return box.left < r.right && box.right > r.left && box.top < r.bottom && box.bottom > r.top;
-  });
+/** Whether a box overlaps any measured `[data-bubble-avoid]` rect, i.e. content the bubble must not cover. */
+function coversAny(box: Box, rects: DOMRect[]): boolean {
+  return rects.some((r) => box.left < r.right && box.right > r.left && box.top < r.bottom && box.bottom > r.top);
 }
 
 type Props = {
@@ -42,6 +39,38 @@ export const NarratorBubble = forwardRef<NarratorBubbleHandle, Props>(function N
   const [activeLine, setActiveLine] = useState<NarrationKey | null>(null);
   const [typedText, setTypedText] = useState("");
   const activeLineRef = useRef<NarrationKey | null>(null);
+  const sizeRef = useRef({ w: 0, h: 0 });
+  const avoidRef = useRef<Element[]>([]);
+  const hiddenRef = useRef(true);
+
+  useEffect(() => {
+    const root = rootRef.current;
+    if (!root) return;
+    const rect = root.getBoundingClientRect();
+    sizeRef.current = { w: rect.width, h: rect.height };
+    const ro = new ResizeObserver((entries) => {
+      const entry = entries[0];
+      if (!entry) return;
+      const box = entry.borderBoxSize?.[0];
+      sizeRef.current = box
+        ? { w: box.inlineSize, h: box.blockSize }
+        : { w: entry.contentRect.width, h: entry.contentRect.height };
+    });
+    ro.observe(root);
+    return () => ro.disconnect();
+  }, []);
+
+  useEffect(() => {
+    const refreshAvoid = () => {
+      avoidRef.current = [...document.querySelectorAll("[data-bubble-avoid]")];
+    };
+    ScrollTrigger.addEventListener("refresh", refreshAvoid);
+    return () => ScrollTrigger.removeEventListener("refresh", refreshAvoid);
+  }, []);
+
+  useEffect(() => {
+    avoidRef.current = [...document.querySelectorAll("[data-bubble-avoid]")];
+  }, [activeLine]);
 
   useImperativeHandle(
     ref,
@@ -50,24 +79,37 @@ export const NarratorBubble = forwardRef<NarratorBubbleHandle, Props>(function N
         const root = rootRef.current;
         if (!root) return;
 
+        const viewportW = window.innerWidth;
+
         // Off stage (phones walk it out during the note finale): nothing to point at.
-        if (!line || head.x < 0 || head.x > window.innerWidth) {
-          root.style.opacity = "0";
-          root.style.pointerEvents = "none";
+        if (!line || head.x < 0 || head.x > viewportW) {
           if (activeLineRef.current !== null) {
             activeLineRef.current = null;
             setActiveLine(null);
           }
+          if (hiddenRef.current) return;
+          hiddenRef.current = true;
+          root.style.opacity = "0";
+          root.style.pointerEvents = "none";
           return;
         }
 
-        const w = root.offsetWidth;
-        const h = root.offsetHeight;
-        const { left, top, tail, tailOffset } = placeBubble(head, { w, h }, window.innerWidth, bubble);
+        // Read all avoided rects before writing styles so the frame stays read-then-write.
+        const avoidRects: DOMRect[] = [];
+        for (const el of avoidRef.current) {
+          if (el.checkVisibility?.({ visibilityProperty: true }) === false) continue;
+          avoidRects.push(el.getBoundingClientRect());
+        }
+
+        const { w, h } = sizeRef.current;
+        const { left, top, tail, tailOffset } = placeBubble(head, { w, h }, viewportW, bubble);
+        const covered = coversAny({ left, right: left + w, top, bottom: top + h }, avoidRects);
+
+        hiddenRef.current = covered;
         root.dataset.tail = tail;
         root.style.setProperty("--tail", `${Math.round(tailOffset)}px`);
         root.style.transform = `translate3d(${Math.round(left)}px, ${Math.round(top)}px, 0)`;
-        root.style.opacity = coversAvoided({ left, right: left + w, top, bottom: top + h }) ? "0" : "1";
+        root.style.opacity = covered ? "0" : "1";
 
         if (activeLineRef.current !== line) {
           activeLineRef.current = line;
