@@ -3,6 +3,7 @@
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { useEffect, useRef, type RefObject } from "react";
+import { useHydrated } from "@/lib/hooks/use-hydrated";
 import { useMediaQuery } from "@/lib/hooks/use-media-query";
 import { usePerfTier } from "@/lib/hooks/use-perf-tier";
 import { useReducedMotion } from "@/lib/hooks/use-reduced-motion";
@@ -35,6 +36,9 @@ export function useGradCharacter(
   const reduced = useReducedMotion();
   const compact = useMediaQuery(COMPACT_QUERY);
   const tier = usePerfTier();
+  // Until hydration `compact`, `reduced` and `tier` hold the server defaults; waiting creates the
+  // WebGL character once instead of creating and disposing one for the wrong device.
+  const hydrated = useHydrated();
   const charRef = useRef<GradCharacter | null>(null);
   const onReadyRef = useRef(onReady);
   const onFrameRef = useRef(onFrame);
@@ -45,14 +49,13 @@ export function useGradCharacter(
 
   useEffect(() => {
     const host = hostRef.current;
+    if (!hydrated) return;
     if (reduced || !host) {
       onReadyRef.current?.();
       return;
     }
     gsap.registerPlugin(ScrollTrigger);
-    // Read the query directly: the hook's first render uses the server snapshot (wide) on phones too.
-    const phone = window.matchMedia(COMPACT_QUERY).matches;
-    const profile = characterProfile(phone);
+    const profile = characterProfile(compact);
     let character: GradCharacter;
     try {
       character = createGradCharacter(host, { scale: profile.scale, tier });
@@ -68,7 +71,7 @@ export function useGradCharacter(
 
     const relayout = () => {
       character.resize(null);
-      const metrics = measureSections(finaleProfile(phone));
+      const metrics = measureSections(finaleProfile(compact));
       const { sx, cheerX } = sideSlots(profile, character.view(), metrics?.noteFinale?.width);
       beats = metrics ? buildBeats(metrics, sx, cheerX, profile.stations) : null;
       character.resize(beats);
@@ -93,7 +96,7 @@ export function useGradCharacter(
       character.dispose();
       charRef.current = null;
     };
-  }, [hostRef, reduced, compact, tier]);
+  }, [hostRef, reduced, compact, tier, hydrated]);
 
   usePaletteSync(charRef);
 }
