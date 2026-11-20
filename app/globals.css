@@ -1,5 +1,7 @@
 @import "tailwindcss";
 
+@custom-variant lite (&:where([data-perf="lite"], [data-perf="lite"] *));
+
 /* ────────────────────────────────────────────────────────────────
    RESTRAINED RISO — design tokens
    surface = warm paper, ink = softened black, 4 saturated accents
