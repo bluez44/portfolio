@@ -16,7 +16,7 @@ const M: SectionMetrics = {
 };
 
 describe("targetPose", () => {
-  const beats = buildBeats(M, 0.8);
+  const beats = buildBeats(M, { sx: 0.8 });
   it("clamps before the first and after the last beat", () => {
     expect(targetPose(beats, -100)).toMatchObject({ wave: 1, x: 0.8, walk: 0 });
     expect(targetPose(beats, 99999)).toMatchObject({ play: 1, x: 0.62 });

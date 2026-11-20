@@ -16,7 +16,7 @@ const M: SectionMetrics = {
 };
 
 describe("buildBeats", () => {
-  const beats = buildBeats(M, 0.8);
+  const beats = buildBeats(M, { sx: 0.8 });
   it("creates eleven strictly increasing beats ≥ 40px apart", () => {
     expect(beats).toHaveLength(11);
     beats.slice(1).forEach((b, i) => expect(b.s - beats[i].s).toBeGreaterThanOrEqual(40));
@@ -26,18 +26,18 @@ describe("buildBeats", () => {
     expect(beats.at(-1)).toMatchObject({ act: "play", x: 0.62, say: "play" });
   });
   it("forces spacing when sections are tiny", () => {
-    const tiny = buildBeats({ ...M, metHeight: 0, endsHeight: 0 }, 0.5);
+    const tiny = buildBeats({ ...M, metHeight: 0, endsHeight: 0 }, { sx: 0.5 });
     tiny.slice(1).forEach((b, i) => expect(b.s).toBeGreaterThan(tiny[i].s));
   });
   it("includes farewell beat when finaleTop is provided", () => {
-    const withFinale = buildBeats({ ...M, finaleTop: 9500 }, 0.8);
+    const withFinale = buildBeats({ ...M, finaleTop: 9500 }, { sx: 0.8 });
     expect(withFinale.at(-1)).toMatchObject({ act: "wave", say: "farewell" });
   });
 });
 
 describe("buildBeats with the note finale", () => {
   const finale = { start: 5000, grown: 5500, end: 6000, width: 700 };
-  const beats = buildBeats({ ...M, metHeight: 2500, endsTop: 6700, noteFinale: finale }, 0.8, 0.9);
+  const beats = buildBeats({ ...M, metHeight: 2500, endsTop: 6700, noteFinale: finale }, { sx: 0.8, cheerX: 0.9 });
 
   // How we met's bottom edge is at 6700: it shows 20px at scroll 5720 and reaches mid-screen at 6200.
   it("sits until the note pins and cheers beside it before heading for How it ends", () => {
@@ -69,7 +69,7 @@ describe("buildBeats with the note finale", () => {
 
 describe("buildBeats without the note finale", () => {
   it("moves the character from the desk over the same scroll window", () => {
-    const beats = buildBeats(M, 0.8); // bottom edge at 5700
+    const beats = buildBeats(M, { sx: 0.8 }); // bottom edge at 5700
     expect(beats[5]).toMatchObject({ s: 4480, act: "sit" });
     expect(beats[6]).toMatchObject({ s: 5440, act: "point" });
   });

@@ -8,7 +8,7 @@ import { useMediaQuery } from "@/lib/hooks/use-media-query";
 import { usePerfTier } from "@/lib/hooks/use-perf-tier";
 import { useReducedMotion } from "@/lib/hooks/use-reduced-motion";
 import { openedCardScale } from "../envelope/opened-card";
-import { buildBeats } from "./choreography/beats";
+import { buildBeats, type BeatSlots } from "./choreography/beats";
 import { lineAt } from "./choreography/narration";
 import { measureEnvelopeWidth, measureSections } from "./choreography/measure-sections";
 import { besideX, envelopeSideX } from "./choreography/placement";
@@ -22,8 +22,8 @@ import type { Beat, NarrationKey } from "./types";
 export type CharacterFrameHandler = (head: { x: number; y: number }, line: NarrationKey | null) => void;
 
 /** Slots beside the opened envelope (`sx`) and the grown note (`cheerX`), or the profile's fixed slots on phones. */
-function sideSlots(profile: CharacterProfile, view: { halfW: number; scale: number }, noteW: number | undefined): { sx: number; cheerX?: number } {
-  if (profile.slots) return { sx: profile.slots.side, cheerX: profile.slots.cheer };
+function sideSlots(profile: CharacterProfile, view: { halfW: number; scale: number }, noteW: number | undefined): BeatSlots {
+  if (profile.slots) return { sx: profile.slots.side, cheerX: profile.slots.cheer, farewellX: profile.slots.farewell };
   const viewportW = window.innerWidth;
   const sx = envelopeSideX({ viewportW, envelopeW: measureEnvelopeWidth(), cardScale: openedCardScale(), ...view });
   return { sx, cheerX: noteW ? besideX({ viewportW, objectW: noteW, ...view }) : undefined };
@@ -72,8 +72,7 @@ export function useGradCharacter(
     const relayout = () => {
       character.resize(null);
       const metrics = measureSections(finaleProfile(compact));
-      const { sx, cheerX } = sideSlots(profile, character.view(), metrics?.noteFinale?.width);
-      beats = metrics ? buildBeats(metrics, sx, cheerX, profile.stations) : null;
+      beats = metrics ? buildBeats(metrics, sideSlots(profile, character.view(), metrics.noteFinale?.width), profile.stations) : null;
       character.resize(beats);
     };
 

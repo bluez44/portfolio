@@ -25,14 +25,24 @@ describe("characterProfile", () => {
   it("keeps phones in the bottom corners, and off stage during the note finale", () => {
     const { slots, stations } = COMPACT_CHARACTER;
     if (!slots) throw new Error("phones use fixed slots");
-    const beats = buildBeats(M, slots.side, slots.cheer, stations);
+    const beats = buildBeats(M, { sx: slots.side, cheerX: slots.cheer, farewellX: slots.farewell }, stations);
     const cheering = beats.filter((b) => b.act === "cheer");
     expect(cheering.length).toBeGreaterThan(0);
     for (const b of cheering) expect(b.x).toBeGreaterThan(1);
     for (const b of beats.filter((b) => b.act !== "cheer")) expect(Math.abs(b.x)).toBe(1);
   });
 
+  it("says farewell from the left corner on phones, facing the page", () => {
+    const { slots, stations } = COMPACT_CHARACTER;
+    if (!slots) throw new Error("phones use fixed slots");
+    const beats = buildBeats({ ...M, finaleTop: 9500 }, { sx: slots.side, cheerX: slots.cheer, farewellX: slots.farewell }, stations);
+    const farewell = beats.find((b) => b.say === "farewell");
+    expect(farewell).toMatchObject({ x: slots.farewell, act: "wave" });
+    expect(farewell!.x).toBeLessThan(0);
+    expect(farewell!.ry).toBeGreaterThan(0);
+  });
+
   it("leaves the wide stations as they were", () => {
-    expect(buildBeats(M, 0.8, 0.9, WIDE_CHARACTER.stations)).toEqual(buildBeats(M, 0.8, 0.9));
+    expect(buildBeats(M, { sx: 0.8, cheerX: 0.9 }, WIDE_CHARACTER.stations)).toEqual(buildBeats(M, { sx: 0.8, cheerX: 0.9 }));
   });
 });

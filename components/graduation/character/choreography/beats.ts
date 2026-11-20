@@ -45,10 +45,13 @@ function wishesEnd(m: SectionMetrics, finaleTop: number): number {
 }
 
 /**
- * Scroll-keyed poses for the whole invitation; `sx` is the slot beside the opened envelope card,
- * `cheerX` the slot beside the grown note.
+ * Horizontal slots measured from the page: beside the opened envelope card (`sx`), beside the grown
+ * note (`cheerX`, default the desk) and where the farewell is said (`farewellX`, default `sx`).
  */
-export function buildBeats(m: SectionMetrics, sx: number, cheerX?: number, stations: Stations = WIDE_STATIONS): Beat[] {
+export type BeatSlots = { sx: number; cheerX?: number; farewellX?: number };
+
+/** Scroll-keyed poses for the whole invitation. */
+export function buildBeats(m: SectionMetrics, { sx, cheerX, farewellX = sx }: BeatSlots, stations: Stations = WIDE_STATIONS): Beat[] {
   const { vh, stageTop: s0, stageScroll: sl } = m;
   const { desk, pointing, tossing, playing } = stations;
   const [leave, arrive] = toEnds(m);
@@ -67,7 +70,7 @@ export function buildBeats(m: SectionMetrics, sx: number, cheerX?: number, stati
     ...(m.finaleTop != null
       ? ([
           [wishesEnd(m, m.finaleTop), playing.x, playing.ry, playing.act, "play"],
-          [m.finaleTop, sx, -0.5, "wave", "farewell"],
+          [m.finaleTop, farewellX, -0.5 * Math.sign(farewellX), "wave", "farewell"],
         ] as RawBeat[])
       : []),
   ];

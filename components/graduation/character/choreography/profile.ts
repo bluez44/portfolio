@@ -9,8 +9,11 @@ import { WIDE_STATIONS, type Stations } from "./constants";
 export type CharacterProfile = {
   scale: number;
   stations: Stations;
-  /** Fixed slots on phones: `side` for the envelope stations, `cheer` during the note finale; `null` measures beside the envelope and the note. */
-  slots: { side: number; cheer: number } | null;
+  /**
+   * Fixed slots on phones: `side` for the envelope stations, `cheer` during the note finale and
+   * `farewell` for the last section; `null` measures beside the envelope and the note.
+   */
+  slots: { side: number; cheer: number; farewell: number } | null;
   bubble: BubblePlacement;
 };
 
@@ -19,6 +22,8 @@ export const WIDE_CHARACTER: CharacterProfile = { scale: 0.85, stations: WIDE_ST
 const CORNER = 1;
 /** A slot past the right edge: the character walks out of view. */
 const OFF_STAGE = 2.2;
+/** Farewell slot: tucked a little past the left corner, as the closing buttons reach the right one and its cap would touch the closing text. */
+const FAREWELL = -1.25;
 
 const toCorner = (stations: Stations): Stations =>
   Object.fromEntries(Object.entries(stations).map(([key, s]) => [key, { ...s, x: Math.sign(s.x) * CORNER }])) as Stations;
@@ -26,7 +31,7 @@ const toCorner = (stations: Stations): Stations =>
 export const COMPACT_CHARACTER: CharacterProfile = {
   scale: 0.38,
   stations: toCorner(WIDE_STATIONS),
-  slots: { side: CORNER, cheer: OFF_STAGE },
+  slots: { side: CORNER, cheer: OFF_STAGE, farewell: FAREWELL },
   bubble: { side: "beside", gap: 22 },
 };
 
