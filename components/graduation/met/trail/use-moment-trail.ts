@@ -7,7 +7,7 @@ import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { useLayoutEffect, type RefObject } from "react";
 import { usePerfTier } from "@/lib/hooks/use-perf-tier";
 import { queryMomentTrail } from "../elements";
-import { createFinaleTimeline } from "../finale/finale-timeline";
+import { createFinaleTimeline, restMemories } from "../finale/finale-timeline";
 import { finaleProfile } from "../finale/profile";
 import { layoutOutline } from "../finale/layout-outline";
 import { handOverBadge } from "./badge-handover";
@@ -16,6 +16,7 @@ import { activateCards, setCardsActivation } from "./card-activation";
 import { cardFocusKeys } from "./card-focus";
 import { ARRIVED_AT } from "./constants";
 import { layoutTrail, type TrailMetrics } from "./layout-trail";
+import { observeLayout } from "./observe-layout";
 import { createTrailTimeline } from "./trail-timeline";
 
 /**
@@ -25,8 +26,8 @@ import { createTrailTimeline } from "./trail-timeline";
  * 2. On reaching the personal note it hands over to a badge docked there, and the note pins while
  *    its outline draws and it grows.
  * The badge spins slowly at rest and faster with scroll speed.
- * On phones (`compact`) the cards form a carousel that focuses them itself (use-moment-carousel), so
- * the trail skips them, and the finale uses the shorter phone profile.
+ * On phones (`compact`) the cards are hidden, so the trail runs straight to the note, and the
+ * finale uses the shorter phone profile whose memory photos open the moments.
  */
 export function useMomentTrail(rootRef: RefObject<HTMLElement | null>, reduced: boolean, compact: boolean) {
   const tier = usePerfTier();
@@ -46,7 +47,12 @@ export function useMomentTrail(rootRef: RefObject<HTMLElement | null>, reduced: 
 
     if (reduced) {
       handOverBadge(trail.rider, finale.dock, true);
-      if (compact) return;
+      if (compact) {
+        const rest = () => restMemories(finale, tier);
+        rest();
+        window.addEventListener("resize", rest);
+        return () => window.removeEventListener("resize", rest);
+      }
       setCardsActivation(trail.cards, 1);
       return () => setCardsActivation(trail.cards, 0);
     }
@@ -70,12 +76,14 @@ export function useMomentTrail(rootRef: RefObject<HTMLElement | null>, reduced: 
       createFinaleTimeline({ ...finale, tier, profile: finaleProfile(compact) });
     }, root);
     const stopSpin = startBadgeSpin(trail.spinners);
+    const stopObserving = observeLayout(root);
 
     // Re-lay paths from fresh layout before ScrollTrigger re-measures (resize, fonts, images).
     ScrollTrigger.addEventListener("refreshInit", layout);
     return () => {
       ScrollTrigger.removeEventListener("refreshInit", layout);
       stopSpin();
+      stopObserving();
       ctx.revert();
       if (!compact) setCardsActivation(trail.cards, 0);
     };
