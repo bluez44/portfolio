@@ -35,7 +35,7 @@ export function MomentCard({ moment: m, side }: { moment: Moment; side: "left" |
       } as CSSProperties}
     >
       <div aria-hidden className="absolute inset-0 overflow-hidden rounded-[13px]">
-        <div className="absolute -inset-3" style={{ filter: "blur(calc((1 - var(--a)) * 7px)) saturate(calc(0.35 + var(--a) * 0.65))" }}>
+        <div className="absolute -inset-3 lite:filter-none!" style={{ filter: "blur(calc((1 - var(--a)) * 7px)) saturate(calc(0.35 + var(--a) * 0.65))" }}>
           <Image src={m.image} alt="" fill sizes="(min-width: 760px) 400px, 90vw" className="object-cover" quality={PHOTO_QUALITY} />
         </div>
         <div className="absolute inset-0 bg-paper" style={{ opacity: "calc((1 - var(--a)) * 0.55)" }} />

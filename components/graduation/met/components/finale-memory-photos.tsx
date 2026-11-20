@@ -22,7 +22,7 @@ export function FinaleMemoryPhotos({ memories, together, guestName }: { memories
         <div
           data-memory-layer
           aria-hidden
-          className="pointer-events-none absolute top-0 left-0 z-0 h-0 w-screen"
+          className="pointer-events-none absolute top-0 left-0 z-0 h-0 w-screen lite:filter-none!"
           style={{ filter: "brightness(var(--memory-brightness))" }}
         >
           {list.map((m, i) => (
@@ -35,7 +35,7 @@ export function FinaleMemoryPhotos({ memories, together, guestName }: { memories
         <div
           data-memory-layer
           aria-hidden
-          className="pointer-events-none absolute top-0 left-0 z-20 h-0 w-screen"
+          className="pointer-events-none absolute top-0 left-0 z-20 h-0 w-screen lite:filter-none!"
           style={{ filter: "brightness(var(--memory-brightness))" }}
         >
           <MemoryPolaroid slot={layout.together} image={together} caption={t.togetherCaption(guestName)} together>

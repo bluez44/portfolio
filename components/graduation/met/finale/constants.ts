@@ -1,3 +1,5 @@
+import type { PerfTier } from "@/lib/browser/perf-tier";
+
 /**
  * The personal-note finale: the note pins when its top reaches `ARRIVE_AT` of the viewport, then
  * over `pinVh` viewport heights of scroll (growing with memory count) it grows (outline + scale)
@@ -92,5 +94,21 @@ export const MEMORY_LOOK = {
   to: { opacity: 0.95, filter: "blur(0px) sepia(0.25)" },
   dimmed: { opacity: 0.45, filter: "blur(0px) sepia(0.7)" },
 } as const;
+
+export type MemoryLook = {
+  from: { opacity: number; filter?: string };
+  to: { opacity: number; filter?: string };
+  dimmed: { opacity: number; filter?: string };
+};
+
+const MEMORY_LOOK_LITE: MemoryLook = {
+  from: { opacity: MEMORY_LOOK.from.opacity },
+  to: { opacity: MEMORY_LOOK.to.opacity },
+  dimmed: { opacity: MEMORY_LOOK.dimmed.opacity },
+};
+
+export function memoryLook(tier: PerfTier): MemoryLook {
+  return tier === "lite" ? MEMORY_LOOK_LITE : MEMORY_LOOK;
+}
 export const DIM_UNITS = 0.25;
 export const REVEAL_UNITS = 0.3;

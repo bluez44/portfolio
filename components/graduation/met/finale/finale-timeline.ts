@@ -1,4 +1,5 @@
 import gsap from "gsap";
+import type { PerfTier } from "@/lib/browser/perf-tier";
 import { MOBILE_BREAKPOINT } from "../../character/scene/constants";
 import { SELECTORS, type FinaleElements } from "../elements";
 import {
@@ -7,16 +8,24 @@ import {
   GROW,
   GROW_EASE,
   MEMORY_ENTER_FROM,
-  MEMORY_LOOK,
   REVEAL_UNITS,
   finaleUnits,
+  memoryLook,
   pinEnd,
+  type MemoryLook,
   type MemorySlot,
 } from "./constants";
 import { memoryLayout } from "./memory-layout";
 import { noteScaleFor } from "./note-finale";
 
-function enterPhoto(tl: gsap.core.Timeline, el: HTMLElement, slot: MemorySlot, span: number, wide: () => boolean): void {
+function enterPhoto(
+  tl: gsap.core.Timeline,
+  el: HTMLElement,
+  slot: MemorySlot,
+  span: number,
+  wide: () => boolean,
+  look: MemoryLook,
+): void {
   const [from, to] = slot.enter;
   tl.fromTo(
     el,
@@ -25,20 +34,20 @@ function enterPhoto(tl: gsap.core.Timeline, el: HTMLElement, slot: MemorySlot, s
       y: () => (MEMORY_ENTER_FROM - (wide() ? slot.wide : slot.phone).rest) * window.innerHeight,
       xPercent: -50,
       rotation: slot.rot + slot.spin,
-      ...MEMORY_LOOK.from,
+      ...look.from,
     },
-    { x: 0, y: 0, xPercent: -50, rotation: slot.rot, ...MEMORY_LOOK.to, duration: span * (to - from), ease: "power2.out" },
+    { x: 0, y: 0, xPercent: -50, rotation: slot.rot, ...look.to, duration: span * (to - from), ease: "power2.out" },
     span * from,
   );
 }
 
-function dimPhoto(tl: gsap.core.Timeline, el: HTMLElement, at: number, duration: number): void {
+function dimPhoto(tl: gsap.core.Timeline, el: HTMLElement, at: number, duration: number, look: MemoryLook): void {
   // immediateRender: false prevents overriding the preceding enter tween before `at` and restores cleanly on reverse scrub.
-  tl.fromTo(el, { ...MEMORY_LOOK.to }, { ...MEMORY_LOOK.dimmed, duration, immediateRender: false }, at);
+  tl.fromTo(el, { ...look.to }, { ...look.dimmed, duration, immediateRender: false }, at);
 }
 
-function revealPhotos(tl: gsap.core.Timeline, els: HTMLElement[], at: number, duration: number): void {
-  tl.fromTo(els, { ...MEMORY_LOOK.dimmed }, { ...MEMORY_LOOK.to, duration, immediateRender: false }, at);
+function revealPhotos(tl: gsap.core.Timeline, els: HTMLElement[], at: number, duration: number, look: MemoryLook): void {
+  tl.fromTo(els, { ...look.dimmed }, { ...look.to, duration, immediateRender: false }, at);
 }
 
 /**
@@ -55,7 +64,8 @@ export function createFinaleTimeline({
   memoryLayer,
   memoryLayers = memoryLayer ? [memoryLayer] : [],
   memoryPhotos,
-}: FinaleElements): gsap.core.Timeline {
+  tier = "full",
+}: FinaleElements & { tier?: PerfTier }): gsap.core.Timeline {
   const memories = memoryPhotos.filter((el) => !el.matches(SELECTORS.memoryTogether));
   const together = memoryPhotos.find((el) => el.matches(SELECTORS.memoryTogether));
   const memoryCount = memories.length;
@@ -109,12 +119,9 @@ export function createFinaleTimeline({
     );
 
   if (photo) {
-    tl.fromTo(
-      photo,
-      { filter: "sepia(1) blur(6px) brightness(1.6)", opacity: 0.35 },
-      { filter: "sepia(0) blur(0px) brightness(1)", opacity: 1, duration: GROW, ease: GROW_EASE },
-      0,
-    );
+    const photoFrom = tier === "lite" ? { opacity: 0.35 } : { filter: "sepia(1) blur(6px) brightness(1.6)", opacity: 0.35 };
+    const photoTo = tier === "lite" ? { opacity: 1 } : { filter: "sepia(0) blur(0px) brightness(1)", opacity: 1 };
+    tl.fromTo(photo, photoFrom, { ...photoTo, duration: GROW, ease: GROW_EASE }, 0);
   }
 
   tl.to({}, { duration: finaleUnits(memoryCount) - GROW }); // the finished card stays pinned a little before the next section
@@ -126,19 +133,20 @@ export function createFinaleTimeline({
     const span = tl.duration();
     const wide = () => window.innerWidth >= MOBILE_BREAKPOINT;
     const layout = memoryLayout(memoryCount);
-    memories.forEach((el, i) => enterPhoto(tl, el, layout.slots[i], span, wide));
+    const look = memoryLook(tier);
+    memories.forEach((el, i) => enterPhoto(tl, el, layout.slots[i], span, wide, look));
     if (together) {
-      enterPhoto(tl, together, layout.together, span, wide);
+      enterPhoto(tl, together, layout.together, span, wide, look);
     }
     const dimmed = together ? memories : memories.slice(0, -1);
     memories.forEach((el, i) => {
       const nextEnter = layout.slots[i + 1]?.enter ?? (together ? layout.together : null);
       if (nextEnter) {
-        dimPhoto(tl, el, span * nextEnter[1], DIM_UNITS);
+        dimPhoto(tl, el, span * nextEnter[1], DIM_UNITS, look);
       }
     });
     if (dimmed.length > 0) {
-      revealPhotos(tl, dimmed, span * layout.revealAt, REVEAL_UNITS);
+      revealPhotos(tl, dimmed, span * layout.revealAt, REVEAL_UNITS, look);
     }
   }
 

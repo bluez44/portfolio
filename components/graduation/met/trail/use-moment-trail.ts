@@ -5,6 +5,7 @@ import { DrawSVGPlugin } from "gsap/DrawSVGPlugin";
 import { MotionPathPlugin } from "gsap/MotionPathPlugin";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { useLayoutEffect, type RefObject } from "react";
+import { usePerfTier } from "@/lib/hooks/use-perf-tier";
 import { queryMomentTrail } from "../elements";
 import { createFinaleTimeline } from "../finale/finale-timeline";
 import { layoutOutline } from "../finale/layout-outline";
@@ -25,6 +26,7 @@ import { createTrailTimeline } from "./trail-timeline";
  * The badge spins slowly at rest and faster with scroll speed.
  */
 export function useMomentTrail(rootRef: RefObject<HTMLElement | null>, reduced: boolean) {
+  const tier = usePerfTier();
   useLayoutEffect(() => {
     const root = rootRef.current;
     const els = root && queryMomentTrail(root);
@@ -61,7 +63,7 @@ export function useMomentTrail(rootRef: RefObject<HTMLElement | null>, reduced: 
         activateCards(trail.cards, metrics, fraction);
         handOverBadge(trail.rider, finale.dock, fraction >= ARRIVED_AT);
       });
-      createFinaleTimeline(finale);
+      createFinaleTimeline({ ...finale, tier });
     }, root);
     const stopSpin = startBadgeSpin(trail.spinners);
 
@@ -73,5 +75,5 @@ export function useMomentTrail(rootRef: RefObject<HTMLElement | null>, reduced: 
       ctx.revert();
       setCardsActivation(trail.cards, 0);
     };
-  }, [rootRef, reduced]);
+  }, [rootRef, reduced, tier]);
 }
