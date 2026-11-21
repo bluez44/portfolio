@@ -1,6 +1,6 @@
 import { z } from "zod";
 import { trackPathnameSchema } from "../audio-track";
-import { IMAGE_FOCI } from "../image-focus";
+import { FOCUS_PRESET_NAMES } from "../image-focus";
 
 export const LIMITS = {
   copy: 2000,
@@ -50,13 +50,19 @@ export const eventSchema = z.object({
   musicTrack: optionalField(trackPathnameSchema),
 });
 
+const percent = z.number().min(0).max(100);
+/** A free point (percent of the photo), or one of the grid presets older content was saved with. */
+const imageFocusSchema = z.union([z.object({ x: percent, y: percent }), z.enum(FOCUS_PRESET_NAMES)]);
+const focusSchema = z.object({ phone: imageFocusSchema.optional(), wide: imageFocusSchema.optional() });
+
 export const imagesSchema = z.object({
   coverImage: optionalField(imageUrlSchema),
   togetherPhoto: optionalField(imageUrlSchema),
+  togetherFocus: focusSchema.optional(),
   badgeLogo: optionalField(imageUrlSchema),
 });
 
-export const guestImagesSchema = imagesSchema.pick({ coverImage: true, togetherPhoto: true });
+export const guestImagesSchema = imagesSchema.pick({ coverImage: true, togetherPhoto: true, togetherFocus: true });
 
 const momentTextSchema = z.object({
   title: optionalField(text(LIMITS.momentTitle)),
@@ -71,7 +77,7 @@ export const momentSchema = z.object({
     .max(LIMITS.url)
     .refine((value) => value === "" || IMAGE_PATH.test(value), "Ảnh phải là đường dẫn bắt đầu bằng / hoặc https://"),
   color: risoColorSchema.optional(),
-  focus: z.object({ phone: z.enum(IMAGE_FOCI).optional(), wide: z.enum(IMAGE_FOCI).optional() }).optional(),
+  focus: focusSchema.optional(),
   vi: momentTextSchema.optional(),
   en: momentTextSchema.optional(),
 });

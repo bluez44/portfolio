@@ -4,6 +4,7 @@ import type { Dispatch } from "react";
 import type { ImageSettings, SettingsMoment } from "@/lib/graduation/content/settings-types";
 import type { Lang, Moment } from "@/lib/graduation/i18n/types";
 import { GROUP_TITLE_CLASS, PANEL_CLASS } from "../../components/fields/field-classes";
+import { ImageFocusPicker, TOGETHER_ASPECTS } from "../../components/fields/image-focus-picker";
 import { MomentsEditor } from "../../components/fields/moments-editor";
 import { ImageUploader } from "../../components/image-uploader";
 import type { SettingsDraftAction } from "../draft/settings-draft";
@@ -26,6 +27,14 @@ export function MetExtras({ images, moments, defaultMoments, dispatch }: MetExtr
           onChange={(value) => dispatch({ type: "image", key: "togetherPhoto", value })}
           helperText="Dùng khi khách không có ảnh riêng. Để trống để không hiện ảnh thứ 5."
         />
+        {images?.togetherPhoto && (
+          <ImageFocusPicker
+            image={images.togetherPhoto}
+            value={images.togetherFocus}
+            aspects={TOGETHER_ASPECTS}
+            onChange={(value) => dispatch({ type: "togetherFocus", value })}
+          />
+        )}
         <ImageUploader
           label="Logo huy hiệu trên đường kỷ niệm"
           value={images?.badgeLogo ?? ""}

@@ -44,5 +44,7 @@ describe("settings rules", () => {
     expect(momentSchema.parse({ year: "2024", image: "" })).toEqual({ year: "2024", image: "" });
     expect(momentSchema.parse({ year: "2024", image: "", focus: { phone: "top-left", wide: "bottom" } }).focus).toEqual({ phone: "top-left", wide: "bottom" });
     expect(momentSchema.safeParse({ year: "2024", image: "", focus: { phone: "middle" } }).success).toBe(false);
+    expect(momentSchema.parse({ year: "2024", image: "", focus: { wide: { x: 37, y: 62.5 } } }).focus).toEqual({ wide: { x: 37, y: 62.5 } });
+    expect(momentSchema.safeParse({ year: "2024", image: "", focus: { wide: { x: 120, y: 50 } } }).success).toBe(false);
   });
 });

@@ -117,7 +117,7 @@ function InvitationContent({ guest, initialRsvp }: InvitationProps) {
         <main>
           <EnvelopeStage guestName={guest.name} />
           <HalftoneSeam from="paper" to="paper-2" />
-          <MetSection guestName={guest.name} togetherPhoto={images.togetherPhoto} />
+          <MetSection guestName={guest.name} togetherPhoto={images.togetherPhoto} togetherFocus={images.togetherFocus} />
           <HalftoneSeam from="paper-2" to="paper" />
           <EndsSection tourKey={tour.key} onTourStart={startTour} onTourLeave={leaveTour} />
           <HalftoneSeam from="paper" to="paper-2" />

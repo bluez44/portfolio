@@ -1,5 +1,6 @@
 import { useMemo, type ReactNode } from "react";
 import type { Moment } from "@/lib/graduation/i18n";
+import type { MomentFocus } from "@/lib/graduation/image-focus";
 import { useCopy } from "../../i18n/lang-context";
 import { Tape } from "../../shared/tape";
 import { memoryLayout } from "../finale/memory-layout";
@@ -19,6 +20,7 @@ import { MemoryPolaroid } from "./memory-polaroid";
 type Props = {
   memories: Moment[];
   together?: string;
+  togetherFocus?: MomentFocus;
   guestName: string;
   profile: FinaleProfile;
   onOpenMoment?: (target: MemoryTarget) => void;
@@ -27,7 +29,7 @@ type Props = {
 
 const LAYER = "pointer-events-none absolute top-0 left-0 h-0 w-screen lite:filter-none!";
 
-export function FinaleMemoryPhotos({ memories, together, guestName, profile, onOpenMoment, onOpenTogether }: Props) {
+export function FinaleMemoryPhotos({ memories, together, togetherFocus, guestName, profile, onOpenMoment, onOpenTogether }: Props) {
   const { met: t } = useCopy();
   const list = memories.map((moment, index) => ({ moment, index })).filter(({ moment }) => moment.image.trim() !== "");
   const layout = useMemo(() => memoryLayout(list.length, profile), [list.length, profile]);
@@ -56,6 +58,7 @@ export function FinaleMemoryPhotos({ memories, together, guestName, profile, onO
       key="together"
       slot={layout.together}
       image={together}
+      focus={togetherFocus}
       title={t.togetherCaption(guestName)}
       together
       onOpen={onOpenTogether}

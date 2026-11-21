@@ -3,6 +3,7 @@
 import { useRef, useState } from "react";
 import { useReducedMotion } from "@/lib/hooks/use-reduced-motion";
 import { useScrollReveal } from "@/lib/hooks/use-scroll-reveal";
+import type { MomentFocus } from "@/lib/graduation/image-focus";
 import { useCopy } from "../i18n/lang-context";
 import { GraduationSection } from "../shared/graduation-section";
 import { SectionHeading } from "../shared/section-heading";
@@ -16,7 +17,9 @@ import { MemoryViewer, useMemoryViewer } from "./moment-viewer/memory-viewer";
 import { MomentDialog, TogetherDialog } from "./moment-viewer/moment-dialog";
 import { useMomentTrail } from "./trail/use-moment-trail";
 
-export function MetSection({ guestName, togetherPhoto }: { guestName: string; togetherPhoto?: string }) {
+type Props = { guestName: string; togetherPhoto?: string; togetherFocus?: MomentFocus };
+
+export function MetSection({ guestName, togetherPhoto, togetherFocus }: Props) {
   const trailRef = useRef<HTMLDivElement>(null);
   const headRef = useScrollReveal<HTMLDivElement>();
   const reduced = useReducedMotion();
@@ -47,6 +50,7 @@ export function MetSection({ guestName, togetherPhoto }: { guestName: string; to
           note={t.defaultNote}
           memories={reduced && !compact ? [] : t.moments}
           together={togetherPhoto}
+          togetherFocus={togetherFocus}
           profile={finaleProfile(compact)}
           onOpenMoment={compact ? viewer.open : undefined}
           onOpenTogether={compact ? () => viewer.open({ kind: "together" }) : () => setPrint("together")}
@@ -54,7 +58,7 @@ export function MetSection({ guestName, togetherPhoto }: { guestName: string; to
       </div>
       {typeof print === "number" && t.moments[print] && <MomentDialog moment={t.moments[print]} onClose={closePrint} />}
       {print === "together" && togetherPhoto && <TogetherDialog image={togetherPhoto} caption={t.togetherCaption(guestName)} onClose={closePrint} />}
-      <MemoryViewer state={viewer.state} moments={t.moments} together={togetherPhoto} guestName={guestName} onClose={viewer.close} />
+      <MemoryViewer state={viewer.state} moments={t.moments} together={togetherPhoto} togetherFocus={togetherFocus} guestName={guestName} onClose={viewer.close} />
     </GraduationSection>
   );
 }

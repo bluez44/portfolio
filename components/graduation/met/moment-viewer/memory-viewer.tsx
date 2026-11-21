@@ -2,6 +2,7 @@
 
 import { useCallback, useState } from "react";
 import type { Moment } from "@/lib/graduation/i18n";
+import type { MomentFocus } from "@/lib/graduation/image-focus";
 import { useCopy } from "../../i18n/lang-context";
 import { MomentViewer } from "./moment-viewer";
 
@@ -14,15 +15,15 @@ export function useMemoryViewer() {
   return { state, open: setState, close };
 }
 
-type Props = { state: MemoryTarget | null; moments: Moment[]; together?: string; guestName: string; onClose: () => void };
+type Props = { state: MemoryTarget | null; moments: Moment[]; together?: string; togetherFocus?: MomentFocus; guestName: string; onClose: () => void };
 
-export function MemoryViewer({ state, moments, together, guestName, onClose }: Props) {
+export function MemoryViewer({ state, moments, together, togetherFocus, guestName, onClose }: Props) {
   const { met: t } = useCopy();
   if (!state || (state.kind === "together" && !together)) return null;
   return (
     <MomentViewer
       moments={moments}
-      together={together ? { image: together, caption: t.togetherCaption(guestName) } : undefined}
+      together={together ? { image: together, caption: t.togetherCaption(guestName), focus: togetherFocus } : undefined}
       startIndex={state.kind === "moment" ? state.index : moments.length}
       copy={t.carousel}
       onClose={onClose}

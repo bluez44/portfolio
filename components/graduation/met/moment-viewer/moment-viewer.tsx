@@ -7,11 +7,12 @@ import { RisoDialog } from "../../shared/riso-dialog";
 import { useMomentCarousel } from "../carousel/use-moment-carousel";
 import { MomentCarouselNav } from "./moment-carousel-nav";
 import { MomentCarouselList } from "./moment-carousel-list";
+import type { TogetherPhoto } from "./together-print";
 
 type Props = {
   moments: Moment[];
   /** Shown past the last moment. */
-  together?: { image: string; caption: string };
+  together?: TogetherPhoto;
   /** Slide to open on: a moment's index, or `moments.length` for the together photo. */
   startIndex: number;
   copy: MomentCarouselCopy;

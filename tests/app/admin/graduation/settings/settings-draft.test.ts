@@ -31,4 +31,8 @@ describe("countChanges", () => {
     const draft = { owner: { name: "B" }, copy: { vi: { "met.intro": "X" }, en: { "met.intro": "Y" } }, moments: [{ year: "1", image: "" }] };
     expect(countChanges(saved, draft)).toBe(3);
   });
+  it("counts a moved together focus point", () => {
+    const saved = { images: { togetherFocus: { wide: { x: 50, y: 20 } } } };
+    expect(countChanges(saved, { images: { togetherFocus: { wide: { x: 50, y: 35 } } } })).toBe(1);
+  });
 });

@@ -27,7 +27,13 @@ export type EventSettings = {
   musicTrack?: string;
 };
 
-export type ImageSettings = { coverImage?: string; togetherPhoto?: string; badgeLogo?: string };
+export type ImageSettings = {
+  coverImage?: string;
+  togetherPhoto?: string;
+  /** Where the together photo is anchored when cropped; it belongs to the photo set beside it. */
+  togetherFocus?: MomentFocus;
+  badgeLogo?: string;
+};
 
 export type GraduationSettingsContent = {
   owner?: OwnerSettings;
@@ -40,7 +46,7 @@ export type GraduationSettingsContent = {
 export type GuestContent = {
   vi?: CopyOverrides;
   en?: CopyOverrides;
-  images?: Pick<ImageSettings, "coverImage" | "togetherPhoto">;
+  images?: Pick<ImageSettings, "coverImage" | "togetherPhoto" | "togetherFocus">;
   moments?: SettingsMoment[];
   event?: Pick<EventSettings, "start" | "end">;
   music?: { track?: string };

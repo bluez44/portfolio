@@ -9,13 +9,15 @@ import type {
 } from "@/lib/graduation/content/settings-types";
 import { LANGS } from "@/lib/graduation/i18n/config";
 import type { Lang } from "@/lib/graduation/i18n/types";
+import type { MomentFocus } from "@/lib/graduation/image-focus";
 
 export type SettingsDraftAction =
   | { type: "copy"; lang: Lang; key: string; value: string }
   | { type: "resetCopy"; key: string }
   | { type: "owner"; key: keyof OwnerSettings; value: string }
   | { type: "event"; key: keyof EventSettings; value: string | undefined }
-  | { type: "image"; key: keyof ImageSettings; value: string }
+  | { type: "image"; key: Exclude<keyof ImageSettings, "togetherFocus">; value: string }
+  | { type: "togetherFocus"; value: MomentFocus | undefined }
   | { type: "moments"; value: SettingsMoment[] };
 
 const setField = <T extends object>(target: T | undefined, key: keyof T, value: string | undefined): T =>
@@ -33,6 +35,8 @@ export function settingsDraftReducer(state: GraduationSettingsContent, action: S
       return { ...state, event: setField(state.event, action.key, action.value) };
     case "image":
       return { ...state, images: setField(state.images, action.key, action.value) };
+    case "togetherFocus":
+      return { ...state, images: { ...state.images, togetherFocus: action.value } };
     case "moments":
       return { ...state, moments: action.value };
   }
@@ -45,6 +49,8 @@ function collect(value: unknown, path: string, out: Record<string, string>) {
     for (const [key, child] of Object.entries(value)) collect(child, path ? `${path}.${key}` : key, out);
   } else if (typeof value === "string" && value !== "") {
     out[path] = value;
+  } else if (typeof value === "number") {
+    out[path] = String(value);
   }
 }
 

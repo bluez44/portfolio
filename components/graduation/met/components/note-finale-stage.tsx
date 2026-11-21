@@ -1,5 +1,6 @@
 import type { CSSProperties } from "react";
 import type { Moment } from "@/lib/graduation/i18n";
+import type { MomentFocus } from "@/lib/graduation/image-focus";
 import { ARRIVE_AT } from "../finale/constants";
 import type { FinaleProfile } from "../finale/profile";
 import type { MemoryTarget } from "../moment-viewer/memory-viewer";
@@ -20,12 +21,13 @@ type Props = {
   note: string;
   memories: Moment[];
   together?: string;
+  togetherFocus?: MomentFocus;
   profile: FinaleProfile;
   onOpenMoment?: (target: MemoryTarget) => void;
   onOpenTogether?: () => void;
 };
 
-export function NoteFinaleStage({ guestName, label, note, memories, together, profile, onOpenMoment, onOpenTogether }: Props) {
+export function NoteFinaleStage({ guestName, label, note, memories, together, togetherFocus, profile, onOpenMoment, onOpenTogether }: Props) {
   return (
     <div data-trail-end className="relative">
       <div
@@ -33,7 +35,7 @@ export function NoteFinaleStage({ guestName, label, note, memories, together, pr
         className="relative motion-safe:min-h-(--pin-min-h)"
         style={{ "--pin-min-h": `${(1 - ARRIVE_AT) * 100}vh` } as CSSProperties}
       >
-        <FinaleMemoryPhotos memories={memories} together={together} guestName={guestName} profile={profile} onOpenMoment={onOpenMoment} onOpenTogether={onOpenTogether} />
+        <FinaleMemoryPhotos memories={memories} together={together} togetherFocus={togetherFocus} guestName={guestName} profile={profile} onOpenMoment={onOpenMoment} onOpenTogether={onOpenTogether} />
         <div data-note-scale className="relative z-10 origin-top">
           <PolaroidFrame>
             <PersonalNoteCard label={label} note={note} />
