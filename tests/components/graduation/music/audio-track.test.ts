@@ -209,6 +209,28 @@ describe("createGainTrack", () => {
     expect(thirdDone).not.toHaveBeenCalled();
   });
 
+  it("scales levels and fades by the volume, ramping when the volume changes", async () => {
+    const fakeEl = createFakeElement();
+    const fakeCtx = createFakeContext(4);
+
+    const track = createGainTrack("/audio.mp3", {
+      createElement: () => fakeEl.asAudio(),
+      createContext: () => fakeCtx.asContext(),
+    });
+
+    track.setVolume(0.5);
+    track.setLevel(0.8);
+    await track.play();
+    expect(fakeCtx.gainParam.value).toBe(0.4);
+
+    track.fadeTo(0.6, 1000);
+    expect(fakeCtx.gainParam.linearRampToValueAtTime).toHaveBeenLastCalledWith(0.3, 5);
+
+    track.setVolume(1);
+    expect(fakeCtx.gainParam.setValueAtTime).toHaveBeenLastCalledWith(0.4, 4);
+    expect(fakeCtx.gainParam.linearRampToValueAtTime).toHaveBeenLastCalledWith(0.6, 4.05);
+  });
+
   it("disposes element, listeners, pending timers, and created AudioContext", async () => {
     vi.useFakeTimers();
     const fakeEl = createFakeElement();

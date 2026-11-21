@@ -66,7 +66,7 @@ function InvitationContent({ guest, initialRsvp }: InvitationProps) {
   const [musicNote, flashMusicNote] = useTransientFlag(2600);
   const musicTrack = event.musicTrack;
   const music = useAudioPlayer(musicTrack, flashMusicNote, () => gate?.resolve(GATE.music));
-  const { status: musicStatus, start: startMusic, toggle: toggleMusic, fadePause, fadeResume } = music;
+  const { status: musicStatus, start: startMusic, toggle: toggleMusic, fadePause, fadeResume, volume, setVolume } = music;
   const tour = useTourSession();
   useMusicCues({ ...music, status: tour.open ? "paused" : musicStatus });
 
@@ -111,7 +111,7 @@ function InvitationContent({ guest, initialRsvp }: InvitationProps) {
 
       <LetterGate ready={!gate?.pending} guestName={guest.name} musicPlaying={musicStatus === "playing"} onOpen={startMusic} onOpened={onLetterOpened} />
       <div inert={!letterOpened}>
-        <InvitationHeader musicPlaying={musicStatus === "playing"} musicNote={musicNote} onMusic={onMusic} />
+        <InvitationHeader musicPlaying={musicStatus === "playing"} musicNote={musicNote} onMusic={onMusic} volume={volume} onVolume={setVolume} />
         <SideRails />
 
         <main>

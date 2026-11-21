@@ -5,6 +5,8 @@ export interface AudioTrack {
   pause(): void;
   fadeTo(level: number, ms: number, onDone?: () => void): void;
   setLevel(level: number): void;
+  /** The listener's volume (0..1); every level, fade and cue is scaled by it. */
+  setVolume(volume: number): void;
   readonly playing: boolean;
   subscribe(listener: (s: TrackState) => void): () => void;
   dispose(): void;
@@ -18,6 +20,8 @@ const EVENT_MAP: ReadonlyArray<readonly [string, TrackState]> = [
 ];
 
 const clampLevel = (level: number) => Math.max(0, Math.min(1, level));
+/** Short ramp for volume changes so dragging the slider does not click. */
+const VOLUME_RAMP_S = 0.05;
 
 export function createGainTrack(
   src: string,
@@ -39,6 +43,7 @@ export function createGainTrack(
   let gain: GainNode | null = null;
   let state: TrackState = "loading";
   let targetLevel = 1;
+  let volume = 1;
   let fadeTimer: ReturnType<typeof setTimeout> | null = null;
   let disposed = false;
 
@@ -72,7 +77,7 @@ export function createGainTrack(
     context = createContext();
     const source = context.createMediaElementSource(element);
     gain = context.createGain();
-    gain.gain.value = targetLevel;
+    gain.gain.value = targetLevel * volume;
     source.connect(gain);
     gain.connect(context.destination);
     return { context, gain };
@@ -105,7 +110,7 @@ export function createGainTrack(
         const current = gain.gain.value;
         gain.gain.cancelScheduledValues(now);
         gain.gain.setValueAtTime(current, now);
-        gain.gain.linearRampToValueAtTime(target, now + ms / 1000);
+        gain.gain.linearRampToValueAtTime(target * volume, now + ms / 1000);
       }
       if (onDone) {
         fadeTimer = setTimeout(() => {
@@ -123,8 +128,20 @@ export function createGainTrack(
       if (context && gain) {
         const now = context.currentTime;
         gain.gain.cancelScheduledValues(now);
-        gain.gain.value = target;
-        gain.gain.setValueAtTime(target, now);
+        gain.gain.value = target * volume;
+        gain.gain.setValueAtTime(target * volume, now);
+      }
+    },
+
+    setVolume(next) {
+      if (disposed) return;
+      volume = clampLevel(next);
+      if (context && gain) {
+        // Lands any fade in progress on its target at the new volume.
+        const now = context.currentTime;
+        gain.gain.cancelScheduledValues(now);
+        gain.gain.setValueAtTime(gain.gain.value, now);
+        gain.gain.linearRampToValueAtTime(targetLevel * volume, now + VOLUME_RAMP_S);
       }
     },
 

@@ -19,7 +19,7 @@ export type VenueGuideCopy = { tabsLabel: string; loading: string; map: GuideTab
 
 export type GraduationCopy = {
   meta: { title: string; guestTitle: (name: string) => string; description: string; eventTitle: string };
-  header: { title: string; back: string; musicUnavailable: string; music: string; switchLang: string; when: string };
+  header: { title: string; back: string; musicUnavailable: string; music: string; volume: string; switchLang: string; when: string };
   rails: { when: string; whenValue: string; where: string; whereValue: string; whereSub: string };
   envelope: {
     airMail: string;

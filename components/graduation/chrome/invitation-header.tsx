@@ -9,10 +9,14 @@ export function InvitationHeader({
   musicPlaying,
   musicNote,
   onMusic,
+  volume,
+  onVolume,
 }: {
   musicPlaying: boolean;
   musicNote: boolean;
   onMusic: () => void;
+  volume: number;
+  onVolume: (volume: number) => void;
 }) {
   const t = useCopy();
   return (
@@ -35,7 +39,7 @@ export function InvitationHeader({
             <CalendarIcon size={14} />
             <span className="max-sm:sr-only">{t.header.when}</span>
           </a>
-          <MusicToggle playing={musicPlaying} onClick={onMusic} />
+          <MusicToggle playing={musicPlaying} onClick={onMusic} volume={volume} onVolume={onVolume} />
         </div>
       </div>
     </header>

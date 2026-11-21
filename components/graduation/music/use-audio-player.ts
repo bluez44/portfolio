@@ -7,6 +7,8 @@ import { toMusicStatus, type MusicStatus } from "./music-status";
 
 const FADE_MS = 1200;
 const FULL_VOLUME = 100;
+/** Where the header's volume slider starts. */
+const DEFAULT_VOLUME = 0.5;
 const MEDIA_TITLE = "Underwater City";
 
 function setMediaMetadata() {
@@ -35,6 +37,8 @@ export function useAudioPlayer(
       ? trackState.status
       : "loading";
 
+  const [volume, setVolumeState] = useState(DEFAULT_VOLUME);
+  const volumeRef = useRef(volume);
   const trackRef = useRef<AudioTrack | null>(null);
   const resumeAfterDuck = useRef(false);
   const onErrorRef = useRef(onError);
@@ -65,6 +69,7 @@ export function useAudioPlayer(
   useEffect(() => {
     if (!pathname) return;
     const track = createTrackRef.current(audioUrl(pathname));
+    track.setVolume(volumeRef.current);
     trackRef.current = track;
 
     const unsubscribe = track.subscribe((state) => {
@@ -135,5 +140,11 @@ export function useAudioPlayer(
     track.fadeTo(1, FADE_MS);
   }, []);
 
-  return { status, start, toggle, fadeTo, fadePause, fadeResume };
+  const setVolume = useCallback((next: number) => {
+    volumeRef.current = next;
+    setVolumeState(next);
+    trackRef.current?.setVolume(next);
+  }, []);
+
+  return { status, start, toggle, fadeTo, fadePause, fadeResume, volume, setVolume };
 }

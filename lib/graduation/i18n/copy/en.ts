@@ -8,7 +8,7 @@ export const enTexts: CopyTexts = {
     description: "You're invited to celebrate my graduation.",
     eventTitle: "Graduation — {owner}",
   },
-  header: { title: "Graduation {year}", back: "Portfolio", musicUnavailable: "Music unavailable", music: "Background music", switchLang: "Choose language", when: "Quick view" },
+  header: { title: "Graduation {year}", back: "Portfolio", musicUnavailable: "Music unavailable", music: "Background music", volume: "Volume", switchLang: "Choose language", when: "Quick view" },
   rails: {
     when: "When",
     whenValue: "{weekdayShort} · {date}, {year}",

@@ -8,7 +8,7 @@ export const viTexts: CopyTexts = {
     description: "Bạn được mời đến dự lễ tốt nghiệp của mình.",
     eventTitle: "Lễ tốt nghiệp — {owner}",
   },
-  header: { title: "Tốt nghiệp {year}", back: "Portfolio", musicUnavailable: "Không phát được nhạc", music: "Nhạc nền", switchLang: "Chọn ngôn ngữ", when: "Xem nhanh thiệp" },
+  header: { title: "Tốt nghiệp {year}", back: "Portfolio", musicUnavailable: "Không phát được nhạc", music: "Nhạc nền", volume: "Âm lượng", switchLang: "Chọn ngôn ngữ", when: "Xem nhanh thiệp" },
   rails: {
     when: "Thời gian",
     whenValue: "{weekday} {date}.{year}",

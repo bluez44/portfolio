@@ -7,6 +7,7 @@ export const HEADER_FIELDS = [
   header("header.title", "Tiêu đề header"),
   header("header.back", "Nút quay về portfolio"),
   header("header.music", "Nhãn nút nhạc"),
+  header("header.volume", "Nhãn thanh âm lượng"),
   header("header.musicUnavailable", "Thông báo không phát được nhạc"),
   header("header.switchLang", "Nhãn chọn ngôn ngữ"),
   header("header.when", "Nút xem nhanh ngày giờ"),
