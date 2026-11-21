@@ -14,20 +14,27 @@ import { MemoryPolaroid } from "./memory-polaroid";
  * - Ring (wide): photos behind the note, the together photo in its own layer on top of it.
  * - Pile (phones): one layer above the note and its docked badge (z-30); later photos lie on top,
  *   the together photo above all.
- * With `onOpen` every photo is a button that opens the memory.
+ * With `onOpenMoment` / `onOpenTogether` those photos are buttons that open the memory.
  */
-type Props = { memories: Moment[]; together?: string; guestName: string; profile: FinaleProfile; onOpen?: (target: MemoryTarget) => void };
+type Props = {
+  memories: Moment[];
+  together?: string;
+  guestName: string;
+  profile: FinaleProfile;
+  onOpenMoment?: (target: MemoryTarget) => void;
+  onOpenTogether?: () => void;
+};
 
 const LAYER = "pointer-events-none absolute top-0 left-0 h-0 w-screen lite:filter-none!";
 
-export function FinaleMemoryPhotos({ memories, together, guestName, profile, onOpen }: Props) {
+export function FinaleMemoryPhotos({ memories, together, guestName, profile, onOpenMoment, onOpenTogether }: Props) {
   const { met: t } = useCopy();
   const list = memories.map((moment, index) => ({ moment, index })).filter(({ moment }) => moment.image.trim() !== "");
   const layout = useMemo(() => memoryLayout(list.length, profile), [list.length, profile]);
   if (list.length === 0 && !together) return null;
   const pile = profile.layout === "pile";
-  const layer = (className: string, children: ReactNode) => (
-    <div data-memory-layer aria-hidden={onOpen ? undefined : true} className={`${LAYER} ${className}`}>
+  const layer = (className: string, interactive: boolean, children: ReactNode) => (
+    <div data-memory-layer aria-hidden={interactive ? undefined : true} className={`${LAYER} ${className}`}>
       {children}
     </div>
   );
@@ -41,7 +48,7 @@ export function FinaleMemoryPhotos({ memories, together, guestName, profile, onO
       year={pile ? undefined : m.year}
       title={m.title}
       pile={pile}
-      onOpen={onOpen && (() => onOpen({ kind: "moment", index }))}
+      onOpen={onOpenMoment && (() => onOpenMoment({ kind: "moment", index }))}
     />
   ));
   const togetherPhoto = together && (
@@ -51,17 +58,17 @@ export function FinaleMemoryPhotos({ memories, together, guestName, profile, onO
       image={together}
       title={t.togetherCaption(guestName)}
       together
-      onOpen={onOpen && (() => onOpen({ kind: "together" }))}
+      onOpen={onOpenTogether}
     >
       <Tape color="canary" width={72} height={22} rotate={38} className="z-10" style={{ top: -8, left: "auto", right: -20, marginLeft: 0 }} />
     </MemoryPolaroid>
   );
 
-  if (pile) return layer("z-40", [...photos, togetherPhoto]);
+  if (pile) return layer("z-40", Boolean(onOpenMoment || onOpenTogether), [...photos, togetherPhoto]);
   return (
     <>
-      {list.length > 0 && layer(onOpen ? "z-20" : "z-0", photos)}
-      {togetherPhoto && layer("z-20", togetherPhoto)}
+      {list.length > 0 && layer(onOpenMoment ? "z-20" : "z-0", Boolean(onOpenMoment), photos)}
+      {togetherPhoto && layer("z-20", Boolean(onOpenTogether), togetherPhoto)}
     </>
   );
 }

@@ -13,7 +13,7 @@ import { NoteFinaleStage } from "./components/note-finale-stage";
 import { TrailLine } from "./components/trail-line";
 import { finaleProfile } from "./finale/profile";
 import { MemoryViewer, useMemoryViewer } from "./moment-viewer/memory-viewer";
-import { MomentDialog } from "./moment-viewer/moment-dialog";
+import { MomentDialog, TogetherDialog } from "./moment-viewer/moment-dialog";
 import { useMomentTrail } from "./trail/use-moment-trail";
 
 export function MetSection({ guestName, togetherPhoto }: { guestName: string; togetherPhoto?: string }) {
@@ -23,7 +23,9 @@ export function MetSection({ guestName, togetherPhoto }: { guestName: string; to
   const compact = useCompactLayout();
   useMomentTrail(trailRef, reduced, compact);
   const viewer = useMemoryViewer();
-  const [openMoment, setOpenMoment] = useState<number | null>(null);
+  // Desktop: a moment card (by index) or the finale's together photo, opened in full. Phones use the viewer.
+  const [print, setPrint] = useState<number | "together" | null>(null);
+  const closePrint = () => setPrint(null);
   const { met: t } = useCopy();
 
   return (
@@ -37,7 +39,7 @@ export function MetSection({ guestName, togetherPhoto }: { guestName: string; to
           <p className="m-0 max-w-[52ch] text-[17px] leading-[1.72] text-pretty text-ink-2">{t.intro}</p>
         </div>
 
-        <MomentList moments={t.moments} onOpen={setOpenMoment} />
+        <MomentList moments={t.moments} onOpen={setPrint} />
 
         <NoteFinaleStage
           guestName={guestName}
@@ -46,10 +48,12 @@ export function MetSection({ guestName, togetherPhoto }: { guestName: string; to
           memories={reduced && !compact ? [] : t.moments}
           together={togetherPhoto}
           profile={finaleProfile(compact)}
-          onOpen={compact ? viewer.open : undefined}
+          onOpenMoment={compact ? viewer.open : undefined}
+          onOpenTogether={compact ? () => viewer.open({ kind: "together" }) : () => setPrint("together")}
         />
       </div>
-      {openMoment !== null && t.moments[openMoment] && <MomentDialog moment={t.moments[openMoment]} onClose={() => setOpenMoment(null)} />}
+      {typeof print === "number" && t.moments[print] && <MomentDialog moment={t.moments[print]} onClose={closePrint} />}
+      {print === "together" && togetherPhoto && <TogetherDialog image={togetherPhoto} caption={t.togetherCaption(guestName)} onClose={closePrint} />}
       <MemoryViewer state={viewer.state} moments={t.moments} together={togetherPhoto} guestName={guestName} onClose={viewer.close} />
     </GraduationSection>
   );

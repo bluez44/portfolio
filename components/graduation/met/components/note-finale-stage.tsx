@@ -21,10 +21,11 @@ type Props = {
   memories: Moment[];
   together?: string;
   profile: FinaleProfile;
-  onOpen?: (target: MemoryTarget) => void;
+  onOpenMoment?: (target: MemoryTarget) => void;
+  onOpenTogether?: () => void;
 };
 
-export function NoteFinaleStage({ guestName, label, note, memories, together, profile, onOpen }: Props) {
+export function NoteFinaleStage({ guestName, label, note, memories, together, profile, onOpenMoment, onOpenTogether }: Props) {
   return (
     <div data-trail-end className="relative">
       <div
@@ -32,9 +33,9 @@ export function NoteFinaleStage({ guestName, label, note, memories, together, pr
         className="relative motion-safe:min-h-(--pin-min-h)"
         style={{ "--pin-min-h": `${(1 - ARRIVE_AT) * 100}vh` } as CSSProperties}
       >
-        <FinaleMemoryPhotos memories={memories} together={together} guestName={guestName} profile={profile} onOpen={onOpen} />
+        <FinaleMemoryPhotos memories={memories} together={together} guestName={guestName} profile={profile} onOpenMoment={onOpenMoment} onOpenTogether={onOpenTogether} />
         <div data-note-scale className="relative z-10 origin-top">
-          <PolaroidFrame guestName={guestName}>
+          <PolaroidFrame>
             <PersonalNoteCard label={label} note={note} />
           </PolaroidFrame>
           {/* After the card so it paints over the card's shadow. Offset by the outline gap (8px); sized and drawn by `layout-outline`. */}
