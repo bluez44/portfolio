@@ -34,12 +34,15 @@ describe("parseRsvpInput", () => {
       answer: { status: "no", reason: "Đi công tác", wish: "Chúc mừng!" },
     });
   });
-  it("reports missing or invalid fields by name", () => {
-    expect(parseRsvpInput({ guestId: GUEST_ID, status: "yes", contact: "" })).toEqual({ ok: false, fieldErrors: { contact: "required" } });
+  it("accepts answers without a contact or reason", () => {
+    expect(parseRsvpInput({ guestId: GUEST_ID, status: "yes" })).toEqual({ ok: true, guestId: GUEST_ID, answer: { status: "yes", contact: "", wish: null } });
+    expect(parseRsvpInput({ guestId: GUEST_ID, status: "no", reason: " " })).toEqual({ ok: true, guestId: GUEST_ID, answer: { status: "no", reason: "", wish: null } });
+  });
+  it("reports invalid fields by name", () => {
     expect(parseRsvpInput({ guestId: GUEST_ID, status: "yes", contact: "hello" })).toEqual({ ok: false, fieldErrors: { contact: "invalid_contact" } });
-    expect(parseRsvpInput({ guestId: GUEST_ID, status: "no", reason: " ", wish: "x".repeat(501) })).toEqual({
+    expect(parseRsvpInput({ guestId: GUEST_ID, status: "no", reason: "x".repeat(501), wish: "x".repeat(501) })).toEqual({
       ok: false,
-      fieldErrors: { reason: "required", wish: "too_long" },
+      fieldErrors: { reason: "too_long", wish: "too_long" },
     });
   });
   it("rejects other statuses and invalid guest ids without field errors", () => {

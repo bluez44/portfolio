@@ -11,23 +11,29 @@ export type RsvpFieldError = "required" | "invalid_contact" | "too_long";
 export type RsvpFieldErrors = Partial<Record<RsvpField, RsvpFieldError>>;
 
 const guestId = z.string().regex(UUID_REGEX);
-const required = (max: number) =>
-  z.string({ error: "required" }).trim().min(1, "required").max(max, "too_long");
 const optional = z
   .string()
   .trim()
   .max(RSVP_TEXT_MAX, "too_long")
   .optional()
   .transform((v) => v || null);
+/** Contact and reason are no longer asked for on the form; an answer without one reads back as "". */
+const optionalText = (max: number) =>
+  z
+    .string()
+    .trim()
+    .max(max, "too_long")
+    .optional()
+    .transform((v) => v ?? "");
 
 export const rsvpInputSchema = z.discriminatedUnion("status", [
   z.object({
     guestId,
     status: z.literal("yes"),
-    contact: required(RSVP_CONTACT_MAX).refine(isPhoneOrEmail, "invalid_contact"),
+    contact: optionalText(RSVP_CONTACT_MAX).refine((v) => !v || isPhoneOrEmail(v), "invalid_contact"),
     wish: optional,
   }),
-  z.object({ guestId, status: z.literal("no"), reason: required(RSVP_TEXT_MAX), wish: optional }),
+  z.object({ guestId, status: z.literal("no"), reason: optionalText(RSVP_TEXT_MAX), wish: optional }),
 ]);
 
 export type RsvpInput = z.output<typeof rsvpInputSchema>;

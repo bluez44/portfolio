@@ -9,7 +9,6 @@ export function RsvpDeclineFields({ saved, errors }: { saved: Decline | null; er
   const { rsvp: t } = useCopy();
   return (
     <>
-      <RsvpField name="reason" field={t.reason} multiline defaultValue={saved?.reason} error={errors.reason && t.fieldErrors[errors.reason]} />
       <RsvpField name="wish" field={t.wish} multiline defaultValue={saved?.wish} error={errors.wish && t.fieldErrors[errors.wish]} />
     </>
   );

@@ -25,7 +25,7 @@ function history(status: RsvpStatus, previous: RsvpStatus | null): string {
 }
 
 function details(answer: RsvpAnswer): string[] {
-  const main = answer.status === "yes" ? `Liên hệ: ${answer.contact}` : `Lý do: ${answer.reason}`;
+  const main = answer.status === "yes" ? `Liên hệ: ${answer.contact || "(không có)"}` : `Lý do: ${answer.reason || "(không có)"}`;
   return [main, `Lời chúc: ${answer.wish ?? "(không có)"}`];
 }
 

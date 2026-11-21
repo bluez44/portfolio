@@ -5,11 +5,11 @@ export type RsvpRow = { status: RsvpStatus; contact: string | null; reason: stri
 /** Columns for an answer; fields that belong to the other status are cleared. */
 export function toRsvpRow(answer: RsvpAnswer): RsvpRow {
   return answer.status === "yes"
-    ? { status: "yes", contact: answer.contact, reason: null, wish: answer.wish }
-    : { status: "no", contact: null, reason: answer.reason, wish: answer.wish };
+    ? { status: "yes", contact: answer.contact || null, reason: null, wish: answer.wish }
+    : { status: "no", contact: null, reason: answer.reason || null, wish: answer.wish };
 }
 
-/** Rows saved before the forms existed have no contact/reason; they read back as empty. */
+/** Rows without a contact/reason (older rows, or answers that skipped them) read back as empty. */
 export function fromRsvpRow(row: RsvpRow): RsvpAnswer {
   return row.status === "yes"
     ? { status: "yes", contact: row.contact ?? "", wish: row.wish }

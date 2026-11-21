@@ -5,6 +5,8 @@ describe("rsvp mapper", () => {
   it("clears the other status's field when writing", () => {
     expect(toRsvpRow({ status: "yes", contact: "a@b.co", wish: null })).toEqual({ status: "yes", contact: "a@b.co", reason: null, wish: null });
     expect(toRsvpRow({ status: "no", reason: "Ốm", wish: "Hi" })).toEqual({ status: "no", contact: null, reason: "Ốm", wish: "Hi" });
+    expect(toRsvpRow({ status: "yes", contact: "", wish: null })).toEqual({ status: "yes", contact: null, reason: null, wish: null });
+    expect(toRsvpRow({ status: "no", reason: "", wish: null })).toEqual({ status: "no", contact: null, reason: null, wish: null });
   });
   it("round-trips answers", () => {
     const answer = { status: "no" as const, reason: "Ốm", wish: null };

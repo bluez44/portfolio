@@ -9,7 +9,6 @@ export function RsvpAttendFields({ saved, errors }: { saved: Attend | null; erro
   const { rsvp: t } = useCopy();
   return (
     <>
-      <RsvpField name="contact" field={t.contact} defaultValue={saved?.contact} error={errors.contact && t.fieldErrors[errors.contact]} />
       <RsvpField name="wish" field={t.wish} multiline defaultValue={saved?.wish} error={errors.wish && t.fieldErrors[errors.wish]} />
     </>
   );

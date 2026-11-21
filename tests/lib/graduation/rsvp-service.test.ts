@@ -39,6 +39,12 @@ describe("buildRsvpEmail", () => {
     const mail = buildRsvpEmail({ name: "A", slug: "a", answer: { status: "yes", contact: "0901234567", wish: null }, previous: "yes", at: AT });
     expect(mail.text).toContain("Cập nhật câu trả lời");
     expect(mail.replyTo).toBeUndefined();
+  });  it("notes a missing contact or reason", () => {
+    const yes = buildRsvpEmail({ name: "A", slug: "a", answer: { status: "yes", contact: "", wish: null }, previous: null, at: AT });
+    const no = buildRsvpEmail({ name: "A", slug: "a", answer: { status: "no", reason: "", wish: null }, previous: null, at: AT });
+    expect(yes.text).toContain("Liên hệ: (không có)");
+    expect(no.text).toContain("Lý do: (không có)");
+    expect(yes.replyTo).toBeUndefined();
   });
 });
 
@@ -53,7 +59,7 @@ describe("submitRsvp", () => {
 
   it("returns field errors without touching deps", async () => {
     const d = deps();
-    await expect(submitRsvp({ ...NO, reason: "" }, d)).resolves.toEqual({ ok: false, error: "invalid", fieldErrors: { reason: "required" } });
+    await expect(submitRsvp({ ...NO, wish: "x".repeat(501) }, d)).resolves.toEqual({ ok: false, error: "invalid", fieldErrors: { wish: "too_long" } });
     expect(d.findGuest).not.toHaveBeenCalled();
   });
 
