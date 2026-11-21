@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef } from "react";
+import { useRef, useState } from "react";
 import { useReducedMotion } from "@/lib/hooks/use-reduced-motion";
 import { useScrollReveal } from "@/lib/hooks/use-scroll-reveal";
 import { useCopy } from "../i18n/lang-context";
@@ -13,6 +13,7 @@ import { NoteFinaleStage } from "./components/note-finale-stage";
 import { TrailLine } from "./components/trail-line";
 import { finaleProfile } from "./finale/profile";
 import { MemoryViewer, useMemoryViewer } from "./moment-viewer/memory-viewer";
+import { MomentDialog } from "./moment-viewer/moment-dialog";
 import { useMomentTrail } from "./trail/use-moment-trail";
 
 export function MetSection({ guestName, togetherPhoto }: { guestName: string; togetherPhoto?: string }) {
@@ -22,6 +23,7 @@ export function MetSection({ guestName, togetherPhoto }: { guestName: string; to
   const compact = useCompactLayout();
   useMomentTrail(trailRef, reduced, compact);
   const viewer = useMemoryViewer();
+  const [openMoment, setOpenMoment] = useState<number | null>(null);
   const { met: t } = useCopy();
 
   return (
@@ -35,7 +37,7 @@ export function MetSection({ guestName, togetherPhoto }: { guestName: string; to
           <p className="m-0 max-w-[52ch] text-[17px] leading-[1.72] text-pretty text-ink-2">{t.intro}</p>
         </div>
 
-        <MomentList moments={t.moments} />
+        <MomentList moments={t.moments} onOpen={setOpenMoment} />
 
         <NoteFinaleStage
           guestName={guestName}
@@ -47,6 +49,7 @@ export function MetSection({ guestName, togetherPhoto }: { guestName: string; to
           onOpen={compact ? viewer.open : undefined}
         />
       </div>
+      {openMoment !== null && t.moments[openMoment] && <MomentDialog moment={t.moments[openMoment]} onClose={() => setOpenMoment(null)} />}
       <MemoryViewer state={viewer.state} moments={t.moments} together={togetherPhoto} guestName={guestName} onClose={viewer.close} />
     </GraduationSection>
   );

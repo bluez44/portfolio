@@ -15,8 +15,9 @@ const TEXT_LIFT = 0.2;
  * 0 = idle (blurred, veiled photo), 1 = focused (sharp photo, card lifted and straightened, larger
  * text on a backdrop tinted with the moment's colour so it stays readable over the sharp photo).
  * Blur cross-fades a static filtered layer over the sharp image rather than recomputing the filter.
+ * The whole card is a button that opens the moment in full.
  */
-export function MomentCard({ moment: m, side }: { moment: Moment; side: "left" | "right" }) {
+export function MomentCard({ moment: m, side, onOpen }: { moment: Moment; side: "left" | "right"; onOpen: () => void }) {
   return (
     <li
       data-moment
@@ -49,6 +50,7 @@ export function MomentCard({ moment: m, side }: { moment: Moment; side: "left" |
         />
       </div>
       <Tape color={m.color} width={84} height={22} rotate={-4} className="-top-3 z-1" />
+      <button type="button" aria-label={m.title} onClick={onOpen} className="riso-focus absolute inset-0 z-2 cursor-pointer rounded-[14px] border-0 bg-transparent p-0" />
       <div
         className="relative flex origin-bottom-left flex-col gap-2.5 px-5.5 pt-6.5 pb-5.5"
         style={{ width: `calc(100% / ${1 + TEXT_LIFT})`, scale: `calc(1 + var(--a) * ${TEXT_LIFT})` }}
