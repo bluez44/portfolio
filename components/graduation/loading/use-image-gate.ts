@@ -5,7 +5,7 @@ import { waitForImages } from "./wait-for-images";
 
 export const IMAGE_WAIT_MS = 30_000;
 
-/** Calls `onDone` once every image rendered inside `rootRef` has loaded at the size the browser picked. */
+/** Calls `onDone` once every image the current layout renders inside `rootRef` has loaded at the size the browser picked. */
 export function useImageGate(rootRef: RefObject<HTMLElement | null>, onDone: () => void) {
   const onDoneRef = useRef(onDone);
   useEffect(() => {
@@ -19,11 +19,18 @@ export function useImageGate(rootRef: RefObject<HTMLElement | null>, onDone: () 
       return;
     }
     let cancelled = false;
-    waitForImages(root.querySelectorAll("img"), IMAGE_WAIT_MS).then(() => {
-      if (!cancelled) onDoneRef.current();
+    // Hydration renders the desktop layout first (useCompactLayout's server snapshot); wait two frames
+    // so the phone re-render has committed and the images (and their `sizes`) match this screen.
+    let frame = requestAnimationFrame(() => {
+      frame = requestAnimationFrame(() => {
+        waitForImages(root.querySelectorAll("img"), IMAGE_WAIT_MS).then(() => {
+          if (!cancelled) onDoneRef.current();
+        });
+      });
     });
     return () => {
       cancelled = true;
+      cancelAnimationFrame(frame);
     };
   }, [rootRef]);
 }

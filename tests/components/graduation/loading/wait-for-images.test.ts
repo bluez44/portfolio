@@ -1,9 +1,13 @@
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { waitForImages } from "@/components/graduation/loading/wait-for-images";
 
-type FakeImage = { loading: string; decode: () => Promise<void> };
+type FakeImage = { loading: string; decode: () => Promise<void>; getClientRects: () => { length: number } };
 
-const fakeImage = (decode: () => Promise<void>): FakeImage => ({ loading: "lazy", decode: vi.fn(decode) });
+const fakeImage = (decode: () => Promise<void>, rendered = true): FakeImage => ({
+  loading: "lazy",
+  decode: vi.fn(decode),
+  getClientRects: () => ({ length: rendered ? 1 : 0 }),
+});
 const asImages = (list: FakeImage[]) => list as unknown as HTMLImageElement[];
 
 afterEach(() => {
@@ -26,6 +30,16 @@ describe("waitForImages", () => {
     finish();
     await done;
     expect(settled).toBe(true);
+  });
+
+  it("leaves images the layout hides lazy and does not wait for them", async () => {
+    const hidden = fakeImage(() => new Promise<void>(() => {}), false);
+    const shown = fakeImage(() => Promise.resolve());
+
+    await expect(waitForImages(asImages([hidden, shown]), 30_000)).resolves.toBeUndefined();
+    expect(hidden.loading).toBe("lazy");
+    expect(hidden.decode).not.toHaveBeenCalled();
+    expect(shown.loading).toBe("eager");
   });
 
   it("treats a failed image as done", async () => {
